@@ -225,12 +225,6 @@ export function PhoneLoginCard({ googleClientId }: PhoneLoginCardProps) {
           <Lock className="h-3 w-3" />
           We never share your number with anyone.
         </p>
-        <p className="text-center text-xs text-slate-500">
-          View our{" "}
-          <a href="/privacy" className="font-medium text-brand-green underline">
-            Privacy Policy
-          </a>
-        </p>
       </form>
     </div>
   );
