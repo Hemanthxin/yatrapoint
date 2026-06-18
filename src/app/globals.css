@@ -29,3 +29,53 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+@layer utilities {
+  /* Lift + deepen shadow on hover — the base interaction for every card. */
+  .card-hover {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.3s ease, border-color 0.3s ease;
+    will-change: transform;
+  }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 48px -18px rgba(2, 6, 23, 0.25);
+  }
+
+  /* Frosted-glass surface. */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  /* 3D tilt context for <TiltCard>. */
+  .tilt {
+    transform-style: preserve-3d;
+    transition: transform 0.2s ease-out;
+  }
+  .tilt-pop {
+    transform: translateZ(40px);
+  }
+
+  /* Shimmering gradient text. */
+  .text-shimmer {
+    background: linear-gradient(90deg, #059669, #34d399, #059669);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Respect reduced-motion preferences. */
+  @media (prefers-reduced-motion: reduce) {
+    .card-hover,
+    .tilt {
+      transition: none;
+    }
+    *[class*="animate-"] {
+      animation: none !important;
+    }
+  }
+}

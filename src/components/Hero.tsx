@@ -6,10 +6,10 @@ export function Hero() {
       <div>
         <h1 className="text-5xl font-bold leading-tight md:text-6xl">
           <span className="font-script text-7xl text-white md:text-8xl">
-            Yatra
+            Puri
           </span>{" "}
           <span className="font-script text-7xl text-brand-green md:text-8xl">
-            Point
+            Jaga
           </span>
         </h1>
         <p className="mt-3 text-2xl font-semibold text-white">

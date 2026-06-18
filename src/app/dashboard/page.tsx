@@ -16,6 +16,7 @@ import {
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
+import { TiltCard } from "@/components/app/TiltCard";
 import { formatINR } from "@/lib/format";
 import { getDashboardStats } from "@/lib/queries/trip-plans";
 import { listPublishedPosts } from "@/lib/queries/community";
@@ -125,24 +126,24 @@ export default async function DashboardPage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
         </div>
         <div className="absolute inset-0 flex items-center justify-between gap-4 p-6 md:p-10">
-          <div>
-            <h1 className="text-3xl font-bold text-white md:text-4xl">
+          <div className="animate-fadeUp">
+            <h1 className="text-3xl font-bold text-white md:text-5xl">
               Explore more,
               <br />
-              <span className="text-emerald-400">Spend less.</span>
+              <span className="text-shimmer">Spend less.</span>
             </h1>
-            <p className="mt-3 text-sm text-white/85">
+            <p className="mt-3 text-sm text-white/85 md:text-base">
               Smart trips. Budget friendly. Unforgettable memories.
             </p>
           </div>
-          <div className="hidden w-64 shrink-0 rounded-2xl bg-black/40 p-5 backdrop-blur-sm md:block">
+          <div className="hidden w-64 shrink-0 animate-float rounded-2xl border border-white/15 bg-black/40 p-5 backdrop-blur-md md:block">
             <p className="text-base font-bold text-white">Plan your next trip</p>
             <p className="mt-1 text-xs text-white/75">
               Get AI-powered suggestions based on your budget
             </p>
             <Link
               href="/budget-planner"
-              className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
+              className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.03] hover:bg-emerald-600"
             >
               Explore Trips <ArrowRight className="h-4 w-4" />
             </Link>
@@ -150,45 +151,49 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* Stat cards — clickable, DB-driven */}
-      <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {statCards.map((s) => (
-          <Link
-            key={s.label}
-            href={s.href}
-            className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md"
-          >
-            <div className={`grid h-12 w-12 shrink-0 place-items-center rounded-full ${s.tone}`}>
-              {s.icon}
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs text-slate-500">{s.label}</p>
-              <p className="truncate text-xl font-bold text-slate-900">{s.value}</p>
-              <span className="text-xs font-medium text-emerald-600">{s.action} →</span>
-            </div>
-          </Link>
+      {/* Stat cards — clickable, DB-driven, 3D tilt */}
+      <section className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {statCards.map((s, i) => (
+          <TiltCard key={s.label} className="animate-fadeUp" >
+            <Link
+              href={s.href}
+              style={{ animationDelay: `${i * 70}ms` }}
+              className="card-hover flex h-full items-center gap-4 rounded-3xl border border-slate-200 bg-white p-6 hover:border-emerald-200"
+            >
+              <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${s.tone}`}>
+                {s.icon}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-slate-500">{s.label}</p>
+                <p className="truncate text-2xl font-extrabold text-slate-900">{s.value}</p>
+                <span className="text-xs font-semibold text-emerald-600">{s.action} →</span>
+              </div>
+            </Link>
+          </TiltCard>
         ))}
       </section>
 
-      {/* Feature cards */}
-      <section className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {features.map((f) => (
-          <Link
-            key={f.title}
-            href={f.href}
-            className={`group flex items-start justify-between gap-3 rounded-2xl ${f.tone} p-5 transition hover:shadow-md`}
-          >
-            <div>
-              <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-white/70">
-                {f.icon}
+      {/* Feature cards — 3D tilt */}
+      <section className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {features.map((f, i) => (
+          <TiltCard key={f.title} className="animate-fadeUp">
+            <Link
+              href={f.href}
+              style={{ animationDelay: `${100 + i * 70}ms` }}
+              className={`card-hover group flex h-full items-start justify-between gap-3 rounded-3xl ${f.tone} p-6`}
+            >
+              <div>
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white/80 shadow-sm">
+                  {f.icon}
+                </div>
+                <p className="text-base font-bold text-slate-900">{f.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">{f.desc}</p>
               </div>
-              <p className="font-semibold text-slate-900">{f.title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-600">{f.desc}</p>
-            </div>
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-slate-600 transition group-hover:translate-x-0.5">
-              <ArrowRight className="h-4 w-4" />
-            </span>
-          </Link>
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-slate-600 shadow-sm transition group-hover:translate-x-1 group-hover:text-emerald-600">
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          </TiltCard>
         ))}
       </section>
 
@@ -200,19 +205,20 @@ export default async function DashboardPage() {
             View all
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {nearby.map((n) => (
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+          {nearby.map((n, i) => (
             <Link
               key={n.name}
               href="/explore-bangalore"
-              className="group relative h-40 overflow-hidden rounded-2xl"
+              style={{ animationDelay: `${i * 80}ms` }}
+              className="card-hover group relative h-48 animate-fadeUp overflow-hidden rounded-3xl"
             >
               <Image
                 src={n.img}
                 alt={n.name}
                 fill
                 sizes="(max-width: 1024px) 50vw, 25vw"
-                className="object-cover transition duration-300 group-hover:scale-105"
+                className="object-cover transition duration-500 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <span className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-slate-700">
@@ -233,9 +239,9 @@ export default async function DashboardPage() {
       </section>
 
       {/* Bottom 3-column row */}
-      <section className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* Trips by Places */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-bold text-slate-900">Trips by Places</h3>
             <Link href="/trip-categories" className="text-xs font-medium text-emerald-600 hover:underline">
@@ -259,7 +265,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Community Updates — real published posts */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6 [animation-delay:90ms]">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-bold text-slate-900">Community Updates</h3>
             <Link href="/community" className="text-xs font-medium text-emerald-600 hover:underline">
@@ -288,7 +294,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Budget Planner widget */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6 [animation-delay:180ms]">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-bold text-slate-900">Budget Planner</h3>
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-600">

@@ -33,9 +33,13 @@ export default async function FestivalsPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {FESTIVALS.map((f) => (
-          <div key={f.name} className="rounded-2xl border border-slate-200 bg-white p-5">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {FESTIVALS.map((f, i) => (
+          <div
+            key={f.name}
+            style={{ animationDelay: `${i * 70}ms` }}
+            className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6"
+          >
             <div className="flex items-start justify-between">
               <span className="text-4xl">{f.emoji}</span>
               <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">

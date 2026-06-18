@@ -364,7 +364,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5">
       <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-slate-900">
         <span>{icon}</span>
         {title}

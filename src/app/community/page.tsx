@@ -60,9 +60,13 @@ export default async function CommunityPage() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {published.map((p) => (
-                <article key={p.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div className="grid gap-5 sm:grid-cols-2">
+              {published.map((p, i) => (
+                <article
+                  key={p.id}
+                  style={{ animationDelay: `${i * 70}ms` }}
+                  className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white"
+                >
                   {p.photoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={p.photoUrl} alt={p.title} className="h-40 w-full object-cover" />
