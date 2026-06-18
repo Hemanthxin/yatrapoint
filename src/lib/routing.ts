@@ -71,6 +71,53 @@ interface OsrmResponse {
   }>;
 }
 
+// A driving route through waypoints IN THE GIVEN ORDER (no reordering), with a
+// per-leg breakdown. Use this when you want to preserve a nearest-first visit
+// order but still need real road distances + geometry.
+export interface RouteWithLegs {
+  distanceKm: number;
+  durationMinutes: number;
+  geometry: [number, number][]; // [lat, lng] for Leaflet
+  legs: Array<{ distanceKm: number; durationMinutes: number }>;
+}
+
+interface OsrmRouteResponse {
+  routes?: Array<{
+    distance: number;
+    duration: number;
+    geometry: { coordinates: [number, number][] };
+    legs?: Array<{ distance: number; duration: number }>;
+  }>;
+}
+
+export async function fetchRoute(
+  waypoints: LatLng[],
+  signal?: AbortSignal
+): Promise<RouteWithLegs | null> {
+  if (waypoints.length < 2) return null;
+  const coords = waypoints.map((p) => `${p.lng},${p.lat}`).join(";");
+  const path = `/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+
+  const res = await tryEachBase(path, signal);
+  if (!res) return null;
+  try {
+    const data: OsrmRouteResponse = await res.json();
+    const route = data.routes?.[0];
+    if (!route) return null;
+    return {
+      distanceKm: route.distance / 1000,
+      durationMinutes: route.duration / 60,
+      geometry: route.geometry.coordinates.map(([lng, lat]) => [lat, lng]),
+      legs: (route.legs ?? []).map((l) => ({
+        distanceKm: l.distance / 1000,
+        durationMinutes: l.duration / 60,
+      })),
+    };
+  } catch {
+    return null;
+  }
+}
+
 // Multi-stop optimised route. Uses OSRM's /trip endpoint, which solves the
 // Travelling-Salesman Problem (greedy + 2-opt) and returns the best order.
 export interface TripResult {

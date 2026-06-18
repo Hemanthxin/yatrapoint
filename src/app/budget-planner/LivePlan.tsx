@@ -11,15 +11,13 @@ import {
   Play,
   Wallet,
   LocateFixed,
-  RefreshCw,
-  Minus,
-  Plus,
+  Sparkles,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
-import type { VehicleKind } from "@/lib/budget";
+import { VEHICLES, type VehicleKind } from "@/lib/budget";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -29,6 +27,30 @@ const TripMap = dynamic(() => import("@/components/map/TripMap"), {
     </div>
   ),
 });
+
+// User-facing category groups. Each maps to one or more Overpass categories.
+interface CategoryGroup {
+  slug: string;
+  label: string;
+  emoji: string;
+  overpass: string[];
+}
+
+export const GROUPS: CategoryGroup[] = [
+  { slug: "temples", label: "Temples", emoji: "🛕", overpass: ["temple", "place_of_worship"] },
+  { slug: "churches", label: "Churches", emoji: "⛪", overpass: ["church"] },
+  { slug: "museums", label: "Museums", emoji: "🏛️", overpass: ["museum"] },
+  { slug: "parks", label: "Parks", emoji: "🌳", overpass: ["park", "garden"] },
+  { slug: "lakes", label: "Lakes", emoji: "💧", overpass: ["lake"] },
+  { slug: "viewpoints", label: "Viewpoints", emoji: "🌄", overpass: ["viewpoint"] },
+  { slug: "heritage", label: "Heritage", emoji: "🏯", overpass: ["monument", "fort", "tourist_attraction"] },
+  { slug: "malls", label: "Malls", emoji: "🛍️", overpass: ["mall", "marketplace"] },
+  { slug: "restaurants", label: "Restaurants", emoji: "🍽️", overpass: ["restaurant"] },
+  { slug: "cafes", label: "Cafés", emoji: "☕", overpass: ["cafe"] },
+  { slug: "nightlife", label: "Nightlife", emoji: "🍻", overpass: ["nightlife"] },
+  { slug: "cinema", label: "Cinema", emoji: "🎬", overpass: ["cinema", "theatre"] },
+  { slug: "amusement", label: "Amusement", emoji: "🎢", overpass: ["amusement", "zoo"] },
+];
 
 interface PlanStop {
   id: string;
@@ -68,73 +90,108 @@ interface PlanResponse {
 const PLAN_STORAGE_KEY = "yatra-point/multi-stop-plan";
 
 export interface LivePlanProps {
-  budget: number;
-  people: number;
-  hours: number;
-  vehicle: VehicleKind;
-  categories: string[];
-  includeFood: boolean;
+  initialBudget: number;
+  initialPeople: number;
+  initialHours: number;
+  initialVehicle: VehicleKind;
+  initialGroups: string[];
+  initialIncludeFood: boolean;
   initialStops: number;
 }
 
 export function LivePlan({
-  budget,
-  people,
-  hours,
-  vehicle,
-  categories,
-  includeFood,
+  initialBudget,
+  initialPeople,
+  initialHours,
+  initialVehicle,
+  initialGroups,
+  initialIncludeFood,
   initialStops,
 }: LivePlanProps) {
   const router = useRouter();
-  const { coords, status, isFallback, request } = useLocation();
+  const { coords, status, accuracyMeters, isFallback, request } = useLocation();
 
+  // Full, editable planner inputs — the same set the mixed-category planner exposes.
+  const [budget, setBudget] = useState(initialBudget);
+  const [hours, setHours] = useState(initialHours);
+  const [people, setPeople] = useState(initialPeople);
   const [maxStops, setMaxStops] = useState(initialStops);
   const [radiusKm, setRadiusKm] = useState(25);
+  const [vehicle, setVehicle] = useState<VehicleKind>(initialVehicle);
+  const [includeFood, setIncludeFood] = useState(initialIncludeFood);
+  const [selectedGroups, setSelectedGroups] = useState<Set<string>>(
+    new Set(initialGroups.length ? initialGroups : ["temples", "heritage", "restaurants"])
+  );
+
   const [plan, setPlan] = useState<PlanResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const lastKey = useRef<string>("");
+  const didAutoRun = useRef(false);
 
-  const generate = useCallback(
-    async (stops: number, radius: number) => {
-      if (categories.length === 0) {
-        setError("Pick at least one trip type.");
+  const overpassCategories = useMemo(() => {
+    const out = new Set<string>();
+    for (const g of GROUPS) {
+      if (selectedGroups.has(g.slug)) for (const o of g.overpass) out.add(o);
+    }
+    return [...out];
+  }, [selectedGroups]);
+
+  function toggleGroup(slug: string) {
+    setSelectedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  }
+
+  const generate = useCallback(async () => {
+    if (overpassCategories.length === 0) {
+      setError("Pick at least one category.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/multi-stop/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          start: { lat: coords.lat, lng: coords.lng },
+          totalBudget: budget,
+          hours,
+          people,
+          vehicle,
+          categories: overpassCategories,
+          includeFood,
+          maxStops,
+          searchRadiusKm: radiusKm,
+        }),
+      });
+      const data: PlanResponse = await res.json();
+      if (!res.ok || !data.ok) {
+        setError(data.error || "Could not generate a plan.");
+        setPlan(null);
         return;
       }
-      setError(null);
-      setLoading(true);
-      try {
-        const res = await fetch("/api/multi-stop/plan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            start: { lat: coords.lat, lng: coords.lng },
-            totalBudget: budget,
-            hours,
-            people,
-            vehicle,
-            categories,
-            includeFood,
-            maxStops: stops,
-            searchRadiusKm: radius,
-          }),
-        });
-        const data: PlanResponse = await res.json();
-        if (!res.ok || !data.ok) {
-          setError(data.error || "Could not generate a plan.");
-          setPlan(null);
-          return;
-        }
-        setPlan(data);
-      } catch {
-        setError("Network error — try again.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [coords.lat, coords.lng, budget, hours, people, vehicle, categories, includeFood]
-  );
+      setPlan(data);
+    } catch {
+      setError("Network error — try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    coords.lat,
+    coords.lng,
+    budget,
+    hours,
+    people,
+    vehicle,
+    overpassCategories,
+    includeFood,
+    maxStops,
+    radiusKm,
+  ]);
 
   // Ask for live location on mount.
   useEffect(() => {
@@ -142,14 +199,14 @@ export function LivePlan({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-generate whenever the start coordinates settle (once per location).
+  // Auto-generate once, after location settles (granted, denied or fallback).
   useEffect(() => {
-    const key = `${coords.lat.toFixed(4)},${coords.lng.toFixed(4)}`;
-    if (lastKey.current === key) return;
-    lastKey.current = key;
-    generate(maxStops, radiusKm);
+    if (didAutoRun.current) return;
+    if (status === "idle" || status === "prompting") return;
+    didAutoRun.current = true;
+    generate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coords.lat, coords.lng]);
+  }, [status]);
 
   const stopMarkers = useMemo(
     () => plan?.stops.map((s) => ({ lat: s.lat, lng: s.lng, name: s.name })) ?? [],
@@ -158,76 +215,128 @@ export function LivePlan({
 
   return (
     <div id="live-plan" className="mt-8 space-y-5 scroll-mt-20">
-      {/* Location + stops controls */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm">
-            <LocateFixed className={`h-5 w-5 ${isFallback ? "text-amber-500" : "text-emerald-600"}`} />
-            <span className="font-medium text-slate-700">
-              {status === "granted"
-                ? "Planning from your live location"
-                : status === "prompting"
-                ? "Getting your location…"
-                : status === "denied"
-                ? "Location blocked — using Bengaluru centre"
-                : "Using Bengaluru centre"}
+      {/* Live location banner */}
+      <section className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+        <span className="flex items-center gap-2 text-sm font-medium text-emerald-900">
+          <LocateFixed className={`h-5 w-5 ${isFallback ? "text-amber-500" : "text-emerald-600"}`} />
+          {status === "granted"
+            ? "Using your live location"
+            : status === "prompting"
+            ? "Getting your location…"
+            : status === "denied"
+            ? "Location blocked — using Bengaluru centre"
+            : "Using Bengaluru centre"}
+          {accuracyMeters ? (
+            <span className="text-xs font-normal text-emerald-700/70">
+              (±{Math.round(accuracyMeters)} m)
             </span>
-            {isFallback && status !== "prompting" && (
-              <button
-                onClick={() => request()}
-                className="rounded-full border border-emerald-300 px-3 py-1 text-xs font-semibold text-emerald-700 hover:bg-emerald-50"
-              >
-                Use my location
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Stops</span>
-              <div className="flex items-center gap-1 rounded-lg border border-slate-200 p-0.5">
-                <button
-                  onClick={() => setMaxStops((s) => Math.max(2, s - 1))}
-                  className="grid h-7 w-7 place-items-center rounded-md text-slate-600 hover:bg-slate-100"
-                  aria-label="Fewer stops"
-                >
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span className="w-6 text-center text-sm font-bold text-slate-900">{maxStops}</span>
-                <button
-                  onClick={() => setMaxStops((s) => Math.min(10, s + 1))}
-                  className="grid h-7 w-7 place-items-center rounded-md text-slate-600 hover:bg-slate-100"
-                  aria-label="More stops"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
+          ) : null}
+        </span>
+        <span className="text-xs text-emerald-800/70">
+          {coords.lat.toFixed(4)}, {coords.lng.toFixed(4)}
+          {isFallback && status !== "prompting" && (
             <button
-              onClick={() => generate(maxStops, radiusKm)}
-              disabled={loading}
-              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+              onClick={() => request()}
+              className="ml-3 rounded-full border border-emerald-300 px-3 py-1 font-semibold text-emerald-700 hover:bg-emerald-100"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-              {loading ? "Generating…" : "Generate plan"}
+              Use my location
             </button>
+          )}
+        </span>
+      </section>
+
+      {/* Build the trip — full control set */}
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6">
+        <h2 className="text-lg font-bold text-slate-900">Fine-tune your trip</h2>
+        <p className="text-xs text-slate-500">
+          Pre-filled from your preferences — adjust anything and regenerate.
+        </p>
+
+        <div className="mt-5 grid gap-4 md:grid-cols-5">
+          <NumberField label="Budget (₹)" min={500} step={500} value={budget} onChange={setBudget} />
+          <NumberField label="Hours" min={1} max={18} value={hours} onChange={setHours} />
+          <NumberField label="People" min={1} max={20} value={people} onChange={setPeople} />
+          <NumberField label="Max stops" min={2} max={10} value={maxStops} onChange={setMaxStops} />
+          <NumberField label="Search radius (km)" min={2} max={80} value={radiusKm} onChange={setRadiusKm} />
+        </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">Vehicle</p>
+            <div className="grid grid-cols-5 gap-1.5">
+              {(Object.keys(VEHICLES) as VehicleKind[]).map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setVehicle(k)}
+                  title={`${VEHICLES[k].label} · ₹${VEHICLES[k].costPerKm}/km`}
+                  className={`rounded-lg border px-2 py-1.5 text-lg transition ${
+                    vehicle === k
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  {VEHICLES[k].emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+          <label className="flex items-end gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={includeFood}
+              onChange={(e) => setIncludeFood(e.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+            />
+            Include one food stop (restaurant / café)
+          </label>
+        </div>
+
+        <div className="mt-5">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+            Categories — pick any combination
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {GROUPS.map((g) => {
+              const on = selectedGroups.has(g.slug);
+              return (
+                <button
+                  key={g.slug}
+                  type="button"
+                  onClick={() => toggleGroup(g.slug)}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                    on
+                      ? "border-emerald-500 bg-emerald-500 text-white"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <span>{g.emoji}</span>
+                  {g.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <div className="mt-3 flex items-center gap-3">
-          <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Search radius</span>
-          <input
-            type="range"
-            min={5}
-            max={80}
-            step={5}
-            value={radiusKm}
-            onChange={(e) => setRadiusKm(Number(e.target.value))}
-            className="flex-1 accent-emerald-600"
-          />
-          <span className="w-12 text-sm font-semibold text-slate-700">{radiusKm} km</span>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={generate}
+            disabled={loading || status === "prompting"}
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-60"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Planning…
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> Generate trip
+              </>
+            )}
+          </button>
+          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
       </section>
 
       {loading && !plan && (
@@ -240,11 +349,21 @@ export function LivePlan({
 
       {plan && (
         <>
-          <section className="grid gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat icon={<MapPin className="h-4 w-4" />} label="Stops" value={plan.stops.length.toString()} sub={`from ${plan.candidatesConsidered} nearby`} />
-            <Stat icon={<Navigation className="h-4 w-4" />} label="Distance" value={formatKm(plan.totals.distanceKm)} sub="round trip" />
-            <Stat icon={<Clock className="h-4 w-4" />} label="Driving" value={formatMinutes(plan.totals.durationMinutes)} sub="excl. visits" />
-            <Stat icon={<Wallet className="h-4 w-4" />} label="Total cost" value={formatINR(plan.totals.cost)} sub={`${formatINR(plan.totals.perPersonCost)} / person`} />
+          <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Stat icon={<MapPin className="h-4 w-4" />} label="Stops" value={plan.stops.length.toString()} sub={`from ${plan.candidatesConsidered} nearby`} />
+              <Stat icon={<Navigation className="h-4 w-4" />} label="Distance" value={formatKm(plan.totals.distanceKm)} sub="round trip via OSRM" />
+              <Stat icon={<Clock className="h-4 w-4" />} label="Driving time" value={formatMinutes(plan.totals.durationMinutes)} sub="excluding visits" />
+              <Stat icon={<Wallet className="h-4 w-4" />} label="Total cost" value={formatINR(plan.totals.cost)} sub={`${formatINR(plan.totals.perPersonCost)} per person`} />
+            </div>
+            <p className="mt-3 text-xs text-emerald-900/70">
+              Unspent: {formatINR(plan.totals.unspentBudget)} budget ·{" "}
+              {formatMinutes(plan.totals.unspentMinutes)} time · Live OSM ·{" "}
+              {plan.overpassPlaces} OSM places, {plan.seedPlaces} curated.
+              {plan.overpassError && (
+                <span className="ml-1 text-amber-700">(Overpass error, used curated picks only)</span>
+              )}
+            </p>
           </section>
 
           {stopMarkers.length > 0 && (
@@ -279,7 +398,7 @@ export function LivePlan({
               <TripMap origin={coords} stops={stopMarkers} route={plan.geometry ?? undefined} height={440} />
               <p className="mt-2 text-xs text-slate-500">
                 Green pin is your location. Numbered pins are stops in optimal order — nearest first.
-                The line follows real driving roads.
+                The line follows real driving roads (OSRM).
               </p>
             </section>
           )}
@@ -308,7 +427,16 @@ export function LivePlan({
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2 text-xs">
                     {s.entryFee > 0 && <Chip>Entry {formatINR(s.entryFee)} / person</Chip>}
+                    {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
                     {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
+                    {s.meta?.citySeedSlug && (
+                      <a
+                        href={`/explore-bangalore/${s.meta.citySeedSlug}`}
+                        className="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-800 hover:bg-emerald-200"
+                      >
+                        Details →
+                      </a>
+                    )}
                     <a
                       href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
                       target="_blank"
@@ -343,4 +471,36 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
 
 function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">{children}</span>;
+}
+
+function NumberField({
+  label,
+  value,
+  onChange,
+  min = 0,
+  max = 999999,
+  step = 1,
+}: {
+  label: string;
+  value: number;
+  onChange: (n: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">{label}</span>
+      <input
+        type="number"
+        inputMode="numeric"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Math.max(min, Math.min(max, Number(e.target.value) || 0)))}
+        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+      />
+    </label>
+  );
 }

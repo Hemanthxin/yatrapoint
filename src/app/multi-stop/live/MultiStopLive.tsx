@@ -211,7 +211,7 @@ export function MultiStopLive() {
           No active trip plan. Build one first.
         </p>
         <Link
-          href="/multi-stop"
+          href="/budget-planner"
           className="mt-4 inline-flex rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600"
         >
           Go to planner
@@ -431,7 +431,7 @@ export function MultiStopLive() {
           )}
           {phase === "completed" && (
             <Link
-              href="/multi-stop"
+              href="/budget-planner"
               className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 py-3 text-sm font-bold text-white hover:bg-violet-600"
             >
               Plan another trip

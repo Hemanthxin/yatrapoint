@@ -119,7 +119,7 @@ export default async function CityPlacePage({ params }: PageProps) {
             Open in Google Maps <ExternalLink className="h-3 w-3" />
           </a>
           <Link
-            href={`/multi-stop?include=${place.slug}`}
+            href="/budget-planner"
             className="inline-flex items-center gap-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-600"
           >
             Build a trip including this

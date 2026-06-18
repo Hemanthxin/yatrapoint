@@ -9,7 +9,7 @@ import {
   type OverpassCategory,
   type OverpassPlace,
 } from "@/lib/overpass";
-import { fetchTrip } from "@/lib/routing";
+import { fetchRoute } from "@/lib/routing";
 import {
   CATEGORY_DEFAULTS,
   candidateFromOverpass,
@@ -209,48 +209,38 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4) Refine with OSRM /trip (TSP) to get an optimal order + real route.
-  const tripWaypoints = [
+  // 4) Build the real road route through the stops IN NEAREST-FIRST ORDER.
+  // The greedy picker already orders stops nearest-first from the start (stop 1
+  // is closest to you, stop 2 closest to stop 1, and so on). We deliberately do
+  // NOT run OSRM's TSP /trip here — that reorders into a shortest *loop*, which
+  // makes the numbering look wrong (a far stop can come before a near one). We
+  // route through the stops in order and return to the start, then overwrite the
+  // straight-line (haversine) leg metrics with OSRM's REAL road distances/times.
+  const vehicleProfile = VEHICLES[parsed.data.vehicle];
+  const routeWaypoints = [
     parsed.data.start,
     ...plan.stops.map((s) => ({ lat: s.lat, lng: s.lng })),
+    parsed.data.start, // return home — closes the loop for a proper round trip
   ];
-  const trip = await fetchTrip({
-    waypoints: tripWaypoints,
-    roundtrip: true,
-    fixedFirst: true,
-    fixedLast: false,
-  });
+  const route = await fetchRoute(routeWaypoints);
 
-  // Reorder stops based on OSRM's optimised waypoint order, dropping the
-  // first index because it's the start. Then overwrite each stop's per-leg
-  // metrics (distance / time / fuel) with OSRM's REAL road values — the greedy
-  // picker only had straight-line (haversine) estimates, which badly
-  // under-report real driving distance in a city.
-  const vehicleProfile = VEHICLES[parsed.data.vehicle];
   let orderedStops = plan.stops;
   let roadFuelTotal: number | null = null;
-  if (trip) {
-    const optimised = trip.waypointOrder
-      .filter((i) => i !== 0)
-      .map((i) => plan.stops[i - 1])
-      .filter(Boolean);
-    if (optimised.length === plan.stops.length) {
-      // OSRM legs are in visit order: legs[k] is the drive from the previous
-      // waypoint to optimised[k]. The trailing leg (return to start) is left
-      // out of per-stop display but counted in the total distance/fuel.
-      orderedStops = optimised.map((s, k) => {
-        const leg = trip.legs[k];
-        if (!leg) return s;
-        return {
-          ...s,
-          arrivalKmFromPrev: leg.distanceKm,
-          arrivalMinutesFromPrev: leg.durationMinutes,
-          travelCost: Math.round(leg.distanceKm * vehicleProfile.costPerKm),
-        };
-      });
-      // Fuel for the whole loop (incl. return) from real road distance.
-      roadFuelTotal = Math.round(trip.distanceKm * vehicleProfile.costPerKm);
-    }
+  if (route && route.legs.length >= plan.stops.length) {
+    // legs[k] is the drive arriving at stop k: legs[0] = start → stop 1,
+    // legs[1] = stop 1 → stop 2, … The trailing leg is the return to start
+    // (counted in the total distance/fuel, not shown per-stop).
+    orderedStops = plan.stops.map((s, k) => {
+      const leg = route.legs[k];
+      if (!leg) return s;
+      return {
+        ...s,
+        arrivalKmFromPrev: leg.distanceKm,
+        arrivalMinutesFromPrev: leg.durationMinutes,
+        travelCost: Math.round(leg.distanceKm * vehicleProfile.costPerKm),
+      };
+    });
+    roadFuelTotal = Math.round(route.distanceKm * vehicleProfile.costPerKm);
   }
 
   // Recompute totals from real road distances when OSRM data is available so
@@ -268,14 +258,14 @@ export async function POST(req: NextRequest) {
     overpassError,
     stops: orderedStops,
     totals: {
-      distanceKm: trip?.distanceKm ?? plan.totalDistanceKm * 2, // assume return
-      durationMinutes: trip?.durationMinutes ?? plan.totalMinutes,
+      distanceKm: route?.distanceKm ?? plan.totalDistanceKm * 2, // assume return
+      durationMinutes: route?.durationMinutes ?? plan.totalMinutes,
       cost: realTotalCost,
       perPersonCost: realPerPerson,
       unspentBudget: Math.max(0, parsed.data.totalBudget - realTotalCost),
       unspentMinutes: plan.unspentMinutes,
     },
-    geometry: trip?.geometry ?? null,
-    legs: trip?.legs ?? null,
+    geometry: route?.geometry ?? null,
+    legs: route?.legs ?? null,
   });
 }

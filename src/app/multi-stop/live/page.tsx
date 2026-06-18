@@ -12,7 +12,7 @@ export default async function MultiStopLivePage() {
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="flex items-center justify-between border-b border-white/10 bg-slate-900/80 px-4 py-3 backdrop-blur">
         <Link
-          href="/multi-stop"
+          href="/budget-planner"
           className="inline-flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" /> Back to planner

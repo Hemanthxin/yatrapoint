@@ -21,7 +21,7 @@ const TABS = [
     icon: Map,
   },
   {
-    href: "/multi-stop",
+    href: "/budget-planner",
     label: "Plan Trip",
     sub: "Budget + categories → route",
     icon: RouteIcon,

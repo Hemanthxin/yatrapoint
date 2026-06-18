@@ -40,12 +40,13 @@ const TRANSPORT = [
 
 const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 
-// Trip type → which kinds of nearby places to look for (OSM categories).
-const TRIP_CATEGORIES: Record<string, string[]> = {
-  Solo: ["viewpoint", "monument", "fort", "tourist_attraction", "museum", "cafe"],
-  Couple: ["viewpoint", "park", "garden", "lake", "restaurant", "cafe"],
-  Family: ["temple", "park", "museum", "tourist_attraction", "zoo", "restaurant"],
-  Friends: ["amusement", "viewpoint", "tourist_attraction", "cafe", "restaurant", "nightlife"],
+// Trip type → which category groups to pre-select in the planner (slugs match
+// the GROUPS list in LivePlan; the user can change them afterwards).
+const TRIP_GROUPS: Record<string, string[]> = {
+  Solo: ["viewpoints", "heritage", "museums", "cafes"],
+  Couple: ["viewpoints", "parks", "lakes", "restaurants", "cafes"],
+  Family: ["temples", "parks", "museums", "heritage", "restaurants"],
+  Friends: ["amusement", "viewpoints", "nightlife", "restaurants", "cafes"],
 };
 
 // Preferred transport → vehicle profile used for fuel-cost estimates.
@@ -300,12 +301,12 @@ export function WizardForm({ initial }: WizardFormProps) {
 
     {started && (
       <LivePlan
-        budget={budget}
-        people={travellersNum}
-        hours={Math.min(18, Math.max(6, daysNum * 8))}
-        vehicle={TRANSPORT_VEHICLE[transport] ?? "small_car"}
-        categories={TRIP_CATEGORIES[tripType] ?? TRIP_CATEGORIES.Family}
-        includeFood
+        initialBudget={budget}
+        initialPeople={travellersNum}
+        initialHours={Math.min(18, Math.max(6, daysNum * 8))}
+        initialVehicle={TRANSPORT_VEHICLE[transport] ?? "small_car"}
+        initialGroups={TRIP_GROUPS[tripType] ?? TRIP_GROUPS.Family}
+        initialIncludeFood={true}
         initialStops={Math.min(10, Math.max(3, daysNum * 3))}
       />
     )}
