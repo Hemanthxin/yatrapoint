@@ -222,17 +222,43 @@ export async function POST(req: NextRequest) {
   });
 
   // Reorder stops based on OSRM's optimised waypoint order, dropping the
-  // first index because it's the start.
+  // first index because it's the start. Then overwrite each stop's per-leg
+  // metrics (distance / time / fuel) with OSRM's REAL road values — the greedy
+  // picker only had straight-line (haversine) estimates, which badly
+  // under-report real driving distance in a city.
+  const vehicleProfile = VEHICLES[parsed.data.vehicle];
   let orderedStops = plan.stops;
+  let roadFuelTotal: number | null = null;
   if (trip) {
     const optimised = trip.waypointOrder
       .filter((i) => i !== 0)
       .map((i) => plan.stops[i - 1])
       .filter(Boolean);
     if (optimised.length === plan.stops.length) {
-      orderedStops = optimised;
+      // OSRM legs are in visit order: legs[k] is the drive from the previous
+      // waypoint to optimised[k]. The trailing leg (return to start) is left
+      // out of per-stop display but counted in the total distance/fuel.
+      orderedStops = optimised.map((s, k) => {
+        const leg = trip.legs[k];
+        if (!leg) return s;
+        return {
+          ...s,
+          arrivalKmFromPrev: leg.distanceKm,
+          arrivalMinutesFromPrev: leg.durationMinutes,
+          travelCost: Math.round(leg.distanceKm * vehicleProfile.costPerKm),
+        };
+      });
+      // Fuel for the whole loop (incl. return) from real road distance.
+      roadFuelTotal = Math.round(trip.distanceKm * vehicleProfile.costPerKm);
     }
   }
+
+  // Recompute totals from real road distances when OSRM data is available so
+  // the headline cost matches the per-stop legs and Google Maps.
+  const stopCostTotal = orderedStops.reduce((sum, s) => sum + s.stopCost, 0);
+  const realTotalCost =
+    roadFuelTotal != null ? roadFuelTotal + stopCostTotal : plan.totalCost;
+  const realPerPerson = Math.round(realTotalCost / Math.max(1, parsed.data.people));
 
   return NextResponse.json({
     ok: true,
@@ -244,9 +270,9 @@ export async function POST(req: NextRequest) {
     totals: {
       distanceKm: trip?.distanceKm ?? plan.totalDistanceKm * 2, // assume return
       durationMinutes: trip?.durationMinutes ?? plan.totalMinutes,
-      cost: plan.totalCost,
-      perPersonCost: plan.perPersonCost,
-      unspentBudget: plan.unspentBudget,
+      cost: realTotalCost,
+      perPersonCost: realPerPerson,
+      unspentBudget: Math.max(0, parsed.data.totalBudget - realTotalCost),
       unspentMinutes: plan.unspentMinutes,
     },
     geometry: trip?.geometry ?? null,
