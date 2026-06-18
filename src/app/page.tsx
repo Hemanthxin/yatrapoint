@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { BackgroundScene } from "@/components/BackgroundScene";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
+import { LandingFooter } from "@/components/LandingFooter";
 import { PhoneLoginCard } from "@/components/PhoneLoginCard";
 import { TrustStrip } from "@/components/TrustStrip";
 
@@ -35,6 +36,8 @@ export default async function HomePage() {
       <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 md:px-12">
         <TrustStrip />
       </section>
+
+      <LandingFooter />
     </main>
   );
 }
