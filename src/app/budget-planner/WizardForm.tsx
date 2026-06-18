@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import {
   User,
   Heart,
@@ -16,6 +15,9 @@ import {
   MapPinned,
   ArrowRight,
 } from "lucide-react";
+
+import type { VehicleKind } from "@/lib/budget";
+import { LivePlan } from "./LivePlan";
 
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
@@ -38,48 +40,65 @@ const TRANSPORT = [
 
 const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 
+// Trip type → which kinds of nearby places to look for (OSM categories).
+const TRIP_CATEGORIES: Record<string, string[]> = {
+  Solo: ["viewpoint", "monument", "fort", "tourist_attraction", "museum", "cafe"],
+  Couple: ["viewpoint", "park", "garden", "lake", "restaurant", "cafe"],
+  Family: ["temple", "park", "museum", "tourist_attraction", "zoo", "restaurant"],
+  Friends: ["amusement", "viewpoint", "tourist_attraction", "cafe", "restaurant", "nightlife"],
+};
+
+// Preferred transport → vehicle profile used for fuel-cost estimates.
+const TRANSPORT_VEHICLE: Record<string, VehicleKind> = {
+  Any: "small_car",
+  Bus: "suv",
+  Car: "small_car",
+  Train: "small_car",
+  Bike: "bike",
+};
+
 interface WizardFormProps {
   initial: { budget?: number; days?: number; travellers?: number };
 }
 
 export function WizardForm({ initial }: WizardFormProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
-
   const [budget, setBudget] = useState(initial.budget ?? 5000);
   const [days, setDays] = useState(initial.days ? `${initial.days} Days` : "2 Days");
   const [travellers, setTravellers] = useState(initial.travellers?.toString() ?? "2");
   const [tripType, setTripType] = useState("Family");
   const [transport, setTransport] = useState("Any");
   const [food, setFood] = useState("Any");
+  const [started, setStarted] = useState(false);
 
   const daysNum = days === "5+ Days" ? 5 : parseInt(days, 10) || 2;
   const travellersNum = travellers === "5+" ? 5 : parseInt(travellers, 10) || 2;
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const next = new URLSearchParams(searchParams.toString());
-    next.set("budget", String(budget));
-    next.set("days", String(daysNum));
-    next.set("travellers", String(travellersNum));
-    startTransition(() => router.push(`/budget-planner?${next.toString()}`));
+    setStarted(true);
+    // Scroll to the generated plan once it renders.
+    requestAnimationFrame(() => {
+      document.getElementById("live-plan")?.scrollIntoView({ behavior: "smooth" });
+    });
   }
 
   return (
+    <>
     <form onSubmit={onSubmit} className="space-y-6">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-100 via-emerald-50 to-teal-100 p-6 md:p-8">
-        <div className="relative z-10 max-w-lg">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-r from-sky-100 via-emerald-50 to-teal-100">
+        <div
+          className="absolute inset-y-0 right-0 hidden w-2/3 bg-cover bg-center opacity-90 md:block"
+          style={{ backgroundImage: "url('/66245.jpg')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-sky-100 via-sky-100/85 to-transparent" />
+        <div className="relative z-10 max-w-lg p-6 md:p-10">
           <h1 className="text-3xl font-bold text-slate-900 md:text-4xl">Budget Planner</h1>
           <p className="mt-2 text-sm text-slate-600">
             Plan your perfect trip within your budget.
             <br />
             Tell us your preferences and we&apos;ll handle the rest!
           </p>
-        </div>
-        <div className="pointer-events-none absolute -right-4 bottom-0 hidden text-7xl md:block">
-          🧳
         </div>
       </div>
 
@@ -221,10 +240,9 @@ export function WizardForm({ initial }: WizardFormProps) {
 
           <button
             type="submit"
-            disabled={isPending}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800"
           >
-            {isPending ? "Generating…" : "Continue to Preferences"}
+            {started ? "Update Plan" : "Continue & Generate Plan"}
             <ArrowRight className="h-4 w-4" />
           </button>
 
@@ -279,6 +297,19 @@ export function WizardForm({ initial }: WizardFormProps) {
         </div>
       </div>
     </form>
+
+    {started && (
+      <LivePlan
+        budget={budget}
+        people={travellersNum}
+        hours={Math.min(18, Math.max(6, daysNum * 8))}
+        vehicle={TRANSPORT_VEHICLE[transport] ?? "small_car"}
+        categories={TRIP_CATEGORIES[tripType] ?? TRIP_CATEGORIES.Family}
+        includeFood
+        initialStops={Math.min(10, Math.max(3, daysNum * 3))}
+      />
+    )}
+    </>
   );
 }
 
