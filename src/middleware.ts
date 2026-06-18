@@ -15,8 +15,9 @@ const PROTECTED = [
   "/hidden-places",
   "/one-day-trips",
   "/explore-bangalore",
-  "/multi-stop",
   "/multi-stop/live",
+  "/community",
+  "/festivals",
   "/profile",
 ];
 

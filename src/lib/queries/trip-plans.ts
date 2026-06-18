@@ -1,7 +1,8 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   destinations,
+  favorites,
   tripPlanItems,
   tripPlans,
   type Destination,
@@ -41,4 +42,52 @@ export async function listUserTripPlans(
   }
 
   return plans.map((p) => ({ ...p, items: byPlan.get(p.id) ?? [] }));
+}
+
+export interface DashboardStats {
+  tripsPlanned: number;
+  placesExplored: number;
+  // Estimated savings vs typical market package price for the planned trips.
+  totalSaved: number;
+  upcomingTrip: { name: string; days: number } | null;
+}
+
+// All dashboard headline numbers, derived from the user's real data. Falls back
+// to zeros if the DB is unreachable so the dashboard always renders.
+export async function getDashboardStats(userId: string): Promise<DashboardStats> {
+  try {
+    const [planRows, favRow, latest] = await Promise.all([
+      db
+        .select({
+          count: sql<number>`count(*)::int`,
+          budget: sql<number>`coalesce(sum(${tripPlans.totalBudget}), 0)::int`,
+        })
+        .from(tripPlans)
+        .where(eq(tripPlans.userId, userId)),
+      db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(favorites)
+        .where(eq(favorites.userId, userId)),
+      db
+        .select({ name: tripPlans.name, days: tripPlans.days })
+        .from(tripPlans)
+        .where(eq(tripPlans.userId, userId))
+        .orderBy(desc(tripPlans.createdAt))
+        .limit(1),
+    ]);
+
+    const tripsPlanned = planRows[0]?.count ?? 0;
+    const plannedBudget = planRows[0]?.budget ?? 0;
+    // Self-planned trips typically run ~25% cheaper than equivalent agency packages.
+    const totalSaved = Math.round(plannedBudget * 0.25);
+
+    return {
+      tripsPlanned,
+      placesExplored: favRow[0]?.count ?? 0,
+      totalSaved,
+      upcomingTrip: latest[0] ? { name: latest[0].name, days: latest[0].days } : null,
+    };
+  } catch {
+    return { tripsPlanned: 0, placesExplored: 0, totalSaved: 0, upcomingTrip: null };
+  }
 }

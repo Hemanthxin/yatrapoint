@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 
 import type { VehicleKind } from "@/lib/budget";
-import { LivePlan } from "./LivePlan";
+import { PLACE_GROUPS, TRIP_GROUPS } from "@/lib/catalog/place-groups";
+import { LivePlan, type LivePlanProps } from "./LivePlan";
 
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
@@ -40,15 +41,6 @@ const TRANSPORT = [
 
 const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 
-// Trip type → which category groups to pre-select in the planner (slugs match
-// the GROUPS list in LivePlan; the user can change them afterwards).
-const TRIP_GROUPS: Record<string, string[]> = {
-  Solo: ["viewpoints", "heritage", "museums", "cafes"],
-  Couple: ["viewpoints", "parks", "lakes", "restaurants", "cafes"],
-  Family: ["temples", "parks", "museums", "heritage", "restaurants"],
-  Friends: ["amusement", "viewpoints", "nightlife", "restaurants", "cafes"],
-};
-
 // Preferred transport → vehicle profile used for fuel-cost estimates.
 const TRANSPORT_VEHICLE: Record<string, VehicleKind> = {
   Any: "small_car",
@@ -69,15 +61,44 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [tripType, setTripType] = useState("Family");
   const [transport, setTransport] = useState("Any");
   const [food, setFood] = useState("Any");
-  const [started, setStarted] = useState(false);
+  // Categories to explore — preset from the trip type, fully editable.
+  const [groups, setGroups] = useState<Set<string>>(new Set(TRIP_GROUPS.Family));
+
+  // The plan only regenerates when the user submits — we snapshot the inputs
+  // here and bump `planKey` so <LivePlan> remounts and re-runs with them.
+  const [snapshot, setSnapshot] = useState<LivePlanProps | null>(null);
+  const [planKey, setPlanKey] = useState(0);
 
   const daysNum = days === "5+ Days" ? 5 : parseInt(days, 10) || 2;
   const travellersNum = travellers === "5+" ? 5 : parseInt(travellers, 10) || 2;
 
+  // Picking a trip type resets the category chips to that type's preset.
+  function pickTripType(key: string) {
+    setTripType(key);
+    setGroups(new Set(TRIP_GROUPS[key] ?? TRIP_GROUPS.Family));
+  }
+
+  function toggleGroup(slug: string) {
+    setGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  }
+
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    setStarted(true);
-    // Scroll to the generated plan once it renders.
+    setSnapshot({
+      budget,
+      people: travellersNum,
+      hours: Math.min(18, Math.max(6, daysNum * 8)),
+      vehicle: TRANSPORT_VEHICLE[transport] ?? "small_car",
+      groups: [...groups],
+      includeFood: true,
+      maxStops: Math.min(10, Math.max(3, daysNum * 3)),
+    });
+    setPlanKey((k) => k + 1);
     requestAnimationFrame(() => {
       document.getElementById("live-plan")?.scrollIntoView({ behavior: "smooth" });
     });
@@ -189,16 +210,19 @@ export function WizardForm({ initial }: WizardFormProps) {
               </div>
             </Card>
 
-            {/* 4. Trip Type */}
-            <Card title="4. Trip Type" icon="🏷️">
-              <div className="grid grid-cols-4 gap-2">
+            {/* 4. Trip Type + categories to explore */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
+              <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+                <span>🏷️</span> 4. Trip Type
+              </p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {TRIP_TYPES.map(({ key, icon: Icon }) => {
                   const active = tripType === key;
                   return (
                     <button
                       key={key}
                       type="button"
-                      onClick={() => setTripType(key)}
+                      onClick={() => pickTripType(key)}
                       className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-xs font-medium transition ${
                         active
                           ? "border-emerald-600 bg-emerald-600 text-white"
@@ -211,7 +235,31 @@ export function WizardForm({ initial }: WizardFormProps) {
                   );
                 })}
               </div>
-            </Card>
+
+              <p className="mb-2 mt-4 text-xs font-medium uppercase tracking-wide text-slate-500">
+                What do you want to explore?
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {PLACE_GROUPS.map((g) => {
+                  const on = groups.has(g.slug);
+                  return (
+                    <button
+                      key={g.slug}
+                      type="button"
+                      onClick={() => toggleGroup(g.slug)}
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                        on
+                          ? "border-emerald-500 bg-emerald-500 text-white"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300"
+                      }`}
+                    >
+                      <span>{g.emoji}</span>
+                      {g.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* 5. Transport */}
             <Card title="5. Preferred Transport" optional icon="🚌">
@@ -243,7 +291,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             type="submit"
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800"
           >
-            {started ? "Update Plan" : "Continue & Generate Plan"}
+            {snapshot ? "Update Plan" : "Continue & Generate Plan"}
             <ArrowRight className="h-4 w-4" />
           </button>
 
@@ -299,17 +347,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       </div>
     </form>
 
-    {started && (
-      <LivePlan
-        initialBudget={budget}
-        initialPeople={travellersNum}
-        initialHours={Math.min(18, Math.max(6, daysNum * 8))}
-        initialVehicle={TRANSPORT_VEHICLE[transport] ?? "small_car"}
-        initialGroups={TRIP_GROUPS[tripType] ?? TRIP_GROUPS.Family}
-        initialIncludeFood={true}
-        initialStops={Math.min(10, Math.max(3, daysNum * 3))}
-      />
-    )}
+    {snapshot && <LivePlan key={planKey} {...snapshot} />}
     </>
   );
 }

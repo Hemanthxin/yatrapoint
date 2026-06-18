@@ -16,18 +16,25 @@ import {
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
+import { formatINR } from "@/lib/format";
+import { getDashboardStats } from "@/lib/queries/trip-plans";
+import { listPublishedPosts } from "@/lib/queries/community";
 
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/");
   const u = session.user;
   const displayName = u.name || u.email || u.phone || "Traveller";
-  const firstName = displayName.split(" ")[0] || displayName;
 
-  const stats = [
+  const [stats, posts] = await Promise.all([
+    getDashboardStats(u.id),
+    listPublishedPosts(2),
+  ]);
+
+  const statCards = [
     {
       label: "Trips Planned",
-      value: "06",
+      value: stats.tripsPlanned.toString().padStart(2, "0"),
       action: "View all trips",
       href: "/one-day-trips",
       icon: <Briefcase className="h-5 w-5" />,
@@ -35,7 +42,7 @@ export default async function DashboardPage() {
     },
     {
       label: "Places Explored",
-      value: "24",
+      value: stats.placesExplored.toString(),
       action: "View all places",
       href: "/destinations",
       icon: <Binoculars className="h-5 w-5" />,
@@ -43,7 +50,7 @@ export default async function DashboardPage() {
     },
     {
       label: "Total Saved",
-      value: "₹ 15,430",
+      value: formatINR(stats.totalSaved),
       action: "View savings",
       href: "/budget-planner",
       icon: <ShoppingBag className="h-5 w-5" />,
@@ -51,9 +58,9 @@ export default async function DashboardPage() {
     },
     {
       label: "Upcoming Trip",
-      value: "Coorg",
-      action: "on 25 May 2024",
-      href: "/one-day-trips",
+      value: stats.upcomingTrip?.name ?? "Plan one →",
+      action: stats.upcomingTrip ? `${stats.upcomingTrip.days} days planned` : "Start planning",
+      href: "/budget-planner",
       icon: <CalendarClock className="h-5 w-5" />,
       tone: "bg-amber-100 text-amber-700",
     },
@@ -70,7 +77,7 @@ export default async function DashboardPage() {
     {
       title: "Community",
       desc: "Share hidden gems, tips and travel stories with the community",
-      href: "/hidden-places",
+      href: "/community",
       tone: "bg-sky-50",
       icon: <Users className="h-5 w-5 text-sky-600" />,
     },
@@ -100,19 +107,6 @@ export default async function DashboardPage() {
   const tripsByPlaces = [
     { name: "Coorg Trip", nights: "2N / 3D", price: "₹4,999", img: "/66242.jpg" },
     { name: "Hampi Trip", nights: "2N / 3D", price: "₹4,799", img: "/66245.jpg" },
-  ];
-
-  const community = [
-    {
-      user: "Travel with Arjun",
-      time: "2h",
-      text: "Just explored a hidden waterfall in Coorg. Absolutely stunning! 💚",
-    },
-    {
-      user: "Wanderlust Souls",
-      time: "5h ago",
-      text: "Planning a group trip to Chikmagalur. Anyone interested?",
-    },
   ];
 
   return (
@@ -156,24 +150,23 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* Stat cards */}
+      {/* Stat cards — clickable, DB-driven */}
       <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((s) => (
-          <div
+        {statCards.map((s) => (
+          <Link
             key={s.label}
-            className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5"
+            href={s.href}
+            className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md"
           >
-            <div className={`grid h-12 w-12 place-items-center rounded-full ${s.tone}`}>
+            <div className={`grid h-12 w-12 shrink-0 place-items-center rounded-full ${s.tone}`}>
               {s.icon}
             </div>
             <div className="min-w-0">
               <p className="text-xs text-slate-500">{s.label}</p>
-              <p className="text-xl font-bold text-slate-900">{s.value}</p>
-              <Link href={s.href} className="text-xs font-medium text-emerald-600 hover:underline">
-                {s.action} →
-              </Link>
+              <p className="truncate text-xl font-bold text-slate-900">{s.value}</p>
+              <span className="text-xs font-medium text-emerald-600">{s.action} →</span>
             </div>
-          </div>
+          </Link>
         ))}
       </section>
 
@@ -208,7 +201,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {nearby.map((n, i) => (
+          {nearby.map((n) => (
             <Link
               key={n.name}
               href="/explore-bangalore"
@@ -265,29 +258,33 @@ export default async function DashboardPage() {
           </ul>
         </div>
 
-        {/* Community Updates */}
+        {/* Community Updates — real published posts */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-bold text-slate-900">Community Updates</h3>
-            <Link href="/hidden-places" className="text-xs font-medium text-emerald-600 hover:underline">
+            <Link href="/community" className="text-xs font-medium text-emerald-600 hover:underline">
               View all
             </Link>
           </div>
-          <ul className="space-y-4">
-            {community.map((c) => (
-              <li key={c.user} className="flex gap-3">
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
-                  {c.user.charAt(0)}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-900">
-                    {c.user} <span className="text-xs font-normal text-slate-400">{c.time}</span>
-                  </p>
-                  <p className="text-xs leading-relaxed text-slate-600">{c.text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {posts.length === 0 ? (
+            <Link href="/community" className="block rounded-xl bg-slate-50 p-4 text-center text-sm text-slate-500 hover:bg-slate-100">
+              No posts yet — be the first to share a hidden place →
+            </Link>
+          ) : (
+            <ul className="space-y-4">
+              {posts.map((p) => (
+                <li key={p.id} className="flex gap-3">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+                    {(p.authorName ?? "T").charAt(0)}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-900">{p.authorName ?? "Traveller"}</p>
+                    <p className="line-clamp-2 text-xs leading-relaxed text-slate-600">{p.title}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Budget Planner widget */}

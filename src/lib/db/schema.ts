@@ -201,6 +201,30 @@ export const cityPlaces = pgTable("city_places", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// --- Community / Hidden Places (Module 4) ---
+// User-submitted hidden gems: photo + live location + description, held for
+// admin verification before being published to the community feed.
+export const communityPosts = pgTable("community_posts", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  authorName: varchar("author_name", { length: 120 }),
+  title: varchar("title", { length: 160 }).notNull(),
+  description: text("description").notNull(),
+  // Stored as an image URL or a small data URL uploaded by the user.
+  photoUrl: text("photo_url"),
+  latitude: varchar("latitude", { length: 20 }),
+  longitude: varchar("longitude", { length: 20 }),
+  locationName: varchar("location_name", { length: 200 }),
+  // "pending" | "published" | "rejected"
+  status: varchar("status", { length: 20 }).default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type CommunityPost = typeof communityPosts.$inferSelect;
+export type NewCommunityPost = typeof communityPosts.$inferInsert;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type OtpCode = typeof otpCodes.$inferSelect;
