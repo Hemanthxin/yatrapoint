@@ -23,13 +23,40 @@ export function CommunityForm() {
   function onPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 1_500_000) {
-      setError("Photo is too large — please pick one under ~1.5 MB.");
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
       return;
     }
     setError(null);
+    // Resize + re-encode in the browser so the upload stays small (~100–300 KB)
+    // regardless of the original photo size.
     const reader = new FileReader();
-    reader.onload = () => setPhoto(typeof reader.result === "string" ? reader.result : "");
+    reader.onload = () => {
+      const src = typeof reader.result === "string" ? reader.result : "";
+      const img = new window.Image();
+      img.onload = () => {
+        const maxDim = 1280;
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          setPhoto(src);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        setPhoto(canvas.toDataURL("image/jpeg", 0.7));
+      };
+      img.onerror = () => setError("Could not read that image — try another.");
+      img.src = src;
+    };
+    reader.onerror = () => setError("Could not read that file.");
     reader.readAsDataURL(file);
   }
 
