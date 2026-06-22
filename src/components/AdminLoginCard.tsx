@@ -117,21 +117,16 @@ export function AdminLoginCard() {
           )}
         </div>
 
-        {/* Remember + forgot */}
-        <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-sm text-slate-600">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-            />
-            Remember me
-          </label>
-          <a href="#" className="text-sm font-semibold text-blue-700 hover:underline">
-            Forgot Password?
-          </a>
-        </div>
+        {/* Remember */}
+        <label className="flex items-center gap-2 text-sm text-slate-600">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+          />
+          Remember me
+        </label>
 
         {serverError && (
           <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
@@ -149,13 +144,7 @@ export function AdminLoginCard() {
         </button>
       </form>
 
-      <div className="mt-6 flex items-center gap-3 text-sm text-slate-400">
-        <div className="h-px flex-1 bg-slate-200" />
-        <span>or</span>
-        <div className="h-px flex-1 bg-slate-200" />
-      </div>
-
-      <p className="mt-6 text-center text-xs text-slate-400">
+      <p className="mt-8 text-center text-xs text-slate-400">
         © 2024 Travel App. All rights reserved.
       </p>
     </div>
