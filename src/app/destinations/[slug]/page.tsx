@@ -45,7 +45,7 @@ export default async function DestinationPage({ params }: PageProps) {
       category: destination.category,
       limit: 4,
     }),
-    listFavoriteIds(u.id),
+    listFavoriteIds(u.id ?? ""),
   ]);
   const relatedFiltered = related.filter((d) => d.id !== destination.id).slice(0, 3);
 

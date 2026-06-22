@@ -37,7 +37,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
     }),
     listStates(),
-    listFavoriteIds(u.id),
+    listFavoriteIds(u.id ?? ""),
   ]);
 
   return (
