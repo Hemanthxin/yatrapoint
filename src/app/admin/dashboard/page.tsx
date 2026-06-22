@@ -9,9 +9,11 @@ import { AddPlaceForm } from "./AddPlaceForm";
 
 export default async function AdminDashboardPage() {
   const session = await auth();
-  if (!isAdminSession(session?.user)) redirect("/admin-login");
+  if (!session || !isAdminSession(session.user)) {
+  redirect("/admin-login");
+}
 
-  const u = session.user;
+const u = session.user;
   const [stats, recent] = await Promise.all([
     getAdminPlaceStats(),
     listRecentAdminPlaces(6),
