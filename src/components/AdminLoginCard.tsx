@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Lock, User, LogIn, Luggage } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { z } from "zod";
 
 const schema = z.object({
-  email: z.string().trim().email("Enter a valid admin email"),
+  username: z.string().trim().min(1, "Enter your admin email"),
   password: z.string().min(1, "Enter the password"),
 });
 
@@ -18,6 +18,7 @@ type FormValues = z.infer<typeof schema>;
 export function AdminLoginCard() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [remember, setRemember] = useState(true);
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -28,10 +29,7 @@ export function AdminLoginCard() {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: "onTouched",
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { username: "", password: "" },
   });
 
   async function onSubmit(values: FormValues) {
@@ -39,16 +37,14 @@ export function AdminLoginCard() {
     setSubmitting(true);
     try {
       const res = await signIn("admin-credentials", {
-        email: values.email,
+        email: values.username,
         password: values.password,
         redirect: false,
       });
-
       if (!res || res.error) {
         setServerError("Invalid admin credentials.");
         return;
       }
-
       router.push("/admin/dashboard");
       router.refresh();
     } catch {
@@ -59,53 +55,52 @@ export function AdminLoginCard() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-3xl bg-white p-8 text-slate-900 shadow-2xl">
-      <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-sky-50 text-sky-700">
-        <ShieldCheck className="h-6 w-6" />
+    <div className="w-full max-w-md rounded-3xl bg-white p-8 text-slate-900 shadow-2xl md:p-10">
+      {/* Luggage icon */}
+      <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-blue-50 text-blue-700">
+        <Luggage className="h-10 w-10" strokeWidth={1.6} />
       </div>
 
-      <h2 className="text-center text-2xl font-bold text-slate-900">
-        Admin Login
-      </h2>
-      <p className="mt-1 text-center text-sm text-slate-500">
-        Access the place management dashboard
+      <h2 className="text-center text-3xl font-bold text-slate-900">Admin Login</h2>
+      <p className="mt-2 text-center text-sm text-slate-500">
+        Access your travel app dashboard
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
+        {/* Username */}
         <div>
-          <label
-            htmlFor="email"
-            className="mb-1.5 block text-sm font-medium text-slate-700"
-          >
-            Admin Email
+          <label htmlFor="username" className="mb-1.5 block text-sm font-semibold text-slate-800">
+            Username
           </label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            placeholder="Enter admin email"
-            className="h-12 w-full rounded-xl border border-slate-200 px-4 outline-none transition focus:border-sky-500"
-            {...register("email")}
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-rose-500">{errors.email.message}</p>
+          <div className="relative">
+            <User className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input
+              id="username"
+              type="text"
+              autoComplete="username"
+              placeholder="Enter username"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              {...register("username")}
+            />
+          </div>
+          {errors.username && (
+            <p className="mt-1 text-xs text-rose-500">{errors.username.message}</p>
           )}
         </div>
 
+        {/* Password */}
         <div>
-          <label
-            htmlFor="password"
-            className="mb-1.5 block text-sm font-medium text-slate-700"
-          >
+          <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-slate-800">
             Password
           </label>
           <div className="relative">
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               placeholder="Enter password"
-              className="h-12 w-full rounded-xl border border-slate-200 px-4 pr-12 outline-none transition focus:border-sky-500"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               {...register("password")}
             />
             <button
@@ -114,12 +109,28 @@ export function AdminLoginCard() {
               className="absolute inset-y-0 right-0 grid w-12 place-items-center text-slate-400 transition hover:text-slate-600"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
           {errors.password && (
             <p className="mt-1 text-xs text-rose-500">{errors.password.message}</p>
           )}
+        </div>
+
+        {/* Remember + forgot */}
+        <div className="flex items-center justify-between">
+          <label className="flex items-center gap-2 text-sm text-slate-600">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            Remember me
+          </label>
+          <a href="#" className="text-sm font-semibold text-blue-700 hover:underline">
+            Forgot Password?
+          </a>
         </div>
 
         {serverError && (
@@ -131,16 +142,12 @@ export function AdminLoginCard() {
         <button
           type="submit"
           disabled={isSubmitting || submitting}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-700 text-base font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-70"
         >
+          <LogIn className="h-5 w-5" />
           {isSubmitting || submitting ? "Signing in..." : "Login"}
-          {!isSubmitting && !submitting && <ArrowRight className="h-4 w-4" />}
         </button>
       </form>
-
-      <div className="mt-6 rounded-2xl bg-slate-50 px-4 py-3 text-xs text-slate-500">
-        Allowed admins: Hemanth@admin.com, Sunil@admin.com, loki@admin.com, subu@admin.com
-      </div>
 
       <div className="mt-6 flex items-center gap-3 text-sm text-slate-400">
         <div className="h-px flex-1 bg-slate-200" />
