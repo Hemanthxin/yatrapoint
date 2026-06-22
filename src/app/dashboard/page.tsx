@@ -28,7 +28,7 @@ export default async function DashboardPage() {
   const displayName = u.name || u.email || u.phone || "Traveller";
 
   const [stats, posts] = await Promise.all([
-    getDashboardStats(u.id),
+    getDashboardStats(u.id ?? ""),
     listPublishedPosts(2),
   ]);
 
