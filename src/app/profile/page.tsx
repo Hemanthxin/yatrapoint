@@ -20,7 +20,7 @@ export default async function ProfilePage() {
   const [row] = await db
     .select()
     .from(users)
-    .where(eq(users.id, session.user.id))
+    .where(eq(users.id, session.user.id!))
     .limit(1);
 
   if (!row) redirect("/");
