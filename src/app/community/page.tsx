@@ -15,7 +15,7 @@ export default async function CommunityPage() {
 
   const [published, mine] = await Promise.all([
     listPublishedPosts(),
-    listMyPosts(u.id),
+    listMyPosts(u.id ?? ""),
   ]);
   const pendingMine = mine.filter((p) => p.status === "pending");
 
