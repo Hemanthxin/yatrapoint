@@ -146,8 +146,13 @@ export function AddPlaceForm() {
 
     startTransition(async () => {
       const result = await addAdminPlace({
-        ...form,
-        imageUrl: photo,
+      ...form,
+      imageUrl: photo,
+
+      entryFees: Number(form.entryFees || 0),
+      budgetPerDay: Number(form.budgetPerDay || 0),
+      recommendedDays: Number(form.recommendedDays || 1),
+      popularity: Number(form.popularity || 50),
       });
 
       if (!result.ok) {
