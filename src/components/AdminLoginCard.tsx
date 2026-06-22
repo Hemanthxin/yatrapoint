@@ -55,9 +55,9 @@ export function AdminLoginCard() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-3xl bg-white p-8 text-slate-900 shadow-2xl md:p-10">
+    <div className="w-full max-w-md rounded-3xl border border-white/60 bg-white/95 p-8 text-slate-900 shadow-2xl backdrop-blur-md md:p-10">
       {/* Luggage icon */}
-      <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-blue-50 text-blue-700">
+      <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-amber-50 text-amber-700">
         <Luggage className="h-10 w-10" strokeWidth={1.6} />
       </div>
 
@@ -79,7 +79,7 @@ export function AdminLoginCard() {
               type="text"
               autoComplete="username"
               placeholder="Enter username"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25"
               {...register("username")}
             />
           </div>
@@ -100,7 +100,7 @@ export function AdminLoginCard() {
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               placeholder="Enter password"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25"
               {...register("password")}
             />
             <button
@@ -123,7 +123,7 @@ export function AdminLoginCard() {
             type="checkbox"
             checked={remember}
             onChange={(e) => setRemember(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
           />
           Remember me
         </label>
@@ -137,7 +137,7 @@ export function AdminLoginCard() {
         <button
           type="submit"
           disabled={isSubmitting || submitting}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-700 text-base font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-base font-semibold text-white shadow-lg shadow-amber-500/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
         >
           <LogIn className="h-5 w-5" />
           {isSubmitting || submitting ? "Signing in..." : "Login"}
