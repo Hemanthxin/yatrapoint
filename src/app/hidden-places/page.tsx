@@ -12,7 +12,7 @@ export default async function HiddenPlacesPage() {
 
   const [items, favIds] = await Promise.all([
     listDestinations({ isHidden: true, limit: 100 }),
-    listFavoriteIds(u.id),
+    listFavoriteIds(u.id ?? ""),
   ]);
 
   return (
