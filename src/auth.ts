@@ -22,21 +22,18 @@ import {
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string;
+      id?: string;
       phone?: string | null;
       role?: "USER" | "ADMIN";
     } & DefaultSession["user"];
   }
-}
 
-declare module "next-auth/jwt" {
-  interface JWT {
+  interface User {
     id?: string;
     phone?: string | null;
     role?: "USER" | "ADMIN";
   }
 }
-
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: DrizzleAdapter(db, {
@@ -208,10 +205,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (token.id) session.user.id = token.id as string;
-      if (token.phone) session.user.phone = token.phone as string;
-      session.user.role = token.role ?? "USER";
-      return session;
-    },
+  if (token.id) {
+    session.user.id = String(token.id);
+  }
+
+  if (token.phone) {
+    session.user.phone = String(token.phone);
+  }
+
+  session.user.role =
+    (token.role as "USER" | "ADMIN" | undefined) ?? "USER";
+
+  return session;
+}
   },
 });
