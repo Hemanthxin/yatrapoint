@@ -21,8 +21,8 @@ export default async function AdminLoginPage() {
         User login →
       </Link>
 
-      {/* Card kept slightly left */}
-      <div className="flex min-h-screen items-center justify-center px-6 md:justify-start md:pl-16 lg:pl-28">
+      {/* Card centered */}
+      <div className="flex min-h-screen items-center justify-center px-6">
         <AdminLoginCard />
       </div>
     </main>
