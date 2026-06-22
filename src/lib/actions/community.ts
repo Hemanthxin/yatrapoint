@@ -5,7 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { communityPosts } from "@/lib/db/schema";
-import { isAdmin } from "@/lib/admin";
+import { isAdminSession } from "@/lib/admin";
 
 export interface SubmitResult {
   ok: boolean;
@@ -56,7 +56,7 @@ export async function submitCommunityPost(input: {
 
 async function requireAdmin() {
   const session = await auth();
-  if (!isAdmin(session?.user?.email)) throw new Error("Not authorised");
+  if (!isAdminSession(session?.user)) throw new Error("Not authorised");
 }
 
 export async function approveCommunityPost(id: string) {

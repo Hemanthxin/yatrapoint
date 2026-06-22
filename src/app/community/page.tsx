@@ -4,7 +4,7 @@ import { Users, MapPin, ShieldCheck, Clock } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { isAdmin } from "@/lib/admin";
+import { isAdminSession } from "@/lib/admin";
 import { listPublishedPosts, listMyPosts } from "@/lib/queries/community";
 import { CommunityForm } from "./CommunityForm";
 
@@ -33,7 +33,7 @@ export default async function CommunityPage() {
             </p>
           </div>
         </div>
-        {isAdmin(u.email) && (
+        {isAdminSession(u) && (
           <Link
             href="/community/admin"
             className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"

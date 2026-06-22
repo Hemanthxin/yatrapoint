@@ -1,26 +1,26 @@
 import { redirect } from "next/navigation";
+
 import { auth } from "@/auth";
-import { isAdminSession } from "@/lib/admin";
 import { BackgroundScene } from "@/components/BackgroundScene";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
-import { PhoneLoginCard } from "@/components/PhoneLoginCard";
 import { TrustStrip } from "@/components/TrustStrip";
+import { AdminLoginCard } from "@/components/AdminLoginCard";
+import { isAdminSession } from "@/lib/admin";
 
-export default async function HomePage() {
+export default async function AdminLoginPage() {
   const session = await auth();
   if (isAdminSession(session?.user)) redirect("/admin/dashboard");
-  if (session?.user) redirect("/dashboard");
 
   return (
     <main className="relative min-h-screen overflow-hidden">
       <BackgroundScene />
-      <Nav />
+      <Nav actionLabel="User Login" actionHref="/" />
 
       <section className="relative z-10 mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 pb-12 pt-32 md:px-12 lg:flex-row lg:items-center lg:justify-between lg:pt-36">
         <Hero />
         <div id="login" className="w-full lg:w-auto">
-          <PhoneLoginCard googleClientId={process.env.AUTH_GOOGLE_ID} />
+          <AdminLoginCard />
         </div>
       </section>
 

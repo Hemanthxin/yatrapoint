@@ -19,12 +19,15 @@ const PROTECTED = [
   "/community",
   "/festivals",
   "/profile",
+  "/admin/dashboard",
 ];
 
 export default auth((req) => {
   const { nextUrl } = req;
   const isAuthed = !!req.auth;
-  const isProtected = PROTECTED.some((p) => nextUrl.pathname.startsWith(p));
+  const path = nextUrl.pathname;
+  const isProtected =
+    PROTECTED.some((p) => path === p || path.startsWith(`${p}/`));
 
   if (isProtected && !isAuthed) {
     const url = new URL("/", nextUrl);

@@ -3,7 +3,7 @@ import { MapPin, ShieldCheck, Check, X } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { isAdmin } from "@/lib/admin";
+import { isAdminSession } from "@/lib/admin";
 import { listPendingPosts } from "@/lib/queries/community";
 import { approveCommunityPost, rejectCommunityPost } from "@/lib/actions/community";
 
@@ -11,7 +11,7 @@ export default async function CommunityAdminPage() {
   const session = await auth();
   if (!session?.user) redirect("/");
   const u = session.user;
-  if (!isAdmin(u.email)) redirect("/community");
+  if (!isAdminSession(u)) redirect("/community");
 
   const pending = await listPendingPosts();
 

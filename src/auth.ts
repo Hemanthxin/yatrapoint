@@ -9,6 +9,11 @@ import { accounts, sessions, users, verificationTokens } from "@/lib/db/schema";
 import { verifyOtpSchema, toE164 } from "@/lib/validators";
 import { verifyOtp } from "@/lib/otp/service";
 import { verifyGoogleIdToken } from "@/lib/google-id-token";
+import {
+  adminDisplayName,
+  isAdminEmail,
+  validateAdminCredentials,
+} from "@/lib/admin";
 
 // Full NextAuth config — DB adapter + phone-OTP + Google Identity Services
 // (ID-token flow, no client secret required). Used by API routes and server
@@ -19,7 +24,16 @@ declare module "next-auth" {
     user: {
       id: string;
       phone?: string | null;
+      role?: "USER" | "ADMIN";
     } & DefaultSession["user"];
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    phone?: string | null;
+    role?: "USER" | "ADMIN";
   }
 }
 
@@ -77,6 +91,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: existing[0].name ?? claims.name ?? undefined,
             email: existing[0].email ?? email,
             image: existing[0].image ?? claims.picture ?? undefined,
+            role: "USER" as const,
           };
         }
 
@@ -95,6 +110,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: created.name ?? undefined,
           email: created.email ?? undefined,
           image: created.image ?? undefined,
+          role: "USER" as const,
+        };
+      },
+    }),
+
+    // ── Admin email/password credentials ──
+    Credentials({
+      id: "admin-credentials",
+      name: "Admin Login",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(raw) {
+        if (!raw) return null;
+        const email = typeof raw.email === "string" ? raw.email.trim().toLowerCase() : "";
+        const password = typeof raw.password === "string" ? raw.password : "";
+        if (!validateAdminCredentials(email, password)) return null;
+
+        return {
+          id: `admin:${email}`,
+          name: adminDisplayName(email),
+          email,
+          image: null,
+          role: "ADMIN" as const,
         };
       },
     }),
@@ -130,9 +170,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             .where(eq(users.id, existing[0].id));
           return {
             id: existing[0].id,
-            name: existing[0].name ?? undefined,
-            email: existing[0].email ?? undefined,
-            image: existing[0].image ?? undefined,
+            phone: existing[0].phone ?? e164,
+            role: isAdminEmail(existing[0].email) ? ("ADMIN" as const) : ("USER" as const),
           };
         }
 
@@ -141,27 +180,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           .values({ phone: e164, phoneVerified: now })
           .returning();
 
-        return { id: created.id };
+        return { id: created.id, phone: created.phone ?? e164, role: "USER" as const };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.role = (user as { role?: "USER" | "ADMIN" }).role ?? "USER";
+        if (typeof user.email === "string" && isAdminEmail(user.email)) {
+          token.role = "ADMIN";
+        }
+        if (typeof user.phone === "string") token.phone = user.phone;
+      }
       // Hydrate phone lazily so it survives across requests.
       if (token.id && !token.phone) {
         const [row] = await db
-          .select({ phone: users.phone })
+          .select({ phone: users.phone, email: users.email })
           .from(users)
           .where(eq(users.id, token.id as string))
           .limit(1);
         if (row?.phone) token.phone = row.phone;
+        if (!token.role) token.role = row?.email && isAdminEmail(row.email) ? "ADMIN" : "USER";
       }
+      if (!token.role) token.role = "USER";
       return token;
     },
     async session({ session, token }) {
       if (token.id) session.user.id = token.id as string;
       if (token.phone) session.user.phone = token.phone as string;
+      session.user.role = token.role ?? "USER";
       return session;
     },
   },
