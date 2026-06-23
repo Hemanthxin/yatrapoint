@@ -52,13 +52,14 @@ async function requireAdmin() {
   if (!isAdminSession(session?.user)) {
     throw new Error("Not authorised");
   }
+  return session!.user!;
 }
 
 export async function addAdminPlace(
   input: z.input<typeof placeSchema>
 ): Promise<AddPlaceResult> {
   try {
-    await requireAdmin();
+    const admin = await requireAdmin();
     const parsed = placeSchema.safeParse(input);
     if (!parsed.success) {
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Check the form values." };
@@ -106,6 +107,8 @@ export async function addAdminPlace(
         longitude: data.longitude || null,
         popularity: data.popularity ?? 50,
         isHidden: data.isHidden ?? false,
+        addedByEmail: admin.email ?? null,
+        addedByName: admin.name ?? admin.email ?? "Admin",
       })
       .returning();
 

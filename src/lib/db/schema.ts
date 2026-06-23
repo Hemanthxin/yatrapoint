@@ -101,6 +101,9 @@ export const destinations = pgTable("destinations", {
   popularity: integer("popularity").default(50).notNull(),
   latitude: varchar("latitude", { length: 20 }),
   longitude: varchar("longitude", { length: 20 }),
+  // Which admin created this place (for per-admin analytics).
+  addedByEmail: varchar("added_by_email", { length: 255 }),
+  addedByName: varchar("added_by_name", { length: 120 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -213,15 +216,18 @@ export const communityPosts = pgTable("community_posts", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   authorName: varchar("author_name", { length: 120 }),
+  authorImage: text("author_image"),
   title: varchar("title", { length: 160 }).notNull(),
   description: text("description").notNull(),
+  // 1–5 star rating the author gave the place.
+  rating: integer("rating"),
   // Stored as an image URL or a small data URL uploaded by the user.
   photoUrl: text("photo_url"),
   latitude: varchar("latitude", { length: 20 }),
   longitude: varchar("longitude", { length: 20 }),
   locationName: varchar("location_name", { length: 200 }),
-  // "pending" | "published" | "rejected"
-  status: varchar("status", { length: 20 }).default("pending").notNull(),
+  // Posts go live instantly now ("published"); kept for compatibility.
+  status: varchar("status", { length: 20 }).default("published").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

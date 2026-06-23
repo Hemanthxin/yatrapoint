@@ -1,23 +1,21 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { communityPosts } from "@/lib/db/schema";
-import { isAdminSession } from "@/lib/admin";
 
 export interface SubmitResult {
   ok: boolean;
   error?: string;
 }
 
-// A user submits a hidden place. It is held as "pending" until an admin
-// verifies it (Module 4: Upload Photo → Live Location → Description → Admin
-// Verification → Publish).
+// Post about a place directly — like Instagram/Facebook, no admin approval.
+// Photo + review + rating go live immediately.
 export async function submitCommunityPost(input: {
   title: string;
   description: string;
+  rating?: number;
   photoUrl?: string;
   latitude?: string;
   longitude?: string;
@@ -28,52 +26,35 @@ export async function submitCommunityPost(input: {
 
   const title = input.title?.trim();
   const description = input.description?.trim();
-  if (!title || title.length < 3) return { ok: false, error: "Add a short title." };
-  if (!description || description.length < 10)
-    return { ok: false, error: "Add a description (at least 10 characters)." };
-  // Guard against oversized data-URL photos (≈1.5 MB of base64).
-  if (input.photoUrl && input.photoUrl.length > 2_000_000)
-    return { ok: false, error: "Photo is too large — keep it under ~1.5 MB." };
+  if (!title || title.length < 2) return { ok: false, error: "Add the place name." };
+  if (!description || description.length < 3)
+    return { ok: false, error: "Write a short review." };
+  if (input.photoUrl && input.photoUrl.length > 2_500_000)
+    return { ok: false, error: "Photo is too large — try a smaller one." };
+
+  const rating =
+    typeof input.rating === "number" && input.rating >= 1 && input.rating <= 5
+      ? Math.round(input.rating)
+      : null;
 
   try {
     await db.insert(communityPosts).values({
       userId: session.user.id,
       authorName: session.user.name || session.user.email || "Traveller",
+      authorImage: session.user.image || null,
       title,
       description,
+      rating,
       photoUrl: input.photoUrl || null,
       latitude: input.latitude || null,
       longitude: input.longitude || null,
       locationName: input.locationName || null,
-      status: "pending",
+      status: "published",
     });
     revalidatePath("/community");
+    revalidatePath("/dashboard");
     return { ok: true };
   } catch {
-    return { ok: false, error: "Could not save — is the database set up? Run db:push." };
+    return { ok: false, error: "Could not post — is the database set up? Run db:push." };
   }
-}
-
-async function requireAdmin() {
-  const session = await auth();
-  if (!isAdminSession(session?.user)) throw new Error("Not authorised");
-}
-
-export async function approveCommunityPost(id: string) {
-  await requireAdmin();
-  await db
-    .update(communityPosts)
-    .set({ status: "published" })
-    .where(and(eq(communityPosts.id, id), eq(communityPosts.status, "pending")));
-  revalidatePath("/community/admin");
-  revalidatePath("/community");
-}
-
-export async function rejectCommunityPost(id: string) {
-  await requireAdmin();
-  await db
-    .update(communityPosts)
-    .set({ status: "rejected" })
-    .where(eq(communityPosts.id, id));
-  revalidatePath("/community/admin");
 }

@@ -78,6 +78,31 @@ export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
   }
 }
 
+export interface AdminContribution {
+  email: string;
+  name: string;
+  total: number;
+}
+
+// How many places each admin has added, by the email recorded on each place.
+export async function listPlacesByAdmin(): Promise<AdminContribution[]> {
+  try {
+    const rows = await db
+      .select({
+        email: sql<string>`coalesce(${destinations.addedByEmail}, 'unknown')`,
+        name: sql<string>`coalesce(max(${destinations.addedByName}), 'Unknown')`,
+        total: sql<number>`count(*)::int`,
+      })
+      .from(destinations)
+      .groupBy(sql`coalesce(${destinations.addedByEmail}, 'unknown')`);
+    return rows
+      .filter((r) => r.email !== "unknown")
+      .sort((a, b) => b.total - a.total);
+  } catch {
+    return [];
+  }
+}
+
 export async function listRecentAdminPlaces(limit = 8): Promise<Destination[]> {
   try {
     return await db
