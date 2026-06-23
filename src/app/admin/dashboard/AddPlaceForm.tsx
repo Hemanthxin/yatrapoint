@@ -1,10 +1,23 @@
 "use client";
 
 import { useMemo, useRef, useState, useTransition, type ChangeEvent, type FormEvent } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, X, Upload, MapPin, Clock3, IndianRupee, Star } from "lucide-react";
+import { Loader2, Plus, X, Upload } from "lucide-react";
 
 import { addAdminPlace } from "@/lib/actions/admin";
+
+const LocationPicker = dynamic(
+  () => import("@/components/app/LocationPicker").then((m) => m.LocationPicker),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid h-72 place-items-center rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
+        Loading map…
+      </div>
+    ),
+  }
+);
 
 type FormState = {
   name: string;
@@ -143,6 +156,10 @@ export function AddPlaceForm() {
       setError("Fill all required place details.");
       return;
     }
+    if (!form.latitude || !form.longitude) {
+      setError("Set the exact location on the map (search or drop the pin).");
+      return;
+    }
 
     startTransition(async () => {
       const result = await addAdminPlace({
@@ -272,22 +289,6 @@ export function AddPlaceForm() {
             placeholder="June, July, August"
           />
         </Field>
-        <Field label="Latitude">
-          <input
-            value={form.latitude}
-            onChange={(e) => update("latitude", e.target.value)}
-            className="input"
-            placeholder="12.9716"
-          />
-        </Field>
-        <Field label="Longitude">
-          <input
-            value={form.longitude}
-            onChange={(e) => update("longitude", e.target.value)}
-            className="input"
-            placeholder="77.5946"
-          />
-        </Field>
         <Field label="Popularity (0-100)">
           <input
             value={form.popularity}
@@ -317,6 +318,26 @@ export function AddPlaceForm() {
             />
           </Field>
         </div>
+      </div>
+
+      {/* Exact location — search or drop the pin to capture precise coordinates */}
+      <div className="mt-4">
+        <p className="mb-1.5 text-sm font-medium text-slate-700">
+          Exact location <span className="text-rose-500">*</span>
+        </p>
+        <p className="mb-2 text-xs text-slate-500">
+          Search the place or click/drag the pin to the exact spot — latitude &amp; longitude are
+          captured automatically. Use &ldquo;Verify on Google Maps&rdquo; to confirm.
+        </p>
+        <LocationPicker
+          lat={form.latitude ? Number(form.latitude) : null}
+          lng={form.longitude ? Number(form.longitude) : null}
+          defaultQuery={[form.name, form.district, form.state].filter(Boolean).join(", ")}
+          onChange={(lat, lng) => {
+            update("latitude", String(lat));
+            update("longitude", String(lng));
+          }}
+        />
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
