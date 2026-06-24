@@ -125,8 +125,33 @@ export function AdminShell({ adminName, adminEmail, children }: AdminShellProps)
           </span>
         </header>
 
-        <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">{children}</main>
+        <main className="mx-auto max-w-7xl px-4 py-6 pb-24 md:px-6 md:py-8 lg:pb-8">{children}</main>
       </div>
+
+      {/* Mobile bottom tab bar */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-800 bg-slate-900 pb-[env(safe-area-inset-bottom)] lg:hidden">
+        <div className="mx-auto flex h-16 max-w-md items-center justify-around px-2 text-slate-300">
+          <Link
+            href="/admin/dashboard"
+            className={`flex flex-1 flex-col items-center gap-0.5 ${
+              path === "/admin/dashboard" ? "text-indigo-400" : "hover:text-white"
+            }`}
+          >
+            <LayoutDashboard className="h-5 w-5" />
+            <span className="text-[11px] font-medium">Overview</span>
+          </Link>
+          <a href="/admin/dashboard#add-place" className="relative -mt-7 flex flex-col items-center">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 ring-4 ring-slate-900">
+              <PlusCircle className="h-6 w-6" />
+            </span>
+            <span className="mt-1 text-[11px] font-semibold text-indigo-400">Add</span>
+          </a>
+          <button onClick={() => setOpen(true)} className="flex flex-1 flex-col items-center gap-0.5 hover:text-white">
+            <Menu className="h-5 w-5" />
+            <span className="text-[11px] font-medium">Menu</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

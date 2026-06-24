@@ -69,13 +69,13 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur-md md:px-6">
       <button
         onClick={onMenu}
-        className="grid h-9 w-9 place-items-center rounded-lg text-slate-600 hover:bg-slate-100"
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 lg:hidden"
         aria-label="Toggle menu"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      <form onSubmit={onSearch} className="relative flex-1 max-w-xl">
+      <form onSubmit={onSearch} className="relative flex-1 lg:max-w-xl">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <input
           type="search"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+import { MobileNav } from "./MobileNav";
 
 interface AppShellProps {
   userLabel: string;
@@ -32,10 +33,13 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
           location={location}
           onMenu={() => setOpen((v) => !v)}
         />
-        <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-6 md:px-6 md:py-8">
+        <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-6 pb-28 md:px-6 md:py-8 lg:pb-8">
           {children}
         </main>
       </div>
+
+      {/* Mobile bottom tab bar */}
+      <MobileNav onMenu={() => setOpen(true)} />
     </div>
   );
 }
