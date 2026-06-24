@@ -12,6 +12,7 @@ import {
   Wallet,
   LocateFixed,
   RefreshCw,
+  ExternalLink,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -234,6 +235,27 @@ export function LivePlan({
               {plan.overpassError && <span className="ml-1 text-amber-700">(Overpass error, used curated picks only)</span>}
             </p>
           </section>
+
+          {/* Primary CTA — navigate the whole trip in Google Maps */}
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-emerald-600 p-5 text-white shadow-lg shadow-blue-600/25 transition hover:brightness-110"
+          >
+            <span className="flex items-center gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/20">
+                <Navigation className="h-6 w-6" />
+              </span>
+              <span>
+                <span className="block text-base font-bold">Open this trip in Google Maps</span>
+                <span className="block text-xs text-white/85">
+                  Turn-by-turn navigation through all {plan.stops.length} stops and back
+                </span>
+              </span>
+            </span>
+            <ExternalLink className="h-5 w-5 shrink-0" />
+          </a>
 
           {stopMarkers.length > 0 && (
             <section>
