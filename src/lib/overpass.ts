@@ -92,6 +92,10 @@ export interface OverpassPlace {
     religion?: string;
     operator?: string;
     brand?: string;
+    // Real entry-fee signals from OSM. `fee` is "yes"/"no"; `charge` is the
+    // actual amount when mapped, e.g. "20 INR" / "₹50".
+    fee?: string;
+    charge?: string;
   };
 }
 
@@ -240,6 +244,8 @@ export async function fetchOverpassPlaces(
         religion: t.religion,
         operator: t.operator,
         brand: t.brand,
+        fee: t.fee,
+        charge: t.charge,
       },
     });
   }

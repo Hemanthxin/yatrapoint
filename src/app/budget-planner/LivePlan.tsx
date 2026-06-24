@@ -37,6 +37,7 @@ interface PlanStop {
   lat: number;
   lng: number;
   entryFee: number;
+  entryFeeKnown?: boolean;
   idealMinutes: number;
   stopCost: number;
   travelCost: number;
@@ -54,6 +55,9 @@ interface PlanResponse {
     durationMinutes: number;
     cost: number;
     perPersonCost: number;
+    fuelTotal: number;
+    entryFeesTotal: number;
+    foodTotal: number;
     unspentBudget: number;
     unspentMinutes: number;
   };
@@ -229,6 +233,12 @@ export function LivePlan({
               <Stat icon={<Clock className="h-4 w-4" />} label="Driving time" value={formatMinutes(plan.totals.durationMinutes)} sub="excluding visits" />
               <Stat icon={<Wallet className="h-4 w-4" />} label="Total cost" value={formatINR(plan.totals.cost)} sub={`${formatINR(plan.totals.perPersonCost)} per person`} />
             </div>
+            {/* Cost breakdown — fuel + entry fees + food */}
+            <div className="mt-4 flex flex-wrap gap-2 border-t border-emerald-200 pt-3">
+              <CostChip label="Fuel" value={formatINR(plan.totals.fuelTotal)} />
+              <CostChip label="Entry fees" value={formatINR(plan.totals.entryFeesTotal)} />
+              <CostChip label="Food" value={formatINR(plan.totals.foodTotal)} />
+            </div>
             <p className="mt-3 text-xs text-emerald-900/70">
               Unspent: {formatINR(plan.totals.unspentBudget)} budget · {formatMinutes(plan.totals.unspentMinutes)} time ·
               Live OSM · {plan.overpassPlaces} OSM places, {plan.seedPlaces} curated.
@@ -327,7 +337,17 @@ export function LivePlan({
                     </div>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                    {s.entryFee > 0 && <Chip>Entry {formatINR(s.entryFee)} / person</Chip>}
+                    {s.entryFeeKnown ? (
+                      s.entryFee > 0 ? (
+                        <Chip>Entry {formatINR(s.entryFee)} / person</Chip>
+                      ) : (
+                        <Chip>Free entry</Chip>
+                      )
+                    ) : (
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-400">
+                        Entry fee not listed
+                      </span>
+                    )}
                     {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
                     {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
                     {s.meta?.citySeedSlug && (
@@ -372,4 +392,13 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
 
 function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">{children}</span>;
+}
+
+function CostChip({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-emerald-900 ring-1 ring-emerald-200">
+      <span className="text-emerald-700/70">{label}</span>
+      <span className="font-bold">{value}</span>
+    </span>
+  );
 }

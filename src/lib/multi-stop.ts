@@ -46,6 +46,9 @@ export interface Candidate {
   lat: number;
   lng: number;
   entryFee: number;
+  // True only when the fee is REAL (OSM fee/charge tag or admin-curated). When
+  // false we don't know the fee — we never invent one.
+  entryFeeKnown?: boolean;
   idealMinutes: number;
   foodCostPerPerson?: number;
   // 0..100, used to break ties when distance is similar.
@@ -58,15 +61,34 @@ export interface Candidate {
   };
 }
 
+// Resolve a REAL entry fee from OSM tags. Returns the amount when mapped,
+// 0 when explicitly free, or { known: false } when OSM doesn't say.
+export function resolveOsmFee(tags?: OverpassPlace["tags"]): {
+  known: boolean;
+  amount: number;
+} {
+  if (!tags) return { known: false, amount: 0 };
+  // `charge` carries the actual price, e.g. "20", "₹50", "30 INR".
+  if (tags.charge) {
+    const m = tags.charge.replace(/,/g, "").match(/\d+(\.\d+)?/);
+    if (m) return { known: true, amount: Math.round(Number(m[0])) };
+  }
+  if (tags.fee === "no") return { known: true, amount: 0 };
+  // fee=yes with no charge → it costs something, but the amount is unknown.
+  return { known: false, amount: 0 };
+}
+
 export function candidateFromOverpass(p: OverpassPlace): Candidate {
   const def = CATEGORY_DEFAULTS[p.category];
+  const fee = resolveOsmFee(p.tags);
   return {
     id: `osm:${p.osmId}`,
     name: p.name,
     category: p.category,
+    entryFee: fee.amount,
+    entryFeeKnown: fee.known,
     lat: p.lat,
     lng: p.lng,
-    entryFee: def.entryFee,
     idealMinutes: def.idealMinutes,
     foodCostPerPerson: def.foodCostPerPerson,
     meta: { osmId: p.osmId, tags: p.tags },

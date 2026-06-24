@@ -131,13 +131,18 @@ export async function POST(req: NextRequest) {
     })
     .map((s) => {
       const op = SEED_KIND_TO_OVERPASS[s.kind] ?? "tourist_attraction";
+      // Bulk OSM-seeded rows (slug ends in -node-/-way-/-relation-) carry
+      // generic category fees — not real. Only genuinely curated seed rows
+      // have trustworthy per-place fees.
+      const isOsmSeed = /-(node|way|relation)-\d+$/i.test(s.slug);
       return {
         id: `seed:${s.id}`,
         name: s.name,
         category: op,
         lat: Number(s.latitude),
         lng: Number(s.longitude),
-        entryFee: s.entryFeePerPerson,
+        entryFee: isOsmSeed ? 0 : s.entryFeePerPerson,
+        entryFeeKnown: !isOsmSeed,
         idealMinutes: s.idealMinutesAtPlace,
         foodCostPerPerson:
           s.avgCostForTwo != null ? Math.round(s.avgCostForTwo / 2) : undefined,
@@ -261,12 +266,15 @@ export async function POST(req: NextRequest) {
     roadFuelTotal = Math.round(route.distanceKm * vehicleProfile.costPerKm);
   }
 
-  // Recompute totals from real road distances when OSRM data is available so
-  // the headline cost matches the per-stop legs and Google Maps.
+  // Break the cost into fuel + entry fees + food so each can be shown clearly.
+  const people = parsed.data.people;
+  const entryFeesTotal = orderedStops.reduce((sum, s) => sum + s.entryFee * people, 0);
   const stopCostTotal = orderedStops.reduce((sum, s) => sum + s.stopCost, 0);
-  const realTotalCost =
-    roadFuelTotal != null ? roadFuelTotal + stopCostTotal : plan.totalCost;
-  const realPerPerson = Math.round(realTotalCost / Math.max(1, parsed.data.people));
+  // Whatever in the per-stop cost isn't entry fees is food (restaurant/café).
+  const foodTotal = Math.max(0, stopCostTotal - entryFeesTotal);
+  const fuelTotal = roadFuelTotal ?? orderedStops.reduce((sum, s) => sum + s.travelCost, 0);
+  const realTotalCost = fuelTotal + stopCostTotal;
+  const realPerPerson = Math.round(realTotalCost / Math.max(1, people));
 
   return NextResponse.json({
     ok: true,
@@ -280,6 +288,9 @@ export async function POST(req: NextRequest) {
       durationMinutes: route?.durationMinutes ?? plan.totalMinutes,
       cost: realTotalCost,
       perPersonCost: realPerPerson,
+      fuelTotal,
+      entryFeesTotal,
+      foodTotal,
       unspentBudget: Math.max(0, parsed.data.totalBudget - realTotalCost),
       unspentMinutes: plan.unspentMinutes,
     },
