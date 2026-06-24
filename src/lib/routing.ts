@@ -17,21 +17,30 @@ const OSRM_BASES: string[] = (() => {
 
 const OSRM_UA = "YatraPoint/1.0 (https://yatrapoint.local; contact: dev@yatrapoint.local)";
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Try every OSRM mirror; if all fail (rate-limit / timeout), back off and retry
+// the whole list. Public OSRM demos are flaky, so this materially improves the
+// odds of getting real road distances instead of falling back to straight lines.
 async function tryEachBase(
   pathAfterBase: string,
   signal?: AbortSignal
 ): Promise<Response | null> {
-  for (const base of OSRM_BASES) {
-    try {
-      const res = await fetch(`${base}${pathAfterBase}`, {
-        signal,
-        headers: { "User-Agent": OSRM_UA, Accept: "application/json" },
-      });
-      if (res.ok) return res;
-      // 4xx/5xx — try next mirror.
-    } catch {
-      // Network error — try next mirror.
+  const MAX_PASSES = 3;
+  for (let pass = 0; pass < MAX_PASSES; pass++) {
+    for (const base of OSRM_BASES) {
+      try {
+        const res = await fetch(`${base}${pathAfterBase}`, {
+          signal,
+          headers: { "User-Agent": OSRM_UA, Accept: "application/json" },
+        });
+        if (res.ok) return res;
+        // 4xx/5xx — try next mirror.
+      } catch {
+        // Network error — try next mirror.
+      }
     }
+    if (pass < MAX_PASSES - 1) await sleep(500 * (pass + 1));
   }
   return null;
 }

@@ -103,7 +103,8 @@ export const DEFAULT_RADIUS_M = 1500;
 function buildQuery(
   centre: LatLng,
   radius: number,
-  categories: OverpassCategory[]
+  categories: OverpassCategory[],
+  cap = 60
 ): string {
   const around = `around:${radius},${centre.lat},${centre.lng}`;
 
@@ -118,7 +119,7 @@ function buildQuery(
     }
   }
 
-  return `[out:json][timeout:25];(${clauses.join("")});out tags center 60;`;
+  return `[out:json][timeout:25];(${clauses.join("")});out tags center ${cap};`;
 }
 
 interface OverpassResponse {
@@ -144,6 +145,9 @@ export interface FetchOptions {
   signal?: AbortSignal;
   // Cap results returned to the client (in addition to Overpass's own cap).
   limit?: number;
+  // Max elements Overpass itself returns. Higher = more candidate diversity for
+  // trip planning. Default 60 keeps nearby/explore queries snappy.
+  cap?: number;
 }
 
 export async function fetchOverpassPlaces(
@@ -152,7 +156,7 @@ export async function fetchOverpassPlaces(
   const { centre, categories, signal } = opts;
   const radius = opts.radius ?? DEFAULT_RADIUS_M;
   const limit = opts.limit ?? 80;
-  const query = buildQuery(centre, radius, categories);
+  const query = buildQuery(centre, radius, categories, opts.cap ?? 60);
 
   const now = Date.now();
   const hit = cache.get(query);

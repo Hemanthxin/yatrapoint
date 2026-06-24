@@ -4,11 +4,7 @@ import { eq, inArray } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { cityPlaces } from "@/lib/db/schema";
-import {
-  fetchOverpassPlaces,
-  type OverpassCategory,
-  type OverpassPlace,
-} from "@/lib/overpass";
+import { fetchOverpassPlaces, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
 import {
   CATEGORY_DEFAULTS,
@@ -112,21 +108,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 1) Fetch live candidates from Overpass.
-  let overpassPlaces: OverpassPlace[] = [];
-  let overpassError: string | null = null;
-  try {
-    overpassPlaces = await fetchOverpassPlaces({
-      centre: parsed.data.start,
-      categories: wantedCats,
-      radius: parsed.data.searchRadiusKm * 1000,
-      limit: 120,
-    });
-  } catch (err) {
-    overpassError = err instanceof Error ? err.message : "Overpass failed";
-  }
+  // De-dup key — round to ~110 m so the same place from seed + Overpass merges.
+  const coordKey = (lat: number, lng: number) => `${lat.toFixed(3)},${lng.toFixed(3)}`;
 
-  // 2) Pull curated seed places that match the wanted categories.
+  // 1) Curated seed places that match the wanted categories.
   const seedMatches = await db
     .select()
     .from(cityPlaces)
@@ -161,17 +146,50 @@ export async function POST(req: NextRequest) {
       };
     });
 
-  const overpassCandidates: Candidate[] = overpassPlaces.map(candidateFromOverpass);
-
-  // De-dup: prefer the seeded copy if a seed and Overpass entry are <80 m apart.
+  // 2) Live Overpass candidates, merged + de-duped. Auto-widen the radius when
+  // the area is sparse so we can reliably reach the requested number of places.
   const finalCandidates: Candidate[] = [...seedCandidates];
-  for (const op of overpassCandidates) {
-    const dup = seedCandidates.find((s) => {
-      const dx = Math.abs(s.lat - op.lat);
-      const dy = Math.abs(s.lng - op.lng);
-      return dx < 0.001 && dy < 0.001; // ~110 m
+  const usedKeys = new Set(seedCandidates.map((s) => coordKey(s.lat, s.lng)));
+  let overpassCount = 0;
+  let overpassError: string | null = null;
+
+  const addOverpass = async (radiusKm: number) => {
+    const places = await fetchOverpassPlaces({
+      centre: parsed.data.start,
+      categories: wantedCats,
+      radius: radiusKm * 1000,
+      limit: 250,
+      cap: 250,
     });
-    if (!dup) finalCandidates.push(op);
+    overpassCount += places.length;
+    for (const op of places) {
+      const c = candidateFromOverpass(op);
+      const k = coordKey(c.lat, c.lng);
+      if (!usedKeys.has(k)) {
+        usedKeys.add(k);
+        finalCandidates.push(c);
+      }
+    }
+  };
+
+  let radiusKm = parsed.data.searchRadiusKm;
+  try {
+    await addOverpass(radiusKm);
+  } catch (err) {
+    overpassError = err instanceof Error ? err.message : "Overpass failed";
+  }
+
+  // Widen up to twice (capped at 60 km) until we have a healthy candidate pool.
+  const targetPool = Math.max(12, parsed.data.maxStops * 3);
+  let widen = 0;
+  while (finalCandidates.length < targetPool && radiusKm < 60 && widen < 2 && !overpassError) {
+    radiusKm = Math.min(60, radiusKm * 2);
+    widen += 1;
+    try {
+      await addOverpass(radiusKm);
+    } catch {
+      break;
+    }
   }
 
   if (finalCandidates.length === 0) {
@@ -253,7 +271,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     candidatesConsidered: finalCandidates.length,
-    overpassPlaces: overpassPlaces.length,
+    overpassPlaces: overpassCount,
     seedPlaces: seedCandidates.length,
     overpassError,
     stops: orderedStops,
