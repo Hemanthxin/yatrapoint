@@ -194,7 +194,7 @@ export function AddPlaceForm() {
             Enter the full place details and it will be published to the database immediately.
           </p>
         </div>
-        <div className="rounded-full bg-sky-50 p-2 text-sky-700">
+        <div className="rounded-full bg-indigo-50 p-2 text-indigo-700">
           <Plus className="h-5 w-5" />
         </div>
       </div>
@@ -408,7 +408,7 @@ export function AddPlaceForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-600 to-blue-700 font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
         {isPending ? "Adding place..." : "Add place"}
@@ -427,7 +427,8 @@ export function AddPlaceForm() {
           transition: border-color 0.15s ease;
         }
         .input:focus {
-          border-color: rgb(14 165 233);
+          border-color: rgb(99 102 241);
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
         }
       `}</style>
     </form>
