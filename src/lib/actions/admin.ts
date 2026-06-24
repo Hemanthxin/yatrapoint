@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
@@ -67,6 +67,22 @@ export async function addAdminPlace(
 
     const data = parsed.data;
     const name = data.name.trim();
+
+    // Reject duplicates — same place name in the same state (case-insensitive).
+    const duplicate = await db
+      .select({ id: destinations.id })
+      .from(destinations)
+      .where(
+        and(
+          eq(sql`lower(${destinations.name})`, name.toLowerCase()),
+          eq(sql`lower(${destinations.state})`, data.state.trim().toLowerCase())
+        )
+      )
+      .limit(1);
+    if (duplicate.length > 0) {
+      return { ok: false, error: `"${name}" already exists in ${data.state.trim()}.` };
+    }
+
     const baseSlug = slugify(name);
     let slug = baseSlug;
     let tries = 0;
