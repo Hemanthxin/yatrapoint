@@ -23,6 +23,7 @@ import { LivePlan, type LivePlanProps } from "./LivePlan";
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
 const TRAVELLER_OPTIONS = ["1", "2", "3", "4", "5+"];
+const PLACES_OPTIONS = ["3", "4", "5", "6", "8", "10"];
 
 const TRIP_TYPES = [
   { key: "Solo", icon: User },
@@ -61,6 +62,7 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [tripType, setTripType] = useState("Family");
   const [transport, setTransport] = useState("Any");
   const [food, setFood] = useState("Any");
+  const [places, setPlaces] = useState("5");
   // Categories to explore — preset from the trip type, fully editable.
   const [groups, setGroups] = useState<Set<string>>(new Set(TRIP_GROUPS.Family));
 
@@ -96,7 +98,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       vehicle: TRANSPORT_VEHICLE[transport] ?? "small_car",
       groups: [...groups],
       includeFood: true,
-      maxStops: Math.min(10, Math.max(3, daysNum * 3)),
+      maxStops: Math.min(10, Math.max(2, parseInt(places, 10) || 5)),
     });
     setPlanKey((k) => k + 1);
     requestAnimationFrame(() => {
@@ -208,6 +210,18 @@ export function WizardForm({ initial }: WizardFormProps) {
                   </Chip>
                 ))}
               </div>
+            </Card>
+
+            {/* Places to visit */}
+            <Card title="Places to Visit" icon="📍">
+              <div className="flex flex-wrap gap-2">
+                {PLACES_OPTIONS.map((p) => (
+                  <Chip key={p} active={places === p} onClick={() => setPlaces(p)} square>
+                    {p}
+                  </Chip>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-slate-500">How many stops to include in the trip.</p>
             </Card>
 
             {/* 4. Trip Type + categories to explore */}
