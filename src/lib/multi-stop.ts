@@ -139,6 +139,9 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   let totalDist = 0;
   let totalMins = 0;
   const taken = new Set<string>();
+  // Which categories we've already included — used to spread the trip across
+  // ALL the place types the traveller selected instead of clustering on one.
+  const usedCats = new Set<string>();
   let foodTaken = false;
 
   // Always leave a 15% buffer of time for traffic + breaks.
@@ -146,15 +149,19 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   remainingMinutes = minutesBudget;
 
   const maxStops = input.maxStops ?? 6;
+  // How strongly to prefer a not-yet-covered category (in "km-equivalent").
+  const COVERAGE_BONUS_KM = 10;
 
   while (stops.length < maxStops) {
-    // Score remaining candidates by (distance + popularity bonus).
     const scored = input.candidates
       .filter((c) => !taken.has(c.id))
       .map((c) => {
         const dist = haversineKm(position, { lat: c.lat, lng: c.lng });
-        // Slight popularity boost: a 90-popular place beats a 50-popular by ~1 km.
-        const score = dist - ((c.popularity ?? 50) - 50) / 50;
+        // Popularity boost: a 90-popular place beats a 50 by ~1.6 km.
+        const popBonus = ((c.popularity ?? 50) - 50) / 25;
+        // Big boost for a category we haven't visited yet → covers all types.
+        const coverageBonus = usedCats.has(c.category) ? 0 : COVERAGE_BONUS_KM;
+        const score = dist - popBonus - coverageBonus;
         return { c, dist, score };
       })
       .sort((a, b) => a.score - b.score);
@@ -212,6 +219,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     totalMins += travelMins + picked.c.idealMinutes;
     position = { lat: picked.c.lat, lng: picked.c.lng };
     taken.add(picked.c.id);
+    usedCats.add(picked.c.category);
   }
 
   const totalCost = stops.reduce((s, st) => s + st.stopCost + st.travelCost, 0);

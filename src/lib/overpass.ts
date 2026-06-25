@@ -154,6 +154,28 @@ export interface FetchOptions {
   cap?: number;
 }
 
+// Junk names we never want as trip stops (schools, civic infra, transit, etc.).
+const NAME_BLOCKLIST =
+  /\b(school|college|university|institute|coaching|tuition|hospital|clinic|nursing\s*home|pharmacy|medical|police|fire\s*station|petrol|fuel|bunk|atm|bank|hostel|\bpg\b|paying\s*guest|apartment|layout|society|bus\s*(stop|stand|station)|metro\s*station|railway|godown|warehouse|office|ward|substation|water\s*tank|sewage|toilet|parking|showroom|service\s*cent|workshop|factory|company|pvt\s*ltd)\b/i;
+
+// True only if a place is something a traveller would actually visit — not
+// closed, disused, or civic/transit infrastructure.
+function isVisitable(t: Record<string, string>): boolean {
+  if (!t.name) return false;
+  // Permanently closed / disused / abandoned (any lifecycle-prefixed tag).
+  for (const k of Object.keys(t)) {
+    if (/^(disused|abandoned|was|razed|demolished|removed|construction|proposed):/i.test(k)) return false;
+  }
+  if (t.opening_hours && /^(closed|off)$/i.test(t.opening_hours.trim())) return false;
+  if (t["disused"] === "yes" || t["abandoned"] === "yes") return false;
+  // Non-visitable amenities even if they slipped through a category filter.
+  const amen = t.amenity ?? "";
+  if (/^(school|college|university|kindergarten|hospital|clinic|fuel|bank|atm|pharmacy|police|fire_station|townhall|courthouse|prison|fuel|driving_school|language_school|childcare)$/.test(amen))
+    return false;
+  if (NAME_BLOCKLIST.test(t.name)) return false;
+  return true;
+}
+
 export async function fetchOverpassPlaces(
   opts: FetchOptions
 ): Promise<OverpassPlace[]> {
@@ -222,6 +244,7 @@ export async function fetchOverpassPlaces(
     const lat = el.lat ?? el.center?.lat;
     const lng = el.lon ?? el.center?.lon;
     if (typeof lat !== "number" || typeof lng !== "number") continue;
+    if (!isVisitable(t)) continue; // drop closed / disused / non-tourist POIs
 
     const detectedCat =
       categories.find((c) => matchesCategory(t, c)) ?? categories[0];

@@ -100,6 +100,20 @@ function buildQuery(s: number, w: number, n: number, e: number): string {
   return `[out:json][timeout:90];(${clauses.join("")});out tags center ${CAP};`;
 }
 
+const JUNK_NAME =
+  /\b(school|college|university|institute|coaching|tuition|hospital|clinic|nursing\s*home|pharmacy|medical|police|fire\s*station|petrol|fuel|bunk|atm|bank|hostel|\bpg\b|paying\s*guest|apartment|layout|society|bus\s*(stop|stand|station)|metro\s*station|railway|godown|warehouse|\boffice\b|substation|water\s*tank|sewage|toilet|parking|showroom|service\s*cent|workshop|factory|pvt\s*ltd)\b/i;
+
+function isVisitable(t: Record<string, string>): boolean {
+  if (!t.name) return false;
+  for (const k of Object.keys(t)) {
+    if (/^(disused|abandoned|was|razed|demolished|removed|construction|proposed):/i.test(k)) return false;
+  }
+  if (t.opening_hours && /^(closed|off)$/i.test(t.opening_hours.trim())) return false;
+  if (t.disused === "yes" || t.abandoned === "yes") return false;
+  if (JUNK_NAME.test(t.name)) return false;
+  return true;
+}
+
 function detectCat(tags: Record<string, string>): string | null {
   for (const [cat, filters] of Object.entries(CATEGORY_FILTERS)) {
     const match = filters.some((f) =>
@@ -146,6 +160,7 @@ async function fetchTile(s: number, w: number, n: number, e: number): Promise<Ra
           const lat = el.lat ?? el.center?.lat;
           const lng = el.lon ?? el.center?.lon;
           if (typeof lat !== "number" || typeof lng !== "number") continue;
+          if (!isVisitable(t)) continue; // skip closed / disused / junk
           const cat = detectCat(t);
           if (!cat) continue;
           out.push({
@@ -184,6 +199,19 @@ function feeFromTags(p: RawPlace): number {
 async function run() {
   const { db } = await import("../src/lib/db");
   const { cityPlaces } = await import("../src/lib/db/schema");
+  const { sql } = await import("drizzle-orm");
+
+  // --wipe: delete previously auto-seeded OSM rows (slugs ending in
+  // -node-/-way-/-relation-<id>) so closed/junk entries from older seeds are
+  // purged. Curated/hand-added city_places are left untouched.
+  const wipe = process.argv.includes("--wipe");
+  if (wipe) {
+    const res = await db
+      .delete(cityPlaces)
+      .where(sql`${cityPlaces.slug} ~ '-(node|way|relation)-[0-9]+$'`)
+      .returning({ id: cityPlaces.id });
+    console.log(`Wiped ${res.length} previously auto-seeded OSM places.`);
+  }
 
   const cols = Math.ceil((BBOX.east - BBOX.west) / STEP);
   const rows = Math.ceil((BBOX.north - BBOX.south) / STEP);

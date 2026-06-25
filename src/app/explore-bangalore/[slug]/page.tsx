@@ -2,13 +2,14 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import {
-  ArrowLeft,
   Clock,
   ExternalLink,
   MapPin,
   Tag,
   Wallet,
 } from "lucide-react";
+
+import { BackButton } from "@/components/app/BackButton";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
@@ -40,12 +41,7 @@ export default async function CityPlacePage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Link
-        href="/explore-bangalore"
-        className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900"
-      >
-        <ArrowLeft className="h-4 w-4" /> Back to Explore
-      </Link>
+      <BackButton fallback="/explore-bangalore" label="Back" />
       <LocationBanner />
 
       <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 md:p-8">

@@ -45,6 +45,11 @@ const ALL_OVERPASS: OverpassCategory[] = [
 
 const VEHICLE_KINDS = Object.keys(VEHICLES) as VehicleKind[];
 
+// Names that aren't real trip stops (schools, civic infra, transit, etc.) —
+// filters junk out of both seeded and live candidates.
+const JUNK_NAME =
+  /\b(school|college|university|institute|coaching|tuition|hospital|clinic|nursing\s*home|pharmacy|medical|police|fire\s*station|petrol|fuel|bunk|atm|bank|hostel|\bpg\b|paying\s*guest|apartment|layout|society|bus\s*(stop|stand|station)|metro\s*station|railway|godown|warehouse|\boffice\b|ward|substation|water\s*tank|sewage|toilet|parking|showroom|service\s*cent|workshop|factory|company|pvt\s*ltd)\b/i;
+
 const bodySchema = z.object({
   start: z.object({
     lat: z.number().gte(-90).lte(90),
@@ -127,7 +132,7 @@ export async function POST(req: NextRequest) {
   const seedCandidates: Candidate[] = seedMatches
     .filter((s) => {
       const op = SEED_KIND_TO_OVERPASS[s.kind];
-      return op && wantedCats.includes(op);
+      return op && wantedCats.includes(op) && !JUNK_NAME.test(s.name);
     })
     .map((s) => {
       const op = SEED_KIND_TO_OVERPASS[s.kind] ?? "tourist_attraction";
@@ -168,6 +173,7 @@ export async function POST(req: NextRequest) {
     });
     overpassCount += places.length;
     for (const op of places) {
+      if (JUNK_NAME.test(op.name)) continue;
       const c = candidateFromOverpass(op);
       const k = coordKey(c.lat, c.lng);
       if (!usedKeys.has(k)) {

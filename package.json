@@ -14,6 +14,7 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:seed:osm": "tsx scripts/seed-osm.ts",
     "db:seed:bangalore": "tsx scripts/seed-bangalore.ts",
+    "db:reseed:bangalore": "tsx scripts/seed-bangalore.ts --wipe",
     "db:fix-coords": "tsx scripts/fix-coords.ts"
   },
   "dependencies": {
