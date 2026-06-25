@@ -234,6 +234,38 @@ export const communityPosts = pgTable("community_posts", {
 export type CommunityPost = typeof communityPosts.$inferSelect;
 export type NewCommunityPost = typeof communityPosts.$inferInsert;
 
+// Travel-flavoured reactions — one per user per post. type: love | wantToGo | beenThere
+export const communityReactions = pgTable(
+  "community_reactions",
+  {
+    postId: text("post_id")
+      .notNull()
+      .references(() => communityPosts.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 20 }).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({ pk: primaryKey({ columns: [t.postId, t.userId] }) })
+);
+
+export const communityComments = pgTable("community_comments", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  postId: text("post_id")
+    .notNull()
+    .references(() => communityPosts.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  authorName: varchar("author_name", { length: 120 }),
+  authorImage: text("author_image"),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type CommunityComment = typeof communityComments.$inferSelect;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type OtpCode = typeof otpCodes.$inferSelect;

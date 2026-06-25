@@ -13,6 +13,8 @@ import {
   LocateFixed,
   RefreshCw,
   ExternalLink,
+  Share2,
+  Check,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -70,6 +72,7 @@ interface PlanResponse {
 }
 
 const PLAN_STORAGE_KEY = "yatra-point/multi-stop-plan";
+const PLAN_CACHE_KEY = "yatra-point/budget-plan-cache";
 
 export interface LivePlanProps {
   budget: number;
@@ -80,6 +83,7 @@ export interface LivePlanProps {
   includeFood: boolean;
   maxStops: number;
   radiusKm?: number;
+  days?: number;
 }
 
 export function LivePlan({
@@ -91,6 +95,7 @@ export function LivePlan({
   includeFood,
   maxStops,
   radiusKm = 25,
+  days = 1,
 }: LivePlanProps) {
   const router = useRouter();
   const { coords, status, accuracyMeters, isFallback, request } = useLocation();
@@ -98,9 +103,17 @@ export function LivePlan({
   const [plan, setPlan] = useState<PlanResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [shared, setShared] = useState(false);
   const didAutoRun = useRef(false);
 
   const overpassCategories = useMemo(() => groupsToOverpass(groups), [groups]);
+
+  // Signature of the inputs — lets us restore a cached plan only when it still
+  // matches the current selections.
+  const sig = useMemo(
+    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days }),
+    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days]
+  );
 
   const generate = useCallback(async () => {
     if (overpassCategories.length === 0) {
@@ -139,6 +152,35 @@ export function LivePlan({
     }
   }, [coords.lat, coords.lng, budget, hours, people, vehicle, overpassCategories, includeFood, maxStops, radiusKm]);
 
+  // Restore a previously generated plan on mount (e.g. after visiting a place
+  // and pressing Back) so it isn't lost. Only if the inputs still match.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(PLAN_CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw) as { sig: string; plan: PlanResponse };
+        if (cached?.sig === sig && cached.plan) {
+          setPlan(cached.plan);
+          didAutoRun.current = true; // don't auto-regenerate over the restored plan
+        }
+      }
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Cache the plan whenever it changes so Back-navigation can restore it.
+  useEffect(() => {
+    if (plan) {
+      try {
+        sessionStorage.setItem(PLAN_CACHE_KEY, JSON.stringify({ sig, plan }));
+      } catch {
+        // ignore (quota)
+      }
+    }
+  }, [plan, sig]);
+
   // Ask for live location on mount.
   useEffect(() => {
     request();
@@ -173,6 +215,34 @@ export function LivePlan({
     if (waypoints) params.set("waypoints", waypoints);
     return `https://www.google.com/maps/dir/?${params.toString()}`;
   }, [plan, coords.lat, coords.lng]);
+
+  // Share the plan to any platform (WhatsApp / Instagram / etc.) via the native
+  // share sheet, including the Google Maps route link. Falls back to copying.
+  async function sharePlan() {
+    if (!plan) return;
+    const lines = plan.stops.map((s, i) => `${i + 1}. ${s.name}`).join("\n");
+    const text =
+      `🗺️ My trip plan — ${plan.stops.length} stops\n${lines}\n\n` +
+      `📍 ${formatKm(plan.totals.distanceKm)} · 💰 ${formatINR(plan.totals.cost)} total\n\n` +
+      `Open the full route in Google Maps:\n${googleMapsUrl}\n\n— Planned with Explore World`;
+    const shareData = { title: "My Trip Plan", text, url: googleMapsUrl };
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+    } catch {
+      return; // user dismissed the share sheet
+    }
+    // Desktop fallback — copy to clipboard.
+    try {
+      await navigator.clipboard.writeText(text);
+      setShared(true);
+      setTimeout(() => setShared(false), 2500);
+    } catch {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    }
+  }
 
   return (
     <div id="live-plan" className="mt-8 space-y-5 scroll-mt-20">
@@ -272,6 +342,20 @@ export function LivePlan({
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-lg font-bold text-slate-900">Your route</h2>
                 <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={sharePlan}
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                  >
+                    {shared ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-600" /> Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="h-4 w-4 text-emerald-600" /> Share
+                      </>
+                    )}
+                  </button>
                   <a
                     href={googleMapsUrl}
                     target="_blank"
@@ -314,10 +398,25 @@ export function LivePlan({
             </section>
           )}
 
-          <section>
-            <h2 className="mb-3 text-lg font-bold text-slate-900">Day plan</h2>
-            <ol className="relative space-y-3 border-l-2 border-emerald-100 pl-5">
-              {plan.stops.map((s, i) => (
+          <section className="space-y-5">
+            <h2 className="text-lg font-bold text-slate-900">
+              Day plan{days > 1 ? ` · split across ${days} days` : ""}
+            </h2>
+            {Array.from({ length: Math.max(1, days) }).map((_, d) => {
+              const perDay = Math.ceil(plan.stops.length / Math.max(1, days));
+              const slice = plan.stops.slice(d * perDay, (d + 1) * perDay);
+              if (slice.length === 0) return null;
+              return (
+                <div key={d}>
+                  {days > 1 && (
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white">
+                      Day {d + 1}
+                    </div>
+                  )}
+                  <ol className="relative space-y-3 border-l-2 border-emerald-100 pl-5">
+                    {slice.map((s, j) => {
+                      const i = d * perDay + j;
+                      return (
                 <li key={s.id} className="relative rounded-xl border border-slate-200 bg-white p-4">
                   <span className="absolute -left-[27px] top-4 grid h-4 w-4 place-items-center rounded-full bg-white">
                     <span className="block h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />
@@ -368,8 +467,12 @@ export function LivePlan({
                     </a>
                   </div>
                 </li>
-              ))}
-            </ol>
+                      );
+                    })}
+                  </ol>
+                </div>
+              );
+            })}
           </section>
         </>
       )}

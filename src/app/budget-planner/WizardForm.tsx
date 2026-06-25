@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   User,
   Heart,
@@ -24,6 +24,33 @@ const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
 const TRAVELLER_OPTIONS = ["1", "2", "3", "4", "5+"];
 const PLACES_OPTIONS = ["3", "4", "5", "6", "8", "10"];
+const KM_OPTIONS = ["10", "25", "50", "100", "200"];
+const SESSION_KEY = "yatra-point/budget-wizard";
+
+// Budget slider uses a non-linear scale so the evenly-spaced ₹1K/5K/10K/20K/50K
+// labels line up with the thumb (more precision at lower budgets).
+const BUDGET_STOPS = [1000, 5000, 10000, 20000, 50000];
+
+function budgetToSlider(b: number): number {
+  if (b <= BUDGET_STOPS[0]) return 0;
+  const last = BUDGET_STOPS.length - 1;
+  for (let i = 0; i < last; i++) {
+    const lo = BUDGET_STOPS[i];
+    const hi = BUDGET_STOPS[i + 1];
+    if (b <= hi) return ((i + (b - lo) / (hi - lo)) / last) * 100;
+  }
+  return 100;
+}
+
+function sliderToBudget(p: number): number {
+  const last = BUDGET_STOPS.length - 1;
+  const segF = (p / 100) * last;
+  const i = Math.min(last - 1, Math.floor(segF));
+  const frac = segF - i;
+  const lo = BUDGET_STOPS[i];
+  const hi = BUDGET_STOPS[i + 1];
+  return Math.round((lo + frac * (hi - lo)) / 100) * 100;
+}
 
 const TRIP_TYPES = [
   { key: "Solo", icon: User },
@@ -63,6 +90,7 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [transport, setTransport] = useState("Any");
   const [food, setFood] = useState("Any");
   const [places, setPlaces] = useState("5");
+  const [km, setKm] = useState("25");
   // Categories to explore — preset from the trip type, fully editable.
   const [groups, setGroups] = useState<Set<string>>(new Set(TRIP_GROUPS.Family));
 
@@ -73,6 +101,33 @@ export function WizardForm({ initial }: WizardFormProps) {
 
   const daysNum = days === "5+ Days" ? 5 : parseInt(days, 10) || 2;
   const travellersNum = travellers === "5+" ? 5 : parseInt(travellers, 10) || 2;
+
+  // Restore the wizard + generated plan after returning to this page (e.g. after
+  // opening a place's details and pressing Back).
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as {
+        fields?: Record<string, unknown>;
+        snapshot?: LivePlanProps;
+      };
+      const f = saved.fields ?? {};
+      if (typeof f.budget === "number") setBudget(f.budget);
+      if (typeof f.days === "string") setDays(f.days);
+      if (typeof f.travellers === "string") setTravellers(f.travellers);
+      if (typeof f.tripType === "string") setTripType(f.tripType);
+      if (typeof f.transport === "string") setTransport(f.transport);
+      if (typeof f.food === "string") setFood(f.food);
+      if (typeof f.places === "string") setPlaces(f.places);
+      if (typeof f.km === "string") setKm(f.km);
+      if (Array.isArray(f.groups)) setGroups(new Set(f.groups as string[]));
+      if (saved.snapshot) setSnapshot(saved.snapshot);
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Picking a trip type resets the category chips to that type's preset.
   function pickTripType(key: string) {
@@ -91,16 +146,30 @@ export function WizardForm({ initial }: WizardFormProps) {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    setSnapshot({
+    const snap: LivePlanProps = {
       budget,
       people: travellersNum,
-      hours: Math.min(18, Math.max(6, daysNum * 8)),
+      hours: Math.min(120, Math.max(6, daysNum * 9)),
       vehicle: TRANSPORT_VEHICLE[transport] ?? "small_car",
       groups: [...groups],
       includeFood: true,
-      maxStops: Math.min(10, Math.max(2, parseInt(places, 10) || 5)),
-    });
+      maxStops: Math.min(15, Math.max(2, parseInt(places, 10) || 5)),
+      days: daysNum,
+      radiusKm: Math.max(1, parseInt(km, 10) || 25),
+    };
+    setSnapshot(snap);
     setPlanKey((k) => k + 1);
+    try {
+      sessionStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify({
+          fields: { budget, days, travellers, tripType, transport, food, places, km, groups: [...groups] },
+          snapshot: snap,
+        })
+      );
+    } catch {
+      // ignore
+    }
     requestAnimationFrame(() => {
       document.getElementById("live-plan")?.scrollIntoView({ behavior: "smooth" });
     });
@@ -174,11 +243,11 @@ export function WizardForm({ initial }: WizardFormProps) {
               </div>
               <input
                 type="range"
-                min={1000}
-                max={50000}
-                step={500}
-                value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
+                min={0}
+                max={100}
+                step={0.5}
+                value={budgetToSlider(budget)}
+                onChange={(e) => setBudget(sliderToBudget(Number(e.target.value)))}
                 className="mt-3 w-full accent-emerald-600"
               />
               <div className="mt-1 flex justify-between text-[10px] text-slate-400">
@@ -222,6 +291,18 @@ export function WizardForm({ initial }: WizardFormProps) {
                 ))}
               </div>
               <p className="mt-2 text-xs text-slate-500">How many stops to include in the trip.</p>
+            </Card>
+
+            {/* How far to travel */}
+            <Card title="How Far? (km)" icon="🧭">
+              <div className="flex flex-wrap gap-2">
+                {KM_OPTIONS.map((k) => (
+                  <Chip key={k} active={km === k} onClick={() => setKm(k)}>
+                    {k} km
+                  </Chip>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-slate-500">Search & route within this distance from you.</p>
             </Card>
 
             {/* 4. Trip Type + categories to explore */}

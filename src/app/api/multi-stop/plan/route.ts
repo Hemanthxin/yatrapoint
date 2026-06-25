@@ -51,14 +51,14 @@ const bodySchema = z.object({
     lng: z.number().gte(-180).lte(180),
   }),
   totalBudget: z.number().int().min(200).max(2_000_000),
-  hours: z.number().min(1).max(18),
+  hours: z.number().min(1).max(120),
   people: z.number().int().min(1).max(20),
   vehicle: z.enum(VEHICLE_KINDS as [VehicleKind, ...VehicleKind[]]),
   // User-facing OSM categories (we accept any of ALL_OVERPASS).
   categories: z.array(z.string()).min(1),
   includeFood: z.boolean().default(true),
-  maxStops: z.number().int().min(2).max(10).default(6),
-  searchRadiusKm: z.number().min(1).max(80).default(25),
+  maxStops: z.number().int().min(2).max(15).default(6),
+  searchRadiusKm: z.number().min(1).max(500).default(25),
 });
 
 // Map seeded city_places categories to Overpass categories so we can use the
@@ -184,11 +184,14 @@ export async function POST(req: NextRequest) {
     overpassError = err instanceof Error ? err.message : "Overpass failed";
   }
 
-  // Widen up to twice (capped at 60 km) until we have a healthy candidate pool.
-  const targetPool = Math.max(12, parsed.data.maxStops * 3);
+  // Gentle widen ONLY if the area is so sparse we can't fill the requested
+  // stops — and never beyond ~1.5× the chosen distance, so we honour the km
+  // the user asked to travel.
+  const chosenKm = parsed.data.searchRadiusKm;
+  const maxWidenKm = chosenKm * 1.5;
   let widen = 0;
-  while (finalCandidates.length < targetPool && radiusKm < 60 && widen < 2 && !overpassError) {
-    radiusKm = Math.min(60, radiusKm * 2);
+  while (finalCandidates.length < parsed.data.maxStops && radiusKm < maxWidenKm && widen < 1 && !overpassError) {
+    radiusKm = Math.min(maxWidenKm, radiusKm * 1.5);
     widen += 1;
     try {
       await addOverpass(radiusKm);

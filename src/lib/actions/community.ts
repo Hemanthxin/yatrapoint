@@ -1,9 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { communityPosts } from "@/lib/db/schema";
+import {
+  communityPosts,
+  communityReactions,
+  communityComments,
+  type CommunityComment,
+} from "@/lib/db/schema";
+
+const REACTION_TYPES = ["love", "wantToGo", "beenThere"] as const;
 
 export interface SubmitResult {
   ok: boolean;
@@ -56,5 +64,107 @@ export async function submitCommunityPost(input: {
     return { ok: true };
   } catch {
     return { ok: false, error: "Could not post — is the database set up? Run db:push." };
+  }
+}
+
+// ── Reactions ──────────────────────────────────────────────────────────────
+export interface ReactionResult {
+  ok: boolean;
+  counts?: { love: number; wantToGo: number; beenThere: number };
+  total?: number;
+  mine?: string | null;
+  error?: string;
+}
+
+// Toggle a travel reaction. Same type again removes it; a different type
+// replaces it (one reaction per user per post). Returns fresh counts.
+export async function setReaction(postId: string, type: string): Promise<ReactionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Please sign in." };
+  if (!REACTION_TYPES.includes(type as (typeof REACTION_TYPES)[number]))
+    return { ok: false, error: "Bad reaction." };
+
+  try {
+    const existing = await db
+      .select({ type: communityReactions.type })
+      .from(communityReactions)
+      .where(and(eq(communityReactions.postId, postId), eq(communityReactions.userId, session.user.id)))
+      .limit(1);
+
+    let mine: string | null;
+    if (existing[0]?.type === type) {
+      await db
+        .delete(communityReactions)
+        .where(and(eq(communityReactions.postId, postId), eq(communityReactions.userId, session.user.id)));
+      mine = null;
+    } else {
+      await db
+        .insert(communityReactions)
+        .values({ postId, userId: session.user.id, type })
+        .onConflictDoUpdate({
+          target: [communityReactions.postId, communityReactions.userId],
+          set: { type },
+        });
+      mine = type;
+    }
+
+    const rows = await db
+      .select({ type: communityReactions.type, c: sql<number>`count(*)::int` })
+      .from(communityReactions)
+      .where(eq(communityReactions.postId, postId))
+      .groupBy(communityReactions.type);
+
+    const counts = { love: 0, wantToGo: 0, beenThere: 0 };
+    let total = 0;
+    for (const r of rows) {
+      if (r.type === "love") counts.love = r.c;
+      else if (r.type === "wantToGo") counts.wantToGo = r.c;
+      else if (r.type === "beenThere") counts.beenThere = r.c;
+      total += r.c;
+    }
+    return { ok: true, counts, total, mine };
+  } catch {
+    return { ok: false, error: "Could not react. Run db:push if you just added the tables." };
+  }
+}
+
+// ── Comments ───────────────────────────────────────────────────────────────
+export async function addComment(
+  postId: string,
+  body: string
+): Promise<{ ok: boolean; comment?: CommunityComment; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Please sign in." };
+  const text = body.trim();
+  if (text.length < 1) return { ok: false, error: "Write something." };
+  if (text.length > 1000) return { ok: false, error: "Comment too long." };
+
+  try {
+    const [created] = await db
+      .insert(communityComments)
+      .values({
+        postId,
+        userId: session.user.id,
+        authorName: session.user.name || session.user.email || "Traveller",
+        authorImage: session.user.image || null,
+        body: text,
+      })
+      .returning();
+    return { ok: true, comment: created };
+  } catch {
+    return { ok: false, error: "Could not comment." };
+  }
+}
+
+export async function fetchComments(postId: string): Promise<CommunityComment[]> {
+  try {
+    return await db
+      .select()
+      .from(communityComments)
+      .where(eq(communityComments.postId, postId))
+      .orderBy(desc(communityComments.createdAt))
+      .limit(100);
+  } catch {
+    return [];
   }
 }
