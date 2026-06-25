@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
@@ -129,10 +129,85 @@ export async function addAdminPlace(
       .returning();
 
     revalidatePath("/admin/dashboard");
+    revalidatePath("/admin/places");
     revalidatePath("/destinations");
     revalidatePath("/");
     return { ok: true, id: created.id, slug: created.slug };
   } catch {
     return { ok: false, error: "Could not add place. Check DATABASE_URL and run db push." };
   }
+}
+
+export async function updateAdminPlace(
+  id: string,
+  input: z.input<typeof placeSchema>
+): Promise<AddPlaceResult> {
+  try {
+    await requireAdmin();
+    const parsed = placeSchema.safeParse(input);
+    if (!parsed.success) {
+      return { ok: false, error: parsed.error.issues[0]?.message ?? "Check the form values." };
+    }
+    const data = parsed.data;
+    const name = data.name.trim();
+
+    if (data.imageUrl && data.imageUrl.length > 2_000_000) {
+      return { ok: false, error: "Image is too large. Please use a smaller photo." };
+    }
+
+    // Block duplicate name+state on a DIFFERENT place.
+    const dup = await db
+      .select({ id: destinations.id })
+      .from(destinations)
+      .where(
+        and(
+          eq(sql`lower(${destinations.name})`, name.toLowerCase()),
+          eq(sql`lower(${destinations.state})`, data.state.trim().toLowerCase()),
+          ne(destinations.id, id)
+        )
+      )
+      .limit(1);
+    if (dup.length > 0) {
+      return { ok: false, error: `Another "${name}" already exists in ${data.state.trim()}.` };
+    }
+
+    await db
+      .update(destinations)
+      .set({
+        name,
+        state: data.state,
+        district: data.district || null,
+        category: data.category,
+        placeType: data.placeType || null,
+        description: data.description,
+        shortDescription: data.shortDescription,
+        imageUrl: data.imageUrl || null,
+        openingTimings: data.openingTimings || null,
+        entryFees: data.entryFees,
+        budgetPerDay: data.budgetPerDay,
+        recommendedDays: data.recommendedDays,
+        bestMonths: data.bestMonths || null,
+        latitude: data.latitude || null,
+        longitude: data.longitude || null,
+        popularity: data.popularity ?? 50,
+        isHidden: data.isHidden ?? false,
+      })
+      .where(eq(destinations.id, id));
+
+    revalidatePath("/admin/places");
+    revalidatePath(`/admin/places/${id}/edit`);
+    revalidatePath("/admin/dashboard");
+    revalidatePath("/destinations");
+    return { ok: true, id };
+  } catch {
+    return { ok: false, error: "Could not save changes." };
+  }
+}
+
+export async function deleteAdminPlace(id: string) {
+  await requireAdmin();
+  await db.delete(destinations).where(eq(destinations.id, id));
+  revalidatePath("/admin/places");
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/destinations");
 }

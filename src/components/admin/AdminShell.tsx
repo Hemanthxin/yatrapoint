@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   LayoutDashboard,
+  MapPinned,
   PlusCircle,
   Globe,
   LogOut,
@@ -24,7 +25,8 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { href: "/admin/dashboard", label: "Overview", icon: LayoutDashboard, match: "/admin/dashboard" },
-  { href: "/admin/dashboard#add-place", label: "Add Place", icon: PlusCircle },
+  { href: "/admin/places", label: "Places", icon: MapPinned, match: "/admin/places" },
+  { href: "/admin/places/new", label: "Add Place", icon: PlusCircle, match: "/admin/places/new" },
   { href: "/dashboard", label: "Public Site", icon: Globe },
 ];
 
@@ -140,7 +142,7 @@ export function AdminShell({ adminName, adminEmail, children }: AdminShellProps)
             <LayoutDashboard className="h-5 w-5" />
             <span className="text-[11px] font-medium">Overview</span>
           </Link>
-          <a href="/admin/dashboard#add-place" className="relative -mt-7 flex flex-col items-center">
+          <a href="/admin/places/new" className="relative -mt-7 flex flex-col items-center">
             <span className="grid h-14 w-14 place-items-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 ring-4 ring-slate-900">
               <PlusCircle className="h-6 w-6" />
             </span>

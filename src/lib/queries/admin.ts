@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { destinations, type Destination } from "@/lib/db/schema";
 
@@ -100,6 +100,86 @@ export async function listPlacesByAdmin(): Promise<AdminContribution[]> {
       .sort((a, b) => b.total - a.total);
   } catch {
     return [];
+  }
+}
+
+export interface PlacesPage {
+  rows: Destination[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pages: number;
+}
+
+export interface PlacesFilter {
+  q?: string;
+  state?: string;
+  category?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+// Paginated + searchable + filterable listing of every place for the admin.
+export async function listAdminPlaces(filter: PlacesFilter = {}): Promise<PlacesPage> {
+  const page = Math.max(1, filter.page ?? 1);
+  const pageSize = Math.min(60, Math.max(6, filter.pageSize ?? 12));
+  try {
+    const where = [];
+    if (filter.q && filter.q.trim()) {
+      const term = `%${filter.q.trim()}%`;
+      where.push(
+        or(
+          ilike(destinations.name, term),
+          ilike(destinations.district, term),
+          ilike(destinations.shortDescription, term)
+        )!
+      );
+    }
+    if (filter.state) where.push(eq(destinations.state, filter.state));
+    if (filter.category) where.push(eq(destinations.category, filter.category));
+    const cond = where.length ? and(...where) : undefined;
+
+    const [countRow] = await db
+      .select({ c: sql<number>`count(*)::int` })
+      .from(destinations)
+      .where(cond);
+    const total = countRow?.c ?? 0;
+
+    const rows = await db
+      .select()
+      .from(destinations)
+      .where(cond)
+      .orderBy(desc(destinations.createdAt))
+      .limit(pageSize)
+      .offset((page - 1) * pageSize);
+
+    return { rows, total, page, pageSize, pages: Math.max(1, Math.ceil(total / pageSize)) };
+  } catch {
+    return { rows: [], total: 0, page, pageSize, pages: 1 };
+  }
+}
+
+export async function getAdminPlace(id: string): Promise<Destination | null> {
+  try {
+    const [row] = await db.select().from(destinations).where(eq(destinations.id, id)).limit(1);
+    return row ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function placeFacets(): Promise<{ states: string[]; categories: string[] }> {
+  try {
+    const [states, categories] = await Promise.all([
+      db.selectDistinct({ v: destinations.state }).from(destinations).orderBy(destinations.state),
+      db.selectDistinct({ v: destinations.category }).from(destinations).orderBy(destinations.category),
+    ]);
+    return {
+      states: states.map((r) => r.v).filter(Boolean),
+      categories: categories.map((r) => r.v).filter(Boolean),
+    };
+  } catch {
+    return { states: [], categories: [] };
   }
 }
 
