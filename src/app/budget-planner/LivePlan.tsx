@@ -223,6 +223,30 @@ export function LivePlan({
     [plan?.stops]
   );
 
+  // Split the stops across the chosen days by TIME, not by an even count — so
+  // each day holds roughly a full day's worth of visiting + driving and the
+  // whole trip is realistically coverable in the days selected.
+  const dayBuckets = useMemo(() => {
+    if (!plan) return [] as PlanStop[][];
+    const nDays = Math.max(1, days);
+    // Target minutes per day (visit + travel). Floor keeps short trips from
+    // spilling one stop per day.
+    const cap = Math.max(240, (hours / nDays) * 60);
+    const buckets: PlanStop[][] = [[]];
+    let acc = 0;
+    for (const s of plan.stops) {
+      const t = s.arrivalMinutesFromPrev + s.idealMinutes;
+      const cur = buckets[buckets.length - 1];
+      if (buckets.length < nDays && cur.length > 0 && acc + t > cap) {
+        buckets.push([]);
+        acc = 0;
+      }
+      buckets[buckets.length - 1].push(s);
+      acc += t;
+    }
+    return buckets;
+  }, [plan, days, hours]);
+
   // Same route, opened in Google Maps: start → each stop in order → back to start.
   const googleMapsUrl = useMemo(() => {
     if (!plan || plan.stops.length === 0) return "#";
@@ -426,20 +450,30 @@ export function LivePlan({
             <h2 className="text-lg font-bold text-slate-900">
               Day plan{days > 1 ? ` · split across ${days} days` : ""}
             </h2>
-            {Array.from({ length: Math.max(1, days) }).map((_, d) => {
-              const perDay = Math.ceil(plan.stops.length / Math.max(1, days));
-              const slice = plan.stops.slice(d * perDay, (d + 1) * perDay);
-              if (slice.length === 0) return null;
-              return (
+            {(() => {
+              let running = 0; // global stop counter across days
+              return dayBuckets.map((bucket, d) => {
+                if (bucket.length === 0) return null;
+                const dayMinutes = bucket.reduce(
+                  (m, s) => m + s.arrivalMinutesFromPrev + s.idealMinutes,
+                  0
+                );
+                const dayCost = bucket.reduce((c, s) => c + s.stopCost + s.travelCost, 0);
+                return (
                 <div key={d}>
                   {days > 1 && (
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white">
-                      Day {d + 1}
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white">
+                        Day {d + 1}
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        {bucket.length} {bucket.length === 1 ? "stop" : "stops"} · {formatMinutes(dayMinutes)} · {formatINR(dayCost)}
+                      </span>
                     </div>
                   )}
                   <ol className="relative space-y-3 border-l-2 border-emerald-100 pl-5">
-                    {slice.map((s, j) => {
-                      const i = d * perDay + j;
+                    {bucket.map((s) => {
+                      const i = running++;
                       return (
                 <li key={s.id} className="relative rounded-xl border border-slate-200 bg-white p-4">
                   <span className="absolute -left-[27px] top-4 grid h-4 w-4 place-items-center rounded-full bg-white">
@@ -497,8 +531,9 @@ export function LivePlan({
                     })}
                   </ol>
                 </div>
-              );
-            })}
+                );
+              });
+            })()}
           </section>
         </>
       )}

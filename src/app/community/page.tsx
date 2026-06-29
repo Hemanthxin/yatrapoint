@@ -24,7 +24,7 @@ export default async function CommunityPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Community</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Share places you love — react (❤️ Love · 🎒 Want to go · ✅ Been there), comment &amp; share.
+            Double-tap to love, save spots for later, and mark 🎒 Want to go / ✅ Been there — comment &amp; share too.
           </p>
         </div>
       </header>

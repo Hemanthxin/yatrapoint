@@ -143,8 +143,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // De-dup key — round to ~110 m so the same place from seed + Overpass merges.
+  // De-dup keys. We merge a place if EITHER it's within ~110 m of one already
+  // taken, OR it has the same normalised name — so "Royal Meenakshi Mall" from
+  // the seed and the same mall from live OSM (mapped a few hundred metres apart)
+  // collapse into a single stop instead of appearing twice.
   const coordKey = (lat: number, lng: number) => `${lat.toFixed(3)},${lng.toFixed(3)}`;
+  const nameKey = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
   // 0) Hand-picked catalogue places — pinned so the planner pulls them in first.
   const pinnedCandidates: Candidate[] = [];
@@ -212,8 +216,24 @@ export async function POST(req: NextRequest) {
 
   // 2) Live Overpass candidates, merged + de-duped. Auto-widen the radius when
   // the area is sparse so we can reliably reach the requested number of places.
-  const finalCandidates: Candidate[] = [...pinnedCandidates, ...seedCandidates];
-  const usedKeys = new Set(finalCandidates.map((s) => coordKey(s.lat, s.lng)));
+  const finalCandidates: Candidate[] = [];
+  const usedKeys = new Set<string>();
+  const usedNames = new Set<string>();
+  // Add a candidate unless we've already taken the same spot (by coords) or the
+  // same place (by name). Pinned → seed → Overpass order means the richest
+  // source wins and later duplicates are dropped.
+  const addCandidate = (c: Candidate): boolean => {
+    const ck = coordKey(c.lat, c.lng);
+    const nk = nameKey(c.name);
+    if (usedKeys.has(ck) || (nk && usedNames.has(nk))) return false;
+    usedKeys.add(ck);
+    if (nk) usedNames.add(nk);
+    finalCandidates.push(c);
+    return true;
+  };
+  for (const c of pinnedCandidates) addCandidate(c);
+  for (const c of seedCandidates) addCandidate(c);
+
   let overpassCount = 0;
   let overpassError: string | null = null;
 
@@ -229,12 +249,7 @@ export async function POST(req: NextRequest) {
     overpassCount += places.length;
     for (const op of places) {
       if (JUNK_NAME.test(op.name)) continue;
-      const c = candidateFromOverpass(op);
-      const k = coordKey(c.lat, c.lng);
-      if (!usedKeys.has(k)) {
-        usedKeys.add(k);
-        finalCandidates.push(c);
-      }
+      addCandidate(candidateFromOverpass(op));
     }
   };
 
