@@ -5,6 +5,7 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { destinations } from "@/lib/db/schema";
 import { INDIA_STATES } from "@/lib/india-states";
+import { INDIA_DISTRICTS } from "@/lib/india-districts";
 import { runOverpassQuery } from "@/lib/overpass";
 
 export interface AreaCenter {
@@ -122,9 +123,23 @@ async function detectStateLevels(state: string): Promise<StateLevels> {
   return value;
 }
 
-// Districts of a state — derived from the per-state level detection above.
+// Normalise a district name for fuzzy matching across data sources — drops
+// "district"/"rural"/"urban"/"taluk" suffixes and all punctuation/spacing so
+// "Mysuru" ↔ "Mysuru District" and "Bagalkot" ↔ "Bagalkote" line up.
+function normDistrict(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\b(district|rural|urban|taluk[au]?|tehsil)\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+// Districts of a state. Prefer the curated authoritative list (OSM admin data is
+// incomplete — e.g. missing Ramanagara) and fall back to live OSM detection for
+// states we haven't curated yet.
 export async function listDistricts(state: string): Promise<string[]> {
   if (!INDIA_STATES.includes(state)) return [];
+  const curated = INDIA_DISTRICTS[state];
+  if (curated && curated.length) return [...curated].sort((a, b) => a.localeCompare(b));
   try {
     return (await detectStateLevels(state)).districts;
   } catch {
@@ -148,9 +163,21 @@ export async function listTaluks(
     const lv = await detectStateLevels(state);
     if (lv.talukLevel == null) return [];
 
+    // The curated district name may differ from OSM's spelling (e.g. "Mysuru"
+    // vs OSM "Mysuru District"). Bridge to the matching OSM boundary name so the
+    // taluk query resolves. If there's no OSM district to match (e.g. Ramanagara
+    // isn't in OSM), there are no taluks to fetch — return empty gracefully.
+    const reqN = normDistrict(district);
+    const osmName =
+      lv.districts.find((d) => {
+        const n = normDistrict(d);
+        return n === reqN || n.startsWith(reqN) || reqN.startsWith(n);
+      }) ?? null;
+    if (!osmName) return [];
+
     const q = `[out:json][timeout:120];
       area["boundary"="administrative"]["admin_level"="4"]["name"="${ql(state)}"]->.s;
-      relation(area.s)["boundary"="administrative"]["admin_level"="${lv.districtLevel}"]["name"="${ql(district)}"];
+      relation(area.s)["boundary"="administrative"]["admin_level"="${lv.districtLevel}"]["name"="${ql(osmName)}"];
       map_to_area->.d;
       relation(area.d)["boundary"="administrative"]["admin_level"="${lv.talukLevel}"];
       out tags;`;
