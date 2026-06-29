@@ -105,12 +105,18 @@ export function LivePlan({
 }: LivePlanProps) {
   const router = useRouter();
   const live = useLocation();
-  // Effective origin: the chosen area centre when planning an area, otherwise
-  // the traveller's live GPS location.
-  const coords = originOverride ?? live.coords;
-  const status = originOverride ? "granted" : live.status;
-  const accuracyMeters = originOverride ? null : live.accuracyMeters;
-  const isFallback = originOverride ? false : live.isFallback;
+
+  // The route ALWAYS starts from the traveller's live location (the green pin).
+  // In area mode, the chosen area's centre is used only to DISCOVER places —
+  // never as the start — so the trip always begins where the user actually is.
+  const coords = live.coords;
+  const searchCentre = originOverride
+    ? { lat: originOverride.lat, lng: originOverride.lng }
+    : live.coords;
+
+  const status = live.status;
+  const accuracyMeters = live.accuracyMeters;
+  const isFallback = live.isFallback;
   const request = live.request;
 
   const [plan, setPlan] = useState<PlanResponse | null>(null);
@@ -141,6 +147,7 @@ export function LivePlan({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           start: { lat: coords.lat, lng: coords.lng },
+          searchCentre,
           totalBudget: budget,
           hours,
           people,
@@ -164,7 +171,7 @@ export function LivePlan({
     } finally {
       setLoading(false);
     }
-  }, [coords.lat, coords.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm]);
+  }, [coords.lat, coords.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
   // and pressing Back) so it isn't lost. Only if the inputs still match.
@@ -195,10 +202,10 @@ export function LivePlan({
     }
   }, [plan, sig]);
 
-  // Ask for live location on mount — but not when planning a chosen area, where
-  // the origin is the area centre rather than the device's GPS.
+  // Ask for live location on mount — even in area mode, so we can start the
+  // route from where the traveller actually is when they're inside the area.
   useEffect(() => {
-    if (!originOverride) request();
+    request();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -266,7 +273,7 @@ export function LivePlan({
         <span className="flex items-center gap-2 text-sm font-medium text-emerald-900">
           <LocateFixed className={`h-5 w-5 ${isFallback ? "text-amber-500" : "text-emerald-600"}`} />
           {originOverride
-            ? `Planning around ${originOverride.label ?? "your chosen area"}`
+            ? `Exploring ${originOverride.label ?? "your chosen area"} — starting from your location`
             : status === "granted"
             ? "Using your live location"
             : status === "prompting"

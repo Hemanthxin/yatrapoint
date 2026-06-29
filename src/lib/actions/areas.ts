@@ -52,37 +52,89 @@ export async function listStatesAction(): Promise<string[]> {
   return INDIA_STATES;
 }
 
-// Districts of a state — OSM admin_level=6 boundaries inside the state polygon.
-// Falls back to admin_level=5 for the few states that map districts there.
-export async function listDistricts(state: string): Promise<string[]> {
-  const key = `d:${state}`;
-  const cached = cacheGet(key);
-  if (cached) return cached;
-  if (!INDIA_STATES.includes(state)) return [];
+// The OSM admin_level for "district" and "taluk" is NOT the same across India:
+// e.g. Karnataka maps districts at level 5 and taluks at level 6, while most
+// states use 6 for districts and 7 for taluks (and some add a level-5 "division"
+// above districts). So instead of guessing a fixed level, we fetch every
+// boundary below the state once and figure out which level is districts and
+// which is taluks — by spotting the level whose names are mostly taluk-like.
+interface StateLevels {
+  districtLevel: number;
+  talukLevel: number | null;
+  districts: string[];
+}
+const stateCache = new Map<string, { at: number; value: StateLevels }>();
 
-  const build = (level: number) => `
-    [out:json][timeout:60];
+// Names that signal a sub-district / taluk / tehsil tier rather than a district.
+// Substring matches on purpose so spelling variants (taluk / taluka / taluku /
+// taluq / tehsil / tahsil) are all caught.
+const TALUK_MARKER =
+  /(taluk|taluq|tehsil|tahsil|mandal|sub[-\s]?divis|sub[-\s]?distric|\bcircle\b|firka)/i;
+
+async function detectStateLevels(state: string): Promise<StateLevels> {
+  const cached = stateCache.get(state);
+  if (cached && Date.now() - cached.at < CHILD_TTL_MS) return cached.value;
+
+  // One query for the administrative boundaries (levels 5-7) inside the state —
+  // enough to tell districts from taluks without pulling level-8 village data.
+  const q = `[out:json][timeout:120];
     area["boundary"="administrative"]["admin_level"="4"]["name"="${ql(state)}"]->.s;
-    relation(area.s)["boundary"="administrative"]["admin_level"="${level}"];
+    relation(area.s)["boundary"="administrative"]["admin_level"~"^[567]$"];
     out tags;`;
+  const els = await runOverpassQuery(q);
 
-  try {
-    let els = await runOverpassQuery(build(6));
-    let names = uniqueSorted(els.map((e) => e.tags?.name ?? "").filter(Boolean));
-    if (names.length === 0) {
-      els = await runOverpassQuery(build(5));
-      names = uniqueSorted(els.map((e) => e.tags?.name ?? "").filter(Boolean));
+  const byLevel = new Map<number, string[]>();
+  for (const e of els) {
+    const lvl = Number(e.tags?.admin_level);
+    const name = e.tags?.name?.trim();
+    if (!Number.isFinite(lvl) || !name) continue;
+    const arr = byLevel.get(lvl) ?? [];
+    arr.push(name);
+    byLevel.set(lvl, arr);
+  }
+
+  const levels = [...byLevel.keys()].sort((a, b) => a - b);
+
+  // Taluk level = the shallowest level whose names are mostly taluk-like.
+  let talukLevel: number | null = null;
+  for (const lvl of levels) {
+    const names = byLevel.get(lvl)!;
+    const frac = names.filter((n) => TALUK_MARKER.test(n)).length / names.length;
+    if (frac > 0.4) {
+      talukLevel = lvl;
+      break;
     }
-    cacheSet(key, names);
-    return names;
+  }
+
+  // District level = the deepest level above the taluk level (so a level-5
+  // "division" is skipped in favour of the level-6 districts when both exist).
+  let districtLevel: number;
+  if (talukLevel != null) {
+    const below = levels.filter((l) => l < talukLevel! && l >= 5);
+    districtLevel = below.length ? Math.max(...below) : talukLevel;
+  } else {
+    districtLevel = byLevel.has(6) ? 6 : byLevel.has(5) ? 5 : levels[0] ?? 6;
+  }
+
+  const districts = uniqueSorted(byLevel.get(districtLevel) ?? []);
+  const value: StateLevels = { districtLevel, talukLevel, districts };
+  stateCache.set(state, { at: Date.now(), value });
+  return value;
+}
+
+// Districts of a state — derived from the per-state level detection above.
+export async function listDistricts(state: string): Promise<string[]> {
+  if (!INDIA_STATES.includes(state)) return [];
+  try {
+    return (await detectStateLevels(state)).districts;
   } catch {
     return [];
   }
 }
 
-// Taluks / tehsils / sub-districts of a district — OSM admin_level=7 inside the
-// district polygon (scoped to the state to avoid same-named district clashes).
-// Falls back to admin_level=8 where taluks aren't mapped at 7.
+// Taluks / tehsils / sub-districts inside a chosen district. Uses the detected
+// district + taluk levels for the state so it works whichever way the state is
+// mapped (Karnataka 5/6, most others 6/7).
 export async function listTaluks(
   state: string,
   district: string
@@ -92,21 +144,18 @@ export async function listTaluks(
   if (cached) return cached;
   if (!INDIA_STATES.includes(state) || !district.trim()) return [];
 
-  const build = (level: number) => `
-    [out:json][timeout:90];
-    area["boundary"="administrative"]["admin_level"="4"]["name"="${ql(state)}"]->.s;
-    relation(area.s)["boundary"="administrative"]["admin_level"="6"]["name"="${ql(district)}"];
-    map_to_area->.d;
-    relation(area.d)["boundary"="administrative"]["admin_level"="${level}"];
-    out tags;`;
-
   try {
-    let els = await runOverpassQuery(build(7));
-    let names = uniqueSorted(els.map((e) => e.tags?.name ?? "").filter(Boolean));
-    if (names.length === 0) {
-      els = await runOverpassQuery(build(8));
-      names = uniqueSorted(els.map((e) => e.tags?.name ?? "").filter(Boolean));
-    }
+    const lv = await detectStateLevels(state);
+    if (lv.talukLevel == null) return [];
+
+    const q = `[out:json][timeout:120];
+      area["boundary"="administrative"]["admin_level"="4"]["name"="${ql(state)}"]->.s;
+      relation(area.s)["boundary"="administrative"]["admin_level"="${lv.districtLevel}"]["name"="${ql(district)}"];
+      map_to_area->.d;
+      relation(area.d)["boundary"="administrative"]["admin_level"="${lv.talukLevel}"];
+      out tags;`;
+    const els = await runOverpassQuery(q);
+    const names = uniqueSorted(els.map((e) => e.tags?.name ?? "").filter(Boolean));
     cacheSet(key, names);
     return names;
   } catch {

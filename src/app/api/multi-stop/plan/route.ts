@@ -55,6 +55,14 @@ const bodySchema = z.object({
     lat: z.number().gte(-90).lte(90),
     lng: z.number().gte(-180).lte(180),
   }),
+  // Centre used to DISCOVER places (the chosen area's centre in area mode). The
+  // route still begins at `start`. Defaults to `start` when omitted.
+  searchCentre: z
+    .object({
+      lat: z.number().gte(-90).lte(90),
+      lng: z.number().gte(-180).lte(180),
+    })
+    .optional(),
   totalBudget: z.number().int().min(1).max(2_000_000),
   hours: z.number().min(1).max(120),
   people: z.number().int().min(1).max(20),
@@ -209,9 +217,10 @@ export async function POST(req: NextRequest) {
   let overpassCount = 0;
   let overpassError: string | null = null;
 
+  const searchCentre = parsed.data.searchCentre ?? parsed.data.start;
   const addOverpass = async (radiusKm: number) => {
     const places = await fetchOverpassPlaces({
-      centre: parsed.data.start,
+      centre: searchCentre,
       categories: wantedCats,
       radius: radiusKm * 1000,
       limit: 250,
