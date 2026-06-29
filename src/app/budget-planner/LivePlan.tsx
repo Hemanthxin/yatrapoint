@@ -15,12 +15,14 @@ import {
   ExternalLink,
   Share2,
   Check,
+  Repeat,
+  X,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
 import { formatINR } from "@/lib/format";
-import { formatKm, formatMinutes } from "@/lib/geo";
-import type { VehicleKind } from "@/lib/budget";
+import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
+import { VEHICLES, type VehicleKind } from "@/lib/budget";
 import { groupsToOverpass } from "@/lib/catalog/place-groups";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -48,10 +50,25 @@ interface PlanStop {
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
+// A candidate the planner considered but didn't include — offered as a swap.
+interface Alternative {
+  id: string;
+  name: string;
+  category: string;
+  lat: number;
+  lng: number;
+  entryFee: number;
+  entryFeeKnown?: boolean;
+  idealMinutes: number;
+  foodCostPerPerson?: number;
+  meta?: { osmId?: string; citySeedSlug?: string };
+}
+
 interface PlanResponse {
   ok: boolean;
   error?: string;
   stops: PlanStop[];
+  alternatives?: Alternative[];
   totals: {
     distanceKm: number;
     durationMinutes: number;
@@ -124,6 +141,12 @@ export function LivePlan({
   const [loading, setLoading] = useState(false);
   const [shared, setShared] = useState(false);
   const didAutoRun = useRef(false);
+
+  // "Already visited / replace this place" — which stop's swap panel is open,
+  // and whether a re-route is in flight.
+  const [swapIndex, setSwapIndex] = useState<number | null>(null);
+  const [rerouting, setRerouting] = useState(false);
+  const [swapError, setSwapError] = useState<string | null>(null);
 
   const overpassCategories = useMemo(() => groupsToOverpass(groups), [groups]);
 
@@ -287,6 +310,124 @@ export function LivePlan({
       setTimeout(() => setShared(false), 2500);
     } catch {
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    }
+  }
+
+  const isFoodCat = (cat: string) => cat === "restaurant" || cat === "cafe" || cat === "fast_food";
+
+  // Alternatives for a given stop — same category first, then nearest, so the
+  // swap list is genuinely relevant ("you've been to this temple → here's
+  // another temple close by").
+  function alternativesFor(stop: PlanStop): Alternative[] {
+    const alts = plan?.alternatives ?? [];
+    return [...alts].sort((a, b) => {
+      const sameA = a.category === stop.category ? 0 : 1;
+      const sameB = b.category === stop.category ? 0 : 1;
+      if (sameA !== sameB) return sameA - sameB;
+      return (
+        haversineKm(stop, { lat: a.lat, lng: a.lng }) -
+        haversineKm(stop, { lat: b.lat, lng: b.lng })
+      );
+    });
+  }
+
+  // Swap a stop for an alternative and re-route through the new set of stops.
+  async function replaceStop(index: number, alt: Alternative) {
+    if (!plan) return;
+    setSwapError(null);
+    setRerouting(true);
+    const removed = plan.stops[index];
+    const food = isFoodCat(alt.category);
+    const stopCost = Math.round(
+      alt.entryFee * people + (food ? (alt.foodCostPerPerson ?? 0) * people : 0)
+    );
+    const newStop: PlanStop = {
+      id: alt.id,
+      name: alt.name,
+      category: alt.category,
+      lat: alt.lat,
+      lng: alt.lng,
+      entryFee: alt.entryFee,
+      entryFeeKnown: alt.entryFeeKnown,
+      idealMinutes: alt.idealMinutes,
+      stopCost,
+      travelCost: 0,
+      arrivalKmFromPrev: 0,
+      arrivalMinutesFromPrev: 0,
+      meta: alt.meta,
+    };
+    const draftStops = plan.stops.map((s, i) => (i === index ? newStop : s));
+
+    try {
+      const res = await fetch("/api/multi-stop/route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          start: { lat: coords.lat, lng: coords.lng },
+          stops: draftStops.map((s) => ({ lat: s.lat, lng: s.lng })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || "route failed");
+
+      const legs: Array<{ distanceKm: number; durationMinutes: number }> = data.legs ?? [];
+      const costPerKm = VEHICLES[vehicle].costPerKm;
+      const routedStops = draftStops.map((s, k) => {
+        const leg = legs[k];
+        const km = leg?.distanceKm ?? s.arrivalKmFromPrev;
+        return {
+          ...s,
+          arrivalKmFromPrev: km,
+          arrivalMinutesFromPrev: leg?.durationMinutes ?? s.arrivalMinutesFromPrev,
+          travelCost: Math.round(km * costPerKm),
+        };
+      });
+
+      const fuelTotal = Math.round(data.distanceKm * costPerKm);
+      const entryFeesTotal = routedStops.reduce((a, s) => a + s.entryFee * people, 0);
+      const stopCostTotal = routedStops.reduce((a, s) => a + s.stopCost, 0);
+      const foodTotal = Math.max(0, stopCostTotal - entryFeesTotal);
+      const cost = fuelTotal + stopCostTotal;
+      const visitMin = routedStops.reduce((a, s) => a + s.arrivalMinutesFromPrev + s.idealMinutes, 0);
+
+      // Put the removed place back into the alternatives pool; drop the chosen one.
+      const removedAlt: Alternative = {
+        id: removed.id,
+        name: removed.name,
+        category: removed.category,
+        lat: removed.lat,
+        lng: removed.lng,
+        entryFee: removed.entryFee,
+        entryFeeKnown: removed.entryFeeKnown,
+        idealMinutes: removed.idealMinutes,
+        meta: removed.meta,
+      };
+      const nextAlts = [removedAlt, ...(plan.alternatives ?? []).filter((a) => a.id !== alt.id)];
+
+      setPlan({
+        ...plan,
+        stops: routedStops,
+        geometry: data.geometry ?? plan.geometry,
+        legs,
+        alternatives: nextAlts,
+        totals: {
+          ...plan.totals,
+          distanceKm: data.distanceKm,
+          durationMinutes: data.durationMinutes,
+          cost,
+          perPersonCost: Math.round(cost / Math.max(1, people)),
+          fuelTotal,
+          entryFeesTotal,
+          foodTotal,
+          unspentBudget: Math.max(0, budget - cost),
+          unspentMinutes: Math.max(0, Math.round(hours * 60 * 0.85 - visitMin)),
+        },
+      });
+      setSwapIndex(null);
+    } catch {
+      setSwapError("Couldn't swap that place — please try again.");
+    } finally {
+      setRerouting(false);
     }
   }
 
@@ -486,9 +627,12 @@ export function LivePlan({
                       <p className="text-xs uppercase tracking-wide text-slate-400">{s.category}</p>
                     </div>
                     <div className="text-right text-xs text-slate-600">
+                      <p className="font-semibold text-emerald-700">
+                        {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
+                      </p>
                       <p>
                         {formatKm(s.arrivalKmFromPrev)} · {formatMinutes(s.arrivalMinutesFromPrev)} from{" "}
-                        {i === 0 ? "start" : "previous"}
+                        {i === 0 ? "start" : "previous stop"}
                       </p>
                       <p className="font-semibold text-slate-900">Stay {formatMinutes(s.idealMinutes)}</p>
                     </div>
@@ -525,7 +669,71 @@ export function LivePlan({
                     >
                       Open in Maps →
                     </a>
+                    {/* Already been here? Swap this place for another. */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSwapError(null);
+                        setSwapIndex(swapIndex === i ? null : i);
+                      }}
+                      className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 font-medium text-amber-800 transition hover:bg-amber-200"
+                    >
+                      <Repeat className="h-3 w-3" /> Visited? Replace
+                    </button>
                   </div>
+
+                  {swapIndex === i && (
+                    <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+                      <div className="mb-2 flex items-start justify-between gap-2">
+                        <p className="text-xs font-semibold text-amber-900">
+                          Already visited <span className="font-bold">{s.name}</span>? Pick another place to put here:
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setSwapIndex(null)}
+                          className="shrink-0 text-amber-700 hover:text-amber-900"
+                          aria-label="Close"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                      {swapError && <p className="mb-2 text-xs text-rose-600">{swapError}</p>}
+                      {(() => {
+                        const alts = alternativesFor(s);
+                        if (alts.length === 0)
+                          return <p className="text-xs text-slate-500">No alternative places available nearby.</p>;
+                        return (
+                          <div className="max-h-56 space-y-1.5 overflow-auto">
+                            {alts.slice(0, 12).map((alt) => (
+                              <button
+                                key={alt.id}
+                                type="button"
+                                disabled={rerouting}
+                                onClick={() => replaceStop(i, alt)}
+                                className="flex w-full items-center gap-2 rounded-lg border border-amber-200 bg-white px-2.5 py-2 text-left transition hover:border-amber-400 disabled:opacity-60"
+                              >
+                                <MapPin className="h-3.5 w-3.5 shrink-0 text-amber-600" />
+                                <span className="min-w-0 flex-1">
+                                  <span className="block truncate text-xs font-semibold text-slate-900">{alt.name}</span>
+                                  <span className="block truncate text-[10px] uppercase tracking-wide text-slate-400">
+                                    {alt.category}
+                                  </span>
+                                </span>
+                                <span className="shrink-0 text-xs text-slate-500">
+                                  {formatKm(haversineKm(s, { lat: alt.lat, lng: alt.lng }))}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                      {rerouting && (
+                        <p className="mt-2 flex items-center gap-1.5 text-xs text-amber-800">
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> Updating your route…
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </li>
                       );
                     })}

@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { cityPlaces, destinations } from "@/lib/db/schema";
 import { fetchOverpassPlaces, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
+import { haversineKm } from "@/lib/geo";
 import {
   CATEGORY_DEFAULTS,
   candidateFromOverpass,
@@ -143,6 +144,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Centre + radius that bound where we look for places. Everything except the
+  // traveller's hand-picked (pinned) places must fall inside this radius, so the
+  // km the user chose genuinely controls how far the trip ranges.
+  const searchCentre = parsed.data.searchCentre ?? parsed.data.start;
+  const radiusKm = parsed.data.searchRadiusKm;
+  const withinRadius = (lat: number, lng: number) =>
+    haversineKm(searchCentre, { lat, lng }) <= radiusKm;
+
   // De-dup keys. We merge a place if EITHER it's within ~110 m of one already
   // taken, OR it has the same normalised name — so "Royal Meenakshi Mall" from
   // the seed and the same mall from live OSM (mapped a few hundred metres apart)
@@ -190,7 +199,10 @@ export async function POST(req: NextRequest) {
   const seedCandidates: Candidate[] = seedMatches
     .filter((s) => {
       const op = SEED_KIND_TO_OVERPASS[s.kind];
-      return op && wantedCats.includes(op) && !JUNK_NAME.test(s.name);
+      if (!op || !wantedCats.includes(op) || JUNK_NAME.test(s.name)) return false;
+      // Honour the chosen radius — don't let the whole curated city catalogue
+      // leak in regardless of how far the traveller wants to roam.
+      return withinRadius(Number(s.latitude), Number(s.longitude));
     })
     .map((s) => {
       const op = SEED_KIND_TO_OVERPASS[s.kind] ?? "tourist_attraction";
@@ -237,12 +249,11 @@ export async function POST(req: NextRequest) {
   let overpassCount = 0;
   let overpassError: string | null = null;
 
-  const searchCentre = parsed.data.searchCentre ?? parsed.data.start;
-  const addOverpass = async (radiusKm: number) => {
+  const addOverpass = async (km: number) => {
     const places = await fetchOverpassPlaces({
       centre: searchCentre,
       categories: wantedCats,
-      radius: radiusKm * 1000,
+      radius: km * 1000,
       limit: 250,
       cap: 250,
     });
@@ -253,9 +264,9 @@ export async function POST(req: NextRequest) {
     }
   };
 
-  let radiusKm = parsed.data.searchRadiusKm;
+  let currentKm = radiusKm;
   try {
-    if (wantedCats.length > 0) await addOverpass(radiusKm);
+    if (wantedCats.length > 0) await addOverpass(currentKm);
   } catch (err) {
     overpassError = err instanceof Error ? err.message : "Overpass failed";
   }
@@ -263,14 +274,13 @@ export async function POST(req: NextRequest) {
   // Gentle widen ONLY if the area is so sparse we can't fill the requested
   // stops — and never beyond ~1.5× the chosen distance, so we honour the km
   // the user asked to travel.
-  const chosenKm = parsed.data.searchRadiusKm;
-  const maxWidenKm = chosenKm * 1.5;
+  const maxWidenKm = radiusKm * 1.5;
   let widen = 0;
-  while (wantedCats.length > 0 && finalCandidates.length < parsed.data.maxStops && radiusKm < maxWidenKm && widen < 1 && !overpassError) {
-    radiusKm = Math.min(maxWidenKm, radiusKm * 1.5);
+  while (wantedCats.length > 0 && finalCandidates.length < parsed.data.maxStops && currentKm < maxWidenKm && widen < 1 && !overpassError) {
+    currentKm = Math.min(maxWidenKm, currentKm * 1.5);
     widen += 1;
     try {
-      await addOverpass(radiusKm);
+      await addOverpass(currentKm);
     } catch {
       break;
     }
@@ -354,6 +364,26 @@ export async function POST(req: NextRequest) {
   const realTotalCost = fuelTotal + stopCostTotal;
   const realPerPerson = Math.round(realTotalCost / Math.max(1, people));
 
+  // Alternatives — strong candidates we considered but didn't include, so the
+  // traveller can swap any stop ("already visited / replace") for another place.
+  const usedIds = new Set(orderedStops.map((s) => s.id));
+  const alternatives = finalCandidates
+    .filter((c) => !usedIds.has(c.id))
+    .sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50))
+    .slice(0, 40)
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      category: c.category,
+      lat: c.lat,
+      lng: c.lng,
+      entryFee: c.entryFee,
+      entryFeeKnown: c.entryFeeKnown ?? false,
+      idealMinutes: c.idealMinutes,
+      foodCostPerPerson: c.foodCostPerPerson,
+      meta: c.meta,
+    }));
+
   return NextResponse.json({
     ok: true,
     candidatesConsidered: finalCandidates.length,
@@ -361,6 +391,7 @@ export async function POST(req: NextRequest) {
     seedPlaces: seedCandidates.length,
     overpassError,
     stops: orderedStops,
+    alternatives,
     totals: {
       distanceKm: route?.distanceKm ?? plan.totalDistanceKm * 2, // assume return
       durationMinutes: route?.durationMinutes ?? plan.totalMinutes,
