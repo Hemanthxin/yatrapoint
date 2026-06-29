@@ -131,113 +131,188 @@ export interface PlannerResult {
   unspentMinutes: number;
 }
 
+type Pt = { lat: number; lng: number };
+
+function isFoodCat(c: Candidate): boolean {
+  return c.category === "restaurant" || c.category === "cafe" || c.category === "fast_food";
+}
+
+// 2-opt: repeatedly uncross the loop (start → … → start) by reversing the
+// segment between two edges whenever doing so shortens the total distance.
+// Turns the greedy pick order into an efficient, backtrack-free route.
+function twoOpt(tour: Candidate[], start: Pt, D: (a: Pt, b: Pt) => number): void {
+  if (tour.length < 3) return;
+  const path: Pt[] = [start, ...tour, start];
+  let improved = true;
+  let guard = 0;
+  while (improved && guard++ < 60) {
+    improved = false;
+    for (let i = 1; i < path.length - 2; i++) {
+      for (let k = i + 1; k < path.length - 1; k++) {
+        const a = path[i - 1];
+        const b = path[i];
+        const c = path[k];
+        const d = path[k + 1];
+        // Swapping edges (a-b, c-d) → (a-c, b-d) means reversing b…c.
+        const delta = D(a, c) + D(b, d) - (D(a, b) + D(c, d));
+        if (delta < -1e-9) {
+          let lo = i;
+          let hi = k;
+          while (lo < hi) {
+            const t = path[lo];
+            path[lo] = path[hi];
+            path[hi] = t;
+            lo++;
+            hi--;
+          }
+          improved = true;
+        }
+      }
+    }
+  }
+  for (let i = 0; i < tour.length; i++) tour[i] = path[i + 1] as Candidate;
+}
+
+// Intelligent multi-stop planner — an Orienteering-Problem solver. Instead of
+// blindly hopping to the nearest place, it INSERTS the place with the best
+// "value per extra detour" into the best position in the growing route, keeping
+// inside the time + budget limits, then 2-opt optimises the final loop. Result:
+// a compact, high-value, well-ordered day out rather than a zig-zag.
 export function planMultiStop(input: PlannerInput): PlannerResult {
   const speed = input.avgSpeedKmh ?? 28; // urban driving baseline
   const v = VEHICLES[input.vehicle];
-
-  let remainingBudget = input.totalBudget;
-  let remainingMinutes = input.hoursAvailable * 60;
-  let position: LatLng = input.start;
-  const stops: PlannerStop[] = [];
-  let totalDist = 0;
-  let totalMins = 0;
-  const taken = new Set<string>();
-  // Which categories we've already included — used to spread the trip across
-  // ALL the place types the traveller selected instead of clustering on one.
-  const usedCats = new Set<string>();
-  let foodTaken = false;
-
-  // Always leave a 15% buffer of time for traffic + breaks.
-  const minutesBudget = remainingMinutes * 0.85;
-  remainingMinutes = minutesBudget;
-
+  const people = Math.max(1, input.people);
   const maxStops = input.maxStops ?? 6;
-  // How strongly to prefer a not-yet-covered category (in "km-equivalent").
-  const COVERAGE_BONUS_KM = 10;
+  const start: Pt = input.start;
 
-  while (stops.length < maxStops) {
-    const scored = input.candidates
-      .filter((c) => !taken.has(c.id))
-      .map((c) => {
-        const dist = haversineKm(position, { lat: c.lat, lng: c.lng });
-        // Popularity boost: a 90-popular place beats a 50 by ~1.6 km.
-        const popBonus = ((c.popularity ?? 50) - 50) / 25;
-        // Big boost for a category we haven't visited yet → covers all types.
-        const coverageBonus = usedCats.has(c.category) ? 0 : COVERAGE_BONUS_KM;
-        // Hand-picked places win decisively — they're chosen before any
-        // auto-discovered candidate, as long as budget + time still allow.
-        const pinnedBonus = c.pinned ? 100_000 : 0;
-        const score = dist - popBonus - coverageBonus - pinnedBonus;
-        return { c, dist, score };
-      })
-      .sort((a, b) => a.score - b.score);
+  // 15% buffer of time for traffic + breaks.
+  const minutesBudget = input.hoursAvailable * 60 * 0.85;
+  const budget = input.totalBudget;
 
-    let picked: { c: Candidate; dist: number } | null = null;
-    for (const s of scored) {
-      const c = s.c;
-      // If we already took a food stop and this is food, skip.
-      const isFood =
-        c.category === "restaurant" ||
-        c.category === "cafe" ||
-        c.category === "fast_food";
-      if (isFood && (!input.includeFood || foodTaken)) continue;
+  const D = (a: Pt, b: Pt) => haversineKm(a, b);
+  const stopCostOf = (c: Candidate) =>
+    c.entryFee * people + (isFoodCat(c) ? (c.foodCostPerPerson ?? 0) * people : 0);
 
-      const travelMins = (s.dist / speed) * 60;
-      const totalLegMins = travelMins + c.idealMinutes;
-      const travelCost = s.dist * v.costPerKm;
-      const stopCost =
-        c.entryFee * input.people +
-        (isFood ? (c.foodCostPerPerson ?? 0) * input.people : 0);
-      const legCost = travelCost + stopCost;
+  // Worth of a place: base + popularity, a big bonus for a not-yet-covered
+  // category (keeps the trip diverse), and a decisive boost for hand-picked
+  // places so they always make the cut.
+  const valueOf = (c: Candidate, covered: Set<string>) => {
+    let val = 10 + (c.popularity ?? 50);
+    if (!covered.has(c.category)) val += 60;
+    if (c.pinned) val += 1_000_000;
+    return val;
+  };
 
-      if (legCost > remainingBudget) continue;
-      if (totalLegMins > remainingMinutes) continue;
+  const tour: Candidate[] = [];
+  const covered = new Set<string>();
+  let foodUsed = false;
+  let curDist = 0; // round-trip distance of the current loop (incl. return)
+  let curStopMin = 0;
+  let curStopCost = 0;
 
-      picked = { c, dist: s.dist };
-      break;
+  // Detour added by inserting c between position pos-1 and pos (start anchors
+  // both ends of the loop).
+  const detourAt = (c: Candidate, pos: number) => {
+    const a = pos === 0 ? start : tour[pos - 1];
+    const b = pos === tour.length ? start : tour[pos];
+    return D(a, c) + D(c, b) - D(a, b);
+  };
+  const bestInsertion = (c: Candidate) => {
+    let bestPos = 0;
+    let bestDetour = Infinity;
+    for (let pos = 0; pos <= tour.length; pos++) {
+      const dt = detourAt(c, pos);
+      if (dt < bestDetour) {
+        bestDetour = dt;
+        bestPos = pos;
+      }
     }
+    return { pos: bestPos, detour: bestDetour };
+  };
+  const feasible = (c: Candidate, detour: number) => {
+    const newDist = curDist + detour;
+    const newMin = (newDist / speed) * 60 + curStopMin + c.idealMinutes;
+    const newCost = curStopCost + stopCostOf(c) + newDist * v.costPerKm;
+    return newMin <= minutesBudget && newCost <= budget;
+  };
+  const place = (c: Candidate, pos: number, detour: number) => {
+    tour.splice(pos, 0, c);
+    curDist += detour;
+    curStopMin += c.idealMinutes;
+    curStopCost += stopCostOf(c);
+    covered.add(c.category);
+    if (isFoodCat(c)) foodUsed = true;
+  };
 
-    if (!picked) break;
+  // De-dup + drop food when the traveller doesn't want a food stop.
+  const seen = new Set<string>();
+  let pool = input.candidates.filter((c) => {
+    if (seen.has(c.id)) return false;
+    seen.add(c.id);
+    return !(isFoodCat(c) && !input.includeFood);
+  });
 
-    const dist = picked.dist;
+  // 1) Hand-picked places first — inserted at their cheapest position.
+  for (const c of pool.filter((c) => c.pinned)) {
+    if (tour.length >= maxStops) break;
+    const { pos, detour } = bestInsertion(c);
+    if (feasible(c, detour)) place(c, pos, detour);
+  }
+  const taken = new Set(tour.map((c) => c.id));
+  pool = pool.filter((c) => !taken.has(c.id));
+
+  // 2) Greedily insert the best value-per-detour candidate until full.
+  while (tour.length < maxStops) {
+    let best: { c: Candidate; pos: number; detour: number; ratio: number } | null = null;
+    for (const c of pool) {
+      if (isFoodCat(c) && foodUsed) continue;
+      const { pos, detour } = bestInsertion(c);
+      if (!feasible(c, detour)) continue;
+      const detourMin = (detour / speed) * 60 + c.idealMinutes;
+      const ratio = valueOf(c, covered) / Math.max(5, detourMin);
+      if (!best || ratio > best.ratio) best = { c, pos, detour, ratio };
+    }
+    if (!best) break;
+    place(best.c, best.pos, best.detour);
+    pool = pool.filter((c) => c.id !== best!.c.id);
+  }
+
+  // 3) Optimise the visiting order (remove crossings / backtracking).
+  twoOpt(tour, start, D);
+
+  // 4) Materialise per-stop metrics from the optimised order (haversine here;
+  // the API refines these with real OSRM road distances afterwards).
+  const stops: PlannerStop[] = [];
+  let prev: Pt = start;
+  let forwardDist = 0;
+  let forwardMins = 0;
+  for (const c of tour) {
+    const dist = D(prev, c);
     const travelMins = (dist / speed) * 60;
     const travelCost = Math.round(dist * v.costPerKm);
-    const isFood =
-      picked.c.category === "restaurant" ||
-      picked.c.category === "cafe" ||
-      picked.c.category === "fast_food";
-    const stopCost = Math.round(
-      picked.c.entryFee * input.people +
-        (isFood ? (picked.c.foodCostPerPerson ?? 0) * input.people : 0)
-    );
-
+    const stopCost = Math.round(stopCostOf(c));
     stops.push({
-      ...picked.c,
+      ...c,
       arrivalKmFromPrev: dist,
       arrivalMinutesFromPrev: travelMins,
       stopCost,
       travelCost,
     });
-    if (isFood) foodTaken = true;
-    remainingBudget -= travelCost + stopCost;
-    remainingMinutes -= travelMins + picked.c.idealMinutes;
-    totalDist += dist;
-    totalMins += travelMins + picked.c.idealMinutes;
-    position = { lat: picked.c.lat, lng: picked.c.lng };
-    taken.add(picked.c.id);
-    usedCats.add(picked.c.category);
+    forwardDist += dist;
+    forwardMins += travelMins + c.idealMinutes;
+    prev = c;
   }
 
   const totalCost = stops.reduce((s, st) => s + st.stopCost + st.travelCost, 0);
-  const perPerson = Math.round(totalCost / Math.max(1, input.people));
+  const perPerson = Math.round(totalCost / people);
 
   return {
     stops,
-    totalDistanceKm: totalDist,
-    totalMinutes: totalMins,
+    totalDistanceKm: forwardDist,
+    totalMinutes: forwardMins,
     totalCost,
     perPersonCost: perPerson,
-    unspentBudget: Math.max(0, Math.round(remainingBudget)),
-    unspentMinutes: Math.max(0, Math.round(remainingMinutes)),
+    unspentBudget: Math.max(0, Math.round(budget - totalCost)),
+    unspentMinutes: Math.max(0, Math.round(minutesBudget - forwardMins)),
   };
 }

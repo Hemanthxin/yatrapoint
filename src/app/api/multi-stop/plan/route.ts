@@ -311,13 +311,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4) Build the real road route through the stops IN NEAREST-FIRST ORDER.
-  // The greedy picker already orders stops nearest-first from the start (stop 1
-  // is closest to you, stop 2 closest to stop 1, and so on). We deliberately do
-  // NOT run OSRM's TSP /trip here — that reorders into a shortest *loop*, which
-  // makes the numbering look wrong (a far stop can come before a near one). We
-  // route through the stops in order and return to the start, then overwrite the
-  // straight-line (haversine) leg metrics with OSRM's REAL road distances/times.
+  // 4) Build the real road route through the stops IN THE PLANNER'S ORDER.
+  // The planner already 2-opt optimises the visiting order on straight-line
+  // distance, so it's a sensible, backtrack-free sequence. We route through the
+  // stops in that order and return to the start, then overwrite the haversine
+  // leg metrics with OSRM's REAL road distances/times (we don't re-run OSRM's
+  // /trip TSP, which would renumber the stops and fight the planner's order).
   const vehicleProfile = VEHICLES[parsed.data.vehicle];
   const routeWaypoints = [
     parsed.data.start,
