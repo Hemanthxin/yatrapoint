@@ -9,8 +9,12 @@ export interface CategoryGroup {
 }
 
 export const PLACE_GROUPS: CategoryGroup[] = [
-  { slug: "temples", label: "Temples", emoji: "🛕", overpass: ["temple", "place_of_worship"] },
+  // Each place of worship is its OWN group — temples never pull in mosques,
+  // churches or gurudwaras (each maps to a single religion-specific filter).
+  { slug: "temples", label: "Temples", emoji: "🛕", overpass: ["temple"] },
+  { slug: "mosques", label: "Mosques", emoji: "🕌", overpass: ["mosque"] },
   { slug: "churches", label: "Churches", emoji: "⛪", overpass: ["church"] },
+  { slug: "gurudwaras", label: "Gurudwaras", emoji: "🛐", overpass: ["gurudwara"] },
   { slug: "museums", label: "Museums", emoji: "🏛️", overpass: ["museum"] },
   { slug: "parks", label: "Parks", emoji: "🌳", overpass: ["park", "garden"] },
   { slug: "lakes", label: "Lakes", emoji: "💧", overpass: ["lake"] },

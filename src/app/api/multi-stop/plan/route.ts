@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { cityPlaces } from "@/lib/db/schema";
+import { cityPlaces, destinations } from "@/lib/db/schema";
 import { fetchOverpassPlaces, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
 import {
@@ -55,16 +55,37 @@ const bodySchema = z.object({
     lat: z.number().gte(-90).lte(90),
     lng: z.number().gte(-180).lte(180),
   }),
-  totalBudget: z.number().int().min(200).max(2_000_000),
+  totalBudget: z.number().int().min(1).max(2_000_000),
   hours: z.number().min(1).max(120),
   people: z.number().int().min(1).max(20),
   vehicle: z.enum(VEHICLE_KINDS as [VehicleKind, ...VehicleKind[]]),
-  // User-facing OSM categories (we accept any of ALL_OVERPASS).
-  categories: z.array(z.string()).min(1),
+  // User-facing OSM categories (we accept any of ALL_OVERPASS). Optional when
+  // the traveller hand-picks specific places instead of discovering by type.
+  categories: z.array(z.string()).default([]),
+  // Curated-catalogue place ids the traveller explicitly chose to include.
+  includePlaceIds: z.array(z.string()).max(50).default([]),
   includeFood: z.boolean().default(true),
   maxStops: z.number().int().min(2).max(15).default(6),
   searchRadiusKm: z.number().min(1).max(500).default(25),
 });
+
+// Curated `destinations.category` → Overpass category, so hand-picked catalogue
+// places slot into the same planner as discovered ones.
+const DEST_CATEGORY_TO_OVERPASS: Record<string, OverpassCategory> = {
+  Attraction: "tourist_attraction",
+  Temple: "temple",
+  Waterfall: "tourist_attraction",
+  Beach: "tourist_attraction",
+  "Hill Station": "viewpoint",
+  Museum: "museum",
+  Park: "park",
+  Restaurant: "restaurant",
+  Adventure: "tourist_attraction",
+  Heritage: "monument",
+  Lake: "lake",
+  Market: "marketplace",
+  Other: "tourist_attraction",
+};
 
 // Map seeded city_places categories to Overpass categories so we can use the
 // curated seed alongside live OSM data.
@@ -106,9 +127,10 @@ export async function POST(req: NextRequest) {
   const wantedCats = parsed.data.categories.filter((c): c is OverpassCategory =>
     (ALL_OVERPASS as string[]).includes(c)
   );
-  if (wantedCats.length === 0) {
+  const placeIds = parsed.data.includePlaceIds;
+  if (wantedCats.length === 0 && placeIds.length === 0) {
     return NextResponse.json(
-      { error: "No valid categories specified" },
+      { error: "Pick at least one place type or one specific place." },
       { status: 400 }
     );
   }
@@ -116,18 +138,42 @@ export async function POST(req: NextRequest) {
   // De-dup key — round to ~110 m so the same place from seed + Overpass merges.
   const coordKey = (lat: number, lng: number) => `${lat.toFixed(3)},${lng.toFixed(3)}`;
 
+  // 0) Hand-picked catalogue places — pinned so the planner pulls them in first.
+  const pinnedCandidates: Candidate[] = [];
+  if (placeIds.length > 0) {
+    const picked = await db
+      .select()
+      .from(destinations)
+      .where(inArray(destinations.id, placeIds));
+    for (const d of picked) {
+      const lat = Number(d.latitude);
+      const lng = Number(d.longitude);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+      const op = DEST_CATEGORY_TO_OVERPASS[d.category] ?? "tourist_attraction";
+      pinnedCandidates.push({
+        id: `dest:${d.id}`,
+        name: d.name,
+        category: op,
+        lat,
+        lng,
+        entryFee: d.entryFees,
+        entryFeeKnown: true,
+        idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
+        popularity: 100,
+        pinned: true,
+        meta: { citySeedSlug: d.slug },
+      });
+    }
+  }
+
   // 1) Curated seed places that match the wanted categories.
-  const seedMatches = await db
-    .select()
-    .from(cityPlaces)
-    .where(
-      inArray(
-        cityPlaces.kind,
-        Object.entries(SEED_KIND_TO_OVERPASS)
-          .filter(([, op]) => wantedCats.includes(op))
-          .map(([k]) => k)
-      )
-    );
+  const seedKinds = Object.entries(SEED_KIND_TO_OVERPASS)
+    .filter(([, op]) => wantedCats.includes(op))
+    .map(([k]) => k);
+  const seedMatches =
+    seedKinds.length > 0
+      ? await db.select().from(cityPlaces).where(inArray(cityPlaces.kind, seedKinds))
+      : [];
 
   const seedCandidates: Candidate[] = seedMatches
     .filter((s) => {
@@ -158,8 +204,8 @@ export async function POST(req: NextRequest) {
 
   // 2) Live Overpass candidates, merged + de-duped. Auto-widen the radius when
   // the area is sparse so we can reliably reach the requested number of places.
-  const finalCandidates: Candidate[] = [...seedCandidates];
-  const usedKeys = new Set(seedCandidates.map((s) => coordKey(s.lat, s.lng)));
+  const finalCandidates: Candidate[] = [...pinnedCandidates, ...seedCandidates];
+  const usedKeys = new Set(finalCandidates.map((s) => coordKey(s.lat, s.lng)));
   let overpassCount = 0;
   let overpassError: string | null = null;
 
@@ -185,7 +231,7 @@ export async function POST(req: NextRequest) {
 
   let radiusKm = parsed.data.searchRadiusKm;
   try {
-    await addOverpass(radiusKm);
+    if (wantedCats.length > 0) await addOverpass(radiusKm);
   } catch (err) {
     overpassError = err instanceof Error ? err.message : "Overpass failed";
   }
@@ -196,7 +242,7 @@ export async function POST(req: NextRequest) {
   const chosenKm = parsed.data.searchRadiusKm;
   const maxWidenKm = chosenKm * 1.5;
   let widen = 0;
-  while (finalCandidates.length < parsed.data.maxStops && radiusKm < maxWidenKm && widen < 1 && !overpassError) {
+  while (wantedCats.length > 0 && finalCandidates.length < parsed.data.maxStops && radiusKm < maxWidenKm && widen < 1 && !overpassError) {
     radiusKm = Math.min(maxWidenKm, radiusKm * 1.5);
     widen += 1;
     try {

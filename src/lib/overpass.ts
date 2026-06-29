@@ -75,6 +75,48 @@ const CATEGORY_FILTERS: Record<OverpassCategory, string[]> = {
   amusement: ['tourism=theme_park', 'leisure=water_park'],
 };
 
+// Raw Overpass element — used by generic queries (e.g. admin boundaries).
+export interface OverpassElement {
+  type: "node" | "way" | "relation" | "area";
+  id: number;
+  lat?: number;
+  lon?: number;
+  center?: { lat: number; lon: number };
+  tags?: Record<string, string>;
+}
+
+// Run an arbitrary Overpass QL query against the mirror pool and return the raw
+// elements. Shares the User-Agent + multi-mirror fallback used everywhere else.
+export async function runOverpassQuery(
+  ql: string,
+  signal?: AbortSignal
+): Promise<OverpassElement[]> {
+  const errors: string[] = [];
+  for (const endpoint of ENDPOINTS) {
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": USER_AGENT,
+          Accept: "application/json",
+        },
+        body: `data=${encodeURIComponent(ql)}`,
+        signal,
+      });
+      if (!res.ok) {
+        errors.push(`${endpoint} → ${res.status}`);
+        continue;
+      }
+      const data = (await res.json()) as { elements?: OverpassElement[] };
+      return data.elements ?? [];
+    } catch (err) {
+      errors.push(`${endpoint} → ${err instanceof Error ? err.message : "error"}`);
+    }
+  }
+  throw new Error(`All Overpass mirrors failed: ${errors.join("; ")}`);
+}
+
 export interface OverpassPlace {
   osmId: string; // e.g. "node/12345"
   name: string;

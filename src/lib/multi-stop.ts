@@ -53,6 +53,9 @@ export interface Candidate {
   foodCostPerPerson?: number;
   // 0..100, used to break ties when distance is similar.
   popularity?: number;
+  // When true, the traveller hand-picked this exact place — the planner pulls
+  // it in ahead of auto-discovered candidates (budget/time permitting).
+  pinned?: boolean;
   // Pass-through metadata so the UI can render extra info.
   meta?: {
     osmId?: string;
@@ -161,7 +164,10 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
         const popBonus = ((c.popularity ?? 50) - 50) / 25;
         // Big boost for a category we haven't visited yet → covers all types.
         const coverageBonus = usedCats.has(c.category) ? 0 : COVERAGE_BONUS_KM;
-        const score = dist - popBonus - coverageBonus;
+        // Hand-picked places win decisively — they're chosen before any
+        // auto-discovered candidate, as long as budget + time still allow.
+        const pinnedBonus = c.pinned ? 100_000 : 0;
+        const score = dist - popBonus - coverageBonus - pinnedBonus;
         return { c, dist, score };
       })
       .sort((a, b) => a.score - b.score);

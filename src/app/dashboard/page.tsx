@@ -3,40 +3,66 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   ArrowRight,
+  MapPin,
+  Wallet,
+  CalendarClock,
+  Users,
+  Heart,
   Briefcase,
   Binoculars,
-  ShoppingBag,
-  CalendarClock,
-  MapPin,
-  Users,
-  Compass,
-  Pencil,
-  Wallet,
+  Bookmark,
 } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { TiltCard } from "@/components/app/TiltCard";
 import { formatINR } from "@/lib/format";
 import { getDashboardStats } from "@/lib/queries/trip-plans";
-import { listPublishedPosts } from "@/lib/queries/community";
 
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/");
   const u = session.user;
   const displayName = u.name || u.email || u.phone || "Traveller";
+  const firstName = displayName.split(" ")[0] || displayName;
 
-  const [stats, posts] = await Promise.all([
-    getDashboardStats(u.id ?? ""),
-    listPublishedPosts(2),
-  ]);
+  const stats = await getDashboardStats(u.id ?? "");
+
+  // Feature tiles — order matches the home design (Budget Planner first).
+  const features = [
+    {
+      title: "Budget Planner",
+      desc: "Plan your trip within budget",
+      href: "/budget-planner",
+      tone: "bg-emerald-100 text-emerald-700",
+      icon: <Wallet className="h-5 w-5" />,
+    },
+    {
+      title: "By State Places",
+      desc: "Explore top places by state",
+      href: "/destinations",
+      tone: "bg-sky-100 text-sky-700",
+      icon: <MapPin className="h-5 w-5" />,
+    },
+    {
+      title: "Festivals & Events",
+      desc: "Upcoming festivals & events",
+      href: "/festivals",
+      tone: "bg-amber-100 text-amber-700",
+      icon: <CalendarClock className="h-5 w-5" />,
+    },
+    {
+      title: "Community",
+      desc: "Share tips, hidden gems & more",
+      href: "/community",
+      tone: "bg-violet-100 text-violet-700",
+      icon: <Users className="h-5 w-5" />,
+    },
+  ];
 
   const statCards = [
     {
       label: "Trips Planned",
       value: stats.tripsPlanned.toString().padStart(2, "0"),
-      action: "View all trips",
       href: "/one-day-trips",
       icon: <Briefcase className="h-5 w-5" />,
       tone: "bg-emerald-100 text-emerald-700",
@@ -44,193 +70,161 @@ export default async function DashboardPage() {
     {
       label: "Places Explored",
       value: stats.placesExplored.toString(),
-      action: "View all places",
       href: "/destinations",
       icon: <Binoculars className="h-5 w-5" />,
       tone: "bg-sky-100 text-sky-700",
     },
     {
-      label: "Total Saved",
-      value: formatINR(stats.totalSaved),
-      action: "View savings",
-      href: "/budget-planner",
-      icon: <ShoppingBag className="h-5 w-5" />,
-      tone: "bg-violet-100 text-violet-700",
-    },
-    {
-      label: "Upcoming Trip",
-      value: stats.upcomingTrip?.name ?? "Plan one →",
-      action: stats.upcomingTrip ? `${stats.upcomingTrip.days} days planned` : "Start planning",
-      href: "/budget-planner",
-      icon: <CalendarClock className="h-5 w-5" />,
+      label: "Saved Places",
+      value: stats.placesExplored.toString().padStart(2, "0"),
+      href: "/destinations",
+      icon: <Bookmark className="h-5 w-5" />,
       tone: "bg-amber-100 text-amber-700",
     },
-  ];
-
-  const features = [
     {
-      title: "By State Places",
-      desc: "Explore top tourist places by state",
-      href: "/destinations",
-      tone: "bg-emerald-50",
-      icon: <MapPin className="h-5 w-5 text-emerald-600" />,
-    },
-    {
-      title: "Community",
-      desc: "Share hidden gems, tips and travel stories with the community",
-      href: "/community",
-      tone: "bg-sky-50",
-      icon: <Users className="h-5 w-5 text-sky-600" />,
-    },
-    {
-      title: "Festival & Events",
-      desc: "Explore upcoming festivals and events near you",
-      href: "/festivals",
-      tone: "bg-amber-50",
-      icon: <CalendarClock className="h-5 w-5 text-amber-600" />,
-    },
-    {
-      title: "Trips by Places",
-      desc: "Plan trips to your favorite places",
-      href: "/trip-categories",
-      tone: "bg-rose-50",
-      icon: <Compass className="h-5 w-5 text-rose-600" />,
+      label: "Total Saved",
+      value: formatINR(stats.totalSaved),
+      href: "/budget-planner",
+      icon: <Heart className="h-5 w-5" />,
+      tone: "bg-rose-100 text-rose-700",
     },
   ];
 
   const nearby = [
-    { name: "Abbey Falls", place: "Madikeri, Karnataka", km: 12, img: "/66242.jpg" },
-    { name: "Raja's Seat", place: "Madikeri, Karnataka", km: 15, img: "/66245.jpg" },
-    { name: "Kootu Holey Dam", place: "Madikeri, Karnataka", km: 18, img: "/66242.jpg" },
-    { name: "Dubare Elephant Camp", place: "Madikeri, Karnataka", km: 22, img: "/66245.jpg" },
+    { name: "Abbey Falls", place: "Madikeri, Kodagu", km: 12, entry: "₹50 Entry", img: "/66242.jpg" },
+    { name: "Namdroling Monastery", place: "Bylakuppe", km: 25, entry: "Free Entry", img: "/66245.jpg" },
+    { name: "Harangi Dam", place: "Somwarpet, Kodagu", km: 18, entry: "₹25 Entry", img: "/66242.jpg" },
+    { name: "Raja's Seat", place: "Madikeri, Kodagu", km: 32, entry: "₹100 Entry", img: "/66245.jpg" },
   ];
 
-  const tripsByPlaces = [
-    { name: "Coorg Trip", nights: "2N / 3D", price: "₹4,999", img: "/66242.jpg" },
-    { name: "Hampi Trip", nights: "2N / 3D", price: "₹4,799", img: "/66245.jpg" },
+  const popularTrips = [
+    { name: "Mysore 1-Day Trip", days: "1 Day Trip", price: "₹1,299", img: "/66242.jpg" },
+    { name: "Coorg Weekend Trip", days: "2 Days Trip", price: "₹3,499", img: "/66245.jpg" },
+    { name: "Hampi Explorer Trip", days: "2 Days Trip", price: "₹2,999", img: "/66242.jpg" },
+    { name: "Chikmagalur Trip", days: "2 Days Trip", price: "₹2,799", img: "/66245.jpg" },
   ];
 
   return (
     <AppShell userLabel={displayName} userImage={u.image}>
+      {/* Greeting — mobile echo of the header (desktop greets in the top bar) */}
+      <div className="mb-4 lg:hidden">
+        <p className="text-xl font-bold text-slate-900">Hi, {firstName} 👋</p>
+        <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
+          <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Bengaluru, Karnataka
+        </p>
+      </div>
+
       {/* Hero banner */}
       <section className="relative overflow-hidden rounded-3xl">
-        <div className="relative h-52 w-full md:h-64">
+        <div className="relative h-56 w-full md:h-72">
           <Image
             src="/66242.jpg"
-            alt="Scenic temple and mountains"
+            alt="Scenic Karnataka temple and waterfalls"
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 70vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/25" />
         </div>
-        <div className="absolute inset-0 flex items-center justify-between gap-4 p-6 md:p-10">
-          <div className="animate-fadeUp">
-            <h1 className="text-3xl font-bold text-white md:text-5xl">
-              Explore more,
-              <br />
-              <span className="text-shimmer">Spend less.</span>
-            </h1>
-            <p className="mt-3 text-sm text-white/85 md:text-base">
-              Smart trips. Budget friendly. Unforgettable memories.
-            </p>
-          </div>
-          <div className="hidden w-64 shrink-0 animate-float rounded-2xl border border-white/15 bg-black/40 p-5 backdrop-blur-md md:block">
-            <p className="text-base font-bold text-white">Plan your next trip</p>
-            <p className="mt-1 text-xs text-white/75">
-              Get AI-powered suggestions based on your budget
-            </p>
-            <Link
-              href="/budget-planner"
-              className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.03] hover:bg-emerald-600"
-            >
-              Explore Trips <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stat cards — clickable, DB-driven, 3D tilt */}
-      <section className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {statCards.map((s, i) => (
-          <TiltCard key={s.label} className="animate-fadeUp" >
-            <Link
-              href={s.href}
-              style={{ animationDelay: `${i * 70}ms` }}
-              className="card-hover flex h-full items-center gap-4 rounded-3xl border border-slate-200 bg-white p-6 hover:border-emerald-200"
-            >
-              <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl ${s.tone}`}>
-                {s.icon}
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-slate-500">{s.label}</p>
-                <p className="truncate text-2xl font-extrabold text-slate-900">{s.value}</p>
-                <span className="text-xs font-semibold text-emerald-600">{s.action} →</span>
-              </div>
-            </Link>
-          </TiltCard>
-        ))}
-      </section>
-
-      {/* Feature cards — 3D tilt */}
-      <section className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {features.map((f, i) => (
-          <TiltCard key={f.title} className="animate-fadeUp">
-            <Link
-              href={f.href}
-              style={{ animationDelay: `${100 + i * 70}ms` }}
-              className={`card-hover group flex h-full items-start justify-between gap-3 rounded-3xl ${f.tone} p-6`}
-            >
-              <div>
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white/80 shadow-sm">
-                  {f.icon}
-                </div>
-                <p className="text-base font-bold text-slate-900">{f.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">{f.desc}</p>
-              </div>
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-slate-600 shadow-sm transition group-hover:translate-x-1 group-hover:text-emerald-600">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </Link>
-          </TiltCard>
-        ))}
-      </section>
-
-      {/* Near By & Main Places */}
-      <section className="mt-8">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900">Near By &amp; Main Places</h2>
-          <Link href="/explore-bangalore" className="text-sm font-medium text-emerald-600 hover:underline">
-            View all
+        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
+          <MapPin className="h-3 w-3 text-emerald-600" /> Coorg
+        </span>
+        <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
+          <h1 className="text-2xl font-bold leading-tight text-white md:text-4xl">
+            Explore Karnataka,
+            <br />
+            <span className="text-emerald-400">Create Memories</span>
+          </h1>
+          <p className="mt-2 max-w-xs text-sm text-white/85">
+            Smart trips. Budget friendly. Unforgettable memories.
+          </p>
+          <Link
+            href="/budget-planner"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.03] hover:bg-emerald-600"
+          >
+            Explore Now <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
-          {nearby.map((n, i) => (
+      </section>
+
+      {/* Feature tiles */}
+      <section className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {features.map((f) => (
+          <Link
+            key={f.title}
+            href={f.href}
+            className="card-hover rounded-2xl border border-slate-200 bg-white p-3.5"
+          >
+            <div className={`mb-2 grid h-10 w-10 place-items-center rounded-xl ${f.tone}`}>
+              {f.icon}
+            </div>
+            <p className="text-sm font-bold text-slate-900">{f.title}</p>
+            <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
+          </Link>
+        ))}
+      </section>
+
+      {/* Activity stats */}
+      <section className="mt-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-900">Trips Planned</h2>
+          <Link href="/one-day-trips" className="text-sm font-semibold text-emerald-600 hover:underline">
+            View all →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {statCards.map((s) => (
+            <Link
+              key={s.label}
+              href={s.href}
+              className="card-hover rounded-2xl border border-slate-200 bg-white p-4"
+            >
+              <div className={`mb-2 grid h-10 w-10 place-items-center rounded-xl ${s.tone}`}>
+                {s.icon}
+              </div>
+              <p className="truncate text-2xl font-extrabold text-slate-900">{s.value}</p>
+              <p className="text-xs text-slate-500">{s.label}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Near by place */}
+      <section className="mt-7">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-900">Near by place</h2>
+          <Link href="/explore-bangalore" className="text-sm font-semibold text-emerald-600 hover:underline">
+            View all →
+          </Link>
+        </div>
+        <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
+          {nearby.map((n) => (
             <Link
               key={n.name}
               href="/explore-bangalore"
-              style={{ animationDelay: `${i * 80}ms` }}
-              className="card-hover group relative h-48 animate-fadeUp overflow-hidden rounded-3xl"
+              className="card-hover w-40 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:w-auto"
             >
-              <Image
-                src={n.img}
-                alt={n.name}
-                fill
-                sizes="(max-width: 1024px) 50vw, 25vw"
-                className="object-cover transition duration-500 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <span className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-slate-700">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-              <div className="absolute inset-x-0 bottom-0 p-3 text-white">
-                <p className="text-sm font-semibold">{n.name}</p>
-                <p className="flex items-center gap-1 text-xs text-white/80">
-                  {n.place}
-                  <span className="ml-auto inline-flex items-center gap-1">
-                    <MapPin className="h-3 w-3" /> {n.km} km
-                  </span>
+              <div className="relative h-24 w-full">
+                <Image src={n.img} alt={n.name} fill sizes="160px" className="object-cover" />
+                <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white">
+                  {n.km} km
+                </span>
+                <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-rose-500">
+                  <Heart className="h-3.5 w-3.5" />
+                </span>
+              </div>
+              <div className="p-2.5">
+                <p className="truncate text-sm font-semibold text-slate-900">{n.name}</p>
+                <p className="flex items-center gap-1 truncate text-[11px] text-slate-500">
+                  <MapPin className="h-3 w-3" /> {n.place}
+                </p>
+                <p
+                  className={`mt-1 text-xs font-bold ${
+                    n.entry === "Free Entry" ? "text-emerald-600" : "text-slate-700"
+                  }`}
+                >
+                  {n.entry}
                 </p>
               </div>
             </Link>
@@ -238,92 +232,34 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* Bottom 3-column row */}
-      <section className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
-        {/* Trips by Places */}
-        <div className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900">Trips by Places</h3>
-            <Link href="/trip-categories" className="text-xs font-medium text-emerald-600 hover:underline">
-              View all
-            </Link>
-          </div>
-          <ul className="space-y-3">
-            {tripsByPlaces.map((t) => (
-              <li key={t.name} className="flex items-center gap-3">
-                <div className="relative h-12 w-12 overflow-hidden rounded-xl">
-                  <Image src={t.img} alt={t.name} fill sizes="48px" className="object-cover" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-slate-900">{t.name}</p>
-                  <p className="text-xs text-slate-500">{t.nights}</p>
-                </div>
-                <span className="text-sm font-bold text-emerald-600">{t.price}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Community Updates — real published posts */}
-        <div className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6 [animation-delay:90ms]">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900">Community Updates</h3>
-            <Link href="/community" className="text-xs font-medium text-emerald-600 hover:underline">
-              View all
-            </Link>
-          </div>
-          {posts.length === 0 ? (
-            <Link href="/community" className="block rounded-xl bg-slate-50 p-4 text-center text-sm text-slate-500 hover:bg-slate-100">
-              No posts yet — be the first to share a hidden place →
-            </Link>
-          ) : (
-            <ul className="space-y-4">
-              {posts.map((p) => (
-                <li key={p.id} className="flex gap-3">
-                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
-                    {(p.authorName ?? "T").charAt(0)}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900">{p.authorName ?? "Traveller"}</p>
-                    <p className="line-clamp-2 text-xs leading-relaxed text-slate-600">{p.title}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* Budget Planner widget */}
-        <div className="card-hover animate-fadeUp rounded-3xl border border-slate-200 bg-white p-6 [animation-delay:180ms]">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900">Budget Planner</h3>
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
-              <Wallet className="h-4 w-4" />
-            </span>
-          </div>
-          <p className="text-xs text-slate-500">Your Budget</p>
-          <div className="flex items-center gap-2">
-            <p className="text-2xl font-bold text-emerald-600">₹ 5,000</p>
-            <Pencil className="h-4 w-4 text-slate-400" />
-          </div>
-          <div className="mt-4">
-            <div className="h-1.5 w-full rounded-full bg-slate-100">
-              <div className="h-1.5 w-[35%] rounded-full bg-emerald-500" />
-            </div>
-            <div className="mt-2 flex justify-between text-[10px] text-slate-400">
-              <span>₹1K</span>
-              <span>₹5K</span>
-              <span>₹10K</span>
-              <span>₹20K</span>
-              <span>₹50K+</span>
-            </div>
-          </div>
-          <Link
-            href="/budget-planner"
-            className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
-          >
-            Plan a trip <ArrowRight className="h-4 w-4" />
+      {/* Popular trips */}
+      <section className="mt-7">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-900">Popular Trips</h2>
+          <Link href="/one-day-trips" className="text-sm font-semibold text-emerald-600 hover:underline">
+            View all →
           </Link>
+        </div>
+        <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
+          {popularTrips.map((t) => (
+            <Link
+              key={t.name}
+              href="/one-day-trips"
+              className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-2xl lg:w-auto"
+            >
+              <Image src={t.img} alt={t.name} fill sizes="224px" className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                {t.days}
+              </span>
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white">
+                <p className="text-sm font-bold">{t.name}</p>
+                <p className="text-xs text-white/85">
+                  Starting from <span className="font-bold">{t.price}</span>
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
     </AppShell>

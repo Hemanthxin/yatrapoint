@@ -45,7 +45,7 @@ export function Filters({
       <select
         value={current.state ?? ""}
         onChange={(e) => push({ state: e.target.value || undefined })}
-        className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-indigo-400"
+        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-indigo-400 sm:w-auto"
       >
         <option value="">All states</option>
         {states.map((s) => (
@@ -56,7 +56,7 @@ export function Filters({
       <select
         value={current.category ?? ""}
         onChange={(e) => push({ category: e.target.value || undefined })}
-        className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-indigo-400"
+        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-indigo-400 sm:w-auto"
       >
         <option value="">All categories</option>
         {categories.map((c) => (
@@ -70,7 +70,7 @@ export function Filters({
             setQ("");
             router.push("/admin/places");
           }}
-          className="h-11 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-600 hover:bg-slate-50"
+          className="h-11 w-full rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:w-auto"
         >
           Clear
         </button>

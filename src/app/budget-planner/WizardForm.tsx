@@ -14,10 +14,15 @@ import {
   CalendarDays,
   MapPinned,
   ArrowRight,
+  LocateFixed,
+  Map as MapIcon,
+  Loader2,
 } from "lucide-react";
 
 import type { VehicleKind } from "@/lib/budget";
 import { PLACE_GROUPS, TRIP_GROUPS } from "@/lib/catalog/place-groups";
+import { geocodeArea } from "@/lib/actions/areas";
+import { AreaPicker, EMPTY_AREA, type AreaSelection } from "./AreaPicker";
 import { LivePlan, type LivePlanProps } from "./LivePlan";
 
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
@@ -82,6 +87,30 @@ interface WizardFormProps {
   initial: { budget?: number; days?: number; travellers?: number };
 }
 
+// Pick the area to geocode: the narrowest unambiguous level. One taluk → that
+// taluk; one district (no taluks) → that district; anything broader → the state
+// centre (its big radius still covers the chosen districts).
+function geocodeTarget(a: AreaSelection): { state: string; district?: string; taluk?: string } {
+  if (a.scope === "taluks" && a.talukDistrict) {
+    if (a.taluks.length === 1) return { state: a.state, district: a.talukDistrict, taluk: a.taluks[0] };
+    return { state: a.state, district: a.talukDistrict };
+  }
+  if (a.scope === "districts" && a.districts.length === 1) {
+    return { state: a.state, district: a.districts[0] };
+  }
+  return { state: a.state };
+}
+
+function areaLabel(a: AreaSelection): string {
+  if (a.scope === "taluks" && a.taluks.length > 0) {
+    return `${a.taluks.join(", ")} (${a.talukDistrict}, ${a.state})`;
+  }
+  if (a.scope === "districts" && a.districts.length > 0) {
+    return `${a.districts.join(", ")}, ${a.state}`;
+  }
+  return a.state;
+}
+
 export function WizardForm({ initial }: WizardFormProps) {
   const [budget, setBudget] = useState(initial.budget ?? 5000);
   const [days, setDays] = useState(initial.days ? `${initial.days} Days` : "2 Days");
@@ -93,6 +122,12 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [km, setKm] = useState("25");
   // Categories to explore — preset from the trip type, fully editable.
   const [groups, setGroups] = useState<Set<string>>(new Set(TRIP_GROUPS.Family));
+  // Where to plan: "around" = live GPS + radius; "area" = a chosen state /
+  // district / taluk anywhere in India.
+  const [planMode, setPlanMode] = useState<"around" | "area">("around");
+  const [area, setArea] = useState<AreaSelection>(EMPTY_AREA);
+  const [areaError, setAreaError] = useState<string | null>(null);
+  const [geocoding, setGeocoding] = useState(false);
 
   // The plan only regenerates when the user submits — we snapshot the inputs
   // here and bump `planKey` so <LivePlan> remounts and re-runs with them.
@@ -122,6 +157,8 @@ export function WizardForm({ initial }: WizardFormProps) {
       if (typeof f.places === "string") setPlaces(f.places);
       if (typeof f.km === "string") setKm(f.km);
       if (Array.isArray(f.groups)) setGroups(new Set(f.groups as string[]));
+      if (f.planMode === "around" || f.planMode === "area") setPlanMode(f.planMode);
+      if (f.area && typeof f.area === "object") setArea(f.area as AreaSelection);
       if (saved.snapshot) setSnapshot(saved.snapshot);
     } catch {
       // ignore
@@ -144,8 +181,10 @@ export function WizardForm({ initial }: WizardFormProps) {
     });
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    setAreaError(null);
+
     const snap: LivePlanProps = {
       budget,
       people: travellersNum,
@@ -157,13 +196,42 @@ export function WizardForm({ initial }: WizardFormProps) {
       days: daysNum,
       radiusKm: Math.max(1, parseInt(km, 10) || 25),
     };
+
+    // Area mode — geocode the chosen state / district / taluk to a centre and
+    // plan there, plus carry any hand-picked catalogue places.
+    if (planMode === "area") {
+      if (!area.state) {
+        setAreaError("Choose a state to plan in.");
+        return;
+      }
+      if (groups.size === 0 && area.placeIds.length === 0) {
+        setAreaError("Pick at least one place type below, or add specific places.");
+        return;
+      }
+      setGeocoding(true);
+      const target = geocodeTarget(area);
+      const centre = await geocodeArea(target);
+      setGeocoding(false);
+      if (!centre) {
+        setAreaError("Couldn't locate that area — try a different district or taluk.");
+        return;
+      }
+      snap.originOverride = {
+        lat: centre.lat,
+        lng: centre.lng,
+        label: areaLabel(area),
+      };
+      snap.radiusKm = centre.radiusKm;
+      snap.placeIds = area.placeIds;
+    }
+
     setSnapshot(snap);
     setPlanKey((k) => k + 1);
     try {
       sessionStorage.setItem(
         SESSION_KEY,
         JSON.stringify({
-          fields: { budget, days, travellers, tripType, transport, food, places, km, groups: [...groups] },
+          fields: { budget, days, travellers, tripType, transport, food, places, km, groups: [...groups], planMode, area },
           snapshot: snap,
         })
       );
@@ -222,6 +290,37 @@ export function WizardForm({ initial }: WizardFormProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Form column */}
         <div className="space-y-4 lg:col-span-2">
+          {/* Where to go — around me vs a chosen area in India */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-5">
+            <p className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+              <span>📍</span> Where do you want to go?
+            </p>
+            <p className="mb-3 text-xs text-slate-500">
+              Plan around your current location, or choose any state, district or taluk in India.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <ModeCard
+                active={planMode === "around"}
+                onClick={() => setPlanMode("around")}
+                icon={<LocateFixed className="h-4 w-4" />}
+                title="Around me"
+                desc="Use my live location and travel within a chosen distance."
+              />
+              <ModeCard
+                active={planMode === "area"}
+                onClick={() => setPlanMode("area")}
+                icon={<MapIcon className="h-4 w-4" />}
+                title="Choose an area"
+                desc="Pick a state, district or taluk anywhere in India."
+              />
+            </div>
+            {planMode === "area" && (
+              <div className="mt-4">
+                <AreaPicker value={area} onChange={setArea} />
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* 1. Budget */}
             <Card title="1. Your Budget" icon="💰">
@@ -230,10 +329,11 @@ export function WizardForm({ initial }: WizardFormProps) {
                   <span className="mr-1 text-slate-500">₹</span>
                   <input
                     type="number"
-                    min={1000}
-                    step={500}
+                    min={0}
+                    step={1}
                     value={budget}
-                    onChange={(e) => setBudget(Number(e.target.value))}
+                    onChange={(e) => setBudget(Math.max(0, Number(e.target.value)))}
+                    placeholder="Enter any amount"
                     className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none"
                   />
                 </div>
@@ -293,17 +393,20 @@ export function WizardForm({ initial }: WizardFormProps) {
               <p className="mt-2 text-xs text-slate-500">How many stops to include in the trip.</p>
             </Card>
 
-            {/* How far to travel */}
-            <Card title="How Far? (km)" icon="🧭">
-              <div className="flex flex-wrap gap-2">
-                {KM_OPTIONS.map((k) => (
-                  <Chip key={k} active={km === k} onClick={() => setKm(k)}>
-                    {k} km
-                  </Chip>
-                ))}
-              </div>
-              <p className="mt-2 text-xs text-slate-500">Search & route within this distance from you.</p>
-            </Card>
+            {/* How far to travel — only relevant for "around me" planning. In
+                area mode the distance comes from the chosen state/district/taluk. */}
+            {planMode === "around" && (
+              <Card title="How Far? (km)" icon="🧭">
+                <div className="flex flex-wrap gap-2">
+                  {KM_OPTIONS.map((k) => (
+                    <Chip key={k} active={km === k} onClick={() => setKm(k)}>
+                      {k} km
+                    </Chip>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-slate-500">Search & route within this distance from you.</p>
+              </Card>
+            )}
 
             {/* 4. Trip Type + categories to explore */}
             <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
@@ -331,8 +434,11 @@ export function WizardForm({ initial }: WizardFormProps) {
                 })}
               </div>
 
-              <p className="mb-2 mt-4 text-xs font-medium uppercase tracking-wide text-slate-500">
-                What do you want to explore?
+              <p className="mb-1 mt-4 text-xs font-medium uppercase tracking-wide text-slate-500">
+                Which types of places do you want to visit?
+              </p>
+              <p className="mb-2 text-xs text-slate-500">
+                Tap to add or remove. Temples, mosques, churches and gurudwaras are each separate — pick exactly what you want.
               </p>
               <div className="flex flex-wrap gap-2">
                 {PLACE_GROUPS.map((g) => {
@@ -382,12 +488,27 @@ export function WizardForm({ initial }: WizardFormProps) {
             </Card>
           </div>
 
+          {areaError && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              {areaError}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800"
+            disabled={geocoding}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 disabled:opacity-70"
           >
-            {snapshot ? "Update Plan" : "Continue & Generate Plan"}
-            <ArrowRight className="h-4 w-4" />
+            {geocoding ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Locating your area…
+              </>
+            ) : (
+              <>
+                {snapshot ? "Update Plan" : "Continue & Generate Plan"}
+                <ArrowRight className="h-4 w-4" />
+              </>
+            )}
           </button>
 
           <div className="rounded-xl bg-sky-50 px-4 py-3 text-xs text-slate-600">
@@ -467,6 +588,46 @@ function Card({
       </p>
       {children}
     </div>
+  );
+}
+
+function ModeCard({
+  active,
+  onClick,
+  icon,
+  title,
+  desc,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-start gap-3 rounded-2xl border p-3.5 text-left transition ${
+        active
+          ? "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-200"
+          : "border-slate-200 hover:border-emerald-300"
+      }`}
+    >
+      <span
+        className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${
+          active ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
+        }`}
+      >
+        {icon}
+      </span>
+      <span>
+        <span className={`block text-sm font-semibold ${active ? "text-emerald-800" : "text-slate-800"}`}>
+          {title}
+        </span>
+        <span className="mt-0.5 block text-xs text-slate-500">{desc}</span>
+      </span>
+    </button>
   );
 }
 

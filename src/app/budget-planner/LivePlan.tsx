@@ -84,6 +84,10 @@ export interface LivePlanProps {
   maxStops: number;
   radiusKm?: number;
   days?: number;
+  // When planning a chosen area (state / district / taluk) instead of "around
+  // me", these override the live GPS origin and add hand-picked catalogue stops.
+  originOverride?: { lat: number; lng: number; label?: string } | null;
+  placeIds?: string[];
 }
 
 export function LivePlan({
@@ -96,9 +100,18 @@ export function LivePlan({
   maxStops,
   radiusKm = 25,
   days = 1,
+  originOverride = null,
+  placeIds = [],
 }: LivePlanProps) {
   const router = useRouter();
-  const { coords, status, accuracyMeters, isFallback, request } = useLocation();
+  const live = useLocation();
+  // Effective origin: the chosen area centre when planning an area, otherwise
+  // the traveller's live GPS location.
+  const coords = originOverride ?? live.coords;
+  const status = originOverride ? "granted" : live.status;
+  const accuracyMeters = originOverride ? null : live.accuracyMeters;
+  const isFallback = originOverride ? false : live.isFallback;
+  const request = live.request;
 
   const [plan, setPlan] = useState<PlanResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -111,13 +124,13 @@ export function LivePlan({
   // Signature of the inputs — lets us restore a cached plan only when it still
   // matches the current selections.
   const sig = useMemo(
-    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days }),
-    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days]
+    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds }),
+    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds]
   );
 
   const generate = useCallback(async () => {
-    if (overpassCategories.length === 0) {
-      setError("Pick at least one category in the form above.");
+    if (overpassCategories.length === 0 && placeIds.length === 0) {
+      setError("Pick at least one place type, or choose specific places above.");
       return;
     }
     setError(null);
@@ -133,6 +146,7 @@ export function LivePlan({
           people,
           vehicle,
           categories: overpassCategories,
+          includePlaceIds: placeIds,
           includeFood,
           maxStops,
           searchRadiusKm: radiusKm,
@@ -150,7 +164,7 @@ export function LivePlan({
     } finally {
       setLoading(false);
     }
-  }, [coords.lat, coords.lng, budget, hours, people, vehicle, overpassCategories, includeFood, maxStops, radiusKm]);
+  }, [coords.lat, coords.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
   // and pressing Back) so it isn't lost. Only if the inputs still match.
@@ -181,9 +195,10 @@ export function LivePlan({
     }
   }, [plan, sig]);
 
-  // Ask for live location on mount.
+  // Ask for live location on mount — but not when planning a chosen area, where
+  // the origin is the area centre rather than the device's GPS.
   useEffect(() => {
-    request();
+    if (!originOverride) request();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -250,7 +265,9 @@ export function LivePlan({
       <section className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
         <span className="flex items-center gap-2 text-sm font-medium text-emerald-900">
           <LocateFixed className={`h-5 w-5 ${isFallback ? "text-amber-500" : "text-emerald-600"}`} />
-          {status === "granted"
+          {originOverride
+            ? `Planning around ${originOverride.label ?? "your chosen area"}`
+            : status === "granted"
             ? "Using your live location"
             : status === "prompting"
             ? "Getting your location…"
@@ -449,14 +466,16 @@ export function LivePlan({
                     )}
                     {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
                     {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
-                    {s.meta?.citySeedSlug && (
-                      <a
-                        href={`/explore-bangalore/${s.meta.citySeedSlug}`}
-                        className="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-800 hover:bg-emerald-200"
-                      >
-                        Details →
-                      </a>
-                    )}
+                    {/* "Nearby Restaurants" — opens a live map of places to eat
+                        right around this stop. Shown for every stop. */}
+                    <a
+                      href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-full bg-emerald-100 px-2.5 py-1 font-medium text-emerald-800 hover:bg-emerald-200"
+                    >
+                      Nearby Restaurants →
+                    </a>
                     <a
                       href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
                       target="_blank"
