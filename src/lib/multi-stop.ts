@@ -111,6 +111,10 @@ export interface PlannerInput {
   // Average urban driving speed in km/h. Used when no OSRM data is available
   // during the picking phase (we refine timings via OSRM /trip afterwards).
   avgSpeedKmh?: number;
+  // The radius (km) the traveller chose. The planner spreads stops across
+  // near/mid/far distance bands of this reach, so a bigger radius produces a
+  // genuinely wider-ranging trip instead of the same nearby cluster.
+  reachKm?: number;
 }
 
 export interface PlannerStop extends Candidate {
@@ -193,12 +197,21 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   const stopCostOf = (c: Candidate) =>
     c.entryFee * people + (isFoodCat(c) ? (c.foodCostPerPerson ?? 0) * people : 0);
 
+  // Distance band of a place within the chosen reach: 0 = near, 1 = mid,
+  // 2 = far. Used to spread the trip across the whole radius.
+  const reachKm = input.reachKm && input.reachKm > 0 ? input.reachKm : 0;
+  const bandOf = (c: Candidate) =>
+    reachKm ? Math.min(2, Math.floor(haversineKm(start, { lat: c.lat, lng: c.lng }) / (reachKm / 3))) : 0;
+  const coveredBands = new Set<number>();
+
   // Worth of a place: base + popularity, a big bonus for a not-yet-covered
-  // category (keeps the trip diverse), and a decisive boost for hand-picked
+  // category (keeps the trip diverse), a bonus for reaching a not-yet-covered
+  // distance band (uses the chosen radius), and a decisive boost for hand-picked
   // places so they always make the cut.
   const valueOf = (c: Candidate, covered: Set<string>) => {
     let val = 10 + (c.popularity ?? 50);
     if (!covered.has(c.category)) val += 60;
+    if (reachKm && !coveredBands.has(bandOf(c))) val += 45;
     if (c.pinned) val += 1_000_000;
     return val;
   };
@@ -241,6 +254,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     curStopMin += c.idealMinutes;
     curStopCost += stopCostOf(c);
     covered.add(c.category);
+    coveredBands.add(bandOf(c));
     if (isFoodCat(c)) foodUsed = true;
   };
 

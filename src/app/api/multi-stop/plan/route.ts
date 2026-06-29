@@ -158,6 +158,17 @@ export async function POST(req: NextRequest) {
   // collapse into a single stop instead of appearing twice.
   const coordKey = (lat: number, lng: number) => `${lat.toFixed(3)},${lng.toFixed(3)}`;
   const nameKey = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  // Word set of a name, for catching "ISKCON Temple" vs "ISKCON Temple Bangalore"
+  // — same place re-mapped with an extra word a short distance away.
+  const tokensOf = (name: string) =>
+    new Set(
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]+/g, " ")
+        .split(/\s+/)
+        .filter((t) => t.length > 1)
+    );
+  const isSubset = (a: Set<string>, b: Set<string>) => a.size > 0 && [...a].every((t) => b.has(t));
 
   // 0) Hand-picked catalogue places — pinned so the planner pulls them in first.
   const pinnedCandidates: Candidate[] = [];
@@ -231,15 +242,29 @@ export async function POST(req: NextRequest) {
   const finalCandidates: Candidate[] = [];
   const usedKeys = new Set<string>();
   const usedNames = new Set<string>();
-  // Add a candidate unless we've already taken the same spot (by coords) or the
-  // same place (by name). Pinned → seed → Overpass order means the richest
-  // source wins and later duplicates are dropped.
+  const placedTokens: Array<{ tokens: Set<string>; lat: number; lng: number }> = [];
+  // Add a candidate unless it's a duplicate of one already taken: same ~110 m
+  // spot, same normalised name, OR a name whose words are a subset/superset of a
+  // VERY nearby place's (≤600 m — i.e. the same complex mapped twice, like
+  // "ISKCON Temple" and "ISKCON Temple Bangalore"). Kept tight so genuinely
+  // different places that merely share a word aren't wrongly merged. Pinned →
+  // seed → Overpass order means the richest source wins.
   const addCandidate = (c: Candidate): boolean => {
     const ck = coordKey(c.lat, c.lng);
     const nk = nameKey(c.name);
     if (usedKeys.has(ck) || (nk && usedNames.has(nk))) return false;
+    const tk = tokensOf(c.name);
+    for (const p of placedTokens) {
+      if (
+        haversineKm({ lat: c.lat, lng: c.lng }, { lat: p.lat, lng: p.lng }) <= 0.6 &&
+        (isSubset(tk, p.tokens) || isSubset(p.tokens, tk))
+      ) {
+        return false;
+      }
+    }
     usedKeys.add(ck);
     if (nk) usedNames.add(nk);
+    placedTokens.push({ tokens: tk, lat: c.lat, lng: c.lng });
     finalCandidates.push(c);
     return true;
   };
@@ -308,6 +333,7 @@ export async function POST(req: NextRequest) {
     includeFood: parsed.data.includeFood,
     maxStops: parsed.data.maxStops,
     candidates: finalCandidates,
+    reachKm: radiusKm,
   });
 
   if (plan.stops.length === 0) {
