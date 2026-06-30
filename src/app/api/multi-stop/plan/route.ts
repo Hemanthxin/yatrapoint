@@ -437,7 +437,7 @@ export async function POST(req: NextRequest) {
       {
         ok: false,
         error:
-          "Budget or time is too small to reach any place from your location. Try increasing both.",
+          "Nothing fits within this budget and time from your location. Try a higher budget, more hours/days, a larger distance — or pick an area closer to where you are.",
       },
       { status: 422 }
     );

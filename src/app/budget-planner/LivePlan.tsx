@@ -123,10 +123,11 @@ export function LivePlan({
   const router = useRouter();
   const live = useLocation();
 
-  // The route ALWAYS starts from the traveller's live location (the green pin).
-  // In area mode, the chosen area's centre is used only to DISCOVER places —
-  // never as the start — so the trip always begins where the user actually is.
+  // The route + map ALWAYS start from the traveller's LIVE location (the green
+  // pin). In area mode the chosen area's centre is used only to DISCOVER places
+  // — never as the start — so the map always reflects where the user actually is.
   const coords = live.coords;
+  const start = coords;
   const searchCentre = originOverride
     ? { lat: originOverride.lat, lng: originOverride.lng }
     : live.coords;
@@ -169,7 +170,7 @@ export function LivePlan({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          start: { lat: coords.lat, lng: coords.lng },
+          start: { lat: start.lat, lng: start.lng },
           searchCentre,
           totalBudget: budget,
           hours,
@@ -194,7 +195,7 @@ export function LivePlan({
     } finally {
       setLoading(false);
     }
-  }, [coords.lat, coords.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm]);
+  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
   // and pressing Back) so it isn't lost. Only if the inputs still match.
@@ -273,7 +274,7 @@ export function LivePlan({
   // Same route, opened in Google Maps: start → each stop in order → back to start.
   const googleMapsUrl = useMemo(() => {
     if (!plan || plan.stops.length === 0) return "#";
-    const origin = `${coords.lat},${coords.lng}`;
+    const origin = `${start.lat},${start.lng}`;
     const params = new URLSearchParams({
       api: "1",
       origin,
@@ -283,7 +284,7 @@ export function LivePlan({
     const waypoints = plan.stops.map((s) => `${s.lat},${s.lng}`).join("|");
     if (waypoints) params.set("waypoints", waypoints);
     return `https://www.google.com/maps/dir/?${params.toString()}`;
-  }, [plan, coords.lat, coords.lng]);
+  }, [plan, start.lat, start.lng]);
 
   // Share the plan to any platform (WhatsApp / Instagram / etc.) via the native
   // share sheet, including the Google Maps route link. Falls back to copying.
@@ -363,7 +364,7 @@ export function LivePlan({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          start: { lat: coords.lat, lng: coords.lng },
+          start: { lat: start.lat, lng: start.lng },
           stops: draftStops.map((s) => ({ lat: s.lat, lng: s.lng })),
         }),
       });
@@ -605,7 +606,7 @@ export function LivePlan({
                       sessionStorage.setItem(
                         PLAN_STORAGE_KEY,
                         JSON.stringify({
-                          start: coords,
+                          start,
                           stops: plan.stops.map((s) => ({
                             id: s.id,
                             name: s.name,
@@ -626,7 +627,7 @@ export function LivePlan({
                   </button>
                 </div>
               </div>
-              <TripMap origin={coords} stops={stopMarkers} route={plan.geometry ?? undefined} height={440} />
+              <TripMap origin={start} stops={stopMarkers} route={plan.geometry ?? undefined} height={440} />
               <p className="mt-2 text-xs text-slate-500">
                 Green pin is your location. Numbered pins are stops in optimal order — nearest first.
                 The line follows real driving roads (OSRM).
