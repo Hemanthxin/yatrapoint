@@ -63,15 +63,15 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* KPI cards */}
-      <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi label="Total places" value={stats.totalPlaces} icon={<Layers3 className="h-5 w-5" />} tone="from-indigo-500 to-violet-600" />
         <Kpi label="Visible places" value={stats.visiblePlaces} icon={<MapPinned className="h-5 w-5" />} tone="from-emerald-500 to-teal-600" />
         <Kpi label="Hidden places" value={stats.hiddenPlaces} icon={<EyeOff className="h-5 w-5" />} tone="from-amber-500 to-orange-600" />
         <Kpi label="Avg popularity" value={stats.averagePopularity} icon={<BarChart3 className="h-5 w-5" />} tone="from-sky-500 to-cyan-600" />
       </section>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
-        <div className="space-y-6">
+      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)]">
+        <div className="min-w-0 space-y-6">
           {/* Per-admin leaderboard */}
           <Panel title="Places added by each admin" subtitle="Contribution leaderboard" icon={<Users2 className="h-5 w-5 text-slate-400" />}>
             <div className="space-y-4">
@@ -104,7 +104,7 @@ export default async function AdminDashboardPage() {
           </Panel>
 
           {/* Analytics row */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Panel title="By category" icon={<Tag className="h-5 w-5 text-slate-400" />}>
               <BarList items={stats.byCategory} empty="No categories yet." />
             </Panel>
@@ -114,7 +114,7 @@ export default async function AdminDashboardPage() {
           </div>
 
           <Panel title="By place type" icon={<Layers3 className="h-5 w-5 text-slate-400" />}>
-            <div className="grid gap-x-6 gap-y-3 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
               <BarList items={stats.byPlaceType} empty="No type data yet." />
             </div>
           </Panel>
@@ -191,7 +191,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* Right column */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <div id="add-place" className="scroll-mt-20">
             <AddPlaceForm />
           </div>

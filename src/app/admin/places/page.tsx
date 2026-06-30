@@ -58,7 +58,7 @@ export default async function AdminPlacesPage({ searchParams }: PageProps) {
           No places match. Try clearing filters, or add a new place.
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {data.rows.map((p) => (
             <div key={p.id} className="card-hover overflow-hidden rounded-2xl border border-slate-200 bg-white">
               <div className="relative h-36 w-full bg-slate-100">

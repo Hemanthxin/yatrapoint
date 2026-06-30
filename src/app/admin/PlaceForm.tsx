@@ -191,7 +191,7 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         <Field label="Place name" required>
           <input value={form.name} onChange={(e) => update("name", e.target.value)} className="input" placeholder="Abbey Falls" />
         </Field>
@@ -263,7 +263,7 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
         />
       </div>
 
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <p className="mb-1.5 text-sm font-medium text-slate-700">Photo</p>
           <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
