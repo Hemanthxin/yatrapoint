@@ -8,7 +8,9 @@ import {
   communityPosts,
   communityReactions,
   communityComments,
+  users,
   type CommunityComment,
+  type CommunityPost,
 } from "@/lib/db/schema";
 
 const REACTION_TYPES = ["love", "wantToGo", "beenThere"] as const;
@@ -45,11 +47,21 @@ export async function submitCommunityPost(input: {
       ? Math.round(input.rating)
       : null;
 
+  // Read the author's CURRENT profile (pic + name) from the DB so a freshly
+  // uploaded avatar / updated name is reflected on the new post, not a stale
+  // value baked into the JWT session.
+  const [me] = await db
+    .select({ name: users.name, email: users.email, image: users.image, username: users.username })
+    .from(users)
+    .where(eq(users.id, session.user.id))
+    .limit(1);
+
   try {
     await db.insert(communityPosts).values({
       userId: session.user.id,
-      authorName: session.user.name || session.user.email || "Traveller",
-      authorImage: session.user.image || null,
+      authorName:
+        me?.name || me?.username || me?.email || session.user.name || session.user.email || "Traveller",
+      authorImage: me?.image ?? session.user.image ?? null,
       title,
       description,
       rating,
@@ -166,5 +178,87 @@ export async function fetchComments(postId: string): Promise<CommunityComment[]>
       .limit(100);
   } catch {
     return [];
+  }
+}
+
+// Author-only: delete a comment. Returns ok if removed.
+export async function deleteComment(commentId: string): Promise<SubmitResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Please sign in." };
+  try {
+    const [c] = await db
+      .select({ userId: communityComments.userId })
+      .from(communityComments)
+      .where(eq(communityComments.id, commentId))
+      .limit(1);
+    if (!c) return { ok: false, error: "Comment not found." };
+    if (c.userId !== session.user.id)
+      return { ok: false, error: "You can only delete your own comments." };
+    await db.delete(communityComments).where(eq(communityComments.id, commentId));
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Could not delete comment." };
+  }
+}
+
+// ── Author-only post management ──────────────────────────────────────────────
+// Delete a post you authored. Reactions + comments cascade away via FK.
+export async function deleteCommunityPost(postId: string): Promise<SubmitResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Please sign in." };
+  try {
+    const [post] = await db
+      .select({ userId: communityPosts.userId })
+      .from(communityPosts)
+      .where(eq(communityPosts.id, postId))
+      .limit(1);
+    if (!post) return { ok: false, error: "Post not found." };
+    if (post.userId !== session.user.id)
+      return { ok: false, error: "You can only delete your own posts." };
+    await db.delete(communityPosts).where(eq(communityPosts.id, postId));
+    revalidatePath("/community");
+    revalidatePath("/profile");
+    revalidatePath("/dashboard");
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "Could not delete post." };
+  }
+}
+
+// Edit the caption of a post you authored (title / review / rating / location).
+// The photo is kept as-is. Returns the updated row for optimistic UI.
+export async function updateCommunityPost(
+  postId: string,
+  input: { title: string; description: string; rating?: number | null; locationName?: string | null }
+): Promise<{ ok: boolean; post?: CommunityPost; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Please sign in." };
+  const title = input.title?.trim();
+  const description = input.description?.trim();
+  if (!title || title.length < 2) return { ok: false, error: "Add the place name." };
+  if (!description || description.length < 3) return { ok: false, error: "Write a short review." };
+  const rating =
+    typeof input.rating === "number" && input.rating >= 1 && input.rating <= 5
+      ? Math.round(input.rating)
+      : null;
+  try {
+    const [post] = await db
+      .select({ userId: communityPosts.userId })
+      .from(communityPosts)
+      .where(eq(communityPosts.id, postId))
+      .limit(1);
+    if (!post) return { ok: false, error: "Post not found." };
+    if (post.userId !== session.user.id)
+      return { ok: false, error: "You can only edit your own posts." };
+    const [updated] = await db
+      .update(communityPosts)
+      .set({ title, description, rating, locationName: input.locationName?.trim() || null })
+      .where(eq(communityPosts.id, postId))
+      .returning();
+    revalidatePath("/community");
+    revalidatePath("/profile");
+    return { ok: true, post: updated };
+  } catch {
+    return { ok: false, error: "Could not update post." };
   }
 }

@@ -18,6 +18,9 @@ export const users = pgTable("users", {
   phone: varchar("phone", { length: 20 }).unique(),
   phoneVerified: timestamp("phone_verified", { mode: "date" }),
   image: text("image"),
+  // Instagram-style profile fields.
+  username: varchar("username", { length: 40 }),
+  bio: varchar("bio", { length: 300 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

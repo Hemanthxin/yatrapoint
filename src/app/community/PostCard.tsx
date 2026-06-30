@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import {
   MapPin,
   MessageCircle,
@@ -11,11 +11,22 @@ import {
   Star,
   Heart,
   Bookmark,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  X,
 } from "lucide-react";
 
 import type { CommunityPost, CommunityComment } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
-import { setReaction, addComment, fetchComments } from "@/lib/actions/community";
+import {
+  setReaction,
+  addComment,
+  fetchComments,
+  deleteComment,
+  deleteCommunityPost,
+  updateCommunityPost,
+} from "@/lib/actions/community";
 
 // The two travel-specific reactions shown beyond the primary ❤️ "love" — this
 // is what makes our feed more than a like button: people mark intent + history.
@@ -39,18 +50,24 @@ function timeAgo(date: Date | string): string {
 }
 
 export function PostCard({
-  post,
+  post: initialPost,
   social,
   userName,
   userImage,
+  currentUserId,
   index,
+  onDeleted,
 }: {
   post: CommunityPost;
   social: PostSocial;
   userName: string;
   userImage?: string | null;
+  currentUserId: string;
   index: number;
+  onDeleted?: (postId: string) => void;
 }) {
+  const [post, setPost] = useState(initialPost);
+
   const [counts, setCounts] = useState(social.counts);
   const [mine, setMine] = useState<string | null>(social.mine);
   const [total, setTotal] = useState(social.total);
@@ -68,6 +85,23 @@ export function PostCard({
   const [burst, setBurst] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Author controls
+  const isAuthor = post.userId === currentUserId;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [removed, setRemoved] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [deleting, startDeleting] = useTransition();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Edit-mode draft fields
+  const [eTitle, setETitle] = useState(post.title);
+  const [eDesc, setEDesc] = useState(post.description);
+  const [eRating, setERating] = useState<number>(post.rating ?? 0);
+  const [eHoverRating, setEHoverRating] = useState(0);
+  const [eLocation, setELocation] = useState(post.locationName ?? "");
+  const [saving, startSaving] = useTransition();
+
   useEffect(() => {
     try {
       const ids = JSON.parse(localStorage.getItem(SAVED_KEY) || "[]");
@@ -76,6 +110,23 @@ export function PostCard({
       // ignore
     }
   }, [post.id]);
+
+  // Close the author menu on outside click / Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onDown(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   function toggleSave() {
     setSaved((v) => {
@@ -157,6 +208,64 @@ export function PostCard({
     });
   }
 
+  function removeComment(commentId: string) {
+    // optimistic remove + decrement
+    const prev = comments;
+    setComments((c) => (c ? c.filter((x) => x.id !== commentId) : c));
+    setCommentCount((n) => Math.max(0, n - 1));
+    startReact(async () => {
+      const res = await deleteComment(commentId);
+      if (!res.ok) {
+        // revert
+        setComments(prev);
+        setCommentCount((n) => n + 1);
+      }
+    });
+  }
+
+  function onDelete() {
+    setMenuOpen(false);
+    if (!confirm("Delete this post? This can't be undone.")) return;
+    setActionError(null);
+    startDeleting(async () => {
+      const res = await deleteCommunityPost(post.id);
+      if (res.ok) {
+        if (onDeleted) onDeleted(post.id);
+        else setRemoved(true);
+      } else {
+        setActionError(res.error || "Could not delete post.");
+      }
+    });
+  }
+
+  function startEdit() {
+    setMenuOpen(false);
+    setActionError(null);
+    setETitle(post.title);
+    setEDesc(post.description);
+    setERating(post.rating ?? 0);
+    setELocation(post.locationName ?? "");
+    setEditing(true);
+  }
+
+  function saveEdit() {
+    setActionError(null);
+    startSaving(async () => {
+      const res = await updateCommunityPost(post.id, {
+        title: eTitle,
+        description: eDesc,
+        rating: eRating || null,
+        locationName: eLocation || null,
+      });
+      if (res.ok && res.post) {
+        setPost(res.post);
+        setEditing(false);
+      } else {
+        setActionError(res.error || "Could not update post.");
+      }
+    });
+  }
+
   async function share() {
     const mapLink =
       post.latitude && post.longitude
@@ -184,6 +293,8 @@ export function PostCard({
       window.open(`https://wa.me/?text=${encodeURIComponent(body)}`, "_blank");
     }
   }
+
+  if (removed) return null;
 
   const initial = (post.authorName ?? "T").charAt(0).toUpperCase();
 
@@ -218,13 +329,50 @@ export function PostCard({
             <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> {post.rating}
           </span>
         ) : null}
+
+        {/* Author menu */}
+        {isAuthor && !editing && (
+          <div className="relative shrink-0" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Post options"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              className="grid h-11 w-11 place-items-center rounded-full text-slate-500 transition hover:bg-slate-100 active:scale-90"
+            >
+              <MoreHorizontal className="h-5 w-5" />
+            </button>
+            {menuOpen && (
+              <div
+                role="menu"
+                className="animate-pop absolute right-0 top-12 z-20 w-40 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-xl shadow-slate-900/10"
+              >
+                <button
+                  role="menuitem"
+                  onClick={startEdit}
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  <Pencil className="h-4 w-4" /> Edit
+                </button>
+                <button
+                  role="menuitem"
+                  onClick={onDelete}
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+                >
+                  <Trash2 className="h-4 w-4" /> Delete
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
+      {actionError && (
+        <p className="px-4 pb-1 text-xs font-medium text-rose-600">{actionError}</p>
+      )}
+
       {/* Photo — double-tap to love */}
-      <div
-        className="relative cursor-pointer select-none"
-        onDoubleClick={onPhotoDoubleClick}
-      >
+      <div className="relative cursor-pointer select-none" onDoubleClick={onPhotoDoubleClick}>
         {post.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.photoUrl} alt={post.title} className="max-h-[30rem] w-full object-cover" />
@@ -236,138 +384,222 @@ export function PostCard({
             <Heart className="h-24 w-24 animate-ping fill-white text-white drop-shadow-lg" />
           </span>
         )}
-      </div>
-
-      {/* Instagram-style action bar */}
-      <div className="flex items-center gap-1 px-2.5 pt-1.5">
-        <button onClick={() => react("love")} aria-label="Love" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
-          <Heart className={`h-6 w-6 ${loved ? "animate-pop fill-rose-500 text-rose-500" : "text-slate-800 hover:text-slate-500"}`} />
-        </button>
-        <button onClick={toggleComments} aria-label="Comment" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
-          <MessageCircle className="h-6 w-6 text-slate-800 hover:text-slate-500" />
-        </button>
-        <button onClick={share} aria-label="Share" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
-          {copied ? <Check className="h-6 w-6 text-emerald-600" /> : <Share2 className="h-6 w-6 text-slate-800 hover:text-slate-500" />}
-        </button>
-        <button onClick={toggleSave} aria-label="Save" className="ml-auto grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
-          <Bookmark className={`h-6 w-6 ${saved ? "fill-slate-900 text-slate-900" : "text-slate-800 hover:text-slate-500"}`} />
-        </button>
-      </div>
-
-      {/* Likes + body */}
-      <div className="px-4 pb-4 pt-2">
-        {total > 0 && (
-          <p className="text-sm font-semibold text-slate-900">
-            {counts.love > 0 ? `${counts.love} ${counts.love === 1 ? "love" : "loves"}` : `${total} reactions`}
-          </p>
+        {deleting && (
+          <span className="pointer-events-none absolute inset-0 grid place-items-center bg-white/60">
+            <Loader2 className="h-8 w-8 animate-spin text-rose-500" />
+          </span>
         )}
+      </div>
 
-        <p className="mt-1 text-sm">
-          <span className="font-semibold text-slate-900">{post.authorName ?? "Traveller"}</span>{" "}
-          <span className="font-semibold text-slate-900">{post.title}</span>{" "}
-          <span className="text-slate-600">{post.description}</span>
-        </p>
+      {editing ? (
+        /* ── Inline edit mode ─────────────────────────────────────────── */
+        <div className="space-y-3 p-4">
+          <input
+            value={eTitle}
+            onChange={(e) => setETitle(e.target.value)}
+            placeholder="Place name"
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          />
 
-        {/* Advanced travel reactions — intent + visited markers */}
-        <div className="mt-3 flex flex-wrap gap-2">
-          {TRAVEL_REACTIONS.map((r) => {
-            const active = mine === r.type;
-            const n = counts[r.type as keyof typeof counts];
-            return (
+          <div className="flex items-center gap-1">
+            <span className="mr-2 text-xs font-medium uppercase tracking-wide text-slate-500">Rating</span>
+            {[1, 2, 3, 4, 5].map((n) => (
               <button
-                key={r.type}
-                onClick={() => react(r.type)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                  active
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                    : "border-slate-200 text-slate-600 hover:bg-slate-50"
-                }`}
+                key={n}
+                type="button"
+                onClick={() => setERating((r) => (r === n ? 0 : n))}
+                onMouseEnter={() => setEHoverRating(n)}
+                onMouseLeave={() => setEHoverRating(0)}
+                aria-label={`${n} star`}
               >
-                <span>{r.emoji}</span>
-                {r.label}
-                {n > 0 && <span className="text-slate-400">{n}</span>}
+                <Star
+                  className={`h-6 w-6 transition ${
+                    (eHoverRating || eRating) >= n ? "fill-amber-400 text-amber-400" : "text-slate-300"
+                  }`}
+                />
               </button>
-            );
-          })}
-          {post.latitude && post.longitude && (
-            <a
-              href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+            ))}
+          </div>
+
+          <textarea
+            value={eDesc}
+            onChange={(e) => setEDesc(e.target.value)}
+            rows={3}
+            placeholder="Write your review…"
+            className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          />
+
+          <input
+            value={eLocation}
+            onChange={(e) => setELocation(e.target.value)}
+            placeholder="Area / city (optional)"
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          />
+
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              onClick={saveEdit}
+              disabled={saving}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
             >
-              <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Map
-            </a>
-          )}
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setEditing(false);
+                setActionError(null);
+              }}
+              disabled={saving}
+              className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 active:scale-95 disabled:opacity-60"
+            >
+              <X className="h-4 w-4" /> Cancel
+            </button>
+          </div>
         </div>
+      ) : (
+        <>
+          {/* Instagram-style action bar */}
+          <div className="flex items-center gap-1 px-2.5 pt-1.5">
+            <button onClick={() => react("love")} aria-label="Love" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
+              <Heart className={`h-6 w-6 ${loved ? "animate-pop fill-rose-500 text-rose-500" : "text-slate-800 hover:text-slate-500"}`} />
+            </button>
+            <button onClick={toggleComments} aria-label="Comment" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
+              <MessageCircle className="h-6 w-6 text-slate-800 hover:text-slate-500" />
+            </button>
+            <button onClick={share} aria-label="Share" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
+              {copied ? <Check className="h-6 w-6 text-emerald-600" /> : <Share2 className="h-6 w-6 text-slate-800 hover:text-slate-500" />}
+            </button>
+            <button onClick={toggleSave} aria-label="Save" className="ml-auto grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
+              <Bookmark className={`h-6 w-6 ${saved ? "fill-slate-900 text-slate-900" : "text-slate-800 hover:text-slate-500"}`} />
+            </button>
+          </div>
 
-        {/* View comments */}
-        {commentCount > 0 && !showComments && (
-          <button onClick={toggleComments} className="mt-3 text-sm text-slate-400 hover:text-slate-600">
-            View all {commentCount} {commentCount === 1 ? "comment" : "comments"}
-          </button>
-        )}
+          {/* Likes + body */}
+          <div className="px-4 pb-4 pt-2">
+            {total > 0 && (
+              <p className="text-sm font-semibold text-slate-900">
+                {counts.love > 0 ? `${counts.love} ${counts.love === 1 ? "love" : "loves"}` : `${total} reactions`}
+              </p>
+            )}
 
-        {/* Comments */}
-        {showComments && (
-          <div className="mt-3 space-y-3">
-            <div className="flex items-center gap-2">
-              {userImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover" />
-              ) : (
-                <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
-                  {userName.charAt(0).toUpperCase()}
-                </div>
+            <p className="mt-1 text-sm">
+              <span className="font-semibold text-slate-900">{post.authorName ?? "Traveller"}</span>{" "}
+              <span className="font-semibold text-slate-900">{post.title}</span>{" "}
+              <span className="text-slate-600">{post.description}</span>
+            </p>
+
+            {/* Advanced travel reactions — intent + visited markers */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {TRAVEL_REACTIONS.map((r) => {
+                const active = mine === r.type;
+                const n = counts[r.type as keyof typeof counts];
+                return (
+                  <button
+                    key={r.type}
+                    onClick={() => react(r.type)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                      active
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                        : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    <span>{r.emoji}</span>
+                    {r.label}
+                    {n > 0 && <span className="text-slate-400">{n}</span>}
+                  </button>
+                );
+              })}
+              {post.latitude && post.longitude && (
+                <a
+                  href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                >
+                  <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Map
+                </a>
               )}
-              <input
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") submitComment();
-                }}
-                placeholder="Add a comment…"
-                className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
-              />
-              <button
-                onClick={submitComment}
-                disabled={posting || !text.trim()}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 disabled:opacity-50"
-              >
-                {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              </button>
             </div>
 
-            {loadingComments ? (
-              <p className="text-xs text-slate-400">Loading comments…</p>
-            ) : comments && comments.length > 0 ? (
-              <ul className="space-y-3">
-                {comments.map((c) => (
-                  <li key={c.id} className="flex gap-2">
-                    {c.authorImage ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.authorImage} alt="" className="h-8 w-8 rounded-full object-cover" />
-                    ) : (
-                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-200 text-xs font-semibold text-slate-600">
-                        {(c.authorName ?? "T").charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1 rounded-2xl bg-slate-50 px-3 py-2">
-                      <p className="text-xs font-semibold text-slate-900">
-                        {c.authorName ?? "Traveller"}{" "}
-                        <span className="font-normal text-slate-400">· {timeAgo(c.createdAt)}</span>
-                      </p>
-                      <p className="text-sm text-slate-700">{c.body}</p>
+            {/* View comments */}
+            {commentCount > 0 && !showComments && (
+              <button onClick={toggleComments} className="mt-3 text-sm text-slate-400 hover:text-slate-600">
+                View all {commentCount} {commentCount === 1 ? "comment" : "comments"}
+              </button>
+            )}
+
+            {/* Comments */}
+            {showComments && (
+              <div className="mt-3 space-y-3">
+                <div className="flex items-center gap-2">
+                  {userImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+                      {userName.charAt(0).toUpperCase()}
                     </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-xs text-slate-400">No comments yet — be the first.</p>
+                  )}
+                  <input
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") submitComment();
+                    }}
+                    placeholder="Add a comment…"
+                    className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                  />
+                  <button
+                    onClick={submitComment}
+                    disabled={posting || !text.trim()}
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 disabled:opacity-50"
+                  >
+                    {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  </button>
+                </div>
+
+                {loadingComments ? (
+                  <p className="text-xs text-slate-400">Loading comments…</p>
+                ) : comments && comments.length > 0 ? (
+                  <ul className="space-y-3">
+                    {comments.map((c) => (
+                      <li key={c.id} className="group flex gap-2">
+                        {c.authorImage ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={c.authorImage} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
+                        ) : (
+                          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-200 text-xs font-semibold text-slate-600">
+                            {(c.authorName ?? "T").charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1 rounded-2xl bg-slate-50 px-3 py-2">
+                          <p className="text-xs font-semibold text-slate-900">
+                            {c.authorName ?? "Traveller"}{" "}
+                            <span className="font-normal text-slate-400">· {timeAgo(c.createdAt)}</span>
+                          </p>
+                          <p className="break-words text-sm text-slate-700">{c.body}</p>
+                        </div>
+                        {c.userId === currentUserId && (
+                          <button
+                            onClick={() => removeComment(c.id)}
+                            aria-label="Delete comment"
+                            className="grid h-8 w-8 shrink-0 place-items-center self-center rounded-full text-slate-300 transition hover:bg-rose-50 hover:text-rose-600 sm:opacity-0 sm:group-hover:opacity-100"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-xs text-slate-400">No comments yet — be the first.</p>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </article>
   );
 }

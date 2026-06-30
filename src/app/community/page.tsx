@@ -3,9 +3,8 @@ import { Users } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { listPublishedPosts, getFeedSocial, emptySocial } from "@/lib/queries/community";
-import { CommunityForm } from "./CommunityForm";
-import { PostCard } from "./PostCard";
+import { listPublishedPosts, getFeedSocial } from "@/lib/queries/community";
+import { Feed } from "./Feed";
 
 export default async function CommunityPage() {
   const session = await auth();
@@ -31,28 +30,14 @@ export default async function CommunityPage() {
         </div>
       </header>
 
-      {/* Centered single-column feed */}
-      <div className="mx-auto max-w-2xl space-y-6">
-        <CommunityForm />
-
-        {posts.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <p className="text-3xl">📸</p>
-            <p className="mt-2 text-sm text-slate-500">No posts yet — be the first to share a place!</p>
-          </div>
-        ) : (
-          posts.map((p, i) => (
-            <PostCard
-              key={p.id}
-              post={p}
-              social={social[p.id] ?? emptySocial()}
-              userName={u.name || u.email || "You"}
-              userImage={u.image}
-              index={i}
-            />
-          ))
-        )}
-      </div>
+      {/* Centered single-column feed with tabs */}
+      <Feed
+        posts={posts}
+        social={social}
+        currentUserId={u.id ?? ""}
+        userName={u.name || u.email || "You"}
+        userImage={u.image}
+      />
     </AppShell>
   );
 }

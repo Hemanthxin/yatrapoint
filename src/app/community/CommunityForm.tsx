@@ -128,7 +128,7 @@ export function CommunityForm() {
       {/* Place name */}
       <input
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => setTitle(e.target.value.slice(0, 80))}
         placeholder="Place name (e.g. Abbey Falls, Coorg)"
         className="mb-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
       />
@@ -155,13 +155,22 @@ export function CommunityForm() {
       </div>
 
       {/* Review */}
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        rows={3}
-        placeholder="Write your review… what's special about this place?"
-        className="mb-3 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
-      />
+      <div className="relative mb-3">
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value.slice(0, 1000))}
+          rows={3}
+          placeholder="Write your review… what's special about this place?"
+          className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 pb-6 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+        />
+        <span
+          className={`pointer-events-none absolute bottom-2 right-3 text-[11px] font-medium ${
+            description.length >= 1000 ? "text-rose-500" : "text-slate-400"
+          }`}
+        >
+          {description.length}/1000
+        </span>
+      </div>
 
       {/* Location */}
       <div className="mb-3 flex flex-wrap items-center gap-2">
