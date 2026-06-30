@@ -299,14 +299,13 @@ export function WizardForm({ initial }: WizardFormProps) {
         {/* Form column */}
         <div className="space-y-4 lg:col-span-2">
           {/* Where to go — around me vs a chosen area in India */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="mb-1 flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
-                <MapPinned className="h-4 w-4" />
-              </span>
-              Where do you want to go?
-            </p>
-            <p className="mb-3 ml-11 text-xs text-slate-500">
+          <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <CardHeader
+              title="Where do you want to go?"
+              tone="emerald"
+              icon={<MapPinned className="h-[18px] w-[18px]" />}
+            />
+            <p className="-mt-2 mb-3 ml-[3.25rem] text-xs text-slate-500">
               Plan around your current location, or choose any state, district or taluk in India.
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -404,7 +403,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                   </Chip>
                 ))}
               </div>
-              <p className="mt-2 text-xs text-slate-500">How many stops to include in the trip.</p>
+              <p className="mt-auto pt-3 text-xs text-slate-500">How many stops to include in the trip.</p>
             </Card>
 
             {/* How far to travel — only relevant for "around me" planning. In
@@ -418,18 +417,13 @@ export function WizardForm({ initial }: WizardFormProps) {
                     </Chip>
                   ))}
                 </div>
-                <p className="mt-2 text-xs text-slate-500">Search & route within this distance from you.</p>
+                <p className="mt-auto pt-3 text-xs text-slate-500">Search &amp; route within this distance from you.</p>
               </Card>
             )}
 
             {/* 4. Trip Type + categories to explore */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
-              <p className="mb-3 flex items-center gap-2 text-sm font-bold tracking-tight text-slate-900">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-100 text-base text-emerald-700">
-                  🏷️
-                </span>
-                4. Trip Type
-              </p>
+            <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
+              <CardHeader title="4. Trip Type" tone="emerald" icon="🏷️" />
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {TRIP_TYPES.map(({ key, icon: Icon }) => {
                   const active = tripType === key;
@@ -605,13 +599,41 @@ export function WizardForm({ initial }: WizardFormProps) {
 }
 
 const CARD_TONES: Record<string, string> = {
-  emerald: "bg-emerald-100 text-emerald-700",
-  sky: "bg-sky-100 text-sky-700",
-  amber: "bg-amber-100 text-amber-700",
-  violet: "bg-violet-100 text-violet-700",
-  rose: "bg-rose-100 text-rose-700",
-  teal: "bg-teal-100 text-teal-700",
+  emerald: "bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-700 ring-emerald-200/60",
+  sky: "bg-gradient-to-br from-sky-100 to-sky-50 text-sky-700 ring-sky-200/60",
+  amber: "bg-gradient-to-br from-amber-100 to-amber-50 text-amber-700 ring-amber-200/60",
+  violet: "bg-gradient-to-br from-violet-100 to-violet-50 text-violet-700 ring-violet-200/60",
+  rose: "bg-gradient-to-br from-rose-100 to-rose-50 text-rose-700 ring-rose-200/60",
+  teal: "bg-gradient-to-br from-teal-100 to-teal-50 text-teal-700 ring-teal-200/60",
 };
+
+// Shared header used by every option card so icons, titles and badges line up
+// across the whole grid regardless of card height.
+function CardHeader({
+  title,
+  icon,
+  tone = "emerald",
+  optional,
+}: {
+  title: React.ReactNode;
+  icon: React.ReactNode;
+  tone?: keyof typeof CARD_TONES;
+  optional?: boolean;
+}) {
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-lg shadow-sm ring-1 ring-inset ${CARD_TONES[tone]}`}>
+        {icon}
+      </span>
+      <span className="flex-1 text-sm font-bold tracking-tight text-slate-900">{title}</span>
+      {optional && (
+        <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-400">
+          Optional
+        </span>
+      )}
+    </div>
+  );
+}
 
 function Card({
   title,
@@ -629,19 +651,9 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
-      <p className="mb-3 flex items-center gap-2 text-sm font-bold tracking-tight text-slate-900">
-        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl text-base ${CARD_TONES[tone]}`}>
-          {icon}
-        </span>
-        <span className="flex-1">{title}</span>
-        {optional && (
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-400">
-            Optional
-          </span>
-        )}
-      </p>
-      {children}
+    <div className={`card-hover flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+      <CardHeader title={title} icon={icon} tone={tone} optional={optional} />
+      <div className="flex flex-1 flex-col">{children}</div>
     </div>
   );
 }
