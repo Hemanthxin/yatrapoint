@@ -190,7 +190,7 @@ export function PostCard({
   return (
     <article
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-      className="animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+      className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
@@ -239,17 +239,17 @@ export function PostCard({
       </div>
 
       {/* Instagram-style action bar */}
-      <div className="flex items-center gap-4 px-4 pt-3">
-        <button onClick={() => react("love")} aria-label="Love" className="transition active:scale-90">
-          <Heart className={`h-6 w-6 ${loved ? "fill-rose-500 text-rose-500" : "text-slate-800 hover:text-slate-500"}`} />
+      <div className="flex items-center gap-1 px-2.5 pt-1.5">
+        <button onClick={() => react("love")} aria-label="Love" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
+          <Heart className={`h-6 w-6 ${loved ? "animate-pop fill-rose-500 text-rose-500" : "text-slate-800 hover:text-slate-500"}`} />
         </button>
-        <button onClick={toggleComments} aria-label="Comment" className="transition active:scale-90">
+        <button onClick={toggleComments} aria-label="Comment" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
           <MessageCircle className="h-6 w-6 text-slate-800 hover:text-slate-500" />
         </button>
-        <button onClick={share} aria-label="Share" className="transition active:scale-90">
+        <button onClick={share} aria-label="Share" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
           {copied ? <Check className="h-6 w-6 text-emerald-600" /> : <Share2 className="h-6 w-6 text-slate-800 hover:text-slate-500" />}
         </button>
-        <button onClick={toggleSave} aria-label="Save" className="ml-auto transition active:scale-90">
+        <button onClick={toggleSave} aria-label="Save" className="ml-auto grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
           <Bookmark className={`h-6 w-6 ${saved ? "fill-slate-900 text-slate-900" : "text-slate-800 hover:text-slate-500"}`} />
         </button>
       </div>
@@ -327,12 +327,12 @@ export function PostCard({
                   if (e.key === "Enter") submitComment();
                 }}
                 placeholder="Add a comment…"
-                className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm outline-none focus:border-emerald-400 focus:bg-white"
+                className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
               />
               <button
                 onClick={submitComment}
                 disabled={posting || !text.trim()}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 disabled:opacity-50"
               >
                 {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </button>

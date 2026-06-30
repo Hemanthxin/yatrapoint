@@ -29,7 +29,27 @@ export function TripsList({ trips }: TripsListProps) {
 
   return (
     <>
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          Filter
+        </p>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-slate-500">Within</span>
+          <select
+            value={maxDistance}
+            onChange={(e) => setMaxDistance(Number(e.target.value))}
+            className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          >
+            <option value={0}>Any distance</option>
+            <option value={30}>30 km</option>
+            <option value={60}>60 km</option>
+            <option value={100}>100 km</option>
+            <option value={150}>150 km</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="bleed mt-3 flex gap-2 overflow-x-auto px-4 pb-1 no-scrollbar lg:flex-wrap lg:px-0">
         <Chip active={!category} onClick={() => setCategory("")}>
           All
         </Chip>
@@ -42,25 +62,12 @@ export function TripsList({ trips }: TripsListProps) {
             {c.emoji} {c.label}
           </Chip>
         ))}
-        <div className="ml-auto flex items-center gap-2 text-sm">
-          <span className="text-slate-500">Within</span>
-          <select
-            value={maxDistance}
-            onChange={(e) => setMaxDistance(Number(e.target.value))}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
-          >
-            <option value={0}>Any distance</option>
-            <option value={30}>30 km</option>
-            <option value={60}>60 km</option>
-            <option value={100}>100 km</option>
-            <option value={150}>150 km</option>
-          </select>
-        </div>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <p className="text-3xl">🗺️</p>
+          <p className="mt-2 text-sm text-slate-500">
             No places match those filters. Try removing one.
           </p>
         </div>
@@ -92,10 +99,10 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+      className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold transition active:scale-95 ${
         active
-          ? "border-emerald-500 bg-emerald-500 text-white"
-          : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+          : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50"
       }`}
     >
       {children}

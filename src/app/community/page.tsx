@@ -17,12 +17,14 @@ export default async function CommunityPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <header className="mb-6 flex items-start gap-3">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-sky-100 text-sky-700">
+      <header className="mb-6 flex items-start gap-3 animate-fadeUp">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 text-white shadow-lg shadow-sky-500/30">
           <Users className="h-5 w-5" />
         </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Community</h1>
+        <div className="min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+            <span className="text-gradient animate-shimmer">Community</span>
+          </h1>
           <p className="mt-1 text-sm text-slate-500">
             Double-tap to love, save spots for later, and mark 🎒 Want to go / ✅ Been there — comment &amp; share too.
           </p>
@@ -35,7 +37,8 @@ export default async function CommunityPage() {
 
         {posts.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <p className="text-sm text-slate-500">No posts yet — be the first to share a place!</p>
+            <p className="text-3xl">📸</p>
+            <p className="mt-2 text-sm text-slate-500">No posts yet — be the first to share a place!</p>
           </div>
         ) : (
           posts.map((p, i) => (

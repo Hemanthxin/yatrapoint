@@ -2,7 +2,6 @@ import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowLeft,
   Calendar,
   MapPin,
   Sparkles,
@@ -12,6 +11,7 @@ import {
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
+import { BackButton } from "@/components/app/BackButton";
 import { FavoriteButton } from "@/components/app/FavoriteButton";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import {
@@ -61,15 +61,11 @@ export default async function DestinationPage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Link
-        href="/destinations"
-        className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900"
-      >
-        <ArrowLeft className="h-4 w-4" /> All destinations
-      </Link>
+      <div className="animate-fadeUp">
+      <BackButton fallback="/destinations" label="All destinations" />
 
       <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div className="relative h-64 md:h-80">
+        <div className="relative h-72 sm:h-80 md:h-96">
           {destination.imageUrl ? (
             <Image
               src={destination.imageUrl}
@@ -86,40 +82,44 @@ export default async function DestinationPage({ params }: PageProps) {
               <span className="text-9xl drop-shadow">{cat?.emoji ?? "📍"}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
-            <div>
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${chip}`}
-              >
-                {cat?.emoji} {cat?.label ?? destination.category}
-              </span>
-              {destination.isHidden && (
-                <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
-                  <Sparkles className="h-3 w-3" /> Hidden gem
-                </span>
-              )}
-              <h1 className="mt-2 text-4xl font-bold text-white drop-shadow">
-                {destination.name}
-              </h1>
-              <p className="mt-1 flex items-center gap-1 text-sm text-white/90">
-                <MapPin className="h-4 w-4" />
-                {destination.district
-                  ? `${destination.district}, ${destination.state}`
-                  : destination.state}
-              </p>
-            </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+          <div className="absolute right-4 top-4">
             <FavoriteButton
               destinationId={destination.id}
               initialFavored={favIds.has(destination.id)}
               size="md"
             />
           </div>
+
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${chip}`}
+              >
+                {cat?.emoji} {cat?.label ?? destination.category}
+              </span>
+              {destination.isHidden && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                  <Sparkles className="h-3 w-3" /> Hidden gem
+                </span>
+              )}
+            </div>
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white drop-shadow sm:text-4xl">
+              {destination.name}
+            </h1>
+            <p className="mt-1.5 flex items-center gap-1 text-sm font-medium text-white/90">
+              <MapPin className="h-4 w-4 shrink-0" />
+              {destination.district
+                ? `${destination.district}, ${destination.state}`
+                : destination.state}
+            </p>
+          </div>
         </div>
 
-        <div className="grid gap-6 p-6 md:grid-cols-3 md:p-8">
+        <div className="grid gap-6 p-5 sm:p-6 md:grid-cols-3 md:p-8">
           <div className="md:col-span-2">
-            <h2 className="text-lg font-semibold text-slate-900">About</h2>
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">About</h2>
             <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
               {destination.description}
             </p>
@@ -148,16 +148,17 @@ export default async function DestinationPage({ params }: PageProps) {
             />
             <Link
               href={`/budget-planner?destination=${destination.slug}`}
-              className="mt-2 block w-full rounded-lg bg-emerald-500 py-2.5 text-center text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:bg-emerald-600"
+              className="relative mt-2 block w-full overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 py-3 text-center text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
             >
-              Plan a trip here
+              <span aria-hidden className="sheen-overlay animate-sheen" />
+              <span className="relative">Plan a trip here</span>
             </Link>
             {destination.latitude && destination.longitude && (
               <a
                 href={`https://www.google.com/maps?q=${destination.latitude},${destination.longitude}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 text-center text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                className="block w-full rounded-2xl border border-slate-200 bg-white py-3 text-center text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-100 active:scale-95"
               >
                 Open in Google Maps
               </a>
@@ -168,10 +169,10 @@ export default async function DestinationPage({ params }: PageProps) {
 
       {relatedFiltered.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-bold text-slate-900">
+          <h2 className="mb-4 text-xl font-extrabold tracking-tight text-slate-900">
             More {cat?.label ?? "places"} like this
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3">
             {relatedFiltered.map((d) => (
               <DestinationCard
                 key={d.id}
@@ -182,6 +183,7 @@ export default async function DestinationPage({ params }: PageProps) {
           </div>
         </section>
       )}
+      </div>
     </AppShell>
   );
 }

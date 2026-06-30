@@ -91,21 +91,21 @@ export function NearbyRestaurants({ centreLat, centreLng }: NearbyRestaurantsPro
         return (
           <li
             key={p.osmId}
-            className="flex flex-col rounded-2xl border border-slate-200 bg-white p-4"
+            className="card-hover flex flex-col rounded-2xl border border-slate-200 bg-white p-4"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-xs uppercase tracking-wide text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                   {p.category.replace("_", " ")}
                 </p>
-                <p className="mt-0.5 truncate font-semibold text-slate-900">{p.name}</p>
+                <p className="mt-0.5 truncate font-extrabold tracking-tight text-slate-900">{p.name}</p>
                 {p.tags.cuisine && (
-                  <p className="line-clamp-1 text-xs text-slate-500">
+                  <p className="line-clamp-1 text-xs font-medium text-slate-500">
                     {p.tags.cuisine.replaceAll(";", " · ")}
                   </p>
                 )}
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
                 <Navigation className="h-3 w-3" />
                 {formatKm(dist)}
               </span>
@@ -123,7 +123,7 @@ export function NearbyRestaurants({ centreLat, centreLng }: NearbyRestaurantsPro
                 href={`https://www.google.com/maps?q=${p.lat},${p.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+                className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
               >
                 Map <ExternalLink className="h-3 w-3" />
               </a>
@@ -132,7 +132,7 @@ export function NearbyRestaurants({ centreLat, centreLng }: NearbyRestaurantsPro
                   href={p.tags.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+                  className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
                 >
                   Site <ExternalLink className="h-3 w-3" />
                 </a>

@@ -186,7 +186,7 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
               : "Enter the full place details and it will be published immediately."}
           </p>
         </div>
-        <div className="rounded-full bg-indigo-50 p-2 text-indigo-700">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/40">
           {isEdit ? <Save className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
         </div>
       </div>
@@ -305,10 +305,13 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
       <button
         type="submit"
         disabled={isPending}
-        className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+        className="group relative mt-5 inline-flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.01] active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : isEdit ? <Save className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-        {isPending ? "Saving…" : isEdit ? "Save changes" : "Add place"}
+        {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
+        <span className="relative inline-flex items-center gap-2">
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : isEdit ? <Save className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+          {isPending ? "Saving…" : isEdit ? "Save changes" : "Add place"}
+        </span>
       </button>
 
       <style jsx>{`

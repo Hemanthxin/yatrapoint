@@ -432,7 +432,7 @@ export function LivePlan({
   }
 
   return (
-    <div id="live-plan" className="mt-8 space-y-5 scroll-mt-20">
+    <div id="live-plan" className="mt-8 animate-fadeUp space-y-5 scroll-mt-20">
       {/* Live location banner + regenerate */}
       <section className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
         <span className="flex items-center gap-2 text-sm font-medium text-emerald-900">
@@ -455,7 +455,7 @@ export function LivePlan({
           {isFallback && status !== "prompting" && (
             <button
               onClick={() => request()}
-              className="rounded-full border border-emerald-300 px-3 py-1 font-semibold text-emerald-700 hover:bg-emerald-100"
+              className="inline-flex min-h-[36px] items-center rounded-full border border-emerald-300 bg-white px-3.5 py-1.5 font-semibold text-emerald-700 transition hover:bg-emerald-100 active:scale-95"
             >
               Use my location
             </button>
@@ -463,7 +463,7 @@ export function LivePlan({
           <button
             onClick={generate}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1 font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1.5 font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95 disabled:opacity-60"
           >
             {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
             Regenerate
@@ -472,37 +472,83 @@ export function LivePlan({
       </section>
 
       {loading && !plan && (
-        <div className="grid h-40 place-items-center rounded-2xl border border-slate-200 bg-white text-sm text-slate-500">
-          <span className="flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" /> Finding the nearest places around you…
+        <div className="grid h-44 place-items-center rounded-3xl border border-slate-200 bg-white text-sm font-medium text-slate-500 shadow-sm">
+          <span className="flex flex-col items-center gap-3">
+            <Loader2 className="h-7 w-7 animate-spin text-emerald-500" />
+            Finding the nearest places around you…
           </span>
         </div>
       )}
 
       {error && !loading && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{error}</div>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">{error}</div>
       )}
 
       {plan && (
         <>
-          <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat icon={<MapPin className="h-4 w-4" />} label="Stops" value={plan.stops.length.toString()} sub={`from ${plan.candidatesConsidered} nearby`} />
-              <Stat icon={<Navigation className="h-4 w-4" />} label="Distance" value={formatKm(plan.totals.distanceKm)} sub="round trip via OSRM" />
-              <Stat icon={<Clock className="h-4 w-4" />} label="Driving time" value={formatMinutes(plan.totals.durationMinutes)} sub="excluding visits" />
-              <Stat icon={<Wallet className="h-4 w-4" />} label="Total cost" value={formatINR(plan.totals.cost)} sub={`${formatINR(plan.totals.perPersonCost)} per person`} />
+          <section className="animate-pop overflow-hidden rounded-3xl border border-emerald-200 bg-white shadow-sm">
+            {/* Hero total */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-5 sm:p-6">
+              <span aria-hidden className="sheen-overlay animate-sheen" />
+              <div className="relative flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-white/80">
+                    <Wallet className="h-4 w-4" /> Total trip cost
+                  </p>
+                  <p className="mt-1 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+                    {formatINR(plan.totals.cost)}
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-white/85">
+                    {formatINR(plan.totals.perPersonCost)} per person
+                  </p>
+                </div>
+                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur">
+                  {formatINR(plan.totals.unspentBudget)} unspent
+                </span>
+              </div>
             </div>
-            {/* Cost breakdown — fuel + entry fees + food */}
-            <div className="mt-4 flex flex-wrap gap-2 border-t border-emerald-200 pt-3">
-              <CostChip label="Fuel" value={formatINR(plan.totals.fuelTotal)} />
-              <CostChip label="Entry fees" value={formatINR(plan.totals.entryFeesTotal)} />
-              <CostChip label="Food" value={formatINR(plan.totals.foodTotal)} />
+
+            <div className="p-5 sm:p-6">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                <Stat icon={<MapPin className="h-4 w-4" />} label="Stops" value={plan.stops.length.toString()} sub={`from ${plan.candidatesConsidered} nearby`} />
+                <Stat icon={<Navigation className="h-4 w-4" />} label="Distance" value={formatKm(plan.totals.distanceKm)} sub="round trip" />
+                <Stat icon={<Clock className="h-4 w-4" />} label="Driving" value={formatMinutes(plan.totals.durationMinutes)} sub="excl. visits" />
+              </div>
+
+              {/* Cost breakdown — gradient bars proportional to total */}
+              {(() => {
+                const total = Math.max(1, plan.totals.fuelTotal + plan.totals.entryFeesTotal + plan.totals.foodTotal);
+                const rows = [
+                  { label: "Fuel", value: plan.totals.fuelTotal, bar: "from-amber-400 to-orange-500" },
+                  { label: "Entry fees", value: plan.totals.entryFeesTotal, bar: "from-sky-400 to-blue-500" },
+                  { label: "Food", value: plan.totals.foodTotal, bar: "from-emerald-400 to-teal-500" },
+                ];
+                return (
+                  <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
+                    {rows.map((r) => (
+                      <div key={r.label}>
+                        <div className="mb-1 flex items-center justify-between text-xs font-semibold text-slate-600">
+                          <span>{r.label}</span>
+                          <span className="font-extrabold text-slate-900">{formatINR(r.value)}</span>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className={`h-full rounded-full bg-gradient-to-r ${r.bar} transition-all`}
+                            style={{ width: `${Math.round((r.value / total) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              <p className="mt-4 text-[11px] leading-relaxed text-slate-500">
+                Unspent: {formatINR(plan.totals.unspentBudget)} budget · {formatMinutes(plan.totals.unspentMinutes)} time ·
+                Live OSM · {plan.overpassPlaces} OSM places, {plan.seedPlaces} curated.
+                {plan.overpassError && <span className="ml-1 text-amber-700">(Overpass error, used curated picks only)</span>}
+              </p>
             </div>
-            <p className="mt-3 text-xs text-emerald-900/70">
-              Unspent: {formatINR(plan.totals.unspentBudget)} budget · {formatMinutes(plan.totals.unspentMinutes)} time ·
-              Live OSM · {plan.overpassPlaces} OSM places, {plan.seedPlaces} curated.
-              {plan.overpassError && <span className="ml-1 text-amber-700">(Overpass error, used curated picks only)</span>}
-            </p>
           </section>
 
           {/* Primary CTA — navigate the whole trip in Google Maps */}
@@ -510,30 +556,31 @@ export function LivePlan({
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-emerald-600 p-5 text-white shadow-lg shadow-blue-600/25 transition hover:brightness-110"
+            className="relative flex items-center justify-between gap-3 overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 to-emerald-600 p-5 text-white shadow-lg shadow-blue-600/25 transition hover:scale-[1.01] active:scale-[0.99]"
           >
-            <span className="flex items-center gap-3">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/20">
+            <span aria-hidden className="sheen-overlay animate-sheen" />
+            <span className="relative flex items-center gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20">
                 <Navigation className="h-6 w-6" />
               </span>
               <span>
-                <span className="block text-base font-bold">Open this trip in Google Maps</span>
+                <span className="block text-base font-extrabold tracking-tight">Open this trip in Google Maps</span>
                 <span className="block text-xs text-white/85">
                   Turn-by-turn navigation through all {plan.stops.length} stops and back
                 </span>
               </span>
             </span>
-            <ExternalLink className="h-5 w-5 shrink-0" />
+            <ExternalLink className="relative h-5 w-5 shrink-0" />
           </a>
 
           {stopMarkers.length > 0 && (
             <section>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-bold text-slate-900">Your route</h2>
-                <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Your route</h2>
+                <div className="-mx-4 flex w-[calc(100%+2rem)] items-center gap-2 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:w-auto sm:flex-wrap sm:px-0">
                   <button
                     onClick={sharePlan}
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
                   >
                     {shared ? (
                       <>
@@ -549,7 +596,7 @@ export function LivePlan({
                     href={googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
                   >
                     <Navigation className="h-4 w-4 text-emerald-600" /> Open in Google Maps
                   </a>
@@ -573,7 +620,7 @@ export function LivePlan({
                       );
                       router.push("/multi-stop/live");
                     }}
-                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
                   >
                     <Play className="h-4 w-4 fill-current" /> Start live tracking
                   </button>
@@ -588,7 +635,7 @@ export function LivePlan({
           )}
 
           <section className="space-y-5">
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
               Day plan{days > 1 ? ` · split across ${days} days` : ""}
             </h2>
             {(() => {
@@ -604,10 +651,10 @@ export function LivePlan({
                 <div key={d}>
                   {days > 1 && (
                     <div className="mb-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                         Day {d + 1}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs font-medium text-slate-500">
                         {bucket.length} {bucket.length === 1 ? "stop" : "stops"} · {formatMinutes(dayMinutes)} · {formatINR(dayCost)}
                       </span>
                     </div>
@@ -616,18 +663,18 @@ export function LivePlan({
                     {bucket.map((s) => {
                       const i = running++;
                       return (
-                <li key={s.id} className="relative rounded-xl border border-slate-200 bg-white p-4">
-                  <span className="absolute -left-[27px] top-4 grid h-4 w-4 place-items-center rounded-full bg-white">
-                    <span className="block h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />
+                <li key={s.id} className="card-hover relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[11px] font-extrabold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
+                    {i + 1}
                   </span>
                   <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <p className="text-xs text-slate-500">Stop {i + 1}</p>
-                      <p className="font-semibold text-slate-900">{s.name}</p>
-                      <p className="text-xs uppercase tracking-wide text-slate-400">{s.category}</p>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
+                      <p className="font-bold tracking-tight text-slate-900">{s.name}</p>
+                      <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
                     </div>
                     <div className="text-right text-xs text-slate-600">
-                      <p className="font-semibold text-emerald-700">
+                      <p className="font-bold text-emerald-700">
                         {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
                       </p>
                       <p>
@@ -657,7 +704,7 @@ export function LivePlan({
                       href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-full bg-emerald-100 px-2.5 py-1 font-medium text-emerald-800 hover:bg-emerald-200"
+                      className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-800 transition hover:bg-emerald-200 active:scale-95"
                     >
                       Nearby Restaurants →
                     </a>
@@ -665,7 +712,7 @@ export function LivePlan({
                       href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700 hover:bg-slate-200"
+                      className="inline-flex min-h-[32px] items-center rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-200 active:scale-95"
                     >
                       Open in Maps →
                     </a>
@@ -676,7 +723,7 @@ export function LivePlan({
                         setSwapError(null);
                         setSwapIndex(swapIndex === i ? null : i);
                       }}
-                      className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 font-medium text-amber-800 transition hover:bg-amber-200"
+                      className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-800 transition hover:bg-amber-200 active:scale-95"
                     >
                       <Repeat className="h-3 w-3" /> Visited? Replace
                     </button>
@@ -751,26 +798,17 @@ export function LivePlan({
 
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
   return (
-    <div>
-      <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-emerald-800/70">
-        {icon}
-        {label}
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-center sm:text-left">
+      <div className="flex items-center justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-700 sm:justify-start">
+        <span className="text-emerald-600">{icon}</span>
+        <span className="truncate">{label}</span>
       </div>
-      <p className="mt-1 text-xl font-bold text-emerald-900">{value}</p>
-      {sub && <p className="text-[11px] text-emerald-800/70">{sub}</p>}
+      <p className="mt-1 text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{value}</p>
+      {sub && <p className="text-[11px] text-slate-500">{sub}</p>}
     </div>
   );
 }
 
 function Chip({ children }: { children: React.ReactNode }) {
-  return <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">{children}</span>;
-}
-
-function CostChip({ label, value }: { label: string; value: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-emerald-900 ring-1 ring-emerald-200">
-      <span className="text-emerald-700/70">{label}</span>
-      <span className="font-bold">{value}</span>
-    </span>
-  );
+  return <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{children}</span>;
 }

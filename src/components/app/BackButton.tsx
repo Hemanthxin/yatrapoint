@@ -19,9 +19,13 @@ export function BackButton({ fallback = "/explore-bangalore", label = "Back" }: 
   return (
     <button
       onClick={goBack}
-      className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900"
+      aria-label={label}
+      className="mb-4 inline-flex h-11 items-center gap-2 rounded-full border border-slate-200 bg-white/90 pl-2.5 pr-4 text-sm font-semibold text-slate-700 shadow-sm backdrop-blur transition hover:scale-[1.02] hover:border-emerald-200 hover:text-emerald-700 active:scale-95"
     >
-      <ArrowLeft className="h-4 w-4" /> {label}
+      <span className="grid h-7 w-7 place-items-center rounded-full bg-slate-100 text-slate-600">
+        <ArrowLeft className="h-4 w-4" />
+      </span>
+      {label}
     </button>
   );
 }

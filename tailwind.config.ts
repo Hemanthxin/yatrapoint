@@ -50,6 +50,11 @@ export default {
           "0%, 100%": { boxShadow: "0 0 0 0 rgba(16,185,129,0.45), 0 12px 34px -10px rgba(16,185,129,0.55)" },
           "50%": { boxShadow: "0 0 0 8px rgba(16,185,129,0), 0 18px 44px -8px rgba(16,185,129,0.7)" },
         },
+        // Indigo variant for the admin console.
+        glowIndigo: {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(99,102,241,0.45), 0 12px 34px -10px rgba(99,102,241,0.55)" },
+          "50%": { boxShadow: "0 0 0 8px rgba(99,102,241,0), 0 18px 44px -8px rgba(99,102,241,0.7)" },
+        },
         // Diagonal light sweep across glass surfaces.
         sheen: {
           "0%": { transform: "translateX(-150%) skewX(-20deg)" },
@@ -91,6 +96,7 @@ export default {
         shimmer: "shimmer 2.2s linear infinite",
         gradient: "gradientShift 8s ease infinite",
         glow: "glow 2.8s ease-in-out infinite",
+        "glow-indigo": "glowIndigo 2.8s ease-in-out infinite",
         sheen: "sheen 3.5s ease-in-out infinite",
         breathe: "breathe 7s ease-in-out infinite",
         dockIn: "dockIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both",

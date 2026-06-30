@@ -16,14 +16,16 @@ export default async function OneDayTripsPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      <div className="animate-fadeUp">
       <TripsTabs />
       <header className="mb-4 flex items-start gap-3">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-emerald-100 text-emerald-700">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
           <Compass className="h-5 w-5" />
         </div>
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            One-day trips from Bangalore
+        <div className="min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+            One-day trips from{" "}
+            <span className="text-gradient animate-shimmer">Bangalore</span>
           </h1>
           <p className="mt-1 text-sm text-slate-500">
             {trips.length} curated picks. Sorted by distance from you.
@@ -33,6 +35,7 @@ export default async function OneDayTripsPage() {
 
       <LocationBanner />
       <TripsList trips={trips} />
+      </div>
     </AppShell>
   );
 }

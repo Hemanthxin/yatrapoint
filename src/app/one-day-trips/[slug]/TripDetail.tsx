@@ -158,37 +158,37 @@ export function TripDetail({ trip }: TripDetailProps) {
   const highlights = trip.highlights?.split(",").filter(Boolean) ?? [];
 
   return (
-    <div className="mt-4">
-      {/* Hero */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
+    <div className="mt-4 animate-fadeUp">
+      {/* Hero — full-bleed on mobile */}
+      <section className="bleed overflow-hidden rounded-none shadow-2xl shadow-emerald-900/10 md:rounded-3xl md:border md:border-slate-200">
         <div
-          className={`relative grid h-44 w-full place-items-center bg-gradient-to-br ${gradient} md:h-56`}
+          className={`relative grid h-56 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient} sm:h-64 md:h-72`}
         >
-          <span className="text-7xl drop-shadow">{cat?.emoji ?? "📍"}</span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+          <span className="animate-float text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-6">
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${chip}`}
+              className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur ${chip}`}
             >
               {cat?.emoji} {cat?.label ?? trip.category}
             </span>
-            <h1 className="mt-2 text-3xl font-bold text-white drop-shadow">
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white drop-shadow md:text-4xl">
               {trip.name}
             </h1>
-            <p className="mt-1 flex items-center gap-1 text-sm text-white/90">
-              <MapPin className="h-4 w-4" />
+            <p className="mt-1 flex items-center gap-1 text-sm font-medium text-white/90">
+              <MapPin className="h-4 w-4 shrink-0" />
               From {trip.baseCity} · {trip.distanceKm} km (seeded)
             </p>
           </div>
         </div>
-        <div className="p-6">
+        <div className="bg-white p-6">
           <p className="text-sm leading-relaxed text-slate-700">{trip.description}</p>
           {highlights.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {highlights.map((h) => (
                 <span
                   key={h}
-                  className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-700"
+                  className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700"
                 >
                   <Sparkles className="h-3 w-3 text-emerald-600" />
                   {h.trim()}
@@ -203,7 +203,7 @@ export function TripDetail({ trip }: TripDetailProps) {
         {/* Map + live distances */}
         <section className="lg:col-span-2">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-slate-900">Route</h2>
+            <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Route</h2>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
               <Pill
                 icon={<Navigation className="h-3.5 w-3.5 text-emerald-600" />}
@@ -233,12 +233,12 @@ export function TripDetail({ trip }: TripDetailProps) {
           <div className="mt-6">
             <div className="mb-3 flex items-center gap-2">
               <Calendar className="h-4 w-4 text-emerald-700" />
-              <h2 className="text-lg font-bold text-slate-900">Timeline</h2>
+              <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Timeline</h2>
               <input
                 type="time"
                 value={departureTime}
                 onChange={(e) => setDepartureTime(e.target.value)}
-                className="ml-2 rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+                className="ml-2 rounded-2xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
               />
               <span className="text-xs text-slate-400">Depart at</span>
             </div>
@@ -263,12 +263,12 @@ export function TripDetail({ trip }: TripDetailProps) {
 
         {/* Budget + start trip */}
         <aside className="space-y-4">
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+          <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-600 text-white">
+              <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
                 <Wallet className="h-4 w-4" />
               </div>
-              <p className="text-sm font-semibold text-emerald-900">
+              <p className="text-sm font-bold text-emerald-900">
                 Live budget
               </p>
             </div>
@@ -336,16 +336,19 @@ export function TripDetail({ trip }: TripDetailProps) {
 
           <Link
             href={`/one-day-trips/${trip.slug}/live`}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-emerald-700"
+            className="relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
           >
-            <Play className="h-4 w-4 fill-current" />
-            Start live tracking
+            <span aria-hidden className="sheen-overlay animate-sheen" />
+            <span className="relative flex items-center gap-2">
+              <Play className="h-4 w-4 fill-current" />
+              Start live tracking
+            </span>
           </Link>
           <a
             href={`https://www.google.com/maps/dir/?api=1&origin=${coords.lat},${coords.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-emerald-200 hover:text-emerald-700 active:scale-95"
           >
             Open in Google Maps
           </a>

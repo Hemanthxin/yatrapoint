@@ -96,8 +96,8 @@ export function CommunityForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="font-bold text-slate-900">Create a post</h2>
+    <form onSubmit={onSubmit} className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Create a post</h2>
       <p className="mb-3 text-xs text-slate-500">Share a place — photo, review &amp; rating. Goes live instantly.</p>
 
       {/* Photo */}
@@ -117,10 +117,10 @@ export function CommunityForm() {
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="mb-3 flex h-28 w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 transition hover:border-emerald-400 hover:text-emerald-600"
+          className="mb-3 flex h-32 w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600"
         >
-          <Camera className="h-6 w-6" />
-          <span className="text-sm">Add a photo</span>
+          <Camera className="h-7 w-7" />
+          <span className="text-sm font-medium">Add a photo</span>
         </button>
       )}
       <input ref={fileRef} type="file" accept="image/*" onChange={onPhoto} className="hidden" />
@@ -130,7 +130,7 @@ export function CommunityForm() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Place name (e.g. Abbey Falls, Coorg)"
-        className="mb-3 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+        className="mb-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
       />
 
       {/* Rating */}
@@ -160,7 +160,7 @@ export function CommunityForm() {
         onChange={(e) => setDescription(e.target.value)}
         rows={3}
         placeholder="Write your review… what's special about this place?"
-        className="mb-3 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+        className="mb-3 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
       />
 
       {/* Location */}
@@ -168,7 +168,11 @@ export function CommunityForm() {
         <button
           type="button"
           onClick={addLiveLocation}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+          className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-2xl border px-4 py-2.5 text-sm font-semibold transition active:scale-95 ${
+            coords
+              ? "border-emerald-500 bg-emerald-500 text-white shadow-md shadow-emerald-500/30"
+              : "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+          }`}
         >
           {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
           {coords ? "Location added" : "Add location"}
@@ -177,7 +181,7 @@ export function CommunityForm() {
           value={locationName}
           onChange={(e) => setLocationName(e.target.value)}
           placeholder="Area / city (optional)"
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-500"
+          className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
       </div>
 
@@ -186,10 +190,13 @@ export function CommunityForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:opacity-60"
+        className="relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
       >
-        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-        Post
+        {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
+        <span className="relative flex items-center gap-2">
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          Post
+        </span>
       </button>
     </form>
   );

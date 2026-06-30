@@ -64,7 +64,7 @@ export function ProfileForm({ initial, phone, userId }: ProfileFormProps) {
         <input
           {...register("name")}
           placeholder="Vinay Sri Hari"
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
         {errors.name && <Err msg={errors.name.message ?? ""} />}
       </Field>
@@ -74,7 +74,7 @@ export function ProfileForm({ initial, phone, userId }: ProfileFormProps) {
           type="email"
           {...register("email")}
           placeholder="you@example.com"
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
         {errors.email && <Err msg={errors.email.message ?? ""} />}
       </Field>
@@ -83,7 +83,7 @@ export function ProfileForm({ initial, phone, userId }: ProfileFormProps) {
         <input
           value={phone || "—"}
           disabled
-          className="w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500"
+          className="w-full cursor-not-allowed rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500"
         />
       </Field>
 
@@ -91,7 +91,7 @@ export function ProfileForm({ initial, phone, userId }: ProfileFormProps) {
         <input
           value={userId}
           disabled
-          className="w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-500"
+          className="w-full cursor-not-allowed rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-xs text-slate-500"
         />
       </Field>
 
@@ -99,7 +99,7 @@ export function ProfileForm({ initial, phone, userId }: ProfileFormProps) {
         <button
           type="submit"
           disabled={isPending || !isDirty}
-          className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
         >
           {savedAt ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
           {isPending ? "Saving…" : savedAt && !isDirty ? "Saved" : "Save changes"}

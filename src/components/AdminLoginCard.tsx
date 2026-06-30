@@ -55,11 +55,21 @@ export function AdminLoginCard() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-3xl border border-white/60 bg-white/95 p-8 text-slate-900 shadow-2xl backdrop-blur-md md:p-10">
-      {/* Luggage icon */}
-      <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-amber-50 text-amber-700">
-        <Luggage className="h-10 w-10" strokeWidth={1.6} />
-      </div>
+    <div className="relative w-full max-w-md animate-fadeUp">
+      {/* Amber aura glow behind the card */}
+      <div
+        aria-hidden
+        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-amber-400/40 via-orange-400/20 to-transparent blur-2xl"
+      />
+      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/85 p-8 text-slate-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:p-10">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/70 to-transparent"
+        />
+        {/* Luggage icon */}
+        <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/40">
+          <Luggage className="h-10 w-10" strokeWidth={1.6} />
+        </div>
 
       <h2 className="text-center text-3xl font-bold text-slate-900">Admin Login</h2>
       <p className="mt-2 text-center text-sm text-slate-500">
@@ -137,16 +147,18 @@ export function AdminLoginCard() {
         <button
           type="submit"
           disabled={isSubmitting || submitting}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-base font-semibold text-white shadow-lg shadow-amber-500/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+          className="group relative inline-flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-base font-bold text-white shadow-lg shadow-amber-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          <LogIn className="h-5 w-5" />
-          {isSubmitting || submitting ? "Signing in..." : "Login"}
+          {!(isSubmitting || submitting) && <span aria-hidden className="sheen-overlay animate-sheen" />}
+          <LogIn className="relative h-5 w-5" />
+          <span className="relative">{isSubmitting || submitting ? "Signing in..." : "Login"}</span>
         </button>
       </form>
 
-      <p className="mt-8 text-center text-xs text-slate-400">
-        © 2024 Travel App. All rights reserved.
-      </p>
+        <p className="mt-8 text-center text-xs text-slate-400">
+          © 2024 Travel App. All rights reserved.
+        </p>
+      </div>
     </div>
   );
 }

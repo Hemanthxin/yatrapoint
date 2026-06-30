@@ -157,12 +157,24 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
   }
 
   return (
-    <div className="w-full max-w-md rounded-3xl bg-white p-8 text-slate-900 shadow-2xl">
-      <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-emerald-50 text-emerald-600">
-        <Smartphone className="h-6 w-6" />
-      </div>
+    <div className="relative w-full max-w-md animate-fadeUp">
+      {/* Glowing emerald aura */}
+      <div
+        aria-hidden
+        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-emerald-400/40 via-teal-400/20 to-transparent blur-2xl"
+      />
+      <div className="relative overflow-hidden rounded-[1.85rem] bg-white/85 p-8 text-slate-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent"
+        />
+        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40">
+          <Smartphone className="h-6 w-6" />
+        </div>
 
-      <h2 className="text-center text-2xl font-bold">Verify Your Number</h2>
+      <h2 className="text-center text-2xl font-extrabold tracking-tight">
+        <span className="text-gradient">Verify Your Number</span>
+      </h2>
       <p className="mt-1 text-center text-sm text-slate-500">
         Enter the OTP sent to
       </p>
@@ -198,7 +210,7 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
             onKeyDown={onKeyDown(i)}
             onPaste={onPaste}
             aria-label={`Digit ${i + 1}`}
-            className="h-12 rounded-lg border border-slate-300 text-center text-lg font-semibold outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="h-14 rounded-2xl border border-slate-300 bg-white/80 text-center text-xl font-extrabold text-slate-900 outline-none transition focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.18)]"
           />
         ))}
       </div>
@@ -216,10 +228,11 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
         type="button"
         onClick={onVerify}
         disabled={submitting || remaining === 0}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:from-emerald-600 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="group relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "Verifying..." : "Verify OTP"}
-        {!submitting && <ArrowRight className="h-4 w-4" />}
+        {!submitting && remaining !== 0 && <span aria-hidden className="sheen-overlay animate-sheen" />}
+        <span className="relative">{submitting ? "Verifying..." : "Verify OTP"}</span>
+        {!submitting && <ArrowRight className="relative h-4 w-4 transition group-hover:translate-x-0.5" />}
       </button>
 
       <div className="my-4 flex items-center gap-3 text-xs text-slate-400">
@@ -251,6 +264,7 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
           </button>
         )}
       </p>
+      </div>
     </div>
   );
 }

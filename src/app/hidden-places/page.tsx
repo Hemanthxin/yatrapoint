@@ -17,26 +17,29 @@ export default async function HiddenPlacesPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      <div className="animate-fadeUp">
       <header className="mb-6 flex items-start gap-3">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-amber-100 text-amber-700">
-          <Sparkles className="h-5 w-5" />
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg shadow-amber-500/30">
+          <Sparkles className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Hidden Places</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+            Hidden Places
+          </h1>
+          <p className="mt-1 text-sm font-medium text-slate-500">
             Offbeat destinations — the ones travel agents rarely sell.
           </p>
         </div>
       </header>
 
       {items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <p className="text-sm font-medium text-slate-500">
             No hidden places yet. Check back soon — we curate these monthly.
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((d) => (
             <DestinationCard
               key={d.id}
@@ -46,6 +49,7 @@ export default async function HiddenPlacesPage() {
           ))}
         </div>
       )}
+      </div>
     </AppShell>
   );
 }

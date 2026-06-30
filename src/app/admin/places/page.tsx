@@ -44,9 +44,10 @@ export default async function AdminPlacesPage({ searchParams }: PageProps) {
         </div>
         <Link
           href="/admin/places/new"
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
+          className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95"
         >
-          <PlusCircle className="h-4 w-4" /> Add place
+          <span aria-hidden className="sheen-overlay animate-sheen" />
+          <PlusCircle className="relative h-4 w-4" /> <span className="relative">Add place</span>
         </Link>
       </div>
 
@@ -109,8 +110,8 @@ export default async function AdminPlacesPage({ searchParams }: PageProps) {
               <Link
                 key={n}
                 href={qs(n)}
-                className={`grid h-9 min-w-9 place-items-center rounded-lg px-3 text-sm font-semibold transition ${
-                  active ? "bg-indigo-600 text-white" : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                className={`grid h-10 min-w-10 place-items-center rounded-xl px-3 text-sm font-bold transition active:scale-95 ${
+                  active ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-600/30" : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >
                 {n}

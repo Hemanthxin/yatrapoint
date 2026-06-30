@@ -17,6 +17,7 @@ import {
   LocateFixed,
   Map as MapIcon,
   Loader2,
+  Wallet,
 } from "lucide-react";
 
 import type { VehicleKind } from "@/lib/budget";
@@ -245,38 +246,45 @@ export function WizardForm({ initial }: WizardFormProps) {
 
   return (
     <>
-    <form onSubmit={onSubmit} className="space-y-6">
+    <form onSubmit={onSubmit} className="animate-fadeUp space-y-6">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-r from-sky-100 via-emerald-50 to-teal-100">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 shadow-xl shadow-emerald-500/20">
         <div
-          className="absolute inset-y-0 right-0 hidden w-2/3 bg-cover bg-center opacity-90 md:block"
+          className="absolute inset-y-0 right-0 w-2/3 bg-cover bg-center opacity-30 md:opacity-50"
           style={{ backgroundImage: "url('/66245.jpg')" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-sky-100 via-sky-100/85 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-700/90 via-emerald-600/70 to-teal-700/40" />
+        <span aria-hidden className="sheen-overlay animate-sheen" />
         <div className="relative z-10 max-w-lg p-6 md:p-10">
-          <h1 className="text-3xl font-bold text-slate-900 md:text-4xl">Budget Planner</h1>
-          <p className="mt-2 text-sm text-slate-600">
-            Plan your perfect trip within your budget.
-            <br />
-            Tell us your preferences and we&apos;ll handle the rest!
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white backdrop-blur">
+            <Wallet className="h-3.5 w-3.5" /> Smart planner
+          </span>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+            Budget Planner
+          </h1>
+          <p className="mt-2 max-w-md text-sm text-white/90 md:text-base">
+            Plan your perfect trip within your budget. Tell us your preferences and we&apos;ll
+            handle the rest.
           </p>
         </div>
       </div>
 
-      {/* Stepper */}
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-3">
+      {/* Stepper — horizontal rail on mobile, no overflow */}
+      <div className="-mx-4 flex items-center gap-x-2 gap-y-3 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:flex-wrap sm:px-0">
         {STEPS.map((s, i) => {
           const active = i === 0;
           return (
-            <div key={s} className="flex items-center gap-2">
+            <div key={s} className="flex shrink-0 items-center gap-2">
               <span
-                className={`grid h-6 w-6 place-items-center rounded-full text-xs font-bold ${
-                  active ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-500"
+                className={`grid h-7 w-7 place-items-center rounded-full text-xs font-extrabold transition ${
+                  active
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/40"
+                    : "bg-slate-200 text-slate-500"
                 }`}
               >
                 {i + 1}
               </span>
-              <span className={`text-sm font-medium ${active ? "text-slate-900" : "text-slate-400"}`}>
+              <span className={`whitespace-nowrap text-sm font-semibold ${active ? "text-slate-900" : "text-slate-400"}`}>
                 {s}
               </span>
               {i < STEPS.length - 1 && (
@@ -291,11 +299,14 @@ export function WizardForm({ initial }: WizardFormProps) {
         {/* Form column */}
         <div className="space-y-4 lg:col-span-2">
           {/* Where to go — around me vs a chosen area in India */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-5">
-            <p className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-              <span>📍</span> Where do you want to go?
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="mb-1 flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
+                <MapPinned className="h-4 w-4" />
+              </span>
+              Where do you want to go?
             </p>
-            <p className="mb-3 text-xs text-slate-500">
+            <p className="mb-3 ml-11 text-xs text-slate-500">
               Plan around your current location, or choose any state, district or taluk in India.
             </p>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -323,10 +334,13 @@ export function WizardForm({ initial }: WizardFormProps) {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* 1. Budget */}
-            <Card title="1. Your Budget" icon="💰">
+            <Card title="1. Your Budget" icon="💰" tone="emerald" className="sm:col-span-2">
+              <p className="mb-2 text-3xl font-extrabold tracking-tight">
+                <span className="text-gradient">₹{budget.toLocaleString("en-IN")}</span>
+              </p>
               <div className="flex items-center gap-2">
-                <div className="flex flex-1 items-center rounded-lg border border-slate-300 px-3 py-2">
-                  <span className="mr-1 text-slate-500">₹</span>
+                <div className="flex min-h-[44px] flex-1 items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
+                  <span className="mr-1 font-semibold text-slate-400">₹</span>
                   <input
                     type="number"
                     min={0}
@@ -334,10 +348,10 @@ export function WizardForm({ initial }: WizardFormProps) {
                     value={budget}
                     onChange={(e) => setBudget(Math.max(0, Number(e.target.value)))}
                     placeholder="Enter any amount"
-                    className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none"
+                    className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none"
                   />
                 </div>
-                <span className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600">
+                <span className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">
                   INR
                 </span>
               </div>
@@ -348,9 +362,9 @@ export function WizardForm({ initial }: WizardFormProps) {
                 step={0.5}
                 value={budgetToSlider(budget)}
                 onChange={(e) => setBudget(sliderToBudget(Number(e.target.value)))}
-                className="mt-3 w-full accent-emerald-600"
+                className="mt-4 h-2 w-full cursor-pointer accent-emerald-600"
               />
-              <div className="mt-1 flex justify-between text-[10px] text-slate-400">
+              <div className="mt-1.5 flex justify-between text-[11px] font-medium text-slate-400">
                 <span>₹1K</span>
                 <span>₹5K</span>
                 <span>₹10K</span>
@@ -360,7 +374,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             </Card>
 
             {/* 2. Days */}
-            <Card title="2. Number of Days" icon="📅">
+            <Card title="2. Number of Days" icon="📅" tone="sky">
               <div className="flex flex-wrap gap-2">
                 {DAY_OPTIONS.map((d) => (
                   <Chip key={d} active={days === d} onClick={() => setDays(d)}>
@@ -371,7 +385,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             </Card>
 
             {/* 3. Travellers */}
-            <Card title="3. Number of Travelers" icon="👥">
+            <Card title="3. Number of Travelers" icon="👥" tone="violet">
               <div className="flex flex-wrap gap-2">
                 {TRAVELLER_OPTIONS.map((t) => (
                   <Chip key={t} active={travellers === t} onClick={() => setTravellers(t)} square>
@@ -382,7 +396,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             </Card>
 
             {/* Places to visit */}
-            <Card title="Places to Visit" icon="📍">
+            <Card title="Places to Visit" icon="📍" tone="rose">
               <div className="flex flex-wrap gap-2">
                 {PLACES_OPTIONS.map((p) => (
                   <Chip key={p} active={places === p} onClick={() => setPlaces(p)} square>
@@ -396,7 +410,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             {/* How far to travel — only relevant for "around me" planning. In
                 area mode the distance comes from the chosen state/district/taluk. */}
             {planMode === "around" && (
-              <Card title="How Far? (km)" icon="🧭">
+              <Card title="How Far? (km)" icon="🧭" tone="teal">
                 <div className="flex flex-wrap gap-2">
                   {KM_OPTIONS.map((k) => (
                     <Chip key={k} active={km === k} onClick={() => setKm(k)}>
@@ -409,11 +423,14 @@ export function WizardForm({ initial }: WizardFormProps) {
             )}
 
             {/* 4. Trip Type + categories to explore */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
-              <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                <span>🏷️</span> 4. Trip Type
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
+              <p className="mb-3 flex items-center gap-2 text-sm font-bold tracking-tight text-slate-900">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-100 text-base text-emerald-700">
+                  🏷️
+                </span>
+                4. Trip Type
               </p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {TRIP_TYPES.map(({ key, icon: Icon }) => {
                   const active = tripType === key;
                   return (
@@ -421,23 +438,23 @@ export function WizardForm({ initial }: WizardFormProps) {
                       key={key}
                       type="button"
                       onClick={() => pickTripType(key)}
-                      className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-xs font-medium transition ${
+                      className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-semibold transition active:scale-95 ${
                         active
-                          ? "border-emerald-600 bg-emerald-600 text-white"
-                          : "border-slate-200 text-slate-600 hover:border-emerald-300"
+                          ? "border-transparent bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                          : "border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50"
                       }`}
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-5 w-5" />
                       {key}
                     </button>
                   );
                 })}
               </div>
 
-              <p className="mb-1 mt-4 text-xs font-medium uppercase tracking-wide text-slate-500">
+              <p className="mb-1 mt-5 text-xs font-bold uppercase tracking-wide text-slate-500">
                 Which types of places do you want to visit?
               </p>
-              <p className="mb-2 text-xs text-slate-500">
+              <p className="mb-2.5 text-xs text-slate-500">
                 Tap to add or remove. Temples, mosques, churches and gurudwaras are each separate — pick exactly what you want.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -448,9 +465,9 @@ export function WizardForm({ initial }: WizardFormProps) {
                       key={g.slug}
                       type="button"
                       onClick={() => toggleGroup(g.slug)}
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                      className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
                         on
-                          ? "border-emerald-500 bg-emerald-500 text-white"
+                          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300"
                       }`}
                     >
@@ -463,7 +480,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             </div>
 
             {/* 5. Transport */}
-            <Card title="5. Preferred Transport" optional icon="🚌">
+            <Card title="5. Preferred Transport" optional icon="🚌" tone="sky">
               <div className="flex flex-wrap gap-2">
                 {TRANSPORT.map(({ key, icon: Icon }) => (
                   <Chip key={key} active={transport === key} onClick={() => setTransport(key)}>
@@ -477,7 +494,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             </Card>
 
             {/* 6. Food */}
-            <Card title="6. Preferred Food" optional icon="🍽️">
+            <Card title="6. Preferred Food" optional icon="🍽️" tone="amber">
               <div className="flex flex-wrap gap-2">
                 {FOOD.map((f) => (
                   <Chip key={f} active={food === f} onClick={() => setFood(f)}>
@@ -489,7 +506,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           </div>
 
           {areaError && (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <div className="animate-pop rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
               {areaError}
             </div>
           )}
@@ -497,31 +514,38 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="submit"
             disabled={geocoding}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 disabled:opacity-70"
+            className="relative flex min-h-[56px] w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70"
           >
-            {geocoding ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Locating your area…
-              </>
-            ) : (
-              <>
-                {snapshot ? "Update Plan" : "Continue & Generate Plan"}
-                <ArrowRight className="h-4 w-4" />
-              </>
-            )}
+            <span aria-hidden className="sheen-overlay animate-sheen" />
+            <span className="relative flex items-center gap-2">
+              {geocoding ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" /> Locating your area…
+                </>
+              ) : (
+                <>
+                  {snapshot ? "Update Plan" : "Continue & Generate Plan"}
+                  <ArrowRight className="h-5 w-5" />
+                </>
+              )}
+            </span>
           </button>
 
-          <div className="rounded-xl bg-sky-50 px-4 py-3 text-xs text-slate-600">
-            💡 <span className="font-semibold">Tip:</span> The more details you provide, the
-            better and more personalized your trip plan will be.
+          <div className="flex items-start gap-2 rounded-2xl border border-sky-100 bg-sky-50 px-4 py-3 text-xs text-slate-600">
+            <span className="text-base leading-none">💡</span>
+            <span>
+              <span className="font-bold text-slate-800">Tip:</span> The more details you provide,
+              the better and more personalized your trip plan will be.
+            </span>
           </div>
         </div>
 
         {/* Sidebar column */}
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="flex items-center gap-2 font-bold text-slate-900">
-              <span className="text-emerald-600">✦</span> Why use Budget Planner?
+        <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+          <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-100 text-emerald-700">✦</span>
+              Why use Budget Planner?
             </p>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
               {[
@@ -530,32 +554,44 @@ export function WizardForm({ initial }: WizardFormProps) {
                 "Estimated cost breakdown",
                 "Smart travel suggestions",
               ].map((t) => (
-                <li key={t} className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-                  {t}
+                <li key={t} className="flex items-start gap-2.5">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                  <span className="font-medium">{t}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="font-bold text-emerald-700">Quick Preview</p>
-            <ul className="mt-3 space-y-2.5 text-sm text-slate-700">
+          <div className="card-hover overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
+            <p className="text-sm font-extrabold uppercase tracking-wide text-emerald-700">Quick Preview</p>
+            <p className="mt-1 text-2xl font-extrabold tracking-tight">
+              <span className="text-gradient">₹{budget.toLocaleString("en-IN")}</span>
+            </p>
+            <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700">
               <li className="flex items-center gap-2">
-                <CalendarDays className="h-4 w-4 text-slate-400" /> {days} Trip
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-sky-600 shadow-sm">
+                  <CalendarDays className="h-4 w-4" />
+                </span>
+                {days} Trip
               </li>
               <li className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-slate-400" /> {travellersNum} Travelers
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-violet-600 shadow-sm">
+                  <Users className="h-4 w-4" />
+                </span>
+                {travellersNum} Travelers
               </li>
               <li className="flex items-center gap-2">
-                <MapPinned className="h-4 w-4 text-slate-400" /> Budget: ₹ {budget.toLocaleString("en-IN")}
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-600 shadow-sm">
+                  <MapPinned className="h-4 w-4" />
+                </span>
+                Total budget
               </li>
             </ul>
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl bg-amber-50 p-4 text-xs text-slate-600">
-            <span className="font-medium">Next: Customize your preferences for a better plan</span>
-            <span className="ml-auto grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-white">
+          <div className="flex items-center gap-3 rounded-3xl border border-amber-100 bg-amber-50 p-4 text-xs font-medium text-slate-600">
+            <span>Next: Customize your preferences for a better plan</span>
+            <span className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md shadow-amber-500/30">
               <ArrowRight className="h-4 w-4" />
             </span>
           </div>
@@ -568,23 +604,42 @@ export function WizardForm({ initial }: WizardFormProps) {
   );
 }
 
+const CARD_TONES: Record<string, string> = {
+  emerald: "bg-emerald-100 text-emerald-700",
+  sky: "bg-sky-100 text-sky-700",
+  amber: "bg-amber-100 text-amber-700",
+  violet: "bg-violet-100 text-violet-700",
+  rose: "bg-rose-100 text-rose-700",
+  teal: "bg-teal-100 text-teal-700",
+};
+
 function Card({
   title,
   icon,
   optional,
+  tone = "emerald",
+  className = "",
   children,
 }: {
   title: string;
   icon: string;
   optional?: boolean;
+  tone?: keyof typeof CARD_TONES;
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5">
-      <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-        <span>{icon}</span>
-        {title}
-        {optional && <span className="text-xs font-normal text-slate-400">(Optional)</span>}
+    <div className={`card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+      <p className="mb-3 flex items-center gap-2 text-sm font-bold tracking-tight text-slate-900">
+        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl text-base ${CARD_TONES[tone]}`}>
+          {icon}
+        </span>
+        <span className="flex-1">{title}</span>
+        {optional && (
+          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-400">
+            Optional
+          </span>
+        )}
       </p>
       {children}
     </div>
@@ -608,21 +663,21 @@ function ModeCard({
     <button
       type="button"
       onClick={onClick}
-      className={`flex items-start gap-3 rounded-2xl border p-3.5 text-left transition ${
+      className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition active:scale-[0.98] ${
         active
-          ? "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-200"
-          : "border-slate-200 hover:border-emerald-300"
+          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
+          : "border-slate-200 hover:border-emerald-300 hover:bg-slate-50"
       }`}
     >
       <span
-        className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${
-          active ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
+        className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition ${
+          active ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-500"
         }`}
       >
         {icon}
       </span>
       <span>
-        <span className={`block text-sm font-semibold ${active ? "text-emerald-800" : "text-slate-800"}`}>
+        <span className={`block text-sm font-bold ${active ? "text-emerald-800" : "text-slate-800"}`}>
           {title}
         </span>
         <span className="mt-0.5 block text-xs text-slate-500">{desc}</span>
@@ -646,12 +701,12 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-lg border text-sm font-medium transition ${
-        square ? "h-9 w-10" : "px-3 py-1.5"
+      className={`rounded-xl border text-sm font-semibold transition active:scale-95 ${
+        square ? "grid h-11 w-11 place-items-center" : "min-h-[44px] px-4 py-2"
       } ${
         active
-          ? "border-emerald-600 bg-emerald-600 text-white"
-          : "border-slate-200 text-slate-600 hover:border-emerald-300"
+          ? "border-transparent bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+          : "border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50"
       }`}
     >
       {children}

@@ -42,9 +42,12 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Destinations</h1>
-        <p className="mt-1 text-sm text-slate-500">
+      <div className="animate-fadeUp">
+      <header className="mb-5">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+          <span className="text-gradient">Destinations</span>
+        </h1>
+        <p className="mt-1 text-sm font-medium text-slate-500">
           {items.length} {items.length === 1 ? "place" : "places"} matching your
           filters
         </p>
@@ -61,13 +64,13 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       />
 
       {items.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <p className="text-sm font-medium text-slate-500">
             No destinations match those filters. Try removing one.
           </p>
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((d) => (
             <DestinationCard
               key={d.id}
@@ -77,6 +80,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           ))}
         </div>
       )}
+      </div>
     </AppShell>
   );
 }

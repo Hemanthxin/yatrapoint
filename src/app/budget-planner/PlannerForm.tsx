@@ -42,9 +42,9 @@ export function PlannerForm({ initial }: PlannerFormProps) {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6"
+      className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
     >
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Field label="Total budget (₹)" hint="Whole trip, all travellers">
           <input
             type="number"
@@ -55,7 +55,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             required
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </Field>
         <Field label="Days">
@@ -68,7 +68,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
             value={days}
             onChange={(e) => setDays(e.target.value)}
             required
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </Field>
         <Field label="Travellers">
@@ -79,14 +79,14 @@ export function PlannerForm({ initial }: PlannerFormProps) {
             max={20}
             value={travellers}
             onChange={(e) => setTravellers(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </Field>
         <Field label="Category" hint="Optional vibe filter">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           >
             <option value="">Any category</option>
             {CATEGORIES.map((c) => (
@@ -101,9 +101,10 @@ export function PlannerForm({ initial }: PlannerFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-60"
+          className="relative min-h-[48px] overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
         >
-          {isPending ? "Matching…" : "Find matching trips"}
+          <span aria-hidden className="sheen-overlay animate-sheen" />
+          <span className="relative">{isPending ? "Matching…" : "Find matching trips"}</span>
         </button>
         <p className="text-xs text-slate-500">
           Budgets are mid-range estimates (stay + food + local transport + sightseeing).
@@ -124,11 +125,11 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">
+      <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">
         {label}
       </span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-[11px] text-slate-400">{hint}</span>}
     </label>
   );
 }

@@ -41,24 +41,31 @@ export default async function CityPlacePage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      <div className="animate-fadeUp">
       <BackButton fallback="/explore-bangalore" label="Back" />
       <LocationBanner />
 
-      <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 md:p-8">
-        <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
-          ★ Curated · {place.kind}
-        </p>
-        <h1 className="mt-1 text-3xl font-bold text-slate-900">{place.name}</h1>
-        <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
-          <MapPin className="h-4 w-4" />
-          {place.area ?? place.city}
-        </p>
+      <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 md:p-8">
+          <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+          <p className="relative text-xs font-bold uppercase tracking-wide text-white/90">
+            ★ Curated · {place.kind}
+          </p>
+          <h1 className="relative mt-1 text-3xl font-extrabold tracking-tight text-white drop-shadow sm:text-4xl">
+            {place.name}
+          </h1>
+          <p className="relative mt-1.5 flex items-center gap-1 text-sm font-medium text-white/90">
+            <MapPin className="h-4 w-4 shrink-0" />
+            {place.area ?? place.city}
+          </p>
+        </div>
 
-        <p className="mt-4 text-sm leading-relaxed text-slate-700">
+        <div className="p-6 md:p-8">
+        <p className="text-sm leading-relaxed text-slate-700">
           {place.description}
         </p>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {place.entryFeePerPerson > 0 && (
             <Fact
               icon={<Wallet className="h-4 w-4" />}
@@ -96,7 +103,7 @@ export default async function CityPlacePage({ params }: PageProps) {
             {tags.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-700"
+                className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
               >
                 <Tag className="h-3 w-3" />
                 {t}
@@ -110,22 +117,24 @@ export default async function CityPlacePage({ params }: PageProps) {
             href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-11 items-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-50 active:scale-95"
           >
-            Open in Google Maps <ExternalLink className="h-3 w-3" />
+            Open in Google Maps <ExternalLink className="h-4 w-4" />
           </a>
           <Link
             href="/budget-planner"
-            className="inline-flex items-center gap-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-600"
+            className="relative inline-flex h-11 items-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
           >
-            Build a trip including this
+            <span aria-hidden className="sheen-overlay animate-sheen" />
+            <span className="relative">Build a trip including this</span>
           </Link>
+        </div>
         </div>
       </article>
 
       <section className="mt-8">
-        <h2 className="mb-3 text-lg font-bold text-slate-900">Nearby restaurants</h2>
-        <p className="mb-3 text-xs text-slate-500">
+        <h2 className="mb-1 text-xl font-extrabold tracking-tight text-slate-900">Nearby restaurants</h2>
+        <p className="mb-3 text-xs font-medium text-slate-500">
           Live from OpenStreetMap within 1.5 km of {place.name}.
         </p>
         <NearbyRestaurants
@@ -133,6 +142,7 @@ export default async function CityPlacePage({ params }: PageProps) {
           centreLng={Number(place.longitude)}
         />
       </section>
+      </div>
     </AppShell>
   );
 }
@@ -147,12 +157,12 @@ function Fact({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-      <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-slate-500">
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
+      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-600">
         {icon}
         {label}
       </div>
-      <p className="mt-0.5 text-sm font-semibold text-slate-900">{value}</p>
+      <p className="mt-1 text-sm font-bold text-slate-900">{value}</p>
     </div>
   );
 }

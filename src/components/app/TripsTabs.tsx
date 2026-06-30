@@ -31,7 +31,7 @@ const TABS = [
 export function TripsTabs() {
   const path = usePathname();
   return (
-    <nav className="mb-5 grid gap-2 sm:grid-cols-3">
+    <nav className="mb-5 flex gap-1.5 overflow-x-auto rounded-full bg-slate-100 p-1.5 no-scrollbar">
       {TABS.map((t) => {
         const active = path === t.href || path.startsWith(t.href + "/");
         const Icon = t.icon;
@@ -39,29 +39,19 @@ export function TripsTabs() {
           <Link
             key={t.href}
             href={t.href}
-            className={`group rounded-2xl border p-3 transition ${
+            title={t.sub}
+            className={`group flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-bold transition ${
               active
-                ? "border-emerald-500 bg-emerald-50 shadow-sm"
-                : "border-slate-200 bg-white hover:border-emerald-200 hover:shadow-sm"
+                ? "bg-white text-emerald-700 shadow"
+                : "text-slate-500 hover:text-slate-700"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <div
-                className={`grid h-8 w-8 place-items-center rounded-full ${
-                  active ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-700"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-              </div>
-              <span
-                className={`font-semibold ${
-                  active ? "text-emerald-900" : "text-slate-900"
-                }`}
-              >
-                {t.label}
-              </span>
-            </div>
-            <p className="mt-1 text-xs text-slate-500">{t.sub}</p>
+            <Icon
+              className={`h-4 w-4 shrink-0 ${
+                active ? "text-emerald-600" : "text-slate-400"
+              }`}
+            />
+            {t.label}
           </Link>
         );
       })}

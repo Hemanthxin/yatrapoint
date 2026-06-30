@@ -15,33 +15,37 @@ export default async function TripCategoriesPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Trip Categories</h1>
+      <header className="mb-6 animate-fadeUp">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+          Trip <span className="text-gradient animate-shimmer">Categories</span>
+        </h1>
         <p className="mt-1 text-sm text-slate-500">
           Pick the kind of trip you're in the mood for.
         </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
         {CATEGORIES.map((c) => (
           <Link
             key={c.slug}
             href={`/destinations?category=${c.slug}`}
-            className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+            className="card-hover animate-fadeUp group relative h-40 overflow-hidden rounded-3xl border border-slate-200 sm:h-48"
           >
             <div
-              className={`relative flex h-44 items-center justify-center bg-gradient-to-br ${
+              className={`absolute inset-0 grid place-items-center bg-gradient-to-br ${
                 CATEGORY_GRADIENT[c.slug as CategorySlug]
               }`}
             >
-              <span className="text-7xl drop-shadow">{c.emoji}</span>
-              <div className="absolute inset-0 bg-black/5 transition group-hover:bg-black/0" />
+              <span className="text-6xl drop-shadow-md transition duration-500 group-hover:scale-110 sm:text-7xl">
+                {c.emoji}
+              </span>
             </div>
-            <div className="p-5">
-              <p className="text-lg font-bold text-slate-900 group-hover:text-emerald-700">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-4">
+              <p className="text-lg font-extrabold tracking-tight text-white drop-shadow">
                 {c.label}
               </p>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs font-medium text-white/80">
                 {byCat[c.slug] ?? 0} destinations
               </p>
             </div>

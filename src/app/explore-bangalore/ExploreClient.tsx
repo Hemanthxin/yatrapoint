@@ -196,16 +196,16 @@ export function ExploreClient({ seed }: ExploreClientProps) {
 
   return (
     <div className="mt-4">
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 no-scrollbar">
         {GROUPS.map((g) => (
           <button
             key={g.slug}
             type="button"
             onClick={() => setGroup(g.slug)}
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
               group === g.slug
-                ? "border-emerald-500 bg-emerald-500 text-white"
-                : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
             <span>{g.emoji}</span>
@@ -215,21 +215,21 @@ export function ExploreClient({ seed }: ExploreClientProps) {
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[12rem]">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <div className="relative min-w-[12rem] flex-1">
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name…"
-            className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <span className="text-slate-500">Within</span>
+          <span className="font-medium text-slate-500">Within</span>
           <select
             value={radiusKm}
             onChange={(e) => setRadiusKm(Number(e.target.value))}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+            className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           >
             <option value={2}>2 km</option>
             <option value={5}>5 km</option>
@@ -241,7 +241,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
         </div>
       </div>
 
-      <p className="mt-2 text-xs text-slate-500">
+      <p className="mt-2 text-xs font-medium text-slate-500">
         {loading ? (
           <span className="inline-flex items-center gap-1">
             <Loader2 className="h-3 w-3 animate-spin" /> Fetching live OSM data…
@@ -257,11 +257,11 @@ export function ExploreClient({ seed }: ExploreClientProps) {
       </p>
 
       {unified.length === 0 && !loading ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm text-slate-500">No matches. Try a wider radius or a different category.</p>
+        <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <p className="text-sm font-medium text-slate-500">No matches. Try a wider radius or a different category.</p>
         </div>
       ) : (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {unified.map((u) =>
             u.kind === "seed" ? (
               <SeedCard key={u.key} place={u.seed} userDistanceKm={u.userDistanceKm} />
@@ -283,16 +283,16 @@ function SeedCard({
   userDistanceKm: number;
 }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 transition hover:-translate-y-0.5 hover:shadow-md">
+    <article className="card-hover flex flex-col overflow-hidden rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
             ★ Curated · {place.kind}
           </p>
-          <p className="mt-0.5 font-semibold text-slate-900">{place.name}</p>
-          <p className="text-xs text-slate-500">{place.area ?? place.city}</p>
+          <p className="mt-0.5 font-extrabold tracking-tight text-slate-900">{place.name}</p>
+          <p className="text-xs font-medium text-slate-500">{place.area ?? place.city}</p>
         </div>
-        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
           <Navigation className="h-3 w-3" /> {formatKm(userDistanceKm)}
         </span>
       </div>
@@ -325,7 +325,7 @@ function SeedCard({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href={`/explore-bangalore/${place.slug}`}
-          className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-800 hover:bg-emerald-200"
+          className="inline-flex h-9 items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
         >
           Details
         </Link>
@@ -333,7 +333,7 @@ function SeedCard({
           href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+          className="inline-flex h-9 items-center gap-1 rounded-full bg-white px-4 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 transition hover:bg-slate-50"
         >
           Map <ExternalLink className="h-3 w-3" />
         </a>
@@ -352,18 +352,18 @@ function OsmCard({
   const groupSlug = OVERPASS_TO_GROUP[place.category] ?? "heritage";
   const group = GROUPS.find((g) => g.slug === groupSlug);
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md">
+    <article className="card-hover flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             {group?.emoji} Live · {place.category.replace("_", " ")}
           </p>
-          <p className="mt-0.5 font-semibold text-slate-900">{place.name}</p>
+          <p className="mt-0.5 font-extrabold tracking-tight text-slate-900">{place.name}</p>
           {place.tags.addrFull && (
-            <p className="line-clamp-1 text-xs text-slate-500">{place.tags.addrFull}</p>
+            <p className="line-clamp-1 text-xs font-medium text-slate-500">{place.tags.addrFull}</p>
           )}
         </div>
-        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
           <Navigation className="h-3 w-3" /> {formatKm(userDistanceKm)}
         </span>
       </div>
@@ -387,7 +387,7 @@ function OsmCard({
           href={`https://www.google.com/maps?q=${place.lat},${place.lng}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+          className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
         >
           Map <ExternalLink className="h-3 w-3" />
         </a>
@@ -395,7 +395,7 @@ function OsmCard({
           href={`https://www.openstreetmap.org/${place.osmId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+          className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
         >
           OSM <ExternalLink className="h-3 w-3" />
         </a>
@@ -404,7 +404,7 @@ function OsmCard({
             href={place.tags.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+            className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
           >
             Site <ExternalLink className="h-3 w-3" />
           </a>

@@ -55,9 +55,10 @@ export default async function AdminDashboardPage() {
         </div>
         <a
           href="#add-place"
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-700"
+          className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95"
         >
-          <PlusCircle className="h-4 w-4" /> Add a place
+          <span aria-hidden className="sheen-overlay animate-sheen" />
+          <PlusCircle className="relative h-4 w-4" /> <span className="relative">Add a place</span>
         </a>
       </div>
 
@@ -123,7 +124,30 @@ export default async function AdminDashboardPage() {
             {recent.length === 0 ? (
               <p className="text-sm text-slate-500">No places added yet.</p>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+              {/* Mobile: stacked cards instead of a cramped table */}
+              <ul className="space-y-3 sm:hidden">
+                {recent.map((p) => (
+                  <li key={p.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                      {p.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="grid h-full w-full place-items-center text-lg">🗺️</div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold text-slate-900">{p.name}</p>
+                      <p className="truncate text-xs text-slate-500">{p.state} · {p.addedByName ?? "—"}</p>
+                      <span className="mt-1 inline-block rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-700">
+                        {p.category}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div className="hidden overflow-x-auto sm:block">
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
@@ -161,6 +185,7 @@ export default async function AdminDashboardPage() {
                   </tbody>
                 </table>
               </div>
+              </>
             )}
           </Panel>
         </div>

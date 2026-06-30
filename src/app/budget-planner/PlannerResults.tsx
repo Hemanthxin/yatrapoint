@@ -58,23 +58,34 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
   }
 
   return (
-    <section className="mt-8">
-      <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat label="Total budget" value={formatINR(summary.totalBudget)} />
-          <Stat label="Per person / day" value={formatINR(summary.perPersonPerDay)} />
-          <Stat label="Days" value={summary.days.toString()} />
-          <Stat label="Travellers" value={summary.travellers.toString()} />
+    <section className="mt-8 animate-fadeUp">
+      <div className="mb-4 animate-pop overflow-hidden rounded-3xl border border-emerald-200 bg-white shadow-sm">
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-5 sm:p-6">
+          <span aria-hidden className="sheen-overlay animate-sheen" />
+          <p className="relative text-xs font-bold uppercase tracking-wide text-white/80">Total budget</p>
+          <p className="relative mt-1 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+            {formatINR(summary.totalBudget)}
+          </p>
+          <p className="relative mt-1 text-sm font-medium text-white/85">
+            {formatINR(summary.perPersonPerDay)} per person / day
+          </p>
         </div>
-        <p className="mt-3 text-xs text-emerald-900/70">
-          Showing destinations where the mid-range daily budget fits within{" "}
-          {formatINR(summary.perPersonPerDay)} per person.
-        </p>
+        <div className="p-5 sm:p-6">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <Stat label="Per person / day" value={formatINR(summary.perPersonPerDay)} />
+            <Stat label="Days" value={summary.days.toString()} />
+            <Stat label="Travellers" value={summary.travellers.toString()} />
+          </div>
+          <p className="mt-4 text-[11px] leading-relaxed text-slate-500">
+            Showing destinations where the mid-range daily budget fits within{" "}
+            {formatINR(summary.perPersonPerDay)} per person.
+          </p>
+        </div>
       </div>
 
       {matches.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm font-medium text-slate-700">
+        <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm">
+          <p className="text-sm font-bold text-slate-700">
             Nothing fits within {formatINR(summary.perPersonPerDay)} per person per day.
           </p>
           <p className="mt-1 text-xs text-slate-500">
@@ -84,7 +95,7 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
       ) : (
         <>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
               {matches.length} matching {matches.length === 1 ? "destination" : "destinations"}
             </h2>
             <p className="text-xs text-slate-500">
@@ -100,9 +111,9 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
                     type="button"
                     onClick={() => toggle(d.id)}
                     aria-pressed={isPicked}
-                    className={`absolute left-3 top-3 z-20 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold shadow-md transition ${
+                    className={`absolute left-3 top-3 z-20 inline-flex min-h-[36px] items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-bold shadow-md backdrop-blur transition active:scale-95 ${
                       isPicked
-                        ? "bg-emerald-500 text-white"
+                        ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/40"
                         : "bg-white/90 text-slate-700 hover:bg-white"
                     }`}
                   >
@@ -121,34 +132,34 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
           </div>
 
           {picked.size > 0 && (
-            <div className="sticky bottom-4 mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+            <div className="sticky bottom-4 mt-6 rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl">
               <div className="flex flex-wrap items-end gap-3">
-                <div className="flex-1 min-w-[12rem]">
-                  <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">
+                <div className="min-w-[12rem] flex-1">
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">
                     Save as
                   </label>
                   <input
                     value={planName}
                     onChange={(e) => setPlanName(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+                    className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
                   />
                 </div>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm font-semibold text-slate-600">
                   {picked.size} {picked.size === 1 ? "place" : "places"} selected
                 </p>
                 <button
                   type="button"
                   onClick={onSave}
                   disabled={isSaving}
-                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:bg-emerald-600 disabled:opacity-60"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
                 >
                   <Save className="h-4 w-4" />
                   {isSaving ? "Saving…" : saved ? "Saved" : "Save trip"}
                 </button>
               </div>
-              {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+              {error && <p className="mt-2 text-xs font-medium text-red-600">{error}</p>}
               {saved && (
-                <p className="mt-2 text-xs text-emerald-700">
+                <p className="mt-2 text-xs font-medium text-emerald-700">
                   Saved. Your trip plan is now in the database — check{" "}
                   <a className="underline" href="/profile">
                     your profile
@@ -166,9 +177,9 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-xs uppercase tracking-wide text-emerald-800/70">{label}</p>
-      <p className="text-lg font-bold text-emerald-900">{value}</p>
+    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-center sm:text-left">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">{label}</p>
+      <p className="mt-1 text-lg font-extrabold tracking-tight text-slate-900">{value}</p>
     </div>
   );
 }
