@@ -75,6 +75,11 @@ export default {
           "0%": { opacity: "0", transform: "translateY(-8px) scale(0.98)" },
           "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
         },
+        // Slow cinematic pan/zoom for full-bleed hero photography.
+        kenburns: {
+          "0%": { transform: "scale(1) translate(0, 0)" },
+          "100%": { transform: "scale(1.15) translate(-2%, -2%)" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.35s ease-out both",
@@ -91,6 +96,7 @@ export default {
         dockIn: "dockIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both",
         aurora: "aurora 22s ease-in-out infinite",
         slideDown: "slideDown 0.22s cubic-bezier(0.22, 1, 0.36, 1) both",
+        kenburns: "kenburns 20s ease-out alternate infinite",
       },
     },
   },

@@ -135,13 +135,29 @@ export function PhoneLoginCard({ googleClientId }: PhoneLoginCardProps) {
   }, [gisLoaded, googleClientId, router]);
 
   return (
-    <div className="w-full max-w-md rounded-3xl bg-white p-8 text-slate-900 shadow-2xl">
-      <h2 className="text-center text-2xl font-bold text-slate-900">
-        Welcome Back!
-      </h2>
-      <p className="mt-1 text-center text-sm text-slate-500">
-        Login to continue your journey
-      </p>
+    <div className="relative w-full max-w-md animate-fadeUp">
+      {/* Glowing emerald aura behind the card */}
+      <div
+        aria-hidden
+        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-emerald-400/40 via-teal-400/20 to-transparent blur-2xl"
+      />
+      {/* Gradient hairline border wrapper */}
+      <div className="relative rounded-[1.85rem] bg-gradient-to-br from-white/70 via-white/30 to-emerald-200/40 p-[1.5px] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+        <div className="relative overflow-hidden rounded-[1.75rem] bg-white/85 p-8 text-slate-900 backdrop-blur-2xl">
+          {/* Top sheen accent */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent"
+          />
+          <div className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40">
+            <Phone className="h-5 w-5" strokeWidth={2.2} />
+          </div>
+          <h2 className="text-center text-2xl font-extrabold tracking-tight">
+            <span className="text-gradient">Welcome Back!</span>
+          </h2>
+          <p className="mt-1 text-center text-sm text-slate-500">
+            Login to continue your journey
+          </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
         <div>
@@ -152,9 +168,9 @@ export function PhoneLoginCard({ googleClientId }: PhoneLoginCardProps) {
             Enter Mobile Number
           </label>
           <div
-            className={`flex items-stretch overflow-hidden rounded-xl border ${
+            className={`flex items-stretch overflow-hidden rounded-2xl border bg-white/80 transition ${
               errors.phone ? "border-red-400" : "border-slate-300"
-            } focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/30`}
+            } focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.18)]`}
           >
             <div className="flex items-center gap-1 border-r border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700">
               +91
@@ -184,11 +200,12 @@ export function PhoneLoginCard({ googleClientId }: PhoneLoginCardProps) {
         <button
           type="submit"
           disabled={submitting || isSubmitting}
-          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:from-emerald-600 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {submitting ? "Sending OTP..." : "Continue"}
+          {!submitting && <span aria-hidden className="sheen-overlay animate-sheen" />}
+          <span className="relative">{submitting ? "Sending OTP..." : "Continue"}</span>
           {!submitting && (
-            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            <ArrowRight className="relative h-4 w-4 transition group-hover:translate-x-0.5" />
           )}
         </button>
 
@@ -225,7 +242,9 @@ export function PhoneLoginCard({ googleClientId }: PhoneLoginCardProps) {
           <Lock className="h-3 w-3" />
           We never share your number with anyone.
         </p>
-      </form>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

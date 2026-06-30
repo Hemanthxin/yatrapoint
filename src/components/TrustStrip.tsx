@@ -20,10 +20,10 @@ const items = [
 
 export function TrustStrip() {
   return (
-    <div className="relative z-10 mt-12 grid w-full grid-cols-1 gap-6 rounded-2xl bg-black/40 px-6 py-5 backdrop-blur-md md:grid-cols-3 md:gap-10 md:px-10">
+    <div className="relative z-10 mt-12 grid w-full grid-cols-1 gap-6 rounded-3xl border border-white/15 bg-black/35 px-6 py-6 backdrop-blur-xl md:grid-cols-3 md:gap-10 md:px-10">
       {items.map((i) => (
-        <div key={i.title} className="flex items-start gap-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-brand-green">
+        <div key={i.title} className="flex items-start gap-3 transition hover:-translate-y-0.5">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/10 text-brand-green shadow-inner">
             {i.icon}
           </div>
           <div>
