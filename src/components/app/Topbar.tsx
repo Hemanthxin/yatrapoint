@@ -66,23 +66,29 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
       : location;
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur-md md:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-2.5 border-b border-white/50 glass-strong px-4 shadow-[0_8px_30px_-18px_rgba(2,6,23,0.45)] md:gap-3 md:px-6">
+      {/* Gradient hairline under the bar for a premium edge */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent"
+      />
+
       <button
         onClick={onMenu}
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 lg:hidden"
         aria-label="Toggle menu"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      <form onSubmit={onSearch} className="relative flex-1 lg:max-w-xl">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <form onSubmit={onSearch} className="group relative flex-1 lg:max-w-xl">
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-emerald-600" />
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Explore more places..."
-          className="w-full rounded-full border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm text-slate-700 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+          placeholder="Where to next?"
+          className="w-full rounded-full border border-slate-200/80 bg-white/70 py-2.5 pl-10 pr-4 text-sm text-slate-700 shadow-inner outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
       </form>
 
@@ -108,14 +114,16 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
               setOpenNotif((v) => !v);
               setOpenUser(false);
             }}
-            className="relative grid h-9 w-9 place-items-center rounded-full text-slate-600 hover:bg-slate-100"
+            className="relative grid h-10 w-10 place-items-center rounded-full text-slate-600 transition hover:bg-white/70 active:scale-90"
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white">
+              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400" />
+            </span>
           </button>
           {openNotif && (
-            <div className="absolute right-0 mt-2 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+            <div className="absolute right-0 mt-2 w-72 origin-top-right animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl">
               <p className="border-b border-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-900">
                 Notifications
               </p>
@@ -145,21 +153,23 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
               setOpenUser((v) => !v);
               setOpenNotif(false);
             }}
-            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-slate-100"
+            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-white/70 active:scale-95"
           >
-            {userImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover" />
-            ) : (
-              <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700">
-                {firstName.charAt(0).toUpperCase()}
-              </div>
-            )}
+            <span className="grid place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 p-[2px] shadow-sm shadow-emerald-500/40">
+              {userImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover ring-2 ring-white" />
+              ) : (
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-white text-sm font-bold text-emerald-700">
+                  {firstName.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </span>
             <span className="hidden text-sm font-semibold text-slate-700 sm:inline">Hi, {firstName}</span>
             <ChevronDown className="hidden h-4 w-4 text-slate-400 sm:inline" />
           </button>
           {openUser && (
-            <div className="absolute right-0 mt-2 w-48 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+            <div className="absolute right-0 mt-2 w-48 origin-top-right animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl">
               <Link
                 href="/profile"
                 onClick={() => setOpenUser(false)}

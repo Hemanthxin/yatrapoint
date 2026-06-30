@@ -45,6 +45,36 @@ export default {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
         },
+        // Pulsing emerald glow — used by the dock + raised Plan button.
+        glow: {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(16,185,129,0.45), 0 12px 34px -10px rgba(16,185,129,0.55)" },
+          "50%": { boxShadow: "0 0 0 8px rgba(16,185,129,0), 0 18px 44px -8px rgba(16,185,129,0.7)" },
+        },
+        // Diagonal light sweep across glass surfaces.
+        sheen: {
+          "0%": { transform: "translateX(-150%) skewX(-20deg)" },
+          "100%": { transform: "translateX(250%) skewX(-20deg)" },
+        },
+        // Subtle scale breathing for ambient accents.
+        breathe: {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.85" },
+          "50%": { transform: "scale(1.06)", opacity: "1" },
+        },
+        // Spring entrance for the floating dock.
+        dockIn: {
+          "0%": { opacity: "0", transform: "translateY(120%)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        // Drifting hue + position for the aurora canvas.
+        aurora: {
+          "0%": { transform: "translate3d(-6%, 0, 0) rotate(0deg)" },
+          "50%": { transform: "translate3d(6%, -4%, 0) rotate(8deg)" },
+          "100%": { transform: "translate3d(-6%, 0, 0) rotate(0deg)" },
+        },
+        slideDown: {
+          "0%": { opacity: "0", transform: "translateY(-8px) scale(0.98)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.35s ease-out both",
@@ -55,6 +85,12 @@ export default {
         blob: "blob 18s ease-in-out infinite",
         shimmer: "shimmer 2.2s linear infinite",
         gradient: "gradientShift 8s ease infinite",
+        glow: "glow 2.8s ease-in-out infinite",
+        sheen: "sheen 3.5s ease-in-out infinite",
+        breathe: "breathe 7s ease-in-out infinite",
+        dockIn: "dockIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both",
+        aurora: "aurora 22s ease-in-out infinite",
+        slideDown: "slideDown 0.22s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },

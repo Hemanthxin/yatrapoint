@@ -108,42 +108,51 @@ export default async function DashboardPage() {
     <AppShell userLabel={displayName} userImage={u.image}>
       {/* Greeting — mobile echo of the header (desktop greets in the top bar) */}
       <div className="mb-4 lg:hidden">
-        <p className="text-xl font-bold text-slate-900">Hi, {firstName} 👋</p>
-        <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
+        <p className="text-2xl font-extrabold tracking-tight text-slate-900">
+          Hi, {firstName} <span className="inline-block animate-float-slow">👋</span>
+        </p>
+        <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-slate-500">
           <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Bengaluru, Karnataka
         </p>
       </div>
 
-      {/* Hero banner */}
-      <section className="relative overflow-hidden rounded-3xl">
-        <div className="relative h-56 w-full md:h-72">
+      {/* Hero banner — bleeds to the screen edges on mobile for an immersive,
+          full-bleed feel; settles into a rounded card on larger screens. */}
+      <section className="bleed relative overflow-hidden rounded-none shadow-2xl shadow-emerald-900/10 md:rounded-3xl">
+        <div className="relative h-64 w-full sm:h-72 md:h-80">
           <Image
             src="/66242.jpg"
             alt="Scenic Karnataka temple and waterfalls"
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 70vw"
-            className="object-cover"
+            className="scale-105 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+          {/* Emerald glow wash for extra drama */}
+          <div className="absolute -bottom-10 left-1/2 h-40 w-3/4 -translate-x-1/2 rounded-full bg-emerald-500/30 blur-3xl" />
         </div>
-        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
-          <MapPin className="h-3 w-3 text-emerald-600" /> Coorg
+        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
+          <MapPin className="h-3 w-3 text-emerald-300" /> Coorg
         </span>
         <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
-          <h1 className="text-2xl font-bold leading-tight text-white md:text-4xl">
+          <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
+            Featured destination
+          </p>
+          <h1 className="text-3xl font-extrabold leading-[1.05] tracking-tight text-white md:text-5xl">
             Explore Karnataka,
             <br />
-            <span className="text-emerald-400">Create Memories</span>
+            <span className="text-gradient animate-shimmer">Create Memories</span>
           </h1>
-          <p className="mt-2 max-w-xs text-sm text-white/85">
+          <p className="mt-2 max-w-xs text-sm text-white/80">
             Smart trips. Budget friendly. Unforgettable memories.
           </p>
           <Link
             href="/budget-planner"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.03] hover:bg-emerald-600"
+            className="group mt-4 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.04] active:scale-95"
           >
-            Explore Now <ArrowRight className="h-4 w-4" />
+            Explore Now
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>

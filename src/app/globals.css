@@ -49,6 +49,71 @@ input[type="number"] {
     backdrop-filter: blur(14px);
   }
 
+  /* Heavier glass for floating chrome (dock, top bar, drawer). */
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
+  }
+
+  /* Ambient aurora canvas — layered conic/radial gradients drifting behind
+     the whole app. The wrapper clips; children animate. */
+  .aurora-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(209, 250, 229, 0.9), transparent 60%),
+      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+  .aurora-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    will-change: transform;
+  }
+
+  /* Edge-to-edge: cancel the content gutter so a child can bleed to the
+     viewport edges on mobile, then restore normal flow on desktop. */
+  .bleed {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  @media (min-width: 768px) {
+    .bleed { margin-left: -1.5rem; margin-right: -1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .bleed { margin-left: 0; margin-right: 0; }
+  }
+
+  /* Hide scrollbars on horizontal rails. */
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Animated gradient brand text. */
+  .text-gradient {
+    background: linear-gradient(110deg, #047857, #10b981 35%, #14b8a6 60%, #047857);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Light-sweep sheen overlay (place inside an overflow-hidden parent). */
+  .sheen-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.5) 50%,
+      transparent 70%
+    );
+    width: 40%;
+  }
+
   /* 3D tilt context for <TiltCard>. */
   .tilt {
     transform-style: preserve-3d;

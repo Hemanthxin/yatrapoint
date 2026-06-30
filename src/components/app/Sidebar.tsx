@@ -41,16 +41,16 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Mobile backdrop — blurred so the drawer feels layered over the app */}
       <div
         onClick={onClose}
-        className={`fixed inset-0 z-30 bg-slate-900/40 transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-white/50 glass-strong shadow-2xl transition-transform duration-300 ease-out lg:w-64 lg:translate-x-0 lg:shadow-none ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -60,7 +60,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           </Link>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2 no-scrollbar">
           {NAV.map(({ href, label, icon: Icon }) => {
             const active = path === href || path.startsWith(href + "/");
             return (
@@ -68,14 +68,23 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
                 key={href}
                 href={href}
                 onClick={onClose}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-2.5 text-sm font-semibold transition ${
                   active
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                    : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
                 }`}
               >
-                <Icon className="h-5 w-5 shrink-0" strokeWidth={1.8} />
-                {label}
+                {active && (
+                  <span aria-hidden className="sheen-overlay animate-sheen" />
+                )}
+                <span
+                  className={`relative grid h-8 w-8 shrink-0 place-items-center rounded-xl transition ${
+                    active ? "bg-white/20" : "bg-slate-100 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-600"
+                  }`}
+                >
+                  <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+                </span>
+                <span className="relative">{label}</span>
               </Link>
             );
           })}
