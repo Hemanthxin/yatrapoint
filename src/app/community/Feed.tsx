@@ -5,9 +5,15 @@ import { Sparkles, Flame, User2 } from "lucide-react";
 
 import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
-import { emptySocial } from "@/lib/queries/community";
 import { CommunityForm } from "./CommunityForm";
 import { PostCard } from "./PostCard";
+
+// Local default — NOT imported from "@/lib/queries/community" because that module
+// pulls in the server DB client, which would crash when bundled into this
+// "use client" component.
+function emptySocial(): PostSocial {
+  return { counts: { love: 0, wantToGo: 0, beenThere: 0 }, total: 0, comments: 0, mine: null };
+}
 
 type Tab = "latest" | "popular" | "mine";
 
