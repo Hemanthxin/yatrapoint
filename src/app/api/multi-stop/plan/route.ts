@@ -46,10 +46,23 @@ const ALL_OVERPASS: OverpassCategory[] = [
 
 const VEHICLE_KINDS = Object.keys(VEHICLES) as VehicleKind[];
 
-// Names that aren't real trip stops (schools, civic infra, transit, etc.) —
-// filters junk out of both seeded and live candidates.
+// Names that aren't real trip stops (schools, civic infra, transit, courts,
+// govt offices, etc.) — filters junk out of both seeded and live candidates.
 const JUNK_NAME =
-  /\b(school|college|university|institute|coaching|tuition|hospital|clinic|nursing\s*home|pharmacy|medical|police|fire\s*station|petrol|fuel|bunk|atm|bank|hostel|\bpg\b|paying\s*guest|apartment|layout|society|bus\s*(stop|stand|station)|metro\s*station|railway|godown|warehouse|\boffice\b|ward|substation|water\s*tank|sewage|toilet|parking|showroom|service\s*cent|workshop|factory|company|pvt\s*ltd)\b/i;
+  /\b(school|college|university|institute|coaching|tuition|hospital|clinic|nursing\s*home|pharmacy|medical|police|fire\s*station|petrol|fuel|bunk|atm|bank|hostel|\bpg\b|paying\s*guest|apartment|layout|society|bus\s*(stop|stand|station)|metro\s*station|railway|godown|warehouse|\boffice\b|ward|substation|water\s*tank|sewage|toilet|parking|showroom|service\s*cent|workshop|factory|company|pvt\s*ltd|high\s*court|district\s*court|sessions\s*court|civil\s*court|family\s*court|courthouse|kacheri|secretariat|collectorate|tahsildar|municipal\s*corporation|city\s*corporation|\brto\b|passport\s*seva)\b/i;
+
+// Infer the actual place-of-worship type from a name, so a mosque/church/
+// gurudwara that was bulk-seeded under a generic "temple" kind (or sits in the
+// broad "pilgrimage" catalogue category) is shown — and filtered — correctly.
+// Returns null when the name gives no signal.
+function worshipKind(name: string): OverpassCategory | null {
+  const n = name.toLowerCase();
+  if (/\b(masjid|mosque|dargah|durgah|jama|idgah|khanqah|ashurkhana)\b/.test(n)) return "mosque";
+  if (/\b(church|cathedral|chapel|basilica|methodist|baptist|c\.?s\.?i\.?)\b/.test(n)) return "church";
+  if (/\b(gurudwara|gurdwara|gurd?wara|sahib|singh\s*sabha)\b/.test(n)) return "gurudwara";
+  if (/\b(temple|mandir|mandira|devasthana|devalaya|kovil|koil|gudi|matha|math|swamy|swami|devi|amma|eshwara|eshwar|ishwara|linga|vinayaka|ganapathi|ganesha|anjaneya|hanuman|venkat|narasimha|krishna|shiva|vishnu|rama|durga|kali|basadi|basti)\b/.test(n)) return "temple";
+  return null;
+}
 
 const bodySchema = z.object({
   start: z.object({
@@ -118,14 +131,25 @@ const SEED_KIND_TO_OVERPASS: Record<string, OverpassCategory> = {
 // what makes the planner UNIVERSAL (works anywhere a destination exists, not
 // just where there are seeded city places). The first matching wanted category
 // becomes the candidate's display category.
+// Non-worship catalogue categories. Pilgrimage is handled separately via
+// worshipKind() so a mosque/church never surfaces under a "temples" request.
 const DEST_CAT_TO_OVERPASS: Record<string, OverpassCategory[]> = {
-  pilgrimage: ["temple", "place_of_worship", "church", "mosque", "gurudwara"],
   heritage: ["monument", "fort", "museum", "tourist_attraction"],
   hill_station: ["viewpoint", "tourist_attraction"],
   adventure: ["viewpoint", "tourist_attraction"],
   beach: ["tourist_attraction"],
   wildlife: ["zoo", "tourist_attraction"],
 };
+
+// Worship Overpass categories — used to decide when to pull worship-kind seed
+// rows so a misfiled mosque can be re-routed to the correct filter.
+const WORSHIP_OPS = new Set<OverpassCategory>([
+  "temple",
+  "church",
+  "mosque",
+  "gurudwara",
+  "place_of_worship",
+]);
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -213,9 +237,22 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 1) Curated seed places that match the wanted categories.
+  // The real Overpass category for a seed row: for worship kinds, re-derive the
+  // actual religion-specific type from the name (the bulk OSM seed filed every
+  // place of worship under "temple"), so masjids/churches are labelled — and
+  // filtered — correctly.
+  const effectiveSeedCat = (kind: string, name: string): OverpassCategory | null => {
+    const base = SEED_KIND_TO_OVERPASS[kind];
+    if (!base) return null;
+    return WORSHIP_OPS.has(base) ? (worshipKind(name) ?? base) : base;
+  };
+
+  // 1) Curated seed places that match the wanted categories. When ANY worship
+  // type is wanted we also pull the worship-kind rows (temple/church) so a
+  // mis-filed mosque can be re-routed to the right filter by effectiveSeedCat.
+  const wantsWorship = wantedCats.some((c) => WORSHIP_OPS.has(c));
   const seedKinds = Object.entries(SEED_KIND_TO_OVERPASS)
-    .filter(([, op]) => wantedCats.includes(op))
+    .filter(([, op]) => wantedCats.includes(op) || (wantsWorship && WORSHIP_OPS.has(op)))
     .map(([k]) => k);
   const seedMatches =
     seedKinds.length > 0
@@ -224,14 +261,14 @@ export async function POST(req: NextRequest) {
 
   const seedCandidates: Candidate[] = seedMatches
     .filter((s) => {
-      const op = SEED_KIND_TO_OVERPASS[s.kind];
+      const op = effectiveSeedCat(s.kind, s.name);
       if (!op || !wantedCats.includes(op) || JUNK_NAME.test(s.name)) return false;
       // Honour the chosen radius — don't let the whole curated city catalogue
       // leak in regardless of how far the traveller wants to roam.
       return withinRadius(Number(s.latitude), Number(s.longitude));
     })
     .map((s) => {
-      const op = SEED_KIND_TO_OVERPASS[s.kind] ?? "tourist_attraction";
+      const op = effectiveSeedCat(s.kind, s.name) ?? "tourist_attraction";
       // Bulk OSM-seeded rows (slug ends in -node-/-way-/-relation-) carry
       // generic category fees — not real. Only genuinely curated seed rows
       // have trustworthy per-place fees.
@@ -265,10 +302,19 @@ export async function POST(req: NextRequest) {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     if (JUNK_NAME.test(d.name)) continue;
     if (!withinRadius(lat, lng)) continue;
-    const mapped = DEST_CAT_TO_OVERPASS[d.category] ?? ["tourist_attraction"];
-    const matched = mapped.filter((c) => wantedCats.includes(c));
-    if (matched.length === 0) continue;
-    const op = matched[0];
+    let op: OverpassCategory;
+    if (d.category === "pilgrimage") {
+      // Route the worship place to its real religion-specific filter so a
+      // mosque/dargah/church never shows up under a "temples" request.
+      const w = worshipKind(d.name) ?? "temple";
+      if (!wantedCats.includes(w)) continue;
+      op = w;
+    } else {
+      const mapped = DEST_CAT_TO_OVERPASS[d.category] ?? ["tourist_attraction"];
+      const matched = mapped.filter((c) => wantedCats.includes(c));
+      if (matched.length === 0) continue;
+      op = matched[0];
+    }
     destCandidates.push({
       id: `dest:${d.id}`,
       name: d.name,
