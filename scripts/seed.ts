@@ -7,12 +7,25 @@ async function run() {
     "../src/lib/db/schema"
   );
   const { seedDestinations } = await import("../src/lib/db/seed-data");
+  const { karnatakaDestinations } = await import("../src/lib/db/seed-karnataka");
   const { bangaloreOneDayTrips } = await import("../src/lib/db/seed-nearby");
+  const { bangaloreOneDayTripsExtra } = await import("../src/lib/db/seed-nearby-extra");
   const { bangaloreCityPlaces } = await import("../src/lib/db/seed-city");
   const { bangaloreCityPlacesExtra } = await import("../src/lib/db/seed-city-extra");
+  const { bangaloreCityPlacesExtra2 } = await import("../src/lib/db/seed-city-extra2");
 
-  console.log(`Seeding ${seedDestinations.length} destinations...`);
-  for (const d of seedDestinations) {
+  // Dedupe helper — keep the first row per slug so overlapping batches can't
+  // insert the same place twice.
+  const bySlug = <T extends { slug: string }>(rows: T[]): T[] => {
+    const seen = new Set<string>();
+    return rows.filter((r) => (seen.has(r.slug) ? false : (seen.add(r.slug), true)));
+  };
+
+  // Curated pan-India picks + the full Karnataka catalogue (all 31 districts).
+  const allDestinations = bySlug([...seedDestinations, ...karnatakaDestinations]);
+
+  console.log(`Seeding ${allDestinations.length} destinations...`);
+  for (const d of allDestinations) {
     await db
       .insert(destinations)
       .values(d)
@@ -23,9 +36,12 @@ async function run() {
           state: d.state,
           district: d.district,
           category: d.category,
+          placeType: d.placeType,
           description: d.description,
           shortDescription: d.shortDescription,
           imageUrl: d.imageUrl,
+          openingTimings: d.openingTimings,
+          entryFees: d.entryFees,
           budgetPerDay: d.budgetPerDay,
           recommendedDays: d.recommendedDays,
           bestMonths: d.bestMonths,
@@ -39,8 +55,9 @@ async function run() {
   }
   console.log();
 
-  console.log(`Seeding ${bangaloreOneDayTrips.length} nearby destinations...`);
-  for (const n of bangaloreOneDayTrips) {
+  const allNearby = bySlug([...bangaloreOneDayTrips, ...bangaloreOneDayTripsExtra]);
+  console.log(`Seeding ${allNearby.length} nearby destinations...`);
+  for (const n of allNearby) {
     await db
       .insert(nearbyDestinations)
       .values(n)
@@ -68,7 +85,11 @@ async function run() {
   }
   console.log();
 
-  const allCity = [...bangaloreCityPlaces, ...bangaloreCityPlacesExtra];
+  const allCity = bySlug([
+    ...bangaloreCityPlaces,
+    ...bangaloreCityPlacesExtra,
+    ...bangaloreCityPlacesExtra2,
+  ]);
   console.log(`Seeding ${allCity.length} city places...`);
   for (const c of allCity) {
     await db
