@@ -112,6 +112,21 @@ const SEED_KIND_TO_OVERPASS: Record<string, OverpassCategory> = {
   viewpoint: "viewpoint",
 };
 
+// The statewide `destinations` catalogue uses six broad category slugs. Map each
+// to the Overpass categories it can satisfy, so a curated destination is auto-
+// discovered whenever the traveller has picked a matching place type — this is
+// what makes the planner UNIVERSAL (works anywhere a destination exists, not
+// just where there are seeded city places). The first matching wanted category
+// becomes the candidate's display category.
+const DEST_CAT_TO_OVERPASS: Record<string, OverpassCategory[]> = {
+  pilgrimage: ["temple", "place_of_worship", "church", "mosque", "gurudwara"],
+  heritage: ["monument", "fort", "museum", "tourist_attraction"],
+  hill_station: ["viewpoint", "tourist_attraction"],
+  adventure: ["viewpoint", "tourist_attraction"],
+  beach: ["tourist_attraction"],
+  wildlife: ["zoo", "tourist_attraction"],
+};
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -237,6 +252,37 @@ export async function POST(req: NextRequest) {
       };
     });
 
+  // 1b) The statewide curated catalogue — EVERY destination in the database that
+  // falls within the search radius and matches a wanted category. This is the
+  // universal source: it makes the planner work anywhere in the catalogue, not
+  // just where seeded city places exist. (Hand-picked ones are already pinned
+  // above; coordinate de-dup in addCandidate stops doubles.)
+  const allDestinations = await db.select().from(destinations);
+  const destCandidates: Candidate[] = [];
+  for (const d of allDestinations) {
+    const lat = Number(d.latitude);
+    const lng = Number(d.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+    if (JUNK_NAME.test(d.name)) continue;
+    if (!withinRadius(lat, lng)) continue;
+    const mapped = DEST_CAT_TO_OVERPASS[d.category] ?? ["tourist_attraction"];
+    const matched = mapped.filter((c) => wantedCats.includes(c));
+    if (matched.length === 0) continue;
+    const op = matched[0];
+    destCandidates.push({
+      id: `dest:${d.id}`,
+      name: d.name,
+      category: op,
+      lat,
+      lng,
+      entryFee: d.entryFees,
+      entryFeeKnown: true,
+      idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
+      popularity: d.popularity,
+      meta: { citySeedSlug: d.slug },
+    });
+  }
+
   // 2) Live Overpass candidates, merged + de-duped. Auto-widen the radius when
   // the area is sparse so we can reliably reach the requested number of places.
   const finalCandidates: Candidate[] = [];
@@ -270,6 +316,10 @@ export async function POST(req: NextRequest) {
   };
   for (const c of pinnedCandidates) addCandidate(c);
   for (const c of seedCandidates) addCandidate(c);
+  // Sort the curated catalogue by popularity so the best-known places win the
+  // de-dup race against generic OSM points at the same spot.
+  destCandidates.sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50));
+  for (const c of destCandidates) addCandidate(c);
 
   let overpassCount = 0;
   let overpassError: string | null = null;
@@ -414,7 +464,7 @@ export async function POST(req: NextRequest) {
     ok: true,
     candidatesConsidered: finalCandidates.length,
     overpassPlaces: overpassCount,
-    seedPlaces: seedCandidates.length,
+    seedPlaces: seedCandidates.length + destCandidates.length,
     overpassError,
     stops: orderedStops,
     alternatives,
