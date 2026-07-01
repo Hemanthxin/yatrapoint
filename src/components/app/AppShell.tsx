@@ -5,6 +5,7 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
+import { FestivalTicker } from "./FestivalTicker";
 
 interface AppShellProps {
   userLabel: string;
@@ -39,6 +40,8 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
         />
         <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-5 pb-32 md:px-6 md:py-8 lg:pb-10">
           {children}
+          {/* Footer festivals ticker — next upcoming festival first */}
+          <FestivalTicker />
         </main>
       </div>
 

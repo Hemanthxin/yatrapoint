@@ -1,0 +1,130 @@
+[
+  {
+    "name": "Jagannath Rath Yatra",
+    "hub": "Puri (Odisha)",
+    "dateISO": "2026-07-16",
+    "dateLabel": "16 July 2026",
+    "significance": "Grand chariot procession of Lord Jagannath.",
+    "emoji": "🛕"
+  },
+  {
+    "name": "Guru Purnima",
+    "hub": "Pan-India",
+    "dateISO": "2026-07-28",
+    "dateLabel": "28/29 July 2026",
+    "significance": "Day to honor spiritual and academic gurus.",
+    "emoji": "🙏"
+  },
+  {
+    "name": "Hariyali Teej",
+    "hub": "Rajasthan, Haryana, Uttar Pradesh",
+    "dateISO": "2026-08-15",
+    "dateLabel": "15 August 2026",
+    "significance": "Monsoon festival celebrating marital bliss.",
+    "emoji": "🌿"
+  },
+  {
+    "name": "Onam",
+    "hub": "Kerala",
+    "dateISO": "2026-08-26",
+    "dateLabel": "26 August 2026",
+    "significance": "Harvest festival with boat races and grand feasts.",
+    "emoji": "🚣"
+  },
+  {
+    "name": "Raksha Bandhan",
+    "hub": "North & West India",
+    "dateISO": "2026-08-28",
+    "dateLabel": "28 August 2026",
+    "significance": "Celebrating the bond between brothers and sisters.",
+    "emoji": "🧵"
+  },
+  {
+    "name": "Krishna Janmashtami",
+    "hub": "Mathura, Vrindavan, Mumbai",
+    "dateISO": "2026-09-04",
+    "dateLabel": "4 September 2026",
+    "significance": "Birthday of Lord Krishna; famous for Dahi Handi.",
+    "emoji": "🦚"
+  },
+  {
+    "name": "Ganesh Chaturthi",
+    "hub": "Maharashtra (Mumbai, Pune)",
+    "dateISO": "2026-09-14",
+    "dateLabel": "14 September 2026",
+    "significance": "10-day festival honoring Lord Ganesha's birth.",
+    "emoji": "🐘"
+  },
+  {
+    "name": "Sharad Navratri",
+    "hub": "Gujarat, North India",
+    "dateISO": "2026-10-11",
+    "dateLabel": "11–19 October 2026",
+    "significance": "9 nights of Garba/Dandiya dance for Goddess Durga.",
+    "emoji": "🗡️"
+  },
+  {
+    "name": "Durga Puja",
+    "hub": "West Bengal (Kolkata)",
+    "dateISO": "2026-10-16",
+    "dateLabel": "16–21 October 2026",
+    "significance": "Massive artistic pandals celebrating Goddess Durga.",
+    "emoji": "🗡️"
+  },
+  {
+    "name": "Dussehra (Vijayadashami)",
+    "hub": "Mysore (Karnataka), Kullu (Himachal Pradesh)",
+    "dateISO": "2026-10-20",
+    "dateLabel": "20 October 2026",
+    "significance": "Victory of Good over Evil; massive effigy burnings.",
+    "emoji": "🗡️"
+  },
+  {
+    "name": "Karwa Chauth",
+    "hub": "North India",
+    "dateISO": "2026-10-29",
+    "dateLabel": "29 October 2026",
+    "significance": "Fasting by married women for husbands' longevity.",
+    "emoji": "🌕"
+  },
+  {
+    "name": "Diwali (Deepavali)",
+    "hub": "Pan-India (Nationwide)",
+    "dateISO": "2026-11-08",
+    "dateLabel": "8 November 2026",
+    "significance": "Festival of Lights.",
+    "emoji": "🪔"
+  },
+  {
+    "name": "Chhath Puja",
+    "hub": "Bihar, Uttar Pradesh, Jharkhand",
+    "dateISO": "2026-11-15",
+    "dateLabel": "15 November 2026",
+    "significance": "Eco-friendly festival thanking the Sun God.",
+    "emoji": "🌅"
+  },
+  {
+    "name": "Guru Nanak Jayanti",
+    "hub": "Punjab (Amritsar)",
+    "dateISO": "2026-11-24",
+    "dateLabel": "24 November 2026",
+    "significance": "Birth anniversary of the first Sikh Guru.",
+    "emoji": "🎉"
+  },
+  {
+    "name": "Hornbill Festival",
+    "hub": "Kohima (Nagaland)",
+    "dateISO": "2026-12-01",
+    "dateLabel": "1–10 December 2026",
+    "significance": "Showcase of tribal heritage, music, and culture.",
+    "emoji": "🎉"
+  },
+  {
+    "name": "Christmas",
+    "hub": "Goa, Kerala, Northeast India",
+    "dateISO": "2026-12-25",
+    "dateLabel": "25 December 2026",
+    "significance": "Celebrated with lights, carols, and festive gatherings.",
+    "emoji": "🎄"
+  }
+]
