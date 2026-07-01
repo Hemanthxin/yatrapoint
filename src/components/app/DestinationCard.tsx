@@ -10,6 +10,8 @@ import {
 import { formatINR, formatDays } from "@/lib/format";
 import { FavoriteButton } from "./FavoriteButton";
 import { AddToCartButton } from "./AddToCartButton";
+import { PlaceImage } from "./PlaceImage";
+import { placeImageUrl } from "@/lib/place-images";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -31,20 +33,14 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
         href={`/destinations/${destination.slug}`}
         className="relative block aspect-[4/3] w-full overflow-hidden"
       >
-        {destination.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={destination.imageUrl}
-            alt={destination.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className={`grid h-full w-full place-items-center bg-gradient-to-br ${gradient}`}
-          >
-            <span className="text-6xl drop-shadow-sm">{cat?.emoji ?? "📍"}</span>
-          </div>
-        )}
+        <PlaceImage
+          src={destination.imageUrl ?? placeImageUrl(destination.name, destination.category)}
+          alt={destination.name}
+          emoji={cat?.emoji ?? "📍"}
+          gradient={gradient}
+          className="h-full w-full transition duration-500 group-hover:scale-105"
+          emojiClassName="text-6xl"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
         <span

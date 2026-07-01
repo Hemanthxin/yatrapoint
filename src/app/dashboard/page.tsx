@@ -20,6 +20,8 @@ import { getDashboardStats } from "@/lib/queries/trip-plans";
 import { listNearby } from "@/lib/queries/nearby";
 import { listDestinations } from "@/lib/queries/destinations";
 import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
+import { PlaceImage } from "@/components/app/PlaceImage";
+import { placeImageUrl } from "@/lib/place-images";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -215,13 +217,14 @@ export default async function DashboardPage() {
                 className="card-hover w-40 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:w-auto"
               >
                 <div className="relative h-24 w-full">
-                  {n.imageUrl ? (
-                    <Image src={n.imageUrl} alt={n.name} fill sizes="160px" className="object-cover" />
-                  ) : (
-                    <div className={`grid h-full w-full place-items-center bg-gradient-to-br ${grad} text-3xl`}>
-                      {cat?.emoji ?? "📍"}
-                    </div>
-                  )}
+                  <PlaceImage
+                    src={n.imageUrl ?? placeImageUrl(n.name, n.category)}
+                    alt={n.name}
+                    emoji={cat?.emoji ?? "📍"}
+                    gradient={grad}
+                    className="h-full w-full"
+                    emojiClassName="text-3xl"
+                  />
                   <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white">
                     {n.distanceKm} km
                   </span>
@@ -264,13 +267,14 @@ export default async function DashboardPage() {
                 href={`/destinations/${t.slug}`}
                 className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-2xl lg:w-auto"
               >
-                {t.imageUrl ? (
-                  <Image src={t.imageUrl} alt={t.name} fill sizes="224px" className="object-cover" />
-                ) : (
-                  <div className={`grid h-full w-full place-items-center bg-gradient-to-br ${grad} text-5xl`}>
-                    {cat?.emoji ?? "📍"}
-                  </div>
-                )}
+                <PlaceImage
+                  src={t.imageUrl ?? placeImageUrl(t.name, t.category)}
+                  alt={t.name}
+                  emoji={cat?.emoji ?? "📍"}
+                  gradient={grad}
+                  className="absolute inset-0 h-full w-full"
+                  emojiClassName="text-5xl"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                 <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
                   {t.recommendedDays} {t.recommendedDays === 1 ? "Day" : "Days"} Trip
