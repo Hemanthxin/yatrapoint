@@ -45,7 +45,8 @@ export type OverpassCategory =
   | "cinema"
   | "theatre"
   | "zoo"
-  | "amusement";
+  | "amusement"
+  | "station";
 
 // OSM tag filters per category. Each entry is `tag_key=tag_value`.
 // We also add a top-level filter for `name` because unnamed POIs are noise.
@@ -73,6 +74,7 @@ const CATEGORY_FILTERS: Record<OverpassCategory, string[]> = {
   theatre: ['amenity=theatre'],
   zoo: ['tourism=zoo'],
   amusement: ['tourism=theme_park', 'leisure=water_park'],
+  station: ['railway=station', 'railway=halt'],
 };
 
 // Raw Overpass element — used by generic queries (e.g. admin boundaries).
@@ -204,6 +206,9 @@ const NAME_BLOCKLIST =
 // closed, disused, or civic/transit infrastructure.
 function isVisitable(t: Record<string, string>): boolean {
   if (!t.name) return false;
+  // Railway stations/halts are legitimate stops for TRAIN-mode trips — allow a
+  // named one through even though its name may contain "station"/"railway".
+  if (t.railway === "station" || t.railway === "halt") return true;
   // Permanently closed / disused / abandoned (any lifecycle-prefixed tag).
   for (const k of Object.keys(t)) {
     if (/^(disused|abandoned|was|razed|demolished|removed|construction|proposed):/i.test(k)) return false;

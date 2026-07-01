@@ -50,6 +50,7 @@ const ALL_OVERPASS: OverpassCategory[] = [
   "theatre",
   "zoo",
   "amusement",
+  "station",
 ];
 
 const VEHICLE_KINDS = Object.keys(VEHICLES) as VehicleKind[];
@@ -191,6 +192,10 @@ export async function POST(req: NextRequest) {
   const wantedCats = parsed.data.categories.filter((c): c is OverpassCategory =>
     (ALL_OVERPASS as string[]).includes(c)
   );
+  const mode = parsed.data.mode as TravelMode;
+  // In TRAIN mode, also discover railway stations so the actual stations along
+  // the trip (e.g. Bangarpet) show up as stops on the map.
+  if (mode === "train" && !wantedCats.includes("station")) wantedCats.push("station");
   const placeIds = parsed.data.includePlaceIds;
   if (wantedCats.length === 0 && placeIds.length === 0) {
     return NextResponse.json(
@@ -408,7 +413,9 @@ export async function POST(req: NextRequest) {
     });
     overpassCount += places.length;
     for (const op of places) {
-      if (JUNK_NAME.test(op.name)) continue;
+      // Railway stations legitimately contain "station"/"railway" in the name —
+      // don't junk-filter them (they're wanted in train mode).
+      if (op.category !== "station" && JUNK_NAME.test(op.name)) continue;
       addCandidate(candidateFromOverpass(op));
     }
   };
@@ -451,7 +458,6 @@ export async function POST(req: NextRequest) {
   // only to Bengaluru; train/flight use the KA fare data (per person). The
   // planner is fed an effective ₹/km so budget feasibility reflects the mode.
   const people = parsed.data.people;
-  const mode = parsed.data.mode as TravelMode;
   const inBlr = isBengaluru(searchCentre);
   const modeInfo = travelCostFor(mode, parsed.data.vehicle, 0, people, inBlr); // label only
   const effCostPerKm =

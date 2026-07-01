@@ -35,6 +35,7 @@ export const CATEGORY_DEFAULTS: Record<
   theatre: { entryFee: 300, idealMinutes: 150 },
   zoo: { entryFee: 200, idealMinutes: 120 },
   amusement: { entryFee: 500, idealMinutes: 240 },
+  station: { entryFee: 0, idealMinutes: 15 },
 };
 
 // Internal candidate used by the planner — covers both Overpass and seeded

@@ -233,19 +233,23 @@ export async function geocodeArea(parts: {
     const lat = Number(r.lat);
     const lng = Number(r.lon);
 
-    // Radius ≈ half the bounding-box diagonal, so a whole state gets a big radius
-    // and a single taluk a small one — but HARD-CAPPED per level so a taluk/
-    // district selection never spills into neighbouring areas (that was the
-    // "wrong places show up" bug). Taluk ≤ 15 km, district ≤ 45 km.
-    const cap = parts.taluk ? 15 : parts.district ? 45 : 250;
-    let radiusKm = cap;
+    // Nominatim usually returns the town POINT for a taluk (a tiny bbox), so we
+    // can't rely on the bbox alone — a real taluk spans ~25 km and a district
+    // ~55 km, so we FLOOR the radius to that and only widen for genuinely large
+    // bboxes (states). Capped so a taluk/district still won't spill far into
+    // neighbours; the district-name filter keeps the curated catalogue precise.
+    const floorKm = parts.taluk ? 25 : parts.district ? 55 : 60;
+    const cap = parts.taluk ? 30 : parts.district ? 70 : 250;
+    let radiusKm = floorKm;
     const bb = r.boundingbox;
     if (bb && bb.length === 4) {
       const [s, n, w, e] = bb.map(Number);
       const latKm = Math.abs(n - s) * 111;
       const lngKm = Math.abs(e - w) * 111 * Math.cos((lat * Math.PI) / 180);
       const diagHalf = Math.sqrt(latKm * latKm + lngKm * lngKm) / 2;
-      if (Number.isFinite(diagHalf) && diagHalf > 0) radiusKm = Math.min(cap, diagHalf);
+      if (Number.isFinite(diagHalf) && diagHalf > 0) {
+        radiusKm = Math.min(cap, Math.max(floorKm, diagHalf));
+      }
     }
     radiusKm = Math.min(500, Math.max(5, Math.round(radiusKm)));
 
