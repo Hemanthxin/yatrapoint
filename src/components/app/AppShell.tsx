@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileNav } from "./MobileNav";
+import { Marquee } from "./Marquee";
 
 interface AppShellProps {
   userLabel: string;
@@ -29,6 +30,7 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
       <Sidebar open={open} onClose={() => setOpen(false)} />
 
       <div className="relative z-10 lg:pl-64">
+        <Marquee />
         <Topbar
           userLabel={userLabel}
           userImage={userImage}

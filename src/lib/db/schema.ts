@@ -296,6 +296,16 @@ export const hotels = pgTable("hotels", {
 export type Hotel = typeof hotels.$inferSelect;
 export type NewHotel = typeof hotels.$inferInsert;
 
+// --- Admin headlines / news ticker ---
+export const announcements = pgTable("announcements", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  message: varchar("message", { length: 300 }).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Announcement = typeof announcements.$inferSelect;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type OtpCode = typeof otpCodes.$inferSelect;

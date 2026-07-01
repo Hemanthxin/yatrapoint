@@ -14,6 +14,7 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:seed:karnataka": "tsx scripts/seed-karnataka.ts",
     "db:migrate:profile": "tsx scripts/migrate-profile.ts",
+    "db:migrate:announcements": "tsx scripts/migrate-announcements.ts",
     "db:convert:data": "node scripts/convert-data.mjs",
     "db:seed:imports": "tsx scripts/seed-imports.ts",
     "db:seed:osm": "tsx scripts/seed-osm.ts",

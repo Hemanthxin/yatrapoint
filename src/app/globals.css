@@ -92,6 +92,20 @@ input[type="number"] {
   .no-scrollbar { scrollbar-width: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
 
+  /* Scrolling news ticker / headline marquee. The track holds the messages
+     duplicated once; translating by -50% loops seamlessly. */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 40s linear infinite;
+    will-change: transform;
+  }
+  .marquee-mask:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+
   /* Animated gradient brand text. */
   .text-gradient {
     background: linear-gradient(110deg, #047857, #10b981 35%, #14b8a6 60%, #047857);

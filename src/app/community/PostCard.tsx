@@ -277,20 +277,34 @@ export function PostCard({
     const data: ShareData = { title: post.title, text: body };
     if (post.latitude && post.longitude)
       data.url = `https://www.google.com/maps?q=${post.latitude},${post.longitude}`;
-    try {
-      if (typeof navigator !== "undefined" && navigator.share) {
+
+    // Native share sheet — only exists in a secure (HTTPS) context on mobile.
+    if (
+      typeof navigator !== "undefined" &&
+      typeof navigator.share === "function" &&
+      (navigator.canShare?.(data) ?? true)
+    ) {
+      try {
         await navigator.share(data);
-        return;
+      } catch {
+        // user dismissed the sheet — do nothing
       }
-    } catch {
       return;
     }
-    try {
-      await navigator.clipboard.writeText(body);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
-    } catch {
-      window.open(`https://wa.me/?text=${encodeURIComponent(body)}`, "_blank");
+
+    // No Web Share API (desktop, or an insecure http:// LAN dev URL) → open a
+    // real WhatsApp share instead of silently copying.
+    const waText = encodeURIComponent(body + (data.url ? `\n${data.url}` : ""));
+    const win = window.open(`https://wa.me/?text=${waText}`, "_blank", "noopener,noreferrer");
+    if (!win) {
+      // Popup blocked → copy as a last resort.
+      try {
+        await navigator.clipboard.writeText(body);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2200);
+      } catch {
+        // ignore
+      }
     }
   }
 

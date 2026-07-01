@@ -16,17 +16,20 @@ import { auth } from "@/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { isAdminSession, ADMIN_ACCOUNTS } from "@/lib/admin";
 import { getAdminPlaceStats, listRecentAdminPlaces, listPlacesByAdmin } from "@/lib/queries/admin";
+import { listAnnouncements } from "@/lib/actions/announcements";
 import { AddPlaceForm } from "./AddPlaceForm";
+import { AnnouncementsManager } from "./AnnouncementsManager";
 
 export default async function AdminDashboardPage() {
   const session = await auth();
   if (!session || !isAdminSession(session.user)) redirect("/admin-login");
 
   const u = session.user;
-  const [stats, recent, contributions] = await Promise.all([
+  const [stats, recent, contributions, announcements] = await Promise.all([
     getAdminPlaceStats(),
     listRecentAdminPlaces(8),
     listPlacesByAdmin(),
+    listAnnouncements(),
   ]);
 
   const byEmail = new Map(contributions.map((c) => [c.email.toLowerCase(), c]));
@@ -195,6 +198,7 @@ export default async function AdminDashboardPage() {
           <div id="add-place" className="scroll-mt-20">
             <AddPlaceForm />
           </div>
+          <AnnouncementsManager initial={announcements} />
           <Panel title="Quick summary">
             <div className="space-y-3 text-sm">
               <SummaryRow label="Total places" value={stats.totalPlaces} />

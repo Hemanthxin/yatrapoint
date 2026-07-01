@@ -350,21 +350,29 @@ export function LivePlan({
       `📍 ${formatKm(plan.totals.distanceKm)} · 💰 ${formatINR(plan.totals.cost)} total\n\n` +
       `Open the full route in Google Maps:\n${googleMapsUrl}\n\n— Planned with Explore World`;
     const shareData = { title: "My Trip Plan", text, url: googleMapsUrl };
-    try {
-      if (typeof navigator !== "undefined" && navigator.share) {
+    // Native share sheet — only in a secure (HTTPS) context on mobile.
+    if (
+      typeof navigator !== "undefined" &&
+      typeof navigator.share === "function" &&
+      (navigator.canShare?.(shareData) ?? true)
+    ) {
+      try {
         await navigator.share(shareData);
-        return;
+      } catch {
+        // user dismissed the sheet
       }
-    } catch {
-      return; // user dismissed the share sheet
+      return;
     }
-    // Desktop fallback — copy to clipboard.
-    try {
-      await navigator.clipboard.writeText(text);
-      setShared(true);
-      setTimeout(() => setShared(false), 2500);
-    } catch {
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    // No Web Share API (desktop / insecure http LAN URL) → real WhatsApp share.
+    const win = window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    if (!win) {
+      try {
+        await navigator.clipboard.writeText(text);
+        setShared(true);
+        setTimeout(() => setShared(false), 2500);
+      } catch {
+        // ignore
+      }
     }
   }
 
@@ -603,9 +611,8 @@ export function LivePlan({
               })()}
 
               <p className="mt-4 text-[11px] leading-relaxed text-slate-500">
-                Unspent: {formatINR(plan.totals.unspentBudget)} budget · {formatMinutes(plan.totals.unspentMinutes)} time ·
-                Live OSM · {plan.overpassPlaces} OSM places, {plan.seedPlaces} curated.
-                {plan.overpassError && <span className="ml-1 text-amber-700">(Overpass error, used curated picks only)</span>}
+                Unspent: {formatINR(plan.totals.unspentBudget)} budget · {formatMinutes(plan.totals.unspentMinutes)} time.
+                Costs are approximate estimates — actual fares & prices may vary.
               </p>
             </div>
           </section>
