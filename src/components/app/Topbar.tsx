@@ -173,7 +173,7 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
                   </ul>
                   <div className="border-t border-slate-100 p-2">
                     <Link
-                      href="/budget-planner"
+                      href="/trip-cart"
                       onClick={() => setOpenCart(false)}
                       className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.01] active:scale-95"
                     >
