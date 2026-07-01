@@ -1,10 +1,12 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CalendarClock, MapPin, ArrowRight } from "lucide-react";
+import { CalendarClock, MapPin } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
+import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { FESTIVALS, formatFestivalDate, daysUntil } from "@/lib/festivals";
+
+const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 export default async function FestivalsPage() {
   const session = await auth();
@@ -67,12 +69,20 @@ export default async function FestivalsPage() {
                 {f.significance && (
                   <p className="mt-2 text-xs leading-relaxed text-slate-500">{f.significance}</p>
                 )}
-                <Link
-                  href="/budget-planner"
-                  className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-bold text-emerald-600 hover:gap-2.5 hover:text-emerald-700"
-                >
-                  Plan a trip <ArrowRight className="h-4 w-4" />
-                </Link>
+                <div className="mt-auto pt-4">
+                  <AddToCartButton
+                    className="w-full"
+                    label="Plan a trip"
+                    item={{
+                      id: `festival-${festSlug(f.name)}`,
+                      name: f.name,
+                      subtitle: [f.hub, formatFestivalDate(f.dateISO)].filter(Boolean).join(" · "),
+                      kind: "festival",
+                      emoji: f.emoji,
+                      href: "/festivals",
+                    }}
+                  />
+                </div>
               </div>
             </div>
           );

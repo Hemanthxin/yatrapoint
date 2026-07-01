@@ -13,10 +13,14 @@ import {
   Briefcase,
   LogOut,
   Loader2,
+  ShoppingBag,
+  Trash2,
+  ArrowRight,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
 import { signOutAction } from "@/lib/actions/auth";
+import { useCart, removeFromCart, clearCart } from "@/lib/cart";
 
 interface TopbarProps {
   userLabel: string;
@@ -39,14 +43,18 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
   const [query, setQuery] = useState("");
   const [openNotif, setOpenNotif] = useState(false);
   const [openUser, setOpenUser] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
+  const cartRef = useRef<HTMLDivElement>(null);
+  const cart = useCart();
 
   // Close dropdowns on outside click.
   useEffect(() => {
     function onClick(e: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setOpenNotif(false);
       if (userRef.current && !userRef.current.contains(e.target as Node)) setOpenUser(false);
+      if (cartRef.current && !cartRef.current.contains(e.target as Node)) setOpenCart(false);
     }
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
@@ -106,6 +114,77 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
           )}
           {locationLabel}
         </button>
+
+        {/* Trip cart */}
+        <div className="relative" ref={cartRef}>
+          <button
+            onClick={() => {
+              setOpenCart((v) => !v);
+              setOpenNotif(false);
+              setOpenUser(false);
+            }}
+            className="relative grid h-10 w-10 place-items-center rounded-full text-slate-600 transition hover:bg-white/70 active:scale-90"
+            aria-label="Trip cart"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {cart.length > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 px-1 text-[10px] font-bold text-white ring-2 ring-white">
+                {cart.length}
+              </span>
+            )}
+          </button>
+          {openCart && (
+            <div className="absolute right-0 mt-2 w-80 origin-top-right animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl">
+              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
+                <p className="text-sm font-bold text-slate-900">Trip cart ({cart.length})</p>
+                {cart.length > 0 && (
+                  <button onClick={() => clearCart()} className="text-xs font-semibold text-rose-600 hover:underline">
+                    Clear
+                  </button>
+                )}
+              </div>
+              {cart.length === 0 ? (
+                <div className="px-4 py-8 text-center">
+                  <p className="text-2xl">🧺</p>
+                  <p className="mt-1 text-sm text-slate-500">Your trip cart is empty.</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Tap “Add to trip” on any place or festival.</p>
+                </div>
+              ) : (
+                <>
+                  <ul className="max-h-72 overflow-y-auto no-scrollbar">
+                    {cart.map((it) => (
+                      <li key={it.id} className="flex items-center gap-2 px-3 py-2 hover:bg-white/60">
+                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-emerald-100 text-base">
+                          {it.emoji ?? "📍"}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-semibold text-slate-900">{it.name}</p>
+                          {it.subtitle && <p className="truncate text-xs text-slate-500">{it.subtitle}</p>}
+                        </div>
+                        <button
+                          onClick={() => removeFromCart(it.id)}
+                          aria-label="Remove"
+                          className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="border-t border-slate-100 p-2">
+                    <Link
+                      href="/budget-planner"
+                      onClick={() => setOpenCart(false)}
+                      className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.01] active:scale-95"
+                    >
+                      Plan these trips <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>

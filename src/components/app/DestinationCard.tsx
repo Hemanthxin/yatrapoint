@@ -9,6 +9,7 @@ import {
 } from "@/lib/catalog/categories";
 import { formatINR, formatDays } from "@/lib/format";
 import { FavoriteButton } from "./FavoriteButton";
+import { AddToCartButton } from "./AddToCartButton";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -93,6 +94,21 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
             {formatDays(destination.recommendedDays)}
           </span>
         </div>
+
+        <AddToCartButton
+          className="w-full"
+          label="Plan a trip"
+          item={{
+            id: `dest-${destination.id}`,
+            name: destination.name,
+            subtitle: destination.district
+              ? `${destination.district}, ${destination.state}`
+              : destination.state,
+            kind: "destination",
+            emoji: cat?.emoji ?? "📍",
+            href: `/destinations/${destination.slug}`,
+          }}
+        />
       </div>
     </article>
   );
