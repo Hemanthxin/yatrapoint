@@ -21,8 +21,7 @@ import { listNearby } from "@/lib/queries/nearby";
 import { listDestinations } from "@/lib/queries/destinations";
 import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 import { PlaceImage } from "@/components/app/PlaceImage";
-import { placeImageUrl, fallbackImageUrl } from "@/lib/place-images";
-import { wikiImages } from "@/lib/wiki";
+import { placeImageUrl } from "@/lib/place-images";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -103,12 +102,6 @@ export default async function DashboardPage() {
     listDestinations({ state: "Karnataka", isHidden: false, limit: 8 }),
   ]);
   const nearby = nearbyRows.slice(0, 8);
-
-  // Real, name-matched photos from Wikipedia (fallback to category images).
-  const [nearbyImgs, popularImgs] = await Promise.all([
-    wikiImages(nearby.map((n) => n.name)),
-    wikiImages(popularTrips.map((t) => t.name)),
-  ]);
 
   return (
     <AppShell userLabel={displayName} userImage={u.image}>
@@ -214,7 +207,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
         <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
-          {nearby.map((n, i) => {
+          {nearby.map((n) => {
             const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
             const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-emerald-400 to-teal-600";
             return (
@@ -225,8 +218,7 @@ export default async function DashboardPage() {
               >
                 <div className="relative h-24 w-full">
                   <PlaceImage
-                    src={n.imageUrl ?? nearbyImgs[i] ?? placeImageUrl(n.name, n.category)}
-                    fallbackSrc={fallbackImageUrl(n.name)}
+                    src={n.imageUrl ?? placeImageUrl(n.name, n.category)}
                     alt={n.name}
                     emoji={cat?.emoji ?? "📍"}
                     gradient={grad}
@@ -265,7 +257,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
         <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
-          {popularTrips.map((t, i) => {
+          {popularTrips.map((t) => {
             const cat = CATEGORY_BY_SLUG[t.category as CategorySlug];
             const grad = CATEGORY_GRADIENT[t.category as CategorySlug] ?? "from-emerald-400 to-teal-600";
             const total = t.budgetPerDay * t.recommendedDays;
@@ -276,8 +268,7 @@ export default async function DashboardPage() {
                 className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-2xl lg:w-auto"
               >
                 <PlaceImage
-                  src={t.imageUrl ?? popularImgs[i] ?? placeImageUrl(t.name, t.category)}
-                  fallbackSrc={fallbackImageUrl(t.name)}
+                  src={t.imageUrl ?? placeImageUrl(t.name, t.category)}
                   alt={t.name}
                   emoji={cat?.emoji ?? "📍"}
                   gradient={grad}

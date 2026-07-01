@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 
-// Renders a place photo, trying the primary source then a fallback source, and
-// finally a category-coloured gradient tile with an emoji — so a broken, blocked
-// or errored image never looks empty or repeats a default placeholder.
+// Renders a place photo; on load error it falls back to a category-coloured
+// gradient tile with an emoji, so a broken/blocked image never looks empty.
 export function PlaceImage({
   src,
-  fallbackSrc,
   alt,
   emoji,
   gradient,
@@ -15,18 +13,15 @@ export function PlaceImage({
   emojiClassName = "text-3xl",
 }: {
   src?: string | null;
-  fallbackSrc?: string | null;
   alt: string;
   emoji: string;
   gradient: string;
   className?: string;
   emojiClassName?: string;
 }) {
-  const sources = [src, fallbackSrc].filter(Boolean) as string[];
-  const [step, setStep] = useState(0);
-  const current = sources[step];
+  const [failed, setFailed] = useState(false);
 
-  if (!current) {
+  if (!src || failed) {
     return (
       <div className={`grid place-items-center bg-gradient-to-br ${gradient} ${emojiClassName} ${className}`}>
         {emoji}
@@ -37,11 +32,10 @@ export function PlaceImage({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      key={current}
-      src={current}
+      src={src}
       alt={alt}
       loading="lazy"
-      onError={() => setStep((s) => s + 1)}
+      onError={() => setFailed(true)}
       className={`object-cover ${className}`}
     />
   );
