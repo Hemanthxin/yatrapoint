@@ -26,15 +26,14 @@ export function FestivalTicker() {
   };
 
   const track = [...items, ...items]; // duplicate for a seamless loop
-  // Slow, readable pace that scales with how much text there is (~7s per
-  // festival) so long lines don't whip past.
-  const durationSec = Math.max(45, items.length * 7);
+  // Slow, readable pace — matches the top news ticker (~11s per item).
+  const durationSec = Math.max(55, items.length * 11);
 
   return (
     <div className="bleed mt-8">
-      <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-inner md:rounded-3xl">
+      <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-sm">
         <div
-          className="flex w-max animate-marquee whitespace-nowrap py-2 pl-32"
+          className="flex w-max animate-marquee whitespace-nowrap py-1.5 pl-32"
           style={{ animationDuration: `${durationSec}s` }}
         >
           {track.map((f, i) => (
