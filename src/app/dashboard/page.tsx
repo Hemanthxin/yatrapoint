@@ -17,6 +17,9 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { formatINR } from "@/lib/format";
 import { getDashboardStats } from "@/lib/queries/trip-plans";
+import { listNearby } from "@/lib/queries/nearby";
+import { listDestinations } from "@/lib/queries/destinations";
+import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -90,19 +93,13 @@ export default async function DashboardPage() {
     },
   ];
 
-  const nearby = [
-    { name: "Abbey Falls", place: "Madikeri, Kodagu", km: 12, entry: "₹50 Entry", img: "/66242.jpg" },
-    { name: "Namdroling Monastery", place: "Bylakuppe", km: 25, entry: "Free Entry", img: "/66245.jpg" },
-    { name: "Harangi Dam", place: "Somwarpet, Kodagu", km: 18, entry: "₹25 Entry", img: "/66242.jpg" },
-    { name: "Raja's Seat", place: "Madikeri, Kodagu", km: 32, entry: "₹100 Entry", img: "/66245.jpg" },
-  ];
-
-  const popularTrips = [
-    { name: "Mysore 1-Day Trip", days: "1 Day Trip", price: "₹1,299", img: "/66242.jpg" },
-    { name: "Coorg Weekend Trip", days: "2 Days Trip", price: "₹3,499", img: "/66245.jpg" },
-    { name: "Hampi Explorer Trip", days: "2 Days Trip", price: "₹2,999", img: "/66242.jpg" },
-    { name: "Chikmagalur Trip", days: "2 Days Trip", price: "₹2,799", img: "/66245.jpg" },
-  ];
+  // Real data: nearby = one-day trips from Bangalore; popular = top Karnataka
+  // destinations by popularity.
+  const [nearbyRows, popularTrips] = await Promise.all([
+    listNearby({ baseCity: "Bangalore" }),
+    listDestinations({ state: "Karnataka", isHidden: false, limit: 8 }),
+  ]);
+  const nearby = nearbyRows.slice(0, 8);
 
   return (
     <AppShell userLabel={displayName} userImage={u.image}>
@@ -203,41 +200,48 @@ export default async function DashboardPage() {
       <section className="mt-7">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-bold text-slate-900">Near by place</h2>
-          <Link href="/explore-bangalore" className="text-sm font-semibold text-emerald-600 hover:underline">
+          <Link href="/one-day-trips" className="text-sm font-semibold text-emerald-600 hover:underline">
             View all →
           </Link>
         </div>
         <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
-          {nearby.map((n) => (
-            <Link
-              key={n.name}
-              href="/explore-bangalore"
-              className="card-hover w-40 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:w-auto"
-            >
-              <div className="relative h-24 w-full">
-                <Image src={n.img} alt={n.name} fill sizes="160px" className="object-cover" />
-                <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white">
-                  {n.km} km
-                </span>
-                <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-rose-500">
-                  <Heart className="h-3.5 w-3.5" />
-                </span>
-              </div>
-              <div className="p-2.5">
-                <p className="truncate text-sm font-semibold text-slate-900">{n.name}</p>
-                <p className="flex items-center gap-1 truncate text-[11px] text-slate-500">
-                  <MapPin className="h-3 w-3" /> {n.place}
-                </p>
-                <p
-                  className={`mt-1 text-xs font-bold ${
-                    n.entry === "Free Entry" ? "text-emerald-600" : "text-slate-700"
-                  }`}
-                >
-                  {n.entry}
-                </p>
-              </div>
-            </Link>
-          ))}
+          {nearby.map((n) => {
+            const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
+            const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-emerald-400 to-teal-600";
+            return (
+              <Link
+                key={n.id}
+                href={`/one-day-trips/${n.slug}`}
+                className="card-hover w-40 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:w-auto"
+              >
+                <div className="relative h-24 w-full">
+                  {n.imageUrl ? (
+                    <Image src={n.imageUrl} alt={n.name} fill sizes="160px" className="object-cover" />
+                  ) : (
+                    <div className={`grid h-full w-full place-items-center bg-gradient-to-br ${grad} text-3xl`}>
+                      {cat?.emoji ?? "📍"}
+                    </div>
+                  )}
+                  <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white">
+                    {n.distanceKm} km
+                  </span>
+                </div>
+                <div className="p-2.5">
+                  <p className="truncate text-sm font-semibold text-slate-900">{n.name}</p>
+                  <p className="flex items-center gap-1 truncate text-[11px] text-slate-500">
+                    <MapPin className="h-3 w-3 shrink-0" /> {cat?.label ?? n.category} · from Bangalore
+                  </p>
+                  <p
+                    className={`mt-1 text-xs font-bold ${
+                      n.entryFeePerPerson === 0 ? "text-emerald-600" : "text-slate-700"
+                    }`}
+                  >
+                    {n.entryFeePerPerson === 0 ? "Free Entry" : `₹${n.entryFeePerPerson} Entry`}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -245,30 +249,41 @@ export default async function DashboardPage() {
       <section className="mt-7">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-base font-bold text-slate-900">Popular Trips</h2>
-          <Link href="/one-day-trips" className="text-sm font-semibold text-emerald-600 hover:underline">
+          <Link href="/destinations" className="text-sm font-semibold text-emerald-600 hover:underline">
             View all →
           </Link>
         </div>
         <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
-          {popularTrips.map((t) => (
-            <Link
-              key={t.name}
-              href="/one-day-trips"
-              className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-2xl lg:w-auto"
-            >
-              <Image src={t.img} alt={t.name} fill sizes="224px" className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-              <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
-                {t.days}
-              </span>
-              <div className="absolute inset-x-0 bottom-0 p-3 text-white">
-                <p className="text-sm font-bold">{t.name}</p>
-                <p className="text-xs text-white/85">
-                  Starting from <span className="font-bold">{t.price}</span>
-                </p>
-              </div>
-            </Link>
-          ))}
+          {popularTrips.map((t) => {
+            const cat = CATEGORY_BY_SLUG[t.category as CategorySlug];
+            const grad = CATEGORY_GRADIENT[t.category as CategorySlug] ?? "from-emerald-400 to-teal-600";
+            const total = t.budgetPerDay * t.recommendedDays;
+            return (
+              <Link
+                key={t.id}
+                href={`/destinations/${t.slug}`}
+                className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-2xl lg:w-auto"
+              >
+                {t.imageUrl ? (
+                  <Image src={t.imageUrl} alt={t.name} fill sizes="224px" className="object-cover" />
+                ) : (
+                  <div className={`grid h-full w-full place-items-center bg-gradient-to-br ${grad} text-5xl`}>
+                    {cat?.emoji ?? "📍"}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                  {t.recommendedDays} {t.recommendedDays === 1 ? "Day" : "Days"} Trip
+                </span>
+                <div className="absolute inset-x-0 bottom-0 p-3 text-white">
+                  <p className="truncate text-sm font-bold">{t.name}</p>
+                  <p className="text-xs text-white/85">
+                    Starting from <span className="font-bold">{formatINR(total)}</span>
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </AppShell>

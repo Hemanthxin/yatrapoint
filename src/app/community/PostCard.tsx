@@ -273,7 +273,7 @@ export function PostCard({
         : "";
     const body =
       `📍 ${post.title}${post.locationName ? ` (${post.locationName})` : ""}\n` +
-      `${post.description}${post.rating ? `\n⭐ ${post.rating}/5` : ""}${mapLink}\n\n— via Explore World Community`;
+      `${post.description}${post.rating ? `\n⭐ ${post.rating}/5` : ""}${mapLink}\n\n— via Saafera Community`;
     const data: ShareData = { title: post.title, text: body };
     if (post.latitude && post.longitude)
       data.url = `https://www.google.com/maps?q=${post.latitude},${post.longitude}`;

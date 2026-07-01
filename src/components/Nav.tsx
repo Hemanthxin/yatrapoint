@@ -12,7 +12,7 @@ export function Nav({
 }: NavProps) {
   return (
     <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-5 md:px-6">
-      <Link href="/" aria-label="Explore World home">
+      <Link href="/" aria-label="Saafera home">
         <Logo />
       </Link>
 

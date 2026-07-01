@@ -70,7 +70,7 @@ export function AdminShell({ adminName, adminEmail, children }: AdminShellProps)
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="leading-tight">
-            <p className="text-sm font-bold text-white">Explore World</p>
+            <p className="text-sm font-bold text-white">Saafera</p>
             <p className="text-xs text-slate-400">Admin Console</p>
           </div>
         </div>

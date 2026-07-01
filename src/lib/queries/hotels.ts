@@ -38,15 +38,16 @@ export async function listHotels(f: HotelFilters = {}): Promise<HotelListResult>
 
   const whereClause = where.length ? and(...where) : undefined;
 
-  // Sort. "popular" = has rating + reviews first; default keeps priced first.
+  // Sort. "popular" = most-reviewed / best-rated first. NOTE: the direction must
+  // come BEFORE "nulls last" (Postgres syntax), so we build the raw clause.
   const order =
     f.sort === "price"
-      ? [asc(sql`${hotels.pricePerNight} nulls last`)]
+      ? [sql`${hotels.pricePerNight} asc nulls last`]
       : f.sort === "-price"
-      ? [desc(sql`${hotels.pricePerNight} nulls last`)]
+      ? [sql`${hotels.pricePerNight} desc nulls last`]
       : f.sort === "rating"
-      ? [desc(sql`${hotels.rating} nulls last`)]
-      : [desc(sql`${hotels.reviews} nulls last`), desc(sql`${hotels.rating} nulls last`)];
+      ? [sql`${hotels.rating} desc nulls last`]
+      : [sql`${hotels.reviews} desc nulls last`, sql`${hotels.rating} desc nulls last`];
 
   try {
     const [rows, [{ n }]] = await Promise.all([
@@ -120,7 +121,7 @@ export async function suggestStayHotel(city?: string): Promise<Hotel | null> {
         .select()
         .from(hotels)
         .where(where)
-        .orderBy(desc(sql`${hotels.rating} nulls last`), asc(hotels.pricePerNight))
+        .orderBy(sql`${hotels.rating} desc nulls last`, asc(hotels.pricePerNight))
         .limit(1);
       return rows[0] ?? null;
     };

@@ -9,12 +9,8 @@ export function Hero() {
           Trusted by 10,000+ travellers
         </span>
         <h1 className="text-5xl font-bold leading-tight drop-shadow-2xl md:text-6xl">
-          <span className="font-script text-7xl text-white md:text-8xl">
-            Puri
-          </span>{" "}
-          <span className="font-script text-7xl text-brand-green md:text-8xl">
-            Jaga
-          </span>
+          <span className="font-script text-7xl text-white md:text-8xl">Saa</span>
+          <span className="font-script text-7xl text-brand-green md:text-8xl">fera</span>
         </h1>
         <p className="mt-3 text-2xl font-semibold text-white drop-shadow-lg">
           Discover places. Plan smart. Travel more.

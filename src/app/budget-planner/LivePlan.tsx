@@ -348,7 +348,7 @@ export function LivePlan({
     const text =
       `🗺️ My trip plan — ${plan.stops.length} stops\n${lines}\n\n` +
       `📍 ${formatKm(plan.totals.distanceKm)} · 💰 ${formatINR(plan.totals.cost)} total\n\n` +
-      `Open the full route in Google Maps:\n${googleMapsUrl}\n\n— Planned with Explore World`;
+      `Open the full route in Google Maps:\n${googleMapsUrl}\n\n— Planned with Saafera`;
     const shareData = { title: "My Trip Plan", text, url: googleMapsUrl };
     // Native share sheet — only in a secure (HTTPS) context on mobile.
     if (

@@ -11,7 +11,7 @@ export function Logo({ className = "" }: { className?: string }) {
         />
       </div>
       <span className="text-xl font-semibold tracking-wide">
-        Explore <span className="font-script text-3xl text-brand-green">World</span>
+        Saa<span className="font-script text-3xl text-brand-green">fera</span>
       </span>
     </div>
   );

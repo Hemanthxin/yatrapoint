@@ -7,7 +7,7 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const script = Caveat({ subsets: ["latin"], variable: "--font-script" });
 
 export const metadata: Metadata = {
-  title: "Explore World – Discover places. Plan smart. Travel more.",
+  title: "Saafera – Discover places. Plan smart. Travel more.",
   description:
     "Budget-friendly travel planning. From ancient temples to majestic waterfalls, find the perfect trip within your budget.",
 };
