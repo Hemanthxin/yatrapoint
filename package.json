@@ -14,6 +14,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:seed:karnataka": "tsx scripts/seed-karnataka.ts",
     "db:migrate:profile": "tsx scripts/migrate-profile.ts",
+    "db:convert:data": "node scripts/convert-data.mjs",
+    "db:seed:imports": "tsx scripts/seed-imports.ts",
     "db:seed:osm": "tsx scripts/seed-osm.ts",
     "db:seed:bangalore": "tsx scripts/seed-bangalore.ts",
     "db:reseed:bangalore": "tsx scripts/seed-bangalore.ts --wipe",
@@ -33,6 +35,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
     "react-leaflet": "^4.2.1",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {

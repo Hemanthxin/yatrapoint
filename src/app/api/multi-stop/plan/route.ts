@@ -14,6 +14,14 @@ import {
   type Candidate,
 } from "@/lib/multi-stop";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
+import {
+  travelCostFor,
+  isBengaluru,
+  FLIGHT_PER_KM,
+  FLIGHT_BASE,
+  type TravelMode,
+} from "@/lib/transport";
+import { estimateNightlyRate } from "@/lib/queries/hotels";
 import type { CategorySlug } from "@/lib/catalog/categories";
 
 export const runtime = "nodejs";
@@ -89,6 +97,14 @@ const bodySchema = z.object({
   includeFood: z.boolean().default(true),
   maxStops: z.number().int().min(2).max(15).default(6),
   searchRadiusKm: z.number().min(1).max(500).default(25),
+  // Area mode: restrict the curated catalogue to these district(s)/taluk so a
+  // chosen area only yields places from that area.
+  areaDistricts: z.array(z.string()).max(50).default([]),
+  // Travel mode — drives the cost model (fuel vs BMTC/train/flight fares) and
+  // the map style (road route vs rail line vs flight arc).
+  mode: z.enum(["any", "car", "bike", "bus", "train", "flight"]).default("any"),
+  // Number of days — used for the nightly stay cost (nights = days − 1).
+  days: z.number().int().min(1).max(30).default(1),
 });
 
 // Curated `destinations.category` → Overpass category, so hand-picked catalogue
@@ -294,6 +310,17 @@ export async function POST(req: NextRequest) {
   // universal source: it makes the planner work anywhere in the catalogue, not
   // just where seeded city places exist. (Hand-picked ones are already pinned
   // above; coordinate de-dup in addCandidate stops doubles.)
+  // When the traveller chose a specific district/taluk, keep only catalogue
+  // places from that district — otherwise nearby districts leak in via radius.
+  const normDist = (s: string) => s.toLowerCase().replace(/\b(district|rural|urban|taluk[au]?|tehsil)\b/g, "").replace(/[^a-z0-9]/g, "");
+  const wantedDistricts = parsed.data.areaDistricts.map(normDist).filter(Boolean);
+  const matchesArea = (district: string | null) => {
+    if (wantedDistricts.length === 0) return true;
+    if (!district) return false;
+    const n = normDist(district);
+    return wantedDistricts.some((w) => n === w || n.startsWith(w) || w.startsWith(n));
+  };
+
   const allDestinations = await db.select().from(destinations);
   const destCandidates: Candidate[] = [];
   for (const d of allDestinations) {
@@ -302,6 +329,7 @@ export async function POST(req: NextRequest) {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     if (JUNK_NAME.test(d.name)) continue;
     if (!withinRadius(lat, lng)) continue;
+    if (!matchesArea(d.district)) continue;
     let op: OverpassCategory;
     if (d.category === "pilgrimage") {
       // Route the worship place to its real religion-specific filter so a
@@ -419,17 +447,31 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Mode-based travel cost from the real Karnataka datasets. Fuel + BMTC apply
+  // only to Bengaluru; train/flight use the KA fare data (per person). The
+  // planner is fed an effective ₹/km so budget feasibility reflects the mode.
+  const people = parsed.data.people;
+  const mode = parsed.data.mode as TravelMode;
+  const inBlr = isBengaluru(searchCentre);
+  const modeInfo = travelCostFor(mode, parsed.data.vehicle, 0, people, inBlr); // label only
+  const effCostPerKm =
+    mode === "flight"
+      ? (FLIGHT_PER_KM || 10) * people
+      : travelCostFor(mode, parsed.data.vehicle, 1, people, inBlr).cost;
+  const flightBaseTotal = mode === "flight" ? Math.round((FLIGHT_BASE || 3000) * people) : 0;
+
   // 3) Greedy pick.
   const plan = planMultiStop({
     start: parsed.data.start,
     totalBudget: parsed.data.totalBudget,
     hoursAvailable: parsed.data.hours,
-    people: parsed.data.people,
+    people,
     vehicle: parsed.data.vehicle,
     includeFood: parsed.data.includeFood,
     maxStops: parsed.data.maxStops,
     candidates: finalCandidates,
     reachKm: radiusKm,
+    costPerKm: effCostPerKm,
   });
 
   if (plan.stops.length === 0) {
@@ -443,47 +485,87 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4) Build the real road route through the stops IN THE PLANNER'S ORDER.
-  // The planner already 2-opt optimises the visiting order on straight-line
-  // distance, so it's a sensible, backtrack-free sequence. We route through the
-  // stops in that order and return to the start, then overwrite the haversine
-  // leg metrics with OSRM's REAL road distances/times (we don't re-run OSRM's
-  // /trip TSP, which would renumber the stops and fight the planner's order).
-  const vehicleProfile = VEHICLES[parsed.data.vehicle];
-  const routeWaypoints = [
-    parsed.data.start,
-    ...plan.stops.map((s) => ({ lat: s.lat, lng: s.lng })),
-    parsed.data.start, // return home — closes the loop for a proper round trip
-  ];
-  const route = await fetchRoute(routeWaypoints);
-
+  // 4) Build the journey through the stops IN THE PLANNER'S ORDER.
+  //  • Road modes (car / bike / bus / any): real OSRM driving route.
+  //  • Train / flight: straight rail line / flight arc between stops (drawn on
+  //    the client), costed + timed from great-circle distance.
+  const isAir = mode === "train" || mode === "flight";
   let orderedStops = plan.stops;
-  let roadFuelTotal: number | null = null;
-  if (route && route.legs.length >= plan.stops.length) {
-    // legs[k] is the drive arriving at stop k: legs[0] = start → stop 1,
-    // legs[1] = stop 1 → stop 2, … The trailing leg is the return to start
-    // (counted in the total distance/fuel, not shown per-stop).
-    orderedStops = plan.stops.map((s, k) => {
-      const leg = route.legs[k];
-      if (!leg) return s;
+  let travelTotal = 0;
+  let totalDistanceKm = plan.totalDistanceKm * 2;
+  let totalDurationMinutes = plan.totalMinutes;
+  let geometry: [number, number][] | null = null;
+  let legsOut: Array<{ distanceKm: number; durationMinutes: number }> | null = null;
+
+  if (!isAir) {
+    const routeWaypoints = [
+      parsed.data.start,
+      ...plan.stops.map((s) => ({ lat: s.lat, lng: s.lng })),
+      parsed.data.start, // return home — closes the loop
+    ];
+    const route = await fetchRoute(routeWaypoints);
+    if (route && route.legs.length >= plan.stops.length) {
+      orderedStops = plan.stops.map((s, k) => {
+        const leg = route.legs[k];
+        if (!leg) return s;
+        return {
+          ...s,
+          arrivalKmFromPrev: leg.distanceKm,
+          arrivalMinutesFromPrev: leg.durationMinutes,
+          travelCost: Math.round(leg.distanceKm * effCostPerKm),
+        };
+      });
+      travelTotal = Math.round(route.distanceKm * effCostPerKm);
+      totalDistanceKm = route.distanceKm;
+      totalDurationMinutes = route.durationMinutes;
+      geometry = route.geometry ?? null;
+      legsOut = route.legs;
+    } else {
+      // OSRM unavailable — fall back to the planner's haversine legs.
+      orderedStops = plan.stops.map((s) => ({ ...s, travelCost: Math.round(s.arrivalKmFromPrev * effCostPerKm) }));
+      travelTotal = orderedStops.reduce((a, s) => a + s.travelCost, 0);
+    }
+  } else {
+    // Train / flight — geodesic legs, no OSRM. Faster and semantically right.
+    const speedKmh = mode === "flight" ? 500 : 55;
+    let prev = { lat: parsed.data.start.lat, lng: parsed.data.start.lng };
+    let distSum = 0;
+    orderedStops = plan.stops.map((s) => {
+      const legKm = haversineKm(prev, { lat: s.lat, lng: s.lng });
+      prev = { lat: s.lat, lng: s.lng };
+      distSum += legKm;
       return {
         ...s,
-        arrivalKmFromPrev: leg.distanceKm,
-        arrivalMinutesFromPrev: leg.durationMinutes,
-        travelCost: Math.round(leg.distanceKm * vehicleProfile.costPerKm),
+        arrivalKmFromPrev: Math.round(legKm * 10) / 10,
+        arrivalMinutesFromPrev: Math.round((legKm / speedKmh) * 60),
+        travelCost: Math.round(legKm * effCostPerKm),
       };
     });
-    roadFuelTotal = Math.round(route.distanceKm * vehicleProfile.costPerKm);
+    distSum += haversineKm(prev, { lat: parsed.data.start.lat, lng: parsed.data.start.lng });
+    totalDistanceKm = Math.round(distSum * 10) / 10;
+    totalDurationMinutes = Math.round((distSum / speedKmh) * 60);
+    travelTotal = Math.round(distSum * effCostPerKm) + flightBaseTotal;
   }
 
-  // Break the cost into fuel + entry fees + food so each can be shown clearly.
-  const people = parsed.data.people;
+  // 5) Nightly stay cost for multi-day trips (nights = days − 1), from the
+  // real hotel dataset — Bengaluru rates for Bengaluru trips.
+  const nights = Math.max(0, parsed.data.days - 1);
+  let stayNightly = 0;
+  let stayRooms = 0;
+  let stayTotal = 0;
+  if (nights > 0) {
+    const stayCity = inBlr ? "Bengaluru" : parsed.data.areaDistricts[0] || undefined;
+    stayNightly = await estimateNightlyRate(stayCity);
+    stayRooms = Math.max(1, Math.ceil(people / 2));
+    stayTotal = stayNightly * stayRooms * nights;
+  }
+
+  // Break the cost into travel + entry + food + stay so each can be shown.
   const entryFeesTotal = orderedStops.reduce((sum, s) => sum + s.entryFee * people, 0);
   const stopCostTotal = orderedStops.reduce((sum, s) => sum + s.stopCost, 0);
-  // Whatever in the per-stop cost isn't entry fees is food (restaurant/café).
   const foodTotal = Math.max(0, stopCostTotal - entryFeesTotal);
-  const fuelTotal = roadFuelTotal ?? orderedStops.reduce((sum, s) => sum + s.travelCost, 0);
-  const realTotalCost = fuelTotal + stopCostTotal;
+  const fuelTotal = travelTotal;
+  const realTotalCost = fuelTotal + stopCostTotal + stayTotal;
   const realPerPerson = Math.round(realTotalCost / Math.max(1, people));
 
   // Alternatives — strong candidates we considered but didn't include, so the
@@ -514,18 +596,26 @@ export async function POST(req: NextRequest) {
     overpassError,
     stops: orderedStops,
     alternatives,
+    mode,
+    travelLabel: modeInfo.label,
+    travelPerPerson: modeInfo.perPerson,
+    inBengaluru: inBlr,
     totals: {
-      distanceKm: route?.distanceKm ?? plan.totalDistanceKm * 2, // assume return
-      durationMinutes: route?.durationMinutes ?? plan.totalMinutes,
+      distanceKm: totalDistanceKm,
+      durationMinutes: totalDurationMinutes,
       cost: realTotalCost,
       perPersonCost: realPerPerson,
       fuelTotal,
       entryFeesTotal,
       foodTotal,
+      stayTotal,
+      stayNightly,
+      stayNights: nights,
+      stayRooms,
       unspentBudget: Math.max(0, parsed.data.totalBudget - realTotalCost),
       unspentMinutes: plan.unspentMinutes,
     },
-    geometry: route?.geometry ?? null,
-    legs: route?.legs ?? null,
+    geometry,
+    legs: legsOut,
   });
 }

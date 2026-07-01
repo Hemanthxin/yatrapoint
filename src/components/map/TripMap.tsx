@@ -80,10 +80,37 @@ export interface TripMapProps {
   stops?: TripMapStop[];
   // Pre-fetched driving polyline (lat, lng pairs).
   route?: [number, number][];
+  // Travel mode — themes the connecting line: solid road route, dashed rail
+  // line, or dotted flight arcs. Defaults to road.
+  mode?: "road" | "train" | "flight";
   // Live breadcrumb trail.
   trail?: LatLng[];
   // px height. Omit to fill parent (parent must have height).
   height?: number;
+}
+
+// Curved arc between two points (a quadratic bezier bowed perpendicular to the
+// chord) — used to draw flight paths as gentle arcs instead of straight lines.
+function arcBetween(a: [number, number], b: [number, number], segments = 24): [number, number][] {
+  const [aLat, aLng] = a;
+  const [bLat, bLng] = b;
+  const midLat = (aLat + bLat) / 2;
+  const midLng = (aLng + bLng) / 2;
+  const dLat = bLat - aLat;
+  const dLng = bLng - aLng;
+  // Perpendicular offset ~15% of the chord length, bowed to one side.
+  const offLat = -dLng * 0.15;
+  const offLng = dLat * 0.15;
+  const cLat = midLat + offLat;
+  const cLng = midLng + offLng;
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const lat = (1 - t) * (1 - t) * aLat + 2 * (1 - t) * t * cLat + t * t * bLat;
+    const lng = (1 - t) * (1 - t) * aLng + 2 * (1 - t) * t * cLng + t * t * bLng;
+    pts.push([lat, lng]);
+  }
+  return pts;
 }
 
 export default function TripMap({
@@ -92,6 +119,7 @@ export default function TripMap({
   destinationName,
   stops,
   route,
+  mode = "road",
   trail,
   height,
 }: TripMapProps) {
@@ -173,23 +201,32 @@ export default function TripMap({
     }
   }, [stops, destination, destinationName]);
 
-  // Route polyline.
+  // Route polyline. Road uses the real OSRM geometry; train draws straight
+  // segments through the stops (closed loop); flight draws bowed arcs.
   const routePositions = useMemo<[number, number][]>(() => {
-    if (route && route.length > 1) return route;
-    // Fallback straight-line: origin → stops in order → (back to origin?)
+    // For flight/train we intentionally ignore any road geometry.
+    if (mode === "road" && route && route.length > 1) return route;
+
+    // Build the ordered sequence origin → stops → (back to origin for a loop).
+    const seq: [number, number][] = [[origin.lat, origin.lng]];
     if (stops && stops.length > 0) {
-      const line: [number, number][] = [[origin.lat, origin.lng]];
-      for (const s of stops) line.push([s.lat, s.lng]);
-      return line;
+      for (const s of stops) seq.push([s.lat, s.lng]);
+      if (mode !== "road") seq.push([origin.lat, origin.lng]); // close the loop
+    } else if (destination) {
+      seq.push([destination.lat, destination.lng]);
     }
-    if (destination) {
-      return [
-        [origin.lat, origin.lng],
-        [destination.lat, destination.lng],
-      ];
+    if (seq.length < 2) return [];
+
+    if (mode === "flight") {
+      const arcs: [number, number][] = [];
+      for (let i = 0; i < seq.length - 1; i++) {
+        const seg = arcBetween(seq[i], seq[i + 1]);
+        arcs.push(...(i === 0 ? seg : seg.slice(1)));
+      }
+      return arcs;
     }
-    return [];
-  }, [route, stops, origin, destination]);
+    return seq;
+  }, [route, stops, origin, destination, mode]);
 
   useEffect(() => {
     const m = mapRef.current;
@@ -201,16 +238,20 @@ export default function TripMap({
       }
       return;
     }
+    // Per-mode line style.
+    const style =
+      mode === "train"
+        ? { color: "#6366f1", weight: 4, opacity: 0.9, dashArray: "12 8" }
+        : mode === "flight"
+        ? { color: "#0ea5e9", weight: 3, opacity: 0.9, dashArray: "3 9" }
+        : { color: "#10b981", weight: 5, opacity: 0.85, dashArray: undefined as string | undefined };
+    // Recreate the line so the style follows the current mode.
     if (routeLineRef.current) {
-      routeLineRef.current.setLatLngs(routePositions);
-    } else {
-      routeLineRef.current = L.polyline(routePositions, {
-        color: "#10b981",
-        weight: 5,
-        opacity: 0.85,
-      }).addTo(m);
+      routeLineRef.current.remove();
+      routeLineRef.current = null;
     }
-  }, [routePositions]);
+    routeLineRef.current = L.polyline(routePositions, style).addTo(m);
+  }, [routePositions, mode]);
 
   // Breadcrumb trail.
   const trailPositions = useMemo<[number, number][]>(

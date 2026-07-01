@@ -234,15 +234,18 @@ export async function geocodeArea(parts: {
     const lng = Number(r.lon);
 
     // Radius ≈ half the bounding-box diagonal, so a whole state gets a big radius
-    // and a single taluk a small one. Clamped to the planner's accepted range.
-    let radiusKm = parts.taluk ? 15 : parts.district ? 40 : 120;
+    // and a single taluk a small one — but HARD-CAPPED per level so a taluk/
+    // district selection never spills into neighbouring areas (that was the
+    // "wrong places show up" bug). Taluk ≤ 15 km, district ≤ 45 km.
+    const cap = parts.taluk ? 15 : parts.district ? 45 : 250;
+    let radiusKm = cap;
     const bb = r.boundingbox;
     if (bb && bb.length === 4) {
       const [s, n, w, e] = bb.map(Number);
       const latKm = Math.abs(n - s) * 111;
       const lngKm = Math.abs(e - w) * 111 * Math.cos((lat * Math.PI) / 180);
       const diagHalf = Math.sqrt(latKm * latKm + lngKm * lngKm) / 2;
-      if (Number.isFinite(diagHalf) && diagHalf > 0) radiusKm = diagHalf;
+      if (Number.isFinite(diagHalf) && diagHalf > 0) radiusKm = Math.min(cap, diagHalf);
     }
     radiusKm = Math.min(500, Math.max(5, Math.round(radiusKm)));
 

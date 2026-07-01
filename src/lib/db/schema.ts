@@ -3,6 +3,7 @@ import {
   integer,
   pgTable,
   primaryKey,
+  real,
   text,
   timestamp,
   varchar,
@@ -268,6 +269,32 @@ export const communityComments = pgTable("community_comments", {
 });
 
 export type CommunityComment = typeof communityComments.$inferSelect;
+
+// --- Hotels / stays (imported from the Data/ datasets) ---
+export const hotels = pgTable("hotels", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  slug: varchar("slug", { length: 160 }).notNull().unique(),
+  name: varchar("name", { length: 220 }).notNull(),
+  city: varchar("city", { length: 120 }),
+  area: varchar("area", { length: 200 }),
+  state: varchar("state", { length: 80 }),
+  latitude: varchar("latitude", { length: 20 }),
+  longitude: varchar("longitude", { length: 20 }),
+  pricePerNight: integer("price_per_night"),
+  taxPerNight: integer("tax_per_night"),
+  rating: real("rating"),
+  starRating: integer("star_rating"),
+  reviews: integer("reviews"),
+  brand: varchar("brand", { length: 120 }),
+  propertyType: varchar("property_type", { length: 120 }),
+  roomType: varchar("room_type", { length: 200 }),
+  nearestLandmark: text("nearest_landmark"),
+  source: varchar("source", { length: 40 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Hotel = typeof hotels.$inferSelect;
+export type NewHotel = typeof hotels.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

@@ -69,6 +69,10 @@ interface PlanResponse {
   error?: string;
   stops: PlanStop[];
   alternatives?: Alternative[];
+  mode?: string;
+  travelLabel?: string;
+  travelPerPerson?: boolean;
+  inBengaluru?: boolean;
   totals: {
     distanceKm: number;
     durationMinutes: number;
@@ -77,6 +81,10 @@ interface PlanResponse {
     fuelTotal: number;
     entryFeesTotal: number;
     foodTotal: number;
+    stayTotal?: number;
+    stayNightly?: number;
+    stayNights?: number;
+    stayRooms?: number;
     unspentBudget: number;
     unspentMinutes: number;
   };
@@ -105,6 +113,12 @@ export interface LivePlanProps {
   // me", these override the live GPS origin and add hand-picked catalogue stops.
   originOverride?: { lat: number; lng: number; label?: string } | null;
   placeIds?: string[];
+  // In area mode, the chosen district(s)/taluk — restricts the curated
+  // catalogue so only places from that area appear.
+  areaDistricts?: string[];
+  // Travel mode — "any" | "car" | "bike" | "bus" | "train" | "flight". Drives
+  // the cost model and the map style (road route vs rail line vs flight arc).
+  mode?: string;
 }
 
 export function LivePlan({
@@ -119,6 +133,8 @@ export function LivePlan({
   days = 1,
   originOverride = null,
   placeIds = [],
+  areaDistricts = [],
+  mode = "any",
 }: LivePlanProps) {
   const router = useRouter();
   const live = useLocation();
@@ -154,8 +170,8 @@ export function LivePlan({
   // Signature of the inputs — lets us restore a cached plan only when it still
   // matches the current selections.
   const sig = useMemo(
-    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds }),
-    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds]
+    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode }),
+    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode]
   );
 
   const generate = useCallback(async () => {
@@ -181,6 +197,9 @@ export function LivePlan({
           includeFood,
           maxStops,
           searchRadiusKm: radiusKm,
+          areaDistricts,
+          mode,
+          days,
         }),
       });
       const data: PlanResponse = await res.json();
@@ -195,7 +214,7 @@ export function LivePlan({
     } finally {
       setLoading(false);
     }
-  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm]);
+  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm, areaDistricts, mode, days]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
   // and pressing Back) so it isn't lost. Only if the inputs still match.
@@ -518,11 +537,15 @@ export function LivePlan({
 
               {/* Cost breakdown — gradient bars proportional to total */}
               {(() => {
-                const total = Math.max(1, plan.totals.fuelTotal + plan.totals.entryFeesTotal + plan.totals.foodTotal);
+                const stay = plan.totals.stayTotal ?? 0;
+                const total = Math.max(1, plan.totals.fuelTotal + plan.totals.entryFeesTotal + plan.totals.foodTotal + stay);
                 const rows = [
-                  { label: "Fuel", value: plan.totals.fuelTotal, bar: "from-amber-400 to-orange-500" },
+                  { label: plan.travelLabel || "Travel", value: plan.totals.fuelTotal, bar: "from-amber-400 to-orange-500" },
                   { label: "Entry fees", value: plan.totals.entryFeesTotal, bar: "from-sky-400 to-blue-500" },
                   { label: "Food", value: plan.totals.foodTotal, bar: "from-emerald-400 to-teal-500" },
+                  ...(stay > 0
+                    ? [{ label: `Stay · ${plan.totals.stayNights}N × ₹${plan.totals.stayNightly}`, value: stay, bar: "from-violet-400 to-purple-500" }]
+                    : []),
                 ];
                 return (
                   <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
@@ -627,10 +650,20 @@ export function LivePlan({
                   </button>
                 </div>
               </div>
-              <TripMap origin={start} stops={stopMarkers} route={plan.geometry ?? undefined} height={440} />
+              <TripMap
+                origin={start}
+                stops={stopMarkers}
+                route={plan.geometry ?? undefined}
+                mode={mode === "train" ? "train" : mode === "flight" ? "flight" : "road"}
+                height={440}
+              />
               <p className="mt-2 text-xs text-slate-500">
-                Green pin is your location. Numbered pins are stops in optimal order — nearest first.
-                The line follows real driving roads (OSRM).
+                Green pin is your location. Numbered pins are stops in optimal order — nearest first.{" "}
+                {mode === "train"
+                  ? "The rail line links your stops in sequence."
+                  : mode === "flight"
+                  ? "The dotted arcs show flight paths between stops."
+                  : "The line follows real driving roads (OSRM)."}
               </p>
             </section>
           )}

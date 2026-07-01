@@ -1,0 +1,328 @@
+S.No.,TempleID,TempleName,Address,City,District,ZipCode,Latitude,Longitude
+1,TM000001,Shri Doddaganapathi Temple,Basavanagudi,Bengaluru,Bengaluru Urban,560004,12.9428106,77.5681075
+2,TM000002,Sri Siddalingeshwaraswamy Shrine,Yedeyur,Tumakuru,Tumakuru,572142,12.9721231,76.8630104
+3,TM000003,Shri Channakeshava Swami Temple,Belur Town,Belur,Hassan,573115,13.1623166,75.8679195
+4,TM000004,Shri Bhagyavanti Temple,Ghattarga,Kalaburgi,Kalaburagi,585301,17.0928563,76.4104335
+5,TM000005,Sri Prasanna Veeranjaneya Swamy Temple,Mahalakshmipura,Bengaluru,Bengaluru Urban,560086,13.0091655,77.5466893
+6,TM000006,Sri Kabbalamma Temple,Kabbalu,Kanakapura,Ramanagara,562126,12.5016713,77.3036701
+7,TM000007,Sri Srikanteshwara Swamy Temple,Rastrapathi Road,Nanjangudu,Mysuru,571301,12.1188889,76.6927778
+8,TM000008,Sri Vinayaka Swamy Temple,Jayanagar 4Th Block,Bengaluru,Bengaluru Urban,560011,12.9259401,77.5830419
+9,TM000009,Sri Kalika Durga Parmeshwari Temple,Durga Layout,Vidyaranyapura,Bengaluru Urban,560097,13.0781881,77.5628375
+10,TM000010,Sri Gavigangadhareshwara Swamy Temple,Gavipuram Road,Bengaluru Town,Bengaluru Urban,560019,12.9464492,77.5597925
+11,TM000011,Sri Vasantavallabharayaswamy Temple,Vasantapur,Bengaluru South,Bengaluru Urban,560061,12.895444,77.5517942
+12,TM000012,Sri Gundanjaneya Swamy Temple,Kodigehalli Gate,Yelahanka,Bengaluru Urban,560092,13.0580165,77.5901454
+13,TM000013,Kote Sri Venkateshwara Swamy Temple,K R Road,Bengaluru South,Bengaluru Urban,560018,12.9425631,77.5739195
+14,TM000014,Sri Kumaraswamy Temple,50Feet Road,Bengaluru South,Bengaluru Urban,560019,12.9402061,77.5625677
+15,TM000015,Sri Someshwara Swamy Temple,Halasuru,Bangalore North,Bengaluru Urban,560008,12.9755805,77.6240616
+16,TM000016,Sri Subramanya Swamy Temple,Swamy Vivekananda Road,Bangalore North,Bengaluru Urban,560008,12.9769879,77.6274515
+17,TM000017,Sri Venugopala Krishna Swamy Temple,11Th Cross Road,Malleshwaram,Bengaluru Urban,560003,13.0018323,77.5702894
+18,TM000018,Sri Lakshmi Narasimha Swamy Temple,15Th Cross 1St Temple,Malleshwaram,Bengaluru Urban,560003,13.0046692,77.5718648
+19,TM000019,Sri Lakshmi Narasimha Swamy Temple,Balepete Main Road,Bengaluru North,Bengaluru Urban,560053,12.9739144,77.5751136
+20,TM000020,Sri Kadu Malleshwara Swamy Temple,5Th Cross Sampige Road,Malleshwaram,Bengaluru Urban,560003,13.0051276,77.571716
+21,TM000021,Kukke Shree Subrahmanya Temple,,Subrahamanya Post,Dakshina Kannada,574238,12.6636275,75.6158479
+22,TM000022,Sri Mahaganapathi Temple,East Park Road,Malleshwaram,Bengaluru Urban,560003,13.0002695,77.5704371
+23,TM000023,Sri Raghavendra Anjaneya Temple,East Park Road,Malleshwaram,Bengaluru Urban,560003,13.0035173,77.5704697
+24,TM000024,Sri Champakadhamaswamy Temple,Bannerughatta Road,Anekal,Bengaluru Urban,560083,12.8136226,77.5762754
+25,TM000025,Sri Banashankari Temple,S Kariyappa Road,Bengaluru South,Bengaluru Urban,560071,17.0711874,76.4158129
+26,TM000026,Minto Shri Anjaneyaswamy Temple,Chamarajpet,Bengaluru South,Bengaluru Urban,560018,12.9551501,77.5757886
+27,TM000027,Sri Dattatreya Temple,Afazalpura,Kalaburgi,Kalaburagi,585212,17.1811347,76.5251798
+28,TM000028,Sri Kshetra Jharni Narasimha Swamy Temple,Malkapur Road,Bidar,Bidar,585401,17.9030761,77.5438531
+29,TM000029,Sri Mahalingeshwara Mahaganapathi Temple,Kelagina Pete,Padubidri,Udupi,574111,13.1340831,74.7700271
+30,TM000030,Sri Veerabhadreshwar Temple,Changler,Bidar,Bidar,585227,17.6302782,77.3862724
+31,TM000031,Sri Kshetra Mailar Mallanna Khandoba Temple,Khanapur,Bidar,Bidar,585327,17.915498,76.9873477
+32,TM000032,Sri Siddeswar Temple,Honnekeri,Bidar,Bidar,585402,17.9926151,77.4472495
+33,TM000033,Sri Mallikarjuna Temple,Thodikana,Dakshina Kannada,Dakshina Kannada,574314,12.47553,75.480238
+34,TM000034,Sri Mahalingeshwara Temple,Puttur,Dakshina Kannada,Dakshina Kannada,574201,12.7631833,75.2000642
+35,TM000035,Sri Durgaparameshwari Temple,Kateel,Dakshina Kannada,Dakshina Kannada,574148,13.043881,74.8700804
+36,TM000036,Sri Durgaparameshwari Temple,Mandarthi,Udupi,Udupi,576223,13.4979213,74.810467
+37,TM000037,Sri Revana Siddeshwara Temple,Kailancha,Ramanagar,Ramanagara,562117,12.7208614,77.2798963
+38,TM000038,Sri Durgaparameshwari Temple,Bappanadu,Dakshina Kannada,Dakshina Kannada,574154,13.0950036,74.7861651
+39,TM000039,Sri Nimishamba Temple,Ganjam,Mandya,Mandya,571477,12.4187565,76.710678
+40,TM000040,Sri Rajarajeshwari Temple,Polali,Dakshina Kannada,Dakshina Kannada,574219,12.9339956,74.9553666
+41,TM000041,Sri Mahalingeshwara Temple,Bantwal,Dakshina Kannada,Dakshina Kannada,574211,12.8949362,75.041538
+42,TM000042,Sri Vinayaka Shankaranarayana Durgamba Temple,Nandavara,Dakshina Kannada,Dakshina Kannada,574231,12.8704351,75.0368833
+43,TM000043,Sri Mahalingeshwara Temple,Pandeshwara,Dakshina Kannada,Dakshina Kannada,575001,12.8568179,74.837946
+44,TM000044,Sri Mariyamma Mahishamardini Temple,Bolara,Dakshina Kannada,Dakshina Kannada,575001,12.8891303,74.829695
+45,TM000045,Sri Somanatha Temple,Someshwara,Dakshina Kannada,Dakshina Kannada,575022,12.7945687,74.8799518
+46,TM000046,Panolibail Sri Kallurti Daivastana,Sajeepamooda,Dakshina Kannada,Dakshina Kannada,574231,12.8470839,75.0340538
+47,TM000047,Sri Manjunatha Temple,Kadri,Dakshina Kannada,Dakshina Kannada,575002,12.8857411,74.8554198
+48,TM000048,Sri Anantha Padmanabha Temple,Kudupu,Dakshina Kannada,Dakshina Kannada,575028,12.9040749,74.893608
+49,TM000049,Sri Mahalingeshwara Temple,Kavoor,Dakshina Kannada,Dakshina Kannada,575015,12.918421,74.8588486
+50,TM000050,Sri Mahagapathi Temple,Katipalla,Dakshina Kannada,Dakshina Kannada,575030,12.9942285,74.8344926
+51,TM000051,Sri Gangadhareshwara Swamy And Honnadevi Temple,Shivagange,Bengaluru Rural,Bengaluru Rural,562111,13.1786764,77.2263673
+52,TM000052,Sri Bylanjaneya Swamy Temple,Byrashetti,Bengaluru Rural,Bengaluru Rural,562123,13.1499653,77.4100246
+53,TM000053,Sri Hosamarigudi Temple,Kapu,Udupi,Udupi,574106,13.2371016,74.7464033
+54,TM000054,Sri Mahishamardini Temple,Neelavar,Udupi,Udupi,576213,13.4549447,74.7846696
+55,TM000055,Sri Vishweshwara Temple,Yellur,Udupi,Udupi,574113,13.1810845,74.7975925
+56,TM000056,Sowthadka Sri Mahaganapathi Temple,Kokkada,Dakshina Kannada,Dakshina Kannada,574198,12.8720893,75.3978012
+57,TM000057,Sri Renuka Yallamma Temple,Yallammanagudda,Belagavi,Belagavi,591173,15.7544821,75.1540465
+58,TM000058,Sri Chamundeshwari Temple,Chamundi Hill,Mysore,Mysuru,570010,12.2724938,76.6707186
+59,TM000059,Sri Utsvambha Temple,Uchangidurga,Vijayanagar,Ballari,583125,14.5633801,76.05309
+60,TM000060,Sri Kanaka Durgamma Temple,Siraguppa Road,Ballary,Ballari,583101,15.1750557,76.911816
+61,TM000061,Sri Katte Basaveshwara Temple,"2XWM+GH6, Yetthina Budihal",,Ballari,583102,15.04910292,76.98869628
+62,TM000062,Sri Mookambika Temple,Kolluru,Udupi,Udupi,576220,13.8637888,74.8144538
+63,TM000063,Sri Subrahmanyaswamy Temple,Ghati,Benagluru Rural,Bengaluru Rural,561203,13.3016965,77.4931403
+64,TM000064,Sri Venkataramanaswamy Temple,Bangaru Thirupathi,Kolar,Kolar,563116,13.0301303,78.3547204
+65,TM000065,Sri Virupaksheshwara Swamy Temple,Hampi,Vijayanagara,Ballari,583239,15.3336563,76.4607346
+66,TM000066,Sri Biligiriranganatha Swamy Temple,B R Hills,Chamarajanagar,Chamarajanagara,571441,11.9997763,77.1386197
+67,TM000067,Sri Celuvanarayana Swamy Temple,Melukote,Mandya,Mandya,571431,12.659807,76.6484909
+68,TM000068,Sri Sahasra Lingeshwara Mahakali Temple,Puttur,Dakshina Kannada,Dakshina Kannada,574241,12.8387217,75.2439637
+69,TM000069,Sri Guru Thipperudra Swamy Temple,Nayakanahatty,Chitradurga,Chitradurga,577536,14.4637311,76.5460962
+70,TM000070,Sri Mylarlingeshwara Swamy Temple,Huvinahadagali,Vijayanagara,Ballari,583219,15.0199533,75.931808
+71,TM000071,Sri Mallikarjuna Swamy And Basaveshwara Swamy Temple,Kuruvatti,Vijayanagara,Ballari,583217,14.7853916,75.7029837
+72,TM000072,Sri Guru Basaveshwara Swamy Temple,,,Ballari,,,
+73,TM000073,Sri Amratheshwari Halavu Makkala Thayi Temple,Kota Fisheries Road,Udupi,Udupi,576221,13.5252456,74.7049578
+74,TM000074,Sri Vaidyanatheshwara Swamy Temple,Talakadu,Mysuru,Mysuru,571122,12.1792937,77.0263474
+75,TM000075,Sri Kengal Anjaneya Swamy Temple,Channapattana,Ramanagara,Ramanagara,562161,12.6873138,77.2346034
+76,TM000076,Sri Aprameya Swamy Temple,Malur Channapattana,Ramanagara,Ramanagara,562160,12.6469602,77.179657
+77,TM000077,Sri Sugureshwara Swamy Temple,Devasuguru,Raichur,Raichur,584170,16.3705544,77.3632644
+78,TM000078,Sri Dodda Basaveshwara Swamy Temple,Kurugodu,Ballari,Ballari,583116,15.3446691,76.8344358
+79,TM000079,Sri Ranganatha Swamy Temple,Thirumale,Ramanagar,Ramanagara,562120,12.91856626,77.23689459
+80,TM000080,Sri Lakshmi Narasimha Swamy Temple,Savanadurga,Ramanagar,Ramanagara,561201,12.9161888,77.2981177
+81,TM000081,Sri Hanuman Temple,Chalkapur,Bidar,Bidar,585414,17.8906781,77.2658399
+82,TM000082,Sri Veerabhadreshwara Temple,‌Humanabad,Bidar,Bidar,585330,17.7782374,77.1290148
+83,TM000083,Sri Rushyashrungeshwara Swamy Temple,"C59M+C6C, Sirimane Falls Road",Yadadahalli,Chikkamagaluru,577139,13.41861385,75.18322988
+84,TM000084,Sri Kalasheshwara Swamy Temple,Kalasa,Chikkamagaluru,Chikkamagaluru,577124,13.2322594,75.3633811
+85,TM000085,Sri Anjaneya Swamy Temple,Banasawadi,Bengaluru,Bengaluru Urban,560043,13.0132149,77.6523348
+86,TM000086,Sri Lakshmi Narasimha Swamy Temple,Devarayanadurga,Tumakuru,Tumakuru,572140,13.3788509,77.2132317
+87,TM000087,Sri Bhagandeshwara Temple,Bhagamandala,Kodagu,Kodagu,571247,12.3850866,75.5318955
+88,TM000088,Sri Omkareshwara Temple,Madikeri,Kodagu,Kodagu,571201,12.4207538,75.7414407
+89,TM000089,Sri Ranganathaswamy Temple,Srirangapattana,Mandya,Mandya,571438,12.4248989,76.6790684
+90,TM000090,Sri Rameshwara Swamy Temple,Chamarajapete,Bengaluru,Bengaluru Urban,560018,12.9569869,77.5621397
+91,TM000091,Sri Patheshwaraswamy And Byraweshwaraswamy Temple,Seethi,Kolar,Kolar,563157,13.2420332,78.0127989
+92,TM000092,Sri Renukamba Temple,Chandragutti,Shivamoga,Shivamogga,577429,14.4332249,74.9512906
+93,TM000093,Sri Huligemma Devi Temple,Huligi,Koppala,Koppal,583234,15.3050018,76.3445655
+94,TM000094,Sri Lakshmi Janardhana Swamy Temple,,Mandya,Mandya,571401,12.5315837,76.8914142
+95,TM000095,Sri Venkataramanaswamy Temple,Talakayalbetta,Chikkaballapura,Chikkaballapura,562105,13.3872816,77.8651215
+96,TM000096,Sri Guru Dattatreya Baba Budan Swamy Darga,Id Peetha,Chikmagaluru,Chikkamagaluru,577131,13.4327091,75.7550026
+97,TM000097,Sri Venkataramana Swamy Temple,Nagartharapethe,Bengaluru,Bengaluru Urban,560002,12.9715987,77.5945627
+98,TM000098,Sri Paramartha Nikethan Trust,Anagola,Belagavi,Belagavi,590006,15.8328845,74.4935913
+99,TM000099,Sri Amrutheshwara Temple,Tiruvailu,Dakshina Kannada,Dakshina Kannada,575028,12.918038,74.915189
+100,TM000100,Sri Channakeshava Temple,Sulya,Dakshina Kannada,Dakshina Kannada,574239,12.5553971,75.3890912
+101,TM000101,Sri Ranganatha Swamy And Group Of Temple,Shivanasamudra,Chamarajanagar,Chamarajanagara,571440,12.2704266,77.1696703
+102,TM000102,Sri Mahaganapathi Temple,Sagar,Shivamogga,Shivamogga,577401,14.1668279,75.0328556
+103,TM000103,Sri Kukkawadeshwari Temple,Ammanagudda,Davanagere,Davangere,577213,13.9337209,75.8717319
+104,TM000104,Sri Vidurashvatha Narayanaswamy Temple,Gouribidanur,Chikkaballapur,Chikkaballapura,561208,13.6702819,77.5038933
+105,TM000105,Mahathobara Sri Mangaladevi Temple,Bolara,Mangaluru,Dakshina Kannada,575001,12.8491851,74.845444
+106,TM000106,Sri Marikamba Temple,Sirsi,Uttara Kannada,Uttara Kannada,581401,14.612293,74.8396078
+107,TM000107,Sri Durgaparameshwari Temple,Alankar,Dakshina Kannada,Dakshina Kannada,574285,12.7713361,75.3528779
+108,TM000108,Sri Mailarlingeshwara Temple,Mailapur,Yadgir,Yadgir,585202,16.7425979,77.2426707
+109,TM000109,Sri Mouneshwar Temple,Tinthani,Yadgir,Yadgir,585290,16.3792563,76.6707387
+110,TM000110,Sri Kalabhairaveshwara Temple,Vaddikere,Chitradurga,Chitradurga,577558,14.1149388,76.5984862
+111,TM000111,Sri Seemi Naganna Temple,Hallikhed (B),Bidar,Bidar,585414,17.8559547,77.2568592
+112,TM000112,Sri Anjaneya Temple,Muttatti Malavalli,Mandya,Mandya,571430,12.377185,77.1088833
+113,TM000113,Sri Matti Thaleshwara Temple,Kalluveeranahalli,Mandya,Mandya,571430,12.4319446,77.0807878
+114,TM000114,Sri Mahalingeshwara Temple,Pavanje,Dakshina Kannada,Dakshina Kannada,574146,13.0355194,74.7954196
+115,TM000115,Sri Brahma Devaru Istadevatha Balavandi Vyaghra Chamundi Temple,Padupererar,Dakshina Kannada,Dakshina Kannada,574142,12.9984395,74.9009809
+116,TM000116,Sri Manjunatha And Narasimhaswamy Temple,Sunkadakatte,Davanagere,Davangere,577217,14.2173414,75.6470392
+117,TM000117,Sri Revanasiddeshwara Temple,Kalagi,Kalaburgi,Kalaburagi,585322,17.329731,76.8342957
+118,TM000118,Sri Nitilaksha Sadashiva Temple,Golthamajalu,Dakshina Kannada,Dakshina Kannada,574222,12.8357549,75.0582531
+119,TM000119,Sri Channabasaveshwara Swamy Temple,,,Tumakuru,,13.307121,76.9476805
+120,TM000120,Sri Prasanna Venkataramana Swamy Temple,Chikkatirupathi,Kolar,Kolar,563160,12.8967455,77.8667416
+121,TM000121,Sri Subrahmanya Temple,Thokur,Dakshina Kannada,Dakshina Kannada,574146,13.0501691,74.8081558
+122,TM000122,Sri Yoga Bhoha Nandishwara Temple,Nandi,Chikkaballapura,Chikkaballapura,562101,13.3867627,77.6980554
+123,TM000123,Sri Somanatheshwar Temple,Puttige,Dakshina Kannada,Dakshina Kannada,574226,13.0743604,74.9581162
+124,TM000124,Sri Channapattana Hanumantha Temple,,,Uttara Kannada,,12.6518078,77.2085794
+125,TM000125,Sri Nandaneshwara Temple,Panamboor,Dakshina Kannada,Dakshina Kannada,575010,12.9530213,74.8011783
+126,TM000126,Sri Huliyuramma Temple,Halevoor,Tumakuru,Tumakuru,572123,12.8450852,77.0254589
+127,TM000127,Sri Egguttappa Temple,"7JCH+PX8, Kakkabe, Virajpet-Talakaveri Road",Kunjila,Kodagu,571214,12.27181446,75.63012049
+128,TM000128,Sri Aadhinatheshwara Swamy Temple,Adyapady,Dakshina Kannada,Dakshina Kannada,574142,12.9540314,74.8946163
+129,TM000129,Sri Ajipila Mahalingeshwara Temple,Bellare,Dakshina Kannada,Dakshina Kannada,574212,12.6627651,75.3739154
+130,TM000130,Sri Durgaparameshwari Temple,Talapady,Dakshina Kannada,Dakshina Kannada,575023,12.7686901,74.8895192
+131,TM000131,Sri Kodamanthaya Temple,Delantabettu,Dakshina Kannada,Dakshina Kannada,575030,13.0284212,74.8469092
+132,TM000132,Sri Mahaganapathi Shankar Temple,Sirsi,Uttara Kannada,Uttara Kannada,581401,14.6152234,74.8318545
+133,TM000133,Sri Janardana And Mahakali Temple,Ambalpady,Udupi,Udupi,576103,13.3370325,74.7309928
+134,TM000134,Sri Venkataramana Swamy Temple,Malekallu Thirupathi,Hassan,Hassan,573103,13.3164666,76.2561443
+135,TM000135,Sri Kanchika Paraeshwari Temple,Baad Gudeangadi,Uttara Kannada,Uttara Kannada,581351,14.467748,74.374811
+136,TM000136,Sri Gaviranganatha Swamy Temple,Gavirangapura,Chitradurga,Chitradurga,577542,13.5891375,76.4135385
+137,TM000137,Sri Nageshwara Swamy Temple,Navile,Hassan,Hassan,573131,13.100201,76.445234
+138,TM000138,Sri Kanakachalapathi Temple,Kanakagiri,Koppala,Koppal,583283,15.5711211,76.4187059
+139,TM000139,Sri Chowdeshwari Puradamma Temple,Beekanakanahalli,Hassan,Hassan,573201,13.1645435,76.1116997
+140,TM000140,Kavubailu Sri Panchalingeshwara Temple,"Sri Panchalingeshwara Temple, Madnooru, Mangalore-Puttur-Madikeri-Mysore Hwy, Kavu 1",Madnooru,Dakshina Kannada,574223,12.64789181,75.27165937
+141,TM000141,Sri Mahakali Mayakka Temple,Chinchali,Belagavi,Belagavi,591217,16.5643024,74.8141909
+142,TM000142,Sri Bhramhalingeshwara Temple,Maranakatte,Udupi,Udupi,576233,13.7282572,74.7799799
+143,TM000143,Sri Ahalyadevi Maramma Temple,Arathi Ukkada,Mandya,Mandya,571427,12.4623344,76.6641258
+144,TM000144,Sri Rama Temple,Chunchankatte,Mysuru,Mysuru,571617,12.5020648,76.2935267
+145,TM000145,Sri Venkataramana Temple,Kallahalli,Ramanagara,Ramanagara,562117,12.5316284,77.4472495
+146,TM000146,Sri Mahisha Mardhini Temple,Kadiyali,Udupi,Udupi,576102,13.3473413,74.7568536
+147,TM000147,Sri Gaviranganatha Swamy Temple,Billenahalli,Mandya,Mandya,571426,12.7653198,76.5632644
+148,TM000148,Sri Dinkadmma Temple,Dinka Pandavapura,Mandya,Mandya,571812,12.5113247,76.5526723
+149,TM000149,Sri Kotilingeshwara Temple,Koteshwar,Udupi,Udupi,576222,13.5886796,74.6934375
+150,TM000150,Sri Durgaparameshwari Temple,Uppunda,Udupi,Udupi,576232,13.8439865,74.6415156
+151,TM000151,Sri Jaya Durgaparameshwari Temple,Kadekaru,Udupi,Udupi,576103,13.3246366,74.7369898
+152,TM000152,Sri Parivara Panchalingeshwara Temple,Panja,Dakshina Kannada,Dakshina Kannada,573242,12.6774988,75.4738796
+153,TM000153,Sri Nagavi Yallamma Devi Temple,Chittapur,Kalaburagi,Kalaburagi,585211,17.105,77.0908333
+154,TM000154,Sri Harihareshwara Temple,Harihara,Dakshina Kannada,Dakshina Kannada,574218,12.6187422,75.6074381
+155,TM000155,Sri Ambadevi Temple,Somalapura,Raichuru,Raichur,584167,15.3779638,76.7521757
+156,TM000156,Sri Marula Siddeshwara Swamy Temple,Ujjaini,Ballary,Ballari,583136,15.0950024,76.5488232
+157,TM000157,Sri Anjaneya Swamy Temple,Mulabagilu,Kolar,Kolar,563131,13.1661767,78.3933105
+158,TM000158,Sri Mahalingeshwara Temple,Pervaje,Udupi,Udupi,574212,12.6607106,75.3761952
+159,TM000159,Sri Durgaparameshwari Temple,Alvekodi Shirali,Uttara Kannda,Uttara Kannada,581354,14.0293354,74.5027636
+160,TM000160,Sri Bhrahmi Durgaparameshwari Temple,,,Udupi,,13.7119527,74.9105331
+161,TM000161,Sri Siddarameshwara Swamy Temple,Yalanadu,Tumakuru,Tumakuru,572218,13.596672,76.476367
+162,TM000162,Sri Ananthapadmanabha Temple,,,Udupi,,12.9040749,74.893608
+163,TM000163,Sri Anantheshwara And Chandramouleshwara Temple,,,Udupi,,13.3407483,74.7517202
+164,TM000164,Sri Janardhana Temple,Kapu,Udupi,Udupi,574106,13.3411232,74.7422481
+165,TM000165,Sri Chowdeshwari Bhootaraya And Hajarat Syed Sadat Ali Darga,Hanagere,Shivamogga,Shivamogga,577226,13.8495727,75.3990304
+166,TM000166,Sri Someshwara And Shambulingeshwara Temple,Sasalu,Mandya,Mandya,571426,12.797623,76.4531215
+167,TM000167,Sri Amareshwara Temple,Devara Bhupura,Raichuru,Raichur,584139,16.2561409,76.5622308
+168,TM000168,Sri Huccharaya Swamy Temple,Shikaripura,Shivamogga,Shivamogga,577427,14.2693286,75.3550694
+169,TM000169,Sri Dandina Maramma Temple,Mekebande,Tumakuru,Tumakuru,572132,13.6537472,77.2153681
+170,TM000170,Sri Lakshminarasimha Swamy Temple,Rajathadripura,Tumakuru,Tumakuru,572114,13.3286146,76.6853602
+171,TM000171,Sri Durgaparameshwari Temple,Mundkuru,Udupi,Udupi,576121,13.1283022,74.866795
+172,TM000172,Sri Jaganmata Durga Parameshwari Temple,Kadavinakatte,Uttara Kannada,Uttara Kannada,581320,13.9792408,74.5495899
+173,TM000173,Sri Durgaparameshwari Temple,"9P24+83P, Royal Road, Kodavoor",Malpe,Udupi,576108,13.35083092,74.70520549
+174,TM000174,Sri Masanikamma Temple,,,Mysuru,,12.3388034,76.09166
+175,TM000175,Sri Hasanamba Temple,,,Hassan,,13.0026304,76.0944099
+176,TM000176,Sri Durgaparameshwari Temple,Nandikoor,Udupi,Udupi,574111,13.1320685,74.8017558
+177,TM000177,Sri Agastheshwara Temple,Kirimanjeshwar,Udupi,Udupi,576219,13.7822118,74.637932
+178,TM000178,Sri Kundeshwara Temple,Kundapura,Udupi,Udupi,576201,13.6249616,74.6885257
+179,TM000179,Sri Dharmaraya Swamy Temple,Halasurupete,Bengaluru Urban,Bengaluru Urban,560002,12.9603847,77.5783608
+180,TM000180,Sri Mahalingeshwara Temple,Kumbashi,Udupi,Udupi,576257,13.5662594,74.7004396
+181,TM000181,Sri Lakshmi Adinarayanaswamy Temple,Ellodu,Chikkaballapura,Chikkaballapura,561209,13.7420706,77.6971421
+182,TM000182,Sri Pete Venkataramanaswamy Temple,Doddapete,Kolar,Kolar,563101,13.1361307,78.1300742
+183,TM000183,Sri Kasivishveshwaraswamy Temple,Antharagange,Kolar,Kolar,563101,13.139502,78.1391624
+184,TM000184,Sri Kolaramma Temple,Kolar Town,Kolar,Kolar,563101,13.1384267,78.1387319
+185,TM000185,Mahatobhara Sri Panchalingeshwara Temple,Vitla,Dakshina Kannada,Dakshina Kannada,574243,12.7655925,75.1010339
+186,TM000186,Sri Veerabhadraswamy Temple,"WHX5+57C, Swimming Pool Road, Gavipuram Guttahalli, Kempegowda Nagar",Bengaluru,Bengaluru Rural,560019,12.94869365,77.56311015
+187,TM000187,Sri Anjaneyaswamy Temple,Yelahanka Gate,Bengaluru Urban,Bengaluru Urban,560002,13.1106959,77.5801272
+188,TM000188,Sri Kashivishweshwara Temple,Balepete Circle,Bengaluru Urban,Bengaluru Urban,560053,12.9710648,77.5738969
+189,TM000189,Smt Bandisheshamma Chatra,Kg Circle,Bengaluru Urban,Bengaluru Urban,560053,12.9754665,77.575721
+190,TM000190,Sri Kalleshwara Swamy Temple,Kalledevarapura,Davanagere,Davangere,577528,14.4452046,76.3883885
+191,TM000191,Sri Haladamma Devi Temple,"6JQ8+367, H.Gopagondanahalli",H.Gopagondanahalli,Davangere,577217,14.23776096,75.61576682
+192,TM000192,Sri Arkeshwara Swamy Temple,Guttalu,Mandya,Mandya,571401,12.523625,76.9244918
+193,TM000193,Sri Kambada Narasimha Swamy Temple,,Mandya,Mandya,571401,12.5221567,76.9009191
+194,TM000194,Sri Siddarameshwara Swamy Temple,Godekere,Tumakuru,Tumakuru,572214,13.3620465,76.6534738
+195,TM000195,Sri Lakshminarasimha Swamy Temple,,Tumakuru,Tumakuru,,13.32985156,77.09654377
+196,TM000196,Sri Shankaranarayana Temple,Shankaranarayana,Mandya,Udupi,576227,13.6050443,74.857301
+197,TM000197,Sri Balabheemsena Swamy Temple,Motakpalli,Mandya,Kalaburagi,585318,16.9490288,77.3841197
+198,TM000198,Sri Moorne Mariyamma Temple,Kapu,Chitradurga,Udupi,574106,13.2338071,74.7471027
+199,TM000199,Sri Anjaneya Swamy Temple,Halasuru,Bengaluru Urban,Bengaluru Urban,560008,12.9753745,77.6231123
+200,TM000200,Sri Sundara Anjaneya Swamy Temple,,Bengaluru Urban,Bengaluru Urban,560080,13.0302624,77.6777119
+201,TM000201,Sri Sampangirama Temple,Vasanthanagar,Bengaluru Urban,Bengaluru Urban,560052,12.988666,77.5931039
+202,TM000202,Sri Vinayaka Temple,Kundapura,Udupi,Udupi,576222,13.6235274,74.6917418
+203,TM000203,Sri Doddabasavanna Temple,Basavanagudi,Bengaluru Urban,Bengaluru Urban,560004,12.9418755,77.5679198
+204,TM000204,Kote Sri Anjaneyaswamy Temple,K R Road,Bengaluru Urban,Bengaluru Urban,560002,12.9315304,77.5753533
+205,TM000205,Sri Karanji Anjaneyaswamy Temple,Basavanagudi,Bengaluru Urban,Bengaluru Urban,560004,12.9418755,77.5679198
+206,TM000206,Sri Nageshwara Swamy Temple,Beguru,Bengaluru Urban,Bengaluru Urban,560114,12.967852,77.5813452
+207,TM000207,Sri Someshwara Swamy Temple,Madivala,Bengaluru Urban,Bengaluru Urban,560068,12.9226373,77.6174442
+208,TM000208,Bannanje Sri Mahalingeshwara Swamy Temple,,Udupi,Udupi,576101,13.3453395,74.7386649
+209,TM000209,Sri Lakshmi Janardana Temple,Yellare,Udupi,Udupi,574108,13.3679875,74.9530917
+210,TM000210,Sri Venkatramana Temple,,,Uttara Kannada,,,
+211,TM000211,Sri Huligemma Devi Temple,,,Raichur,,15.3050018,76.3445655
+212,TM000212,Sri Renuka Yallamma Devi Temple,"6946+Q9G, Bangi Kunta",Raichur,Raichur,584103,16.20877147,77.36136153
+213,TM000213,Sri Prasanna Gangadhareshwara Swamy Temple,Halasuru Pete,Bengaluru Urban,Bengaluru Urban,560002,12.9817001,77.6284152
+214,TM000214,Sri Ranganatha Swamy Temple,Ballapurapete,Bengaluru Urban,Bengaluru Urban,560002,12.9635207,77.5821062
+215,TM000215,Mahathobhara Sri Veerabhadra Temple,,Udupi,Udupi,576113,13.3266463,74.7419375
+216,TM000216,Sri Subramanya Swamy Temple,Nagalmadike,Tumakuru,Tumakuru,572136,14.1853787,77.3705159
+217,TM000217,Sri Aniveerabhadreshwara Temple,Korwar,Kalaburagi,Kalaburagi,585312,17.3172247,77.0571659
+218,TM000218,Sri Shankaranarayana Temple,Kodavooru,Udupi,Udupi,576106,13.3564479,74.7155339
+219,TM000219,Sri Vaidyanatheswara Temple,,,Dakshina Kannada,,12.1243888,77.0750322
+220,TM000220,Sri Balabhemeshwara Temple,,,Yadgir,,13.0231798,76.7473533
+221,TM000221,Sri Halu Rameshwaraswamy Temple,,,Chitradurga,,,
+222,TM000222,Sri Laxminarasimaswamy Temple,Sugganahalli,Ramanagara,Ramanagara,562120,13.1583223,77.1305395
+223,TM000223,Sri Laxmi Temple,Kenchanahalli,Ramanagara,Ramanagara,562131,12.9117141,77.523058
+224,TM000224,Gadidam Sri Venkataravanaswamy Temple,,Chikkaballapura,Chikkaballapura,561207,13.7742274,77.8174295
+225,TM000225,Sri Datta Sansthan Pantbalekundri Trust,S Pantmandir,Belagavi,Belagavi,591103,15.8767642,74.6303378
+226,TM000226,Sri Prasanna Ganapathi And Sri Venkateshwara Swamy Temple,Sampangiramanagar,Bengaluru Urban,Bengaluru Urban,560027,12.9560933,77.5921445
+227,TM000227,Sri Subramanya Temple,"8QR2+MV2, Sri Krishna Temple Complex, Thenkpete, Maruthi Veethika",,Udupi,576101,13.34164562,74.75207815
+228,TM000228,Sri Sooryanarayana Devastana,Maroli,Dakshina Kannada,Dakshina Kannada,575005,12.8763026,74.8759611
+229,TM000229,Sri Prasanna Venkataramana Swamy Temple,Terinabeedi,Bengaluru Rural,Bengaluru Rural,561203,13.3016965,77.4931403
+230,TM000230,Sri Bettada Ranganathaswamy Temple,Menasinahalli,Tumakuru,Tumakuru,572130,13.033952,76.971717
+231,TM000231,Sri Maramma Temple,,,Tumakuru,,13.0122762,77.5693353
+232,TM000232,Sri Anjaneyaswamy Temple,,,Tumakuru,,14.4405974,75.8983719
+233,TM000233,Sri Anjaneyaswamy Temple,Kyamenahalli,Tumakuru,Tumakuru,572121,13.5076047,77.2915151
+234,TM000234,Sri Shakuna Ranganatha Swamy Temple,Sakharayapattana,Chikkamagaluru,Chikkamagaluru,577135,13.4356658,75.917419
+235,TM000235,Sri Amruteshwara Swamy Temple,,,Chikkamagaluru,,13.2683642,75.3411103
+236,TM000236,Sri Channakeshava Swamy Temple,Balehole,Chikkamagaluru,Chikkamagaluru,577124,13.2660976,75.4169905
+237,TM000237,Sri Durgambha Temple,Antaraghatte,Chikkamagaluru,Chikkamagaluru,577548,13.4932823,76.0120701
+238,TM000238,Sri Junjappa Swamy Temple,,,Chikkamagaluru,,12.9478068,77.4771627
+239,TM000239,Sri Jenukallu Annappaswamy Temple,,,Chikkamagaluru,,12.9833728,75.6427688
+240,TM000240,Sri Siddeshwara Swamy Temple,,,Chikkamagaluru,,,
+241,TM000241,Sri Deeviramma Temple,,,Chikkamagaluru,,13.4178499,75.7937557
+242,TM000242,Mahatobhara Sri Anantheshwara Swamy Temple,Ballamanja Machina,Dakshina Kannada,Dakshina Kannada,574224,12.9350074,75.2116977
+243,TM000243,Sri Adi Janardhana Temple,Shimanthoor,Dakshina Kannada,Dakshina Kannada,574154,13.0875959,74.8128509
+244,TM000244,Sri Lakshmidevi Temple,Malali,Hassan,Hassan,573220,12.9226019,76.2384566
+245,TM000245,Sri Mahalingeshwara Temple,Idya,Dakshina Kannada,Dakshina Kannada,575014,12.9847539,74.801124
+246,TM000246,Sri Mahalingeshwara Mahaganapathi Temple,Uchila,Udupi,Udupi,574117,13.2984696,74.7784997
+247,TM000247,Chitrapura Sri Durgaparameshvari Temple,,,Dakshina Kannada,,12.958262,74.802139
+248,TM000248,Sri Bilikal Ranganatha Swamy Temple,Chikkahalkur,Hassan,Hassan,573126,13.4563517,77.701216
+249,TM000249,Sri Basaveshwara Swamy Temple,,,Mandya,,,
+250,TM000250,Sri Amaranarayana Swamy Temple,,,Chikkaballapura,,13.3476535,77.9859278
+251,TM000251,Sri Siddeshwara Swamy Temple,Siddarabetta,Tumakuru,Tumakuru,572138,13.5053585,77.0764343
+252,TM000252,Sri Samadevi Sansthan,Samadevi Galli,Belagavi,Belagavi,590001,15.860873,74.5090095
+253,TM000253,Sri Sai Mandir,Tilakwadi,Belagavi,Belagavi,590006,15.8394173,74.5027922
+254,TM000254,Sri Narasimha Swamy Temple,,Mandya,Mandya,,12.55521543,76.90360571
+255,TM000255,Sri Nandi Basaveshwara Swamy Temple,,,Mandya,,,
+256,TM000256,Sri Hole Anjaneya Swamy Temple,,,Mandya,,12.5915746,77.0580726
+257,TM000257,Sri Vaidyanatheshwara Swamy Temple,,,Mandya,,12.5730675,77.0632332
+258,TM000258,Sri Ranganathaswamy Temple,,,Davangere,,,
+259,TM000259,Sri Basaveshwara And Kalleshwara Temple,,,Davangere,,,
+260,TM000260,Sri Harihareshwara Swamy Temple,"harihareshwara temple, taluk, Fort, Gandhi Nagar",Harihar,Davangere,577601,14.51249544,75.80261053
+261,TM000261,Sri Durgaparameshwari Temple,,,Dakshina Kannada,,,
+262,TM000262,Sri Yeluhede Nagappa Temple,Bukkasagar,Vijayanagar,Ballari,583132,15.3472081,76.5221778
+263,TM000263,Sri Hosuramma Temple,,,Ballari,,15.2932099,76.3541808
+264,TM000264,Sri Holemma Devi Lakshmi Temple,Badakundri,Belagavi,Belagavi,591221,16.1702288,74.5756196
+265,TM000265,Sri Kapileshwara Temple,,,Belagavi,,15.85185124,74.51557932
+266,TM000266,Sri Arkeshwara Swamy Temple,Ramanagar Town,Ramanagara,Ramanagara,562159,12.7208614,77.2798963
+267,TM000267,Sri Venkata Ramana Swamy Temple,,,Tumakuru,,12.7365036,77.8400532
+268,TM000268,Sri Veerbhadra Temple,Veerabhadranagara,Belagavi,Belagavi,590016,15.8709803,74.5215437
+269,TM000269,Sri Beteraya Swamy Temple,,,Tumakuru,,12.5156637,77.7989833
+270,TM000270,Sri Prasanna Lakshmi Venkataramana Swamy Temple,"X75G+3HX, Geetha Rd, Swarna Nagar, Kolar Gold Fields",Kolar Gold Fields,Kolar,563122,12.95798045,78.27588017
+271,TM000271,Sri Kodandarama Swamy Temple,,,Kolar,,13.05880836,78.42733369
+272,TM000272,Sri Vinayaka Temple,,,Uttara Kannada,,,
+273,TM000273,Sri Katthimaramma Temple,,,Bengaluru Rural,,13.3042131,77.6993093
+274,TM000274,Sri Kumararama Swamy Temple,"C6RC+HF8, Doddapalanahalli",Doddapalanahalli,Tumakuru,572129,13.44140934,77.22117124
+275,TM000275,Sri Anjaneya Swamy Temple,,,Ballari,,14.4405974,75.8983719
+276,TM000276,Sri Vinayaka Swamy Temple,Kurudumale,Kolar,Kolar,563131,13.2123293,78.3678677
+277,TM000277,Mahathobhara Shri Karinjeshwara Temple,Karinja,Dakshina Kannada,Dakshina Kannada,574265,12.9140615,75.1280043
+278,TM000278,Sri Lakshmi Narashimha Swamy Temple,,Mandya,Mandya,,12.61076622,76.79162876
+279,TM000279,Sri Kaleshwara Temple,Yattambadi,Mandya,Mandya,571430,12.4576661,77.1866557
+280,TM000280,Sri Veerabhadreshwara Swamy Temple,,,Ballari,,14.368477,75.745523
+281,TM000281,Sri Kumara Swamy Temple,,,Ballari,,12.9402061,77.5625677
+282,TM000282,Sri Kote Malleshwara Swamy Temple,,,Ballari,,15.1479674,76.9159015
+283,TM000283,Sri Somanatheshwara Temple,,,Dakshina Kannada,,12.9665097,74.8617055
+284,TM000284,Sri Maharajaswamy Temple,Maravanthe,Udupi,Udupi,576230,13.7110566,74.6424843
+285,TM000285,Sri Durga Temple,Kanjuru,Udupi,Udupi,574117,13.1914456,74.7746684
+286,TM000286,Sri Sooryanarayana Temple,,,Dakshina Kannada,,12.9547894,77.6385857
+287,TM000287,Sri Mahadeva Vinayaka Temple,,,Uttara Kannada,,,
+288,TM000288,Kemmannu Sri Durgaparameshwari Temple,Nitte,Udupi,Udupi,574110,13.3992627,74.7088325
+289,TM000289,Mahathobhara Sri Seneshwara Temple,,Udupi,Udupi,576214,13.8677363,74.7102958
+290,TM000290,Sri Mahalingeshwara And Kalingeshwara Temple,,Udupi,Udupi,576222,13.5886796,74.6934375
+291,TM000291,Sri Mahaganapathi Temple,,,Udupi,,13.0002695,77.5704371
+292,TM000292,Sri Malai Mahadeshwaraswamy Temple,Mm Hills,Hanur,Chamarajanagara,571490,12.0384765,77.5905645
+293,TM000293,Sri Lakshmi Venkata Ramana Temple,"GMWC+G6R, Thirumalasagara Chatra",,Mandya,571434,12.55153487,76.70100414
+294,TM000294,Sri Kashi Vishwanatha Temple,,,Mandya,,,
+295,TM000295,Sri Lakshmi Venkataramanaswamy Temple,,,Chikkaballapura,,12.3270919,76.6330213
+296,TM000296,Sri Himavadh Gopalaswamy Temple,,,Chamarajanagara,,11.7205634,76.5803286
+297,TM000297,Sri Chitralingeshwara Swamy Temple,,,Chitradurga,,13.98879124,76.6607156
+298,TM000298,Sri Maramma Devi Temple,,,Chitradurga,,13.0569665,77.5016238
+299,TM000299,Sri Lakshmi Narasimha Swamy Temple,,Chitradurga,Chitradurga,,14.2212412,76.40159326
+300,TM000300,Sri Terumalleshwara Swamy Temple,,,Chitradurga,,13.9459385,76.6154015
+301,TM000301,Sri Anjaneya Swamy Temple,,,Davangere,,14.4405974,75.8983719
+302,TM000302,Sri Anjaneya Swamy Temple,,,Davangere,,14.4405974,75.8983719
+303,TM000303,Sri Maruteshwara Tample,,,Bagalkote,,12.311622,76.6468433
+304,TM000304,Sri Udugiri Lakshmi Ranganatha Swamy Temple,,,Davangere,,,
+305,TM000305,Sri Shiradi Chowdeshwari Temple,Heggadde,Sakaleshpura,Hassan,573134,12.8879399,75.7218847
+306,TM000306,Sri Kenchamba Devi Temple,Harihalli,Alur,Hassan,573129,12.8411696,75.856154
+307,TM000307,Sri Siddeshwara Swamy Temple,,Hassan,Hassan,573201,13.0186337,76.0949844
+308,TM000308,Sri Ranganatha Swamy Temple,,Bookanabetta,Hassan,573116,12.9302872,76.5474782
+309,TM000309,Sri Kshethra Chakrapani Gopinatha Temple,Attavara,Mangaluru,Dakshina Kannada,575001,12.8602095,74.8477954
+310,TM000310,Sri Ramalingeshwar Temple,Chandikapur,Basavakalyan,Bidar,585419,17.8332878,76.8215906
+311,TM000311,Sri Lakshmi Venkata Ramana Temple,Karighatta,Shrirangapattana,Mandya,571438,12.4228058,76.7170162
+312,TM000312,Sri Durga Devi Temple,,Hirekerur,Haveri,581111,14.4587921,75.3971566
+313,TM000313,Sri Hanumantha Devara Temple,,Koda,Haveri,581109,14.5429629,75.3645369
+314,TM000314,Sri Vishaparihareshwara Basavanna Hanumantha Temple,,Balambida,Haveri,581111,14.4665491,75.3845418
+315,TM000315,Sri Shantesha Temple,,Satenahalli,Haveri,581120,14.5737386,75.3146895
+316,TM000316,Sri Sadashiva Mahaganapathi Temple,,Surathkal,Dakshina Kannada,575014,13.0039588,74.7906433
+317,TM000317,Sri Narahari Parvatha Sadashiva Temple,,Amtoor,Dakshina Kannada,574231,12.8521982,75.0559343
+318,TM000318,Sri Panchadurga Parameshwari Temple,,Poonja Arambodi,Dakshina Kannada,574237,12.9937118,75.0887954
+319,TM000319,Sri Hanumantha Devara Temple,,Gundagatti,Haveri,581111,14.41284,75.4388427
+320,TM000320,Sri Veerabhadreshwar Temple,,Rattihalli,Haveri,581116,14.4219653,75.512541
+321,TM000321,Sri Tulaja Bhavani Temple,,Rattihalli,Haveri,581116,14.4230644,75.5116558
+322,TM000322,Sri Ranganatha Temple,,Halluru,Haveri,581119,14.3319587,75.6203533
+323,TM000323,Sri Aniveerabhadreshwar Temple,,Korwar,Kalaburagi,585312,17.3172247,77.0571659
+324,TM000324,Sri Hanumantha Devara Temple,,Kadur,Haveri,581116,14.418415,75.5509602
+325,TM000325,Sri Kantesh Swamy Temple,,Kadaramandalagi,Haveri,581106,14.6435567,75.5232746
+326,TM000326,Sri Guru Gangadhar Bakkaprabhu Temple,,Karaknalli,Bidar,585227,17.6082096,77.4264533
+327,TM000327,Mahathobara Chinthamani Sri Laksmi Narasimha Temple,,Kadeshivalaya,Dakshina Kannada,574325,12.8358612,75.171388

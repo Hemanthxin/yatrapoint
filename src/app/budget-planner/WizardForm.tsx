@@ -18,6 +18,7 @@ import {
   Map as MapIcon,
   Loader2,
   Wallet,
+  Plane,
 } from "lucide-react";
 
 import type { VehicleKind } from "@/lib/budget";
@@ -71,7 +72,18 @@ const TRANSPORT = [
   { key: "Car", icon: Car },
   { key: "Train", icon: TrainFront },
   { key: "Bike", icon: Bike },
+  { key: "Flight", icon: Plane },
 ];
+
+// Transport chip → travel mode sent to the planner (drives cost + map style).
+const MODE_BY_TRANSPORT: Record<string, "any" | "car" | "bike" | "bus" | "train" | "flight"> = {
+  Any: "any",
+  Bus: "bus",
+  Car: "car",
+  Train: "train",
+  Bike: "bike",
+  Flight: "flight",
+};
 
 const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 
@@ -82,6 +94,7 @@ const TRANSPORT_VEHICLE: Record<string, VehicleKind> = {
   Car: "small_car",
   Train: "small_car",
   Bike: "bike",
+  Flight: "small_car",
 };
 
 interface WizardFormProps {
@@ -191,6 +204,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       people: travellersNum,
       hours: Math.min(120, Math.max(6, daysNum * 9)),
       vehicle: TRANSPORT_VEHICLE[transport] ?? "small_car",
+      mode: MODE_BY_TRANSPORT[transport] ?? "any",
       groups: [...groups],
       includeFood: true,
       maxStops: Math.min(15, Math.max(2, parseInt(places, 10) || 5)),
@@ -224,6 +238,14 @@ export function WizardForm({ initial }: WizardFormProps) {
       };
       snap.radiusKm = centre.radiusKm;
       snap.placeIds = area.placeIds;
+      // Constrain the curated catalogue to exactly the chosen district(s)/taluk
+      // so places from other districts don't leak into the plan.
+      snap.areaDistricts =
+        area.scope === "taluks" && area.talukDistrict
+          ? [area.talukDistrict]
+          : area.scope === "districts"
+          ? area.districts
+          : [];
     }
 
     setSnapshot(snap);

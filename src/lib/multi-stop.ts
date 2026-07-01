@@ -115,6 +115,10 @@ export interface PlannerInput {
   // near/mid/far distance bands of this reach, so a bigger radius produces a
   // genuinely wider-ranging trip instead of the same nearby cluster.
   reachKm?: number;
+  // Effective travel cost per km (INR). Overrides the vehicle default so the
+  // planner can cost bus/train/flight/fuel with real Karnataka rates. For public
+  // transport this already includes the number of people.
+  costPerKm?: number;
 }
 
 export interface PlannerStop extends Candidate {
@@ -185,6 +189,7 @@ function twoOpt(tour: Candidate[], start: Pt, D: (a: Pt, b: Pt) => number): void
 export function planMultiStop(input: PlannerInput): PlannerResult {
   const speed = input.avgSpeedKmh ?? 28; // urban driving baseline
   const v = VEHICLES[input.vehicle];
+  const costPerKm = input.costPerKm ?? v.costPerKm;
   const people = Math.max(1, input.people);
   const maxStops = input.maxStops ?? 6;
   const start: Pt = input.start;
@@ -245,7 +250,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   const feasible = (c: Candidate, detour: number) => {
     const newDist = curDist + detour;
     const newMin = (newDist / speed) * 60 + curStopMin + c.idealMinutes;
-    const newCost = curStopCost + stopCostOf(c) + newDist * v.costPerKm;
+    const newCost = curStopCost + stopCostOf(c) + newDist * costPerKm;
     return newMin <= minutesBudget && newCost <= budget;
   };
   const place = (c: Candidate, pos: number, detour: number) => {
@@ -303,7 +308,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   for (const c of tour) {
     const dist = D(prev, c);
     const travelMins = (dist / speed) * 60;
-    const travelCost = Math.round(dist * v.costPerKm);
+    const travelCost = Math.round(dist * costPerKm);
     const stopCost = Math.round(stopCostOf(c));
     stops.push({
       ...c,
