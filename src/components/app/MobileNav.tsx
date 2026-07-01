@@ -31,7 +31,7 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-50 via-slate-50/70 to-transparent"
       />
 
-      <nav className="relative mx-auto mb-[calc(env(safe-area-inset-bottom)+0.75rem)] flex h-16 max-w-[22rem] animate-dockIn items-center justify-around rounded-[1.75rem] border border-white/60 glass-strong px-2 shadow-[0_18px_50px_-12px_rgba(2,6,23,0.4)]">
+      <nav className="relative mx-auto mb-[calc(env(safe-area-inset-bottom)+2.75rem)] flex h-16 max-w-[22rem] animate-dockIn items-center justify-around rounded-[1.75rem] border border-white/60 glass-strong px-2 shadow-[0_18px_50px_-12px_rgba(2,6,23,0.4)]">
         {LEFT.map((t) => (
           <TabLink key={t.href} tab={t} active={isActive(t.href)} />
         ))}

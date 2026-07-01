@@ -30,8 +30,8 @@ export function FestivalTicker() {
   const durationSec = Math.max(55, items.length * 11);
 
   return (
-    <div className="bleed mt-8">
-      <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-sm">
+    <div className="fixed inset-x-0 bottom-0 z-30 bg-red-700 pb-[env(safe-area-inset-bottom)] lg:left-64">
+      <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-[0_-6px_20px_-8px_rgba(2,6,23,0.35)]">
         <div
           className="flex w-max animate-marquee whitespace-nowrap py-1.5 pl-32"
           style={{ animationDuration: `${durationSec}s` }}
