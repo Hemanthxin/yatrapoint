@@ -11,7 +11,6 @@ import { formatINR, formatDays } from "@/lib/format";
 import { FavoriteButton } from "./FavoriteButton";
 import { AddToCartButton } from "./AddToCartButton";
 import { PlaceImage } from "./PlaceImage";
-import { placeImageUrl, fallbackImageUrl } from "@/lib/place-images";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -34,9 +33,8 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
         className="relative block aspect-[4/3] w-full overflow-hidden"
       >
         <PlaceImage
-          src={destination.imageUrl ?? placeImageUrl(destination.name, destination.category)}
-          fallbackSrc={fallbackImageUrl(destination.name)}
-          alt={destination.name}
+          name={destination.name}
+          storedSrc={destination.imageUrl}
           emoji={cat?.emoji ?? "📍"}
           gradient={gradient}
           className="h-full w-full transition duration-500 group-hover:scale-105"
