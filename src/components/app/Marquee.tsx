@@ -31,10 +31,15 @@ export function Marquee() {
 
   // Duplicate the list so the -50% translate loops seamlessly.
   const track = [...items, ...items];
+  // Slow, readable pace that scales with how many headlines there are.
+  const durationSec = Math.max(55, items.length * 11);
 
   return (
-    <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white shadow-sm">
-      <div className="flex w-max animate-marquee whitespace-nowrap py-1.5 pl-28">
+    <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-sm">
+      <div
+        className="flex w-max animate-marquee whitespace-nowrap py-1.5 pl-28"
+        style={{ animationDuration: `${durationSec}s` }}
+      >
         {track.map((t, i) => (
           <span key={i} className="mx-5 inline-flex items-center text-xs font-medium">
             <span className="mr-2 text-amber-300">◆</span>
@@ -43,11 +48,11 @@ export function Marquee() {
         ))}
       </div>
       {/* Fixed label that masks messages passing behind it */}
-      <span className="pointer-events-none absolute left-0 top-0 z-10 flex h-full items-center gap-1.5 bg-emerald-700 px-3 text-[11px] font-extrabold uppercase tracking-wide shadow-lg">
+      <span className="pointer-events-none absolute left-0 top-0 z-10 flex h-full items-center gap-1.5 bg-red-800 px-3 text-[11px] font-extrabold uppercase tracking-wide shadow-lg">
         <Megaphone className="h-3.5 w-3.5" /> News
       </span>
       {/* Soft fade on the right edge */}
-      <span className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-emerald-600 to-transparent" />
+      <span className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-red-700 to-transparent" />
     </div>
   );
 }

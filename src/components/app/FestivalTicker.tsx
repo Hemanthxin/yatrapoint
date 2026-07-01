@@ -32,7 +32,7 @@ export function FestivalTicker() {
 
   return (
     <div className="bleed mt-8">
-      <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-inner md:rounded-3xl">
+      <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-inner md:rounded-3xl">
         <div
           className="flex w-max animate-marquee whitespace-nowrap py-2 pl-32"
           style={{ animationDuration: `${durationSec}s` }}
@@ -44,10 +44,10 @@ export function FestivalTicker() {
           ))}
         </div>
         {/* Fixed label masking messages behind it */}
-        <span className="pointer-events-none absolute left-0 top-0 z-10 flex h-full items-center gap-1.5 bg-gradient-to-r from-rose-600 to-orange-600 px-3 text-[11px] font-extrabold uppercase tracking-wide shadow-lg">
+        <span className="pointer-events-none absolute left-0 top-0 z-10 flex h-full items-center gap-1.5 bg-red-800 px-3 text-[11px] font-extrabold uppercase tracking-wide shadow-lg">
           <PartyPopper className="h-3.5 w-3.5" /> Festivals
         </span>
-        <span className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-rose-500 to-transparent" />
+        <span className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-red-700 to-transparent" />
       </div>
     </div>
   );
