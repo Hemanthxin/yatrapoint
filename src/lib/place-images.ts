@@ -1,15 +1,18 @@
-// Deterministic travel photos for places that have no stored image. Uses
-// LoremFlickr (free, no key) keyed by the place name + category so each place
-// gets a stable, relevant photo. If it ever fails to load, <PlaceImage> falls
-// back to the category gradient.
+// Deterministic travel photos for places that have no stored image.
+//
+// IMPORTANT: LoremFlickr returns its generic "default" image when a tag combo
+// has no match — so we use a SINGLE, broad category tag (which always matches a
+// large pool) plus a per-place `lock` for variety. Every place therefore gets a
+// stable, category-appropriate, DIFFERENT photo. A Picsum seed is the backup if
+// LoremFlickr errors, and <PlaceImage> falls back to a gradient if both fail.
 
-const CATEGORY_TAGS: Record<string, string[]> = {
-  hill_station: ["hills", "mountains"],
-  adventure: ["waterfall", "nature"],
-  pilgrimage: ["temple", "india"],
-  heritage: ["fort", "palace", "heritage"],
-  wildlife: ["wildlife", "forest"],
-  beach: ["beach"],
+const CATEGORY_TAG: Record<string, string> = {
+  hill_station: "mountains",
+  adventure: "waterfall",
+  pilgrimage: "temple",
+  heritage: "fort",
+  wildlife: "wildlife",
+  beach: "beach",
 };
 
 function hash(s: string): number {
@@ -18,16 +21,13 @@ function hash(s: string): number {
   return Math.abs(h) || 1;
 }
 
-// A stable image URL for a place. Blends the place name (so famous places often
-// get their real photo) with category keywords (so obscure ones still look right).
+// Primary: a varied, category-relevant photo keyed to the place.
 export function placeImageUrl(name: string, category?: string, w = 640, h = 480): string {
-  const nameTags = name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .split(/\s+/)
-    .filter((x) => x.length > 2)
-    .slice(0, 2);
-  const catTags = CATEGORY_TAGS[category ?? ""] ?? ["india", "travel", "landscape"];
-  const tags = [...nameTags, ...catTags].slice(0, 5).join(",");
-  return `https://loremflickr.com/${w}/${h}/${tags}?lock=${hash(name)}`;
+  const tag = CATEGORY_TAG[category ?? ""] ?? "landscape";
+  return `https://loremflickr.com/${w}/${h}/${tag}?lock=${hash(name)}`;
+}
+
+// Backup: a guaranteed, varied real photo (used only if the primary fails).
+export function fallbackImageUrl(name: string, w = 640, h = 480): string {
+  return `https://picsum.photos/seed/${encodeURIComponent(name)}/${w}/${h}`;
 }

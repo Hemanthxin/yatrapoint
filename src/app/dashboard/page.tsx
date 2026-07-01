@@ -21,7 +21,7 @@ import { listNearby } from "@/lib/queries/nearby";
 import { listDestinations } from "@/lib/queries/destinations";
 import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 import { PlaceImage } from "@/components/app/PlaceImage";
-import { placeImageUrl } from "@/lib/place-images";
+import { placeImageUrl, fallbackImageUrl } from "@/lib/place-images";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -219,6 +219,7 @@ export default async function DashboardPage() {
                 <div className="relative h-24 w-full">
                   <PlaceImage
                     src={n.imageUrl ?? placeImageUrl(n.name, n.category)}
+                    fallbackSrc={fallbackImageUrl(n.name)}
                     alt={n.name}
                     emoji={cat?.emoji ?? "📍"}
                     gradient={grad}
@@ -269,6 +270,7 @@ export default async function DashboardPage() {
               >
                 <PlaceImage
                   src={t.imageUrl ?? placeImageUrl(t.name, t.category)}
+                  fallbackSrc={fallbackImageUrl(t.name)}
                   alt={t.name}
                   emoji={cat?.emoji ?? "📍"}
                   gradient={grad}
