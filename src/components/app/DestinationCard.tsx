@@ -35,6 +35,8 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
         <PlaceImage
           name={destination.name}
           storedSrc={destination.imageUrl}
+          hint={[destination.district, destination.state].filter(Boolean).join(", ")}
+          category={destination.category}
           emoji={cat?.emoji ?? "📍"}
           gradient={gradient}
           className="h-full w-full transition duration-500 group-hover:scale-105"

@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fallbackImageUrl } from "@/lib/place-images";
+import { placeImageUrl, fallbackImageUrl } from "@/lib/place-images";
 import { resolvePlaceImage } from "@/lib/actions/place-image";
 
-// Shows a real, NAME-MATCHED photo for a place:
-//   1. a stored image if the place has one, else
-//   2. its Wikipedia photo (resolved by name), else
-//   3. a neutral seeded photo, else
-//   4. a category-coloured gradient tile with an emoji.
-// This keeps images relevant to each place instead of random category pictures.
+// Shows a NAME-MATCHED photo for a place:
+//   1. a stored image, else
+//   2. its Wikipedia photo (resolved by name + location hint), else
+//   3. a category-relevant photo (e.g. a temple for a pilgrimage), else
+//   4. a neutral photo, else
+//   5. a category-coloured gradient tile with an emoji.
 export function PlaceImage({
   name,
   storedSrc,
+  hint,
+  category,
   emoji,
   gradient,
   className = "",
@@ -20,40 +22,42 @@ export function PlaceImage({
 }: {
   name: string;
   storedSrc?: string | null;
+  hint?: string;
+  category?: string;
   emoji: string;
   gradient: string;
   className?: string;
   emojiClassName?: string;
 }) {
   const [src, setSrc] = useState<string | null>(storedSrc || null);
-  // 0 = wiki/stored, 1 = neutral fallback tried, 2 = give up (gradient)
-  const [stage, setStage] = useState(0);
+  const [fellBack, setFellBack] = useState(false);
 
   useEffect(() => {
     if (storedSrc) return; // a real stored image always wins
     let alive = true;
-    resolvePlaceImage(name)
+    resolvePlaceImage(name, hint)
       .then((url) => {
-        if (alive) setSrc(url || fallbackImageUrl(name));
+        if (alive) setSrc(url || placeImageUrl(name, category));
       })
       .catch(() => {
-        if (alive) setSrc(fallbackImageUrl(name));
+        if (alive) setSrc(placeImageUrl(name, category));
       });
     return () => {
       alive = false;
     };
-  }, [name, storedSrc]);
+  }, [name, hint, category, storedSrc]);
 
   function onError() {
-    if (stage === 0) {
-      setStage(1);
+    // Wiki/category image failed to load → neutral photo, then gradient.
+    if (!fellBack) {
+      setFellBack(true);
       setSrc(fallbackImageUrl(name));
     } else {
-      setStage(2);
+      setSrc(null);
     }
   }
 
-  if (stage === 2 || !src) {
+  if (!src) {
     return (
       <div className={`grid place-items-center bg-gradient-to-br ${gradient} ${emojiClassName} ${className}`}>
         {emoji}

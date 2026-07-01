@@ -219,6 +219,8 @@ export default async function DashboardPage() {
                   <PlaceImage
                     name={n.name}
                     storedSrc={n.imageUrl}
+                    hint="Karnataka"
+                    category={n.category}
                     emoji={cat?.emoji ?? "📍"}
                     gradient={grad}
                     className="h-full w-full"
@@ -269,6 +271,8 @@ export default async function DashboardPage() {
                 <PlaceImage
                   name={t.name}
                   storedSrc={t.imageUrl}
+                  hint={[t.district, t.state].filter(Boolean).join(", ")}
+                  category={t.category}
                   emoji={cat?.emoji ?? "📍"}
                   gradient={grad}
                   className="absolute inset-0 h-full w-full"
