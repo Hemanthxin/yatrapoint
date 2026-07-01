@@ -4,7 +4,7 @@ import { inArray } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { cityPlaces, destinations } from "@/lib/db/schema";
-import { fetchOverpassPlaces, type OverpassCategory } from "@/lib/overpass";
+import { fetchOverpassPlaces, findNearestStation, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
 import { haversineKm } from "@/lib/geo";
 import {
@@ -21,7 +21,7 @@ import {
   FLIGHT_BASE,
   type TravelMode,
 } from "@/lib/transport";
-import { estimateNightlyRate } from "@/lib/queries/hotels";
+import { estimateNightlyRate, suggestStayHotel } from "@/lib/queries/hotels";
 import type { CategorySlug } from "@/lib/catalog/categories";
 
 export const runtime = "nodejs";
@@ -553,18 +553,88 @@ export async function POST(req: NextRequest) {
     travelTotal = Math.round(distSum * effCostPerKm) + flightBaseTotal;
   }
 
-  // 5) Nightly stay cost for multi-day trips (nights = days − 1), from the
-  // real hotel dataset — Bengaluru rates for Bengaluru trips.
+  // 5) Nightly stay for multi-day trips (nights = days − 1) — a CONCRETE hotel
+  // recommendation from the real dataset (Bengaluru rates for Bengaluru trips).
+  const stayCity = inBlr ? "Bengaluru" : parsed.data.areaDistricts[0] || undefined;
   const nights = Math.max(0, parsed.data.days - 1);
   let stayNightly = 0;
   let stayRooms = 0;
   let stayTotal = 0;
+  let staySuggestion: {
+    name: string; area: string | null; city: string | null; pricePerNight: number;
+    rating: number | null; nights: number; rooms: number; total: number; bookUrl: string;
+  } | null = null;
   if (nights > 0) {
-    const stayCity = inBlr ? "Bengaluru" : parsed.data.areaDistricts[0] || undefined;
-    stayNightly = await estimateNightlyRate(stayCity);
     stayRooms = Math.max(1, Math.ceil(people / 2));
+    const hotel = await suggestStayHotel(stayCity);
+    stayNightly = hotel?.pricePerNight ?? (await estimateNightlyRate(stayCity));
     stayTotal = stayNightly * stayRooms * nights;
+    if (hotel) {
+      staySuggestion = {
+        name: hotel.name,
+        area: hotel.area ?? hotel.city,
+        city: hotel.city,
+        pricePerNight: stayNightly,
+        rating: hotel.rating,
+        nights,
+        rooms: stayRooms,
+        total: stayTotal,
+        bookUrl: `https://www.google.com/search?q=${encodeURIComponent(
+          `${hotel.name} ${hotel.city ?? ""} hotel booking`
+        )}`,
+      };
+    }
   }
+
+  // 6) TRAIN-mode guidance — which station to board from (nearest to the
+  // traveller) and which to reach (nearest to the destination area).
+  let trainInfo: {
+    board: Awaited<ReturnType<typeof findNearestStation>>;
+    dest: Awaited<ReturnType<typeof findNearestStation>>;
+  } | null = null;
+  if (mode === "train") {
+    const [board, dest] = await Promise.all([
+      findNearestStation(parsed.data.start),
+      findNearestStation(searchCentre),
+    ]);
+    trainInfo = { board, dest };
+  }
+
+  // 7) Multi-modal comparison over this trip's distance — cost + time for every
+  // mode, so the traveller can pick the cheapest / fastest / best-balance route.
+  const MODES: { mode: TravelMode; label: string; vehicle: VehicleKind }[] = [
+    { mode: "car", label: "Car", vehicle: "small_car" },
+    { mode: "bike", label: "Bike", vehicle: "bike" },
+    { mode: "bus", label: "Bus", vehicle: "suv" },
+    { mode: "train", label: "Train", vehicle: "small_car" },
+    { mode: "flight", label: "Flight", vehicle: "small_car" },
+  ];
+  const roadDur = !isAir ? totalDurationMinutes : Math.round((totalDistanceKm / 30) * 60);
+  const rawOptions = MODES.map((m) => {
+    const c = travelCostFor(m.mode, m.vehicle, totalDistanceKm, people, inBlr);
+    const durationMinutes =
+      m.mode === "train"
+        ? Math.round((totalDistanceKm / 55) * 60) + 30
+        : m.mode === "flight"
+        ? Math.round((totalDistanceKm / 500) * 60) + 120
+        : m.mode === "bus"
+        ? Math.round(roadDur * 1.3)
+        : roadDur;
+    return { mode: m.mode, label: m.label, cost: c.cost, durationMinutes, fareLabel: c.label };
+  });
+  const maxC = Math.max(1, ...rawOptions.map((o) => o.cost));
+  const maxT = Math.max(1, ...rawOptions.map((o) => o.durationMinutes));
+  const cheapestMode = rawOptions.reduce((a, b) => (b.cost < a.cost ? b : a)).mode;
+  const fastestMode = rawOptions.reduce((a, b) => (b.durationMinutes < a.durationMinutes ? b : a)).mode;
+  // Balanced score: 60% budget, 40% time — the "shortest route, low budget, time saving".
+  const score = (o: { cost: number; durationMinutes: number }) => 0.6 * (o.cost / maxC) + 0.4 * (o.durationMinutes / maxT);
+  const recommendedMode = rawOptions.reduce((a, b) => (score(b) < score(a) ? b : a)).mode;
+  const modeOptions = rawOptions.map((o) => ({
+    ...o,
+    cheapest: o.mode === cheapestMode,
+    fastest: o.mode === fastestMode,
+    recommended: o.mode === recommendedMode,
+  }));
 
   // Break the cost into travel + entry + food + stay so each can be shown.
   const entryFeesTotal = orderedStops.reduce((sum, s) => sum + s.entryFee * people, 0);
@@ -606,6 +676,9 @@ export async function POST(req: NextRequest) {
     travelLabel: modeInfo.label,
     travelPerPerson: modeInfo.perPerson,
     inBengaluru: inBlr,
+    modeOptions,
+    trainInfo,
+    staySuggestion,
     totals: {
       distanceKm: totalDistanceKm,
       durationMinutes: totalDurationMinutes,

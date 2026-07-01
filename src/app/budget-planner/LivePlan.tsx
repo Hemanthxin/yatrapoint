@@ -17,6 +17,16 @@ import {
   Check,
   Repeat,
   X,
+  TrainFront,
+  Plane,
+  Bus,
+  Car,
+  Bike,
+  BedDouble,
+  Star,
+  Zap,
+  TrendingDown,
+  Sparkles,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -73,6 +83,31 @@ interface PlanResponse {
   travelLabel?: string;
   travelPerPerson?: boolean;
   inBengaluru?: boolean;
+  modeOptions?: {
+    mode: string;
+    label: string;
+    cost: number;
+    durationMinutes: number;
+    fareLabel: string;
+    cheapest: boolean;
+    fastest: boolean;
+    recommended: boolean;
+  }[];
+  trainInfo?: {
+    board: { name: string; lat: number; lng: number; km: number; halt: boolean } | null;
+    dest: { name: string; lat: number; lng: number; km: number; halt: boolean } | null;
+  } | null;
+  staySuggestion?: {
+    name: string;
+    area: string | null;
+    city: string | null;
+    pricePerNight: number;
+    rating: number | null;
+    nights: number;
+    rooms: number;
+    total: number;
+    bookUrl: string;
+  } | null;
   totals: {
     distanceKm: number;
     durationMinutes: number;
@@ -575,6 +610,81 @@ export function LivePlan({
             </div>
           </section>
 
+          {/* Train guidance — board / alight stations */}
+          {plan.trainInfo && (plan.trainInfo.board || plan.trainInfo.dest) && (
+            <section className="animate-fadeUp overflow-hidden rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-violet-50 p-5">
+              <p className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-indigo-900">
+                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/40">
+                  <TrainFront className="h-4 w-4" />
+                </span>
+                Your train journey
+              </p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <StationCard title="Board from" station={plan.trainInfo.board} tone="emerald" />
+                <StationCard title="Reach / alight at" station={plan.trainInfo.dest} tone="rose" />
+              </div>
+              <p className="mt-3 text-xs text-indigo-700/80">
+                Head to your boarding station, then reach the destination station and continue to the stops below.
+              </p>
+            </section>
+          )}
+
+          {/* Ways to travel — multi-modal comparison with a recommendation */}
+          {plan.modeOptions && plan.modeOptions.length > 0 && (
+            <section className="animate-fadeUp">
+              <div className="mb-3 flex items-center gap-2">
+                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Ways to travel</h2>
+                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">
+                  {formatKm(plan.totals.distanceKm)} round trip
+                </span>
+              </div>
+              <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 lg:grid-cols-5">
+                {plan.modeOptions.map((o) => {
+                  const Icon = MODE_ICON[o.mode as keyof typeof MODE_ICON] ?? Car;
+                  return (
+                    <div
+                      key={o.mode}
+                      className={`relative w-40 shrink-0 rounded-2xl border p-3.5 shadow-sm transition sm:w-auto ${
+                        o.recommended
+                          ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-200"
+                          : "border-slate-200 bg-white"
+                      }`}
+                    >
+                      {o.recommended && (
+                        <span className="absolute -top-2 left-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                          <Sparkles className="h-3 w-3" /> Best
+                        </span>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className={`grid h-9 w-9 place-items-center rounded-xl ${o.recommended ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <div className="flex flex-col items-end gap-1">
+                          {o.cheapest && (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-sky-100 px-1.5 py-0.5 text-[9px] font-bold text-sky-700">
+                              <TrendingDown className="h-2.5 w-2.5" /> Cheapest
+                            </span>
+                          )}
+                          {o.fastest && (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">
+                              <Zap className="h-2.5 w-2.5" /> Fastest
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <p className="mt-2 text-sm font-bold text-slate-900">{o.label}</p>
+                      <p className="text-lg font-extrabold tracking-tight text-slate-900">{formatINR(o.cost)}</p>
+                      <p className="text-[11px] text-slate-500">{formatMinutes(o.durationMinutes)} · {o.fareLabel}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-xs text-slate-500">
+                Comparison over your trip distance — <span className="font-semibold text-emerald-700">Best</span> balances low budget and time. Change the transport above to re-cost the whole plan.
+              </p>
+            </section>
+          )}
+
           {/* Primary CTA — navigate the whole trip in Google Maps */}
           <a
             href={googleMapsUrl}
@@ -819,6 +929,40 @@ export function LivePlan({
                       );
                     })}
                   </ol>
+
+                  {/* Night stay — a real hotel to overnight at before the next day */}
+                  {plan.staySuggestion && dayBuckets.slice(d + 1).some((b) => b.length > 0) && (
+                    <div className="mt-3 flex flex-wrap items-center gap-3 rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-purple-50 p-4">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md shadow-violet-500/30">
+                        <BedDouble className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-violet-700">
+                          Night {d + 1} · stay over
+                        </p>
+                        <p className="truncate text-sm font-bold text-slate-900">{plan.staySuggestion.name}</p>
+                        <p className="flex items-center gap-1 truncate text-xs text-slate-500">
+                          <MapPin className="h-3 w-3" /> {plan.staySuggestion.area ?? plan.staySuggestion.city}
+                          {plan.staySuggestion.rating ? (
+                            <span className="ml-1 inline-flex items-center gap-0.5 text-amber-600">
+                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> {plan.staySuggestion.rating}
+                            </span>
+                          ) : null}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-extrabold text-slate-900">{formatINR(plan.staySuggestion.pricePerNight)}<span className="text-xs font-medium text-slate-500">/night</span></p>
+                        <a
+                          href={plan.staySuggestion.bookUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 px-3 py-1 text-xs font-bold text-white shadow-sm transition hover:scale-[1.03] active:scale-95"
+                        >
+                          <BedDouble className="h-3.5 w-3.5" /> Book
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 );
               });
@@ -845,4 +989,46 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
 
 function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{children}</span>;
+}
+
+const MODE_ICON = { car: Car, bike: Bike, bus: Bus, train: TrainFront, flight: Plane };
+
+function StationCard({
+  title,
+  station,
+  tone,
+}: {
+  title: string;
+  station: { name: string; km: number; lat: number; lng: number; halt: boolean } | null;
+  tone: "emerald" | "rose";
+}) {
+  const dot = tone === "emerald" ? "bg-emerald-500" : "bg-rose-500";
+  return (
+    <div className="rounded-2xl border border-white/70 bg-white/80 p-3 backdrop-blur">
+      <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+        <span className={`h-2 w-2 rounded-full ${dot}`} /> {title}
+      </p>
+      {station ? (
+        <>
+          <p className="mt-1 truncate text-sm font-bold text-slate-900">
+            {station.name}
+            {station.halt && <span className="ml-1 text-[10px] font-medium text-slate-400">(halt)</span>}
+          </p>
+          <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
+            <span>{formatKm(station.km)} away</span>
+            <a
+              href={`https://www.google.com/maps?q=${station.lat},${station.lng}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:underline"
+            >
+              <MapPin className="h-3 w-3" /> Map
+            </a>
+          </div>
+        </>
+      ) : (
+        <p className="mt-1 text-sm text-slate-400">No station found nearby</p>
+      )}
+    </div>
+  );
 }

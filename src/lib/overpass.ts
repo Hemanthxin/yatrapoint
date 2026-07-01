@@ -4,7 +4,7 @@
 // We map our user-facing categories to OSM tag filters. Each category may
 // match multiple tags (e.g. "nightlife" = bar OR pub OR biergarten).
 
-import type { LatLng } from "./geo";
+import { haversineKm, type LatLng } from "./geo";
 
 // Overpass requires an identifying User-Agent (it returns 406 without one).
 // We rotate through a few mirrors so one being down/over-quota doesn't kill
@@ -117,6 +117,47 @@ export async function runOverpassQuery(
     }
   }
   throw new Error(`All Overpass mirrors failed: ${errors.join("; ")}`);
+}
+
+export interface NearestStation {
+  name: string;
+  lat: number;
+  lng: number;
+  km: number; // straight-line distance from the query centre
+  halt: boolean; // true = minor halt, false = full station
+}
+
+// Nearest railway station/halt to a point (for TRAIN-mode "board here / alight
+// there" guidance). Prefers a full station over a halt when both are close.
+export async function findNearestStation(
+  centre: LatLng,
+  radiusKm = 45
+): Promise<NearestStation | null> {
+  const around = `around:${Math.round(radiusKm * 1000)},${centre.lat},${centre.lng}`;
+  const q = `[out:json][timeout:25];(node[railway~"^(station|halt)$"][name](${around});way[railway~"^(station|halt)$"][name](${around}););out center 80;`;
+  let els;
+  try {
+    els = await runOverpassQuery(q);
+  } catch {
+    return null;
+  }
+  const found: NearestStation[] = [];
+  for (const e of els) {
+    const lat = e.lat ?? e.center?.lat;
+    const lng = e.lon ?? e.center?.lon;
+    const name = e.tags?.name?.trim();
+    if (typeof lat !== "number" || typeof lng !== "number" || !name) continue;
+    found.push({ name, lat, lng, km: haversineKm(centre, { lat, lng }), halt: e.tags?.railway === "halt" });
+  }
+  if (found.length === 0) return null;
+  found.sort((a, b) => a.km - b.km);
+  // Prefer a full station if one is within ~1.4× the nearest halt's distance.
+  const nearest = found[0];
+  if (nearest.halt) {
+    const station = found.find((f) => !f.halt);
+    if (station && station.km <= nearest.km * 1.4) return station;
+  }
+  return nearest;
 }
 
 export interface OverpassPlace {

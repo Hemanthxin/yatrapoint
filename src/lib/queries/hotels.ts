@@ -104,3 +104,28 @@ export async function estimateNightlyRate(city?: string): Promise<number> {
     return 1800;
   }
 }
+
+// A concrete mid-range hotel to recommend for the night stay in a budget plan.
+// Prefers a priced (₹800–4000), well-rated property in the trip's city.
+export async function suggestStayHotel(city?: string): Promise<Hotel | null> {
+  try {
+    const base = [
+      isNotNull(hotels.pricePerNight),
+      gte(hotels.pricePerNight, 800),
+      lte(hotels.pricePerNight, 4000),
+    ];
+    const pick = async (withCity: boolean): Promise<Hotel | null> => {
+      const where = withCity && city ? and(...base, ilike(hotels.city, `%${city}%`)) : and(...base);
+      const rows = await db
+        .select()
+        .from(hotels)
+        .where(where)
+        .orderBy(desc(sql`${hotels.rating} nulls last`), asc(hotels.pricePerNight))
+        .limit(1);
+      return rows[0] ?? null;
+    };
+    return (city ? await pick(true) : null) ?? (await pick(false));
+  } catch {
+    return null;
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Sparkles, Flame, User2 } from "lucide-react";
+import { Sparkles, Flame, User2, Plus } from "lucide-react";
 
 import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
@@ -38,6 +38,9 @@ export function Feed({
 }) {
   const [posts, setPosts] = useState(initialPosts);
   const [tab, setTab] = useState<Tab>("latest");
+  const [composerOpen, setComposerOpen] = useState(false);
+
+  const initial = (userName?.trim()?.[0] ?? "?").toUpperCase();
 
   function handleDeleted(postId: string) {
     setPosts((p) => p.filter((x) => x.id !== postId));
@@ -66,7 +69,39 @@ export function Feed({
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <CommunityForm />
+      {/* Composer: compact trigger bar → expands into full form */}
+      {composerOpen ? (
+        <CommunityForm
+          onPosted={() => setComposerOpen(false)}
+          onCancel={() => setComposerOpen(false)}
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setComposerOpen(true)}
+          className="card-hover flex w-full items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 text-left shadow-sm"
+        >
+          {userImage ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={userImage}
+              alt={userName}
+              className="h-10 w-10 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white">
+              {initial}
+            </span>
+          )}
+          <span className="min-w-0 flex-1 truncate rounded-full bg-slate-100 px-4 py-2.5 text-sm text-slate-400">
+            Share a place, tip or hidden gem…
+          </span>
+          <span className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95">
+            <Plus className="h-4 w-4" />
+            Add post
+          </span>
+        </button>
+      )}
 
       {/* Pill tabs */}
       <div className="sticky top-2 z-10 flex gap-1.5 rounded-2xl border border-slate-200 bg-white/90 p-1.5 shadow-sm backdrop-blur">

@@ -6,7 +6,13 @@ import { Camera, MapPin, Loader2, Star, X, Send } from "lucide-react";
 
 import { submitCommunityPost } from "@/lib/actions/community";
 
-export function CommunityForm() {
+export function CommunityForm({
+  onPosted,
+  onCancel,
+}: {
+  onPosted?: () => void;
+  onCancel?: () => void;
+} = {}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -92,13 +98,28 @@ export function CommunityForm() {
       setLocationName("");
       if (fileRef.current) fileRef.current.value = "";
       router.refresh();
+      onPosted?.();
     });
   }
 
   return (
     <form onSubmit={onSubmit} className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Create a post</h2>
-      <p className="mb-3 text-xs text-slate-500">Share a place — photo, review &amp; rating. Goes live instantly.</p>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Create a post</h2>
+          <p className="mb-3 text-xs text-slate-500">Share a place — photo, review &amp; rating. Goes live instantly.</p>
+        </div>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            aria-label="Close composer"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 active:scale-95"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
+      </div>
 
       {/* Photo */}
       {photo ? (
@@ -196,17 +217,29 @@ export function CommunityForm() {
 
       {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
-      >
-        {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
-        <span className="relative flex items-center gap-2">
-          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-          Post
-        </span>
-      </button>
+      <div className="flex items-center gap-2">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isPending}
+            className="flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 active:scale-95 disabled:opacity-60"
+          >
+            Cancel
+          </button>
+        )}
+        <button
+          type="submit"
+          disabled={isPending}
+          className="relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
+        >
+          {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
+          <span className="relative flex items-center gap-2">
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            Post
+          </span>
+        </button>
+      </div>
     </form>
   );
 }
