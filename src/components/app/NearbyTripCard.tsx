@@ -29,7 +29,7 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
     60; // food / breaks
 
   return (
-    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5">
       <Link href={`/one-day-trips/${destination.slug}`} className="relative block">
         <div
           className={`relative grid h-44 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient}`}
@@ -37,16 +37,16 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
           <span className="text-6xl drop-shadow-md transition duration-500 group-hover:scale-110">
             {cat?.emoji ?? "📍"}
           </span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
             {cat?.emoji} {cat?.label ?? destination.category}
           </span>
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-xs font-semibold text-white">
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-xs font-bold text-white backdrop-blur">
             <Navigation className="h-3 w-3" />
             {formatKm(userDistanceKm)}
           </span>
           <div className="absolute inset-x-0 bottom-0 p-4">
-            <h3 className="truncate text-lg font-semibold tracking-tight text-white drop-shadow">
+            <h3 className="truncate text-lg font-extrabold tracking-tight text-white drop-shadow">
               {destination.name}
             </h3>
             <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-white/85">

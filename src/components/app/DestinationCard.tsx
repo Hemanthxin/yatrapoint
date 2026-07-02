@@ -27,7 +27,7 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
     "bg-slate-100 text-slate-800";
 
   return (
-    <article className="card-hover group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5">
       <Link
         href={`/destinations/${destination.slug}`}
         className="relative block aspect-[4/3] w-full overflow-hidden"
@@ -81,8 +81,8 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
           />
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2 text-xs font-semibold text-slate-600">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700">
+        <div className="mt-auto flex items-center justify-between gap-2 text-xs font-bold text-slate-600">
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700 ring-1 ring-emerald-100">
             <Wallet className="h-3.5 w-3.5" />
             {formatINR(destination.budgetPerDay)}/day
           </span>
@@ -93,7 +93,7 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
         </div>
 
         <AddToCartButton
-          className="w-full"
+          className="w-full py-2.5 shadow-lg shadow-emerald-500/40"
           label="Plan a trip"
           item={{
             id: `dest-${destination.id}`,

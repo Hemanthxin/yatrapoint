@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { LayoutGrid } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { CATEGORIES, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
@@ -15,13 +16,18 @@ export default async function TripCategoriesPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <header className="mb-6 animate-fadeUp">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Trip Categories
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Pick the kind of trip you're in the mood for.
-        </p>
+      <header className="mb-6 flex items-start gap-3 animate-fadeUp">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <LayoutGrid className="h-6 w-6" />
+        </div>
+        <div className="min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+            Trip <span className="text-gradient">Categories</span>
+          </h1>
+          <p className="mt-1 text-sm font-medium text-slate-500">
+            Pick the kind of trip you're in the mood for.
+          </p>
+        </div>
       </header>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
@@ -29,7 +35,7 @@ export default async function TripCategoriesPage() {
           <Link
             key={c.slug}
             href={`/destinations?category=${c.slug}`}
-            className="card-hover animate-fadeUp group relative h-40 overflow-hidden rounded-2xl border border-slate-200 shadow-sm sm:h-48"
+            className="card-hover animate-fadeUp group relative h-40 overflow-hidden rounded-3xl border border-slate-200 shadow-lg shadow-emerald-500/5 sm:h-48"
           >
             <div
               className={`absolute inset-0 grid place-items-center bg-gradient-to-br ${
@@ -40,12 +46,12 @@ export default async function TripCategoriesPage() {
                 {c.emoji}
               </span>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-4">
-              <p className="text-lg font-semibold tracking-tight text-white drop-shadow">
+              <p className="text-lg font-extrabold tracking-tight text-white drop-shadow sm:text-xl">
                 {c.label}
               </p>
-              <p className="text-xs font-medium text-white/80">
+              <p className="text-xs font-semibold text-white/85">
                 {byCat[c.slug] ?? 0} destinations
               </p>
             </div>

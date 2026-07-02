@@ -549,22 +549,24 @@ export function LivePlan({
 
       {plan && (
         <>
-          <section className="animate-pop overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            {/* Summary total */}
-            <div className="border-b border-emerald-100 bg-emerald-50 p-5 sm:p-6">
-              <div className="flex flex-wrap items-end justify-between gap-3">
+          <section className="animate-pop overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            {/* Summary total — bold Play-Store gradient hero */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.3),transparent_55%)]" />
+              <span aria-hidden className="sheen-overlay animate-sheen" />
+              <div className="relative flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                  <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.15em] text-white/85">
                     <Wallet className="h-4 w-4" /> Total trip cost
                   </p>
-                  <p className="mt-1 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                  <p className="mt-1 text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
                     {formatINR(plan.totals.cost)}
                   </p>
-                  <p className="mt-1 text-sm font-medium text-slate-600">
+                  <p className="mt-1 text-sm font-semibold text-white/85">
                     {formatINR(plan.totals.perPersonCost)} per person
                   </p>
                 </div>
-                <span className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-xs font-semibold text-emerald-700">
+                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur">
                   {formatINR(plan.totals.unspentBudget)} unspent
                 </span>
               </div>
@@ -582,11 +584,11 @@ export function LivePlan({
                 const stay = plan.totals.stayTotal ?? 0;
                 const total = Math.max(1, plan.totals.fuelTotal + plan.totals.entryFeesTotal + plan.totals.foodTotal + stay);
                 const rows = [
-                  { label: plan.travelLabel || "Travel", value: plan.totals.fuelTotal, bar: "bg-emerald-600" },
-                  { label: "Entry fees", value: plan.totals.entryFeesTotal, bar: "bg-emerald-500" },
-                  { label: "Food", value: plan.totals.foodTotal, bar: "bg-emerald-400" },
+                  { label: plan.travelLabel || "Travel", value: plan.totals.fuelTotal, bar: "bg-gradient-to-r from-emerald-400 to-emerald-600" },
+                  { label: "Entry fees", value: plan.totals.entryFeesTotal, bar: "bg-gradient-to-r from-sky-400 to-sky-600" },
+                  { label: "Food", value: plan.totals.foodTotal, bar: "bg-gradient-to-r from-amber-400 to-amber-600" },
                   ...(stay > 0
-                    ? [{ label: `Stay · ${plan.totals.stayNights}N × ₹${plan.totals.stayNightly}`, value: stay, bar: "bg-slate-400" }]
+                    ? [{ label: `Stay · ${plan.totals.stayNights}N × ₹${plan.totals.stayNightly}`, value: stay, bar: "bg-gradient-to-r from-violet-400 to-violet-600" }]
                     : []),
                 ];
                 return (
@@ -618,9 +620,9 @@ export function LivePlan({
 
           {/* Train guidance — board / alight stations */}
           {plan.trainInfo && (plan.trainInfo.board || plan.trainInfo.dest) && (
-            <section className="animate-fadeUp overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="flex items-center gap-2 text-sm font-semibold tracking-tight text-slate-900">
-                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
+            <section className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
+                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30">
                   <TrainFront className="h-4 w-4" />
                 </span>
                 Your train journey
@@ -639,7 +641,7 @@ export function LivePlan({
           {plan.modeOptions && plan.modeOptions.length > 0 && (
             <section className="animate-fadeUp">
               <div className="mb-3 flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-slate-900">Ways to travel</h2>
+                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Ways to travel</h2>
                 <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">
                   {formatKm(plan.totals.distanceKm)} round trip
                 </span>
@@ -650,19 +652,19 @@ export function LivePlan({
                   return (
                     <div
                       key={o.mode}
-                      className={`relative w-40 shrink-0 rounded-2xl border p-3.5 shadow-sm transition sm:w-auto ${
+                      className={`card-hover relative w-40 shrink-0 rounded-3xl border p-3.5 shadow-sm transition sm:w-auto ${
                         o.recommended
-                          ? "border-emerald-600 bg-emerald-50"
+                          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-400/60"
                           : "border-slate-200 bg-white"
                       }`}
                     >
                       {o.recommended && (
-                        <span className="absolute -top-2 left-3 inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                        <span className="absolute -top-2 left-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/30">
                           <Sparkles className="h-3 w-3" /> Best
                         </span>
                       )}
                       <div className="flex items-center justify-between">
-                        <span className={`grid h-9 w-9 place-items-center rounded-xl ${o.recommended ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                        <span className={`grid h-9 w-9 place-items-center rounded-xl ${o.recommended ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-600"}`}>
                           <Icon className="h-5 w-5" />
                         </span>
                         <div className="flex flex-col items-end gap-1">
@@ -678,8 +680,8 @@ export function LivePlan({
                           )}
                         </div>
                       </div>
-                      <p className="mt-2 text-sm font-semibold text-slate-900">{o.label}</p>
-                      <p className="text-lg font-bold tracking-tight text-slate-900">{formatINR(o.cost)}</p>
+                      <p className="mt-2 text-sm font-bold text-slate-900">{o.label}</p>
+                      <p className="text-lg font-extrabold tracking-tight text-slate-900">{formatINR(o.cost)}</p>
                       <p className="text-[11px] text-slate-500">{formatMinutes(o.durationMinutes)} · {o.fareLabel}</p>
                     </div>
                   );
@@ -696,26 +698,27 @@ export function LivePlan({
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-3 rounded-2xl bg-emerald-600 p-5 text-white transition hover:bg-emerald-700 active:scale-[0.99]"
+            className="group relative flex items-center justify-between gap-3 overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-500 to-teal-600 p-5 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-[0.99]"
           >
-            <span className="flex items-center gap-3">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20">
+            <span aria-hidden className="sheen-overlay animate-sheen" />
+            <span className="relative flex items-center gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20 backdrop-blur">
                 <Navigation className="h-6 w-6" />
               </span>
               <span>
-                <span className="block text-base font-semibold tracking-tight">Open this trip in Google Maps</span>
-                <span className="block text-xs text-white/85">
+                <span className="block text-base font-extrabold tracking-tight">Open this trip in Google Maps</span>
+                <span className="block text-xs font-medium text-white/85">
                   Turn-by-turn navigation through all {plan.stops.length} stops and back
                 </span>
               </span>
             </span>
-            <ExternalLink className="h-5 w-5 shrink-0" />
+            <ExternalLink className="relative h-5 w-5 shrink-0" />
           </a>
 
           {stopMarkers.length > 0 && (
             <section>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-xl font-semibold tracking-tight text-slate-900">Your route</h2>
+                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Your route</h2>
                 <div className="-mx-4 flex w-[calc(100%+2rem)] items-center gap-2 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:w-auto sm:flex-wrap sm:px-0">
                   <button
                     onClick={sharePlan}
@@ -759,7 +762,7 @@ export function LivePlan({
                       );
                       router.push("/multi-stop/live");
                     }}
-                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
                   >
                     <Play className="h-4 w-4 fill-current" /> Start live tracking
                   </button>
@@ -784,7 +787,7 @@ export function LivePlan({
           )}
 
           <section className="space-y-5">
-            <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
               Day plan{days > 1 ? ` · split across ${days} days` : ""}
             </h2>
             {(() => {
@@ -800,7 +803,7 @@ export function LivePlan({
                 <div key={d}>
                   {days > 1 && (
                     <div className="mb-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                         Day {d + 1}
                       </span>
                       <span className="text-xs font-medium text-slate-500">
@@ -812,14 +815,14 @@ export function LivePlan({
                     {bucket.map((s) => {
                       const i = running++;
                       return (
-                <li key={s.id} className="card-hover relative rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white ring-4 ring-white">
+                <li key={s.id} className="card-hover relative rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
                     {i + 1}
                   </span>
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
-                      <p className="font-bold tracking-tight text-slate-900">{s.name}</p>
+                      <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
+                      <p className="font-extrabold tracking-tight text-slate-900">{s.name}</p>
                       <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
                     </div>
                     <div className="text-right text-xs text-slate-600">
@@ -937,15 +940,15 @@ export function LivePlan({
 
                   {/* Night stay — a real hotel to overnight at before the next day */}
                   {plan.staySuggestion && dayBuckets.slice(d + 1).some((b) => b.length > 0) && (
-                    <div className="mt-3 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
+                    <div className="card-hover mt-3 flex flex-wrap items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 text-white shadow-md shadow-violet-500/30">
                         <BedDouble className="h-5 w-5" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-violet-700">
                           Night {d + 1} · stay over
                         </p>
-                        <p className="truncate text-sm font-bold text-slate-900">{plan.staySuggestion.name}</p>
+                        <p className="truncate text-sm font-extrabold text-slate-900">{plan.staySuggestion.name}</p>
                         <p className="flex items-center gap-1 truncate text-xs text-slate-500">
                           <MapPin className="h-3 w-3" /> {plan.staySuggestion.area ?? plan.staySuggestion.city}
                           {plan.staySuggestion.rating ? (
@@ -961,7 +964,7 @@ export function LivePlan({
                           href={plan.staySuggestion.bookUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
                         >
                           <BedDouble className="h-3.5 w-3.5" /> Book
                         </a>
@@ -982,11 +985,11 @@ export function LivePlan({
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-center sm:text-left">
-      <div className="flex items-center justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-700 sm:justify-start">
-        <span className="text-emerald-600">{icon}</span>
+      <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700 sm:justify-start">
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-100 text-emerald-700">{icon}</span>
         <span className="truncate">{label}</span>
       </div>
-      <p className="mt-1 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">{value}</p>
+      <p className="mt-1 text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{value}</p>
       {sub && <p className="text-[11px] text-slate-500">{sub}</p>}
     </div>
   );

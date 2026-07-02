@@ -315,20 +315,20 @@ export function PostCard({
   return (
     <article
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-      className="card-hover animate-fadeUp overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
         {post.authorImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-1 ring-slate-200" />
+          <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-500/20" />
         ) : (
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-700 ring-1 ring-slate-200">
+          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
             {initial}
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-slate-900">{post.authorName ?? "Traveller"}</p>
+          <p className="truncate text-sm font-bold text-slate-900">{post.authorName ?? "Traveller"}</p>
           <p className="flex items-center gap-1 truncate text-xs text-slate-400">
             {post.locationName && (
               <>
@@ -454,7 +454,7 @@ export function PostCard({
             <button
               onClick={saveEdit}
               disabled={saving}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               Save
@@ -498,8 +498,8 @@ export function PostCard({
             )}
 
             <p className="mt-1 text-sm">
-              <span className="font-semibold text-slate-900">{post.authorName ?? "Traveller"}</span>{" "}
-              <span className="font-semibold text-slate-900">{post.title}</span>{" "}
+              <span className="font-bold text-slate-900">{post.authorName ?? "Traveller"}</span>{" "}
+              <span className="font-bold text-slate-900">{post.title}</span>{" "}
               <span className="text-slate-600">{post.description}</span>
             </p>
 
@@ -512,15 +512,15 @@ export function PostCard({
                   <button
                     key={r.type}
                     onClick={() => react(r.type)}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
                       active
-                        ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                        : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                        ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                        : "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50"
                     }`}
                   >
                     <span>{r.emoji}</span>
                     {r.label}
-                    {n > 0 && <span className="text-slate-400">{n}</span>}
+                    {n > 0 && <span className={active ? "text-white/80" : "text-emerald-500/70"}>{n}</span>}
                   </button>
                 );
               })}
@@ -529,7 +529,7 @@ export function PostCard({
                   href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 active:scale-95"
                 >
                   <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Map
                 </a>
@@ -567,8 +567,9 @@ export function PostCard({
                   <button
                     onClick={submitComment}
                     disabled={posting || !text.trim()}
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
+                    className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-90 disabled:opacity-50"
                   >
+                    <span aria-hidden className="sheen-overlay animate-sheen" />
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </button>
                 </div>

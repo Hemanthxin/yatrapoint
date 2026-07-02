@@ -202,9 +202,9 @@ export function ExploreClient({ seed }: ExploreClientProps) {
             key={g.slug}
             type="button"
             onClick={() => setGroup(g.slug)}
-            className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition ${
+            className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition active:scale-95 ${
               group === g.slug
-                ? "border-emerald-600 bg-emerald-600 text-white"
+                ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -283,13 +283,13 @@ function SeedCard({
   userDistanceKm: number;
 }) {
   return (
-    <article className="card-hover flex flex-col overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
+    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+          <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
             ★ Curated · {place.kind}
           </p>
-          <p className="mt-0.5 font-semibold tracking-tight text-slate-900">{place.name}</p>
+          <p className="mt-0.5 font-extrabold tracking-tight text-slate-900">{place.name}</p>
           <p className="text-xs font-medium text-slate-500">{place.area ?? place.city}</p>
         </div>
         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
@@ -325,7 +325,7 @@ function SeedCard({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href={`/explore-bangalore/${place.slug}`}
-          className="inline-flex h-9 items-center rounded-full bg-emerald-600 px-4 text-xs font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+          className="inline-flex h-9 items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
         >
           Details
         </Link>
@@ -352,13 +352,13 @@ function OsmCard({
   const groupSlug = OVERPASS_TO_GROUP[place.category] ?? "heritage";
   const group = GROUPS.find((g) => g.slug === groupSlug);
   return (
-    <article className="card-hover flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
             {group?.emoji} Live · {place.category.replace("_", " ")}
           </p>
-          <p className="mt-0.5 font-semibold tracking-tight text-slate-900">{place.name}</p>
+          <p className="mt-0.5 font-extrabold tracking-tight text-slate-900">{place.name}</p>
           {place.tags.addrFull && (
             <p className="line-clamp-1 text-xs font-medium text-slate-500">{place.tags.addrFull}</p>
           )}

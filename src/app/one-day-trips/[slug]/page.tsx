@@ -24,7 +24,7 @@ export default async function NearbyDetailPage({ params }: PageProps) {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <Link
         href="/one-day-trips"
-        className="mb-3 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 active:scale-95"
+        className="mb-3 inline-flex min-h-[44px] items-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
       >
         <ArrowLeft className="h-4 w-4" /> All one-day trips
       </Link>

@@ -40,15 +40,15 @@ export function TripsTabs() {
             key={t.href}
             href={t.href}
             title={t.sub}
-            className={`group flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium transition ${
+            className={`group flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-bold transition ${
               active
-                ? "bg-white text-emerald-700 shadow-sm"
+                ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
             <Icon
               className={`h-4 w-4 shrink-0 ${
-                active ? "text-emerald-600" : "text-slate-400"
+                active ? "text-white" : "text-slate-400"
               }`}
             />
             {t.label}

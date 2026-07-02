@@ -85,11 +85,11 @@ export default async function StaysPage({ searchParams }: PageProps) {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <div className="animate-fadeUp">
         <header className="mb-6 flex items-center gap-3">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
             <BedDouble className="h-6 w-6" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Stays</h1>
+            <h1 className="text-gradient text-3xl font-extrabold tracking-tight md:text-4xl">Stays</h1>
             <p className="mt-1 text-sm font-medium text-slate-500">
               {data.total.toLocaleString("en-IN")} hotels &amp; stays — find your night halt
             </p>
@@ -109,11 +109,11 @@ export default async function StaysPage({ searchParams }: PageProps) {
         />
 
         {data.rows.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
             <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-slate-100 text-slate-400">
               <BedDouble className="h-7 w-7" />
             </div>
-            <p className="text-sm font-semibold text-slate-600">No stays match your search.</p>
+            <p className="text-sm font-bold text-slate-600">No stays match your search.</p>
             <p className="mt-1 text-sm text-slate-400">Try widening your price range or clearing filters.</p>
           </div>
         ) : (
@@ -132,10 +132,10 @@ export default async function StaysPage({ searchParams }: PageProps) {
                 <div
                   key={h.id}
                   style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
-                  className="card-hover animate-fadeUp flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                  className="card-hover animate-fadeUp flex min-w-0 flex-col rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-semibold text-slate-900">{h.name}</p>
+                    <p className="truncate text-base font-extrabold tracking-tight text-slate-900">{h.name}</p>
                     {place && (
                       <p className="mt-1 flex items-center gap-1 truncate text-xs font-medium text-slate-500">
                         <MapPin className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{place}</span>
@@ -185,7 +185,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                   <div className="mt-4">
                     {h.pricePerNight != null ? (
                       <div className="flex flex-wrap items-baseline gap-1">
-                        <span className="text-2xl font-bold text-slate-900">
+                        <span className="text-2xl font-extrabold text-slate-900">
                           {formatINR(h.pricePerNight)}
                         </span>
                         <span className="text-xs font-medium text-slate-500">/night</span>
@@ -206,7 +206,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                       href={bookUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+                      className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
                     >
                       Book <ExternalLink className="h-4 w-4" />
                     </a>
@@ -215,7 +215,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                         href={mapUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"
+                        className="inline-flex h-11 items-center justify-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
                       >
                         <MapPin className="h-4 w-4" /> Map
                       </a>
@@ -237,9 +237,9 @@ export default async function StaysPage({ searchParams }: PageProps) {
                   key={n}
                   href={qs(n)}
                   aria-current={active ? "page" : undefined}
-                  className={`grid h-11 min-w-11 place-items-center rounded-xl px-3 text-sm font-semibold transition active:scale-95 ${
+                  className={`grid h-11 min-w-11 place-items-center rounded-xl px-3 text-sm font-bold transition active:scale-95 ${
                     active
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40"
                       : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                   }`}
                 >

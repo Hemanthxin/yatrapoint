@@ -74,10 +74,14 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
       : location;
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-2.5 border-b border-slate-200 glass-strong px-4 md:gap-3 md:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-2.5 border-b border-white/50 glass-strong px-4 shadow-[0_8px_30px_-18px_rgba(2,6,23,0.45)] md:gap-3 md:px-6">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent"
+      />
       <button
         onClick={onMenu}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 active:scale-95 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 lg:hidden"
         aria-label="Toggle menu"
       >
         <Menu className="h-5 w-5" />
@@ -228,14 +232,16 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
             }}
             className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-white/70 active:scale-95"
           >
-            {userImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={userImage} alt="" className="h-9 w-9 rounded-full object-cover ring-1 ring-slate-200" />
-            ) : (
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-50 text-sm font-bold text-emerald-700 ring-1 ring-emerald-100">
-                {firstName.charAt(0).toUpperCase()}
-              </span>
-            )}
+            <span className="grid place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 p-[2px] shadow-sm shadow-emerald-500/40">
+              {userImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover ring-2 ring-white" />
+              ) : (
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-white text-sm font-bold text-emerald-700">
+                  {firstName.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </span>
             <span className="hidden text-sm font-semibold text-slate-700 sm:inline">Hi, {firstName}</span>
             <ChevronDown className="hidden h-4 w-4 text-slate-400 sm:inline" />
           </button>

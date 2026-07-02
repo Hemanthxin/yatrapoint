@@ -269,18 +269,24 @@ export function WizardForm({ initial }: WizardFormProps) {
   return (
     <>
     <form onSubmit={onSubmit} className="animate-fadeUp space-y-6">
-      {/* Header */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
-          <Wallet className="h-3.5 w-3.5" /> Smart planner
-        </span>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
-          Budget Planner
-        </h1>
-        <p className="mt-2 max-w-md text-sm text-slate-500 md:text-base">
-          Plan your perfect trip within your budget. Tell us your preferences and we&apos;ll
-          handle the rest.
-        </p>
+      {/* Hero — bold Play-Store gradient card */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-6 shadow-xl shadow-emerald-500/30 md:p-8">
+        {/* Faint photo/glow overlay for depth */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.35),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(100%_80%_at_0%_110%,rgba(4,120,87,0.5),transparent_60%)] mix-blend-screen" />
+        <span aria-hidden className="sheen-overlay animate-sheen" />
+        <div className="relative">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-[0.15em] text-white backdrop-blur">
+            <Wallet className="h-3.5 w-3.5" /> Smart planner
+          </span>
+          <h1 className="mt-3 text-3xl font-extrabold leading-[1.05] tracking-tight text-white md:text-4xl">
+            Budget Planner
+          </h1>
+          <p className="mt-2 max-w-md text-sm font-medium text-white/85 md:text-base">
+            Plan your perfect trip within your budget. Tell us your preferences and we&apos;ll
+            handle the rest.
+          </p>
+        </div>
       </div>
 
       {/* Stepper — horizontal rail on mobile, no overflow */}
@@ -290,15 +296,15 @@ export function WizardForm({ initial }: WizardFormProps) {
           return (
             <div key={s} className="flex shrink-0 items-center gap-2">
               <span
-                className={`grid h-7 w-7 place-items-center rounded-full text-xs font-semibold transition ${
+                className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition ${
                   active
-                    ? "bg-emerald-600 text-white"
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40"
                     : "bg-slate-100 text-slate-500"
                 }`}
               >
                 {i + 1}
               </span>
-              <span className={`whitespace-nowrap text-sm font-semibold ${active ? "text-slate-900" : "text-slate-400"}`}>
+              <span className={`whitespace-nowrap text-sm font-bold ${active ? "text-slate-900" : "text-slate-400"}`}>
                 {s}
               </span>
               {i < STEPS.length - 1 && (
@@ -313,7 +319,7 @@ export function WizardForm({ initial }: WizardFormProps) {
         {/* Form column */}
         <div className="space-y-4 lg:col-span-2">
           {/* Where to go — around me vs a chosen area in India */}
-          <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <CardHeader
               title="Where do you want to go?"
               tone="emerald"
@@ -436,7 +442,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             )}
 
             {/* 4. Trip Type + categories to explore */}
-            <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
+            <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
               <CardHeader title="4. Trip Type" tone="emerald" icon="🏷️" />
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {TRIP_TYPES.map(({ key, icon: Icon }) => {
@@ -446,9 +452,9 @@ export function WizardForm({ initial }: WizardFormProps) {
                       key={key}
                       type="button"
                       onClick={() => pickTripType(key)}
-                      className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-semibold transition active:scale-95 ${
+                      className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 ${
                         active
-                          ? "border-emerald-600 bg-emerald-600 text-white"
+                          ? "border-transparent bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
@@ -475,7 +481,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                       onClick={() => toggleGroup(g.slug)}
                       className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
                         on
-                          ? "border-emerald-600 bg-emerald-600 text-white"
+                          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
@@ -522,18 +528,21 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="submit"
             disabled={geocoding}
-            className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 text-base font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-70"
+            className="group relative flex min-h-[56px] w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100"
           >
-            {geocoding ? (
-              <>
-                <Loader2 className="h-5 w-5 animate-spin" /> Locating your area…
-              </>
-            ) : (
-              <>
-                {snapshot ? "Update Plan" : "Continue & Generate Plan"}
-                <ArrowRight className="h-5 w-5" />
-              </>
-            )}
+            {!geocoding && <span aria-hidden className="sheen-overlay animate-sheen" />}
+            <span className="relative flex items-center gap-2">
+              {geocoding ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" /> Locating your area…
+                </>
+              ) : (
+                <>
+                  {snapshot ? "Update Plan" : "Continue & Generate Plan"}
+                  <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
+                </>
+              )}
+            </span>
           </button>
 
           <div className="flex items-start gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
@@ -547,9 +556,9 @@ export function WizardForm({ initial }: WizardFormProps) {
 
         {/* Sidebar column */}
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-          <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="flex items-center gap-2 text-base font-semibold tracking-tight text-slate-900">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-50 text-emerald-700">✦</span>
+          <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30">✦</span>
               Why use Budget Planner?
             </p>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
@@ -567,26 +576,27 @@ export function WizardForm({ initial }: WizardFormProps) {
             </ul>
           </div>
 
-          <div className="card-hover overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 p-5 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Quick Preview</p>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+          <div className="card-hover relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-5 shadow-xl shadow-emerald-500/30">
+            <span aria-hidden className="sheen-overlay animate-sheen" />
+            <p className="relative text-xs font-bold uppercase tracking-[0.15em] text-white/85">Quick Preview</p>
+            <p className="relative mt-1 text-3xl font-extrabold tracking-tight text-white">
               ₹{budget.toLocaleString("en-IN")}
             </p>
-            <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700">
+            <ul className="relative mt-3 space-y-2.5 text-sm font-semibold text-white">
               <li className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-700 shadow-sm">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white/20 text-white backdrop-blur">
                   <CalendarDays className="h-4 w-4" />
                 </span>
                 {days} Trip
               </li>
               <li className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-700 shadow-sm">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white/20 text-white backdrop-blur">
                   <Users className="h-4 w-4" />
                 </span>
                 {travellersNum} Travelers
               </li>
               <li className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-700 shadow-sm">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white/20 text-white backdrop-blur">
                   <MapPinned className="h-4 w-4" />
                 </span>
                 Total budget
@@ -610,12 +620,12 @@ export function WizardForm({ initial }: WizardFormProps) {
 }
 
 const CARD_TONES: Record<string, string> = {
-  emerald: "bg-emerald-50 text-emerald-700",
-  sky: "bg-slate-100 text-slate-600",
-  amber: "bg-slate-100 text-slate-600",
-  violet: "bg-slate-100 text-slate-600",
-  rose: "bg-slate-100 text-slate-600",
-  teal: "bg-slate-100 text-slate-600",
+  emerald: "bg-emerald-100 text-emerald-700",
+  sky: "bg-sky-100 text-sky-700",
+  amber: "bg-amber-100 text-amber-700",
+  violet: "bg-violet-100 text-violet-700",
+  rose: "bg-rose-100 text-rose-700",
+  teal: "bg-teal-100 text-teal-700",
 };
 
 // Shared header used by every option card so icons, titles and badges line up
@@ -636,7 +646,7 @@ function CardHeader({
       <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-lg ${CARD_TONES[tone]}`}>
         {icon}
       </span>
-      <span className="flex-1 text-sm font-semibold tracking-tight text-slate-900">{title}</span>
+      <span className="flex-1 text-sm font-extrabold tracking-tight text-slate-900">{title}</span>
       {optional && (
         <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-400">
           Optional
@@ -662,7 +672,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`card-hover flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+    <div className={`card-hover flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
       <CardHeader title={title} icon={icon} tone={tone} optional={optional} />
       <div className="flex flex-1 flex-col">{children}</div>
     </div>
@@ -694,7 +704,7 @@ function ModeCard({
     >
       <span
         className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition ${
-          active ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
+          active ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-500"
         }`}
       >
         {icon}
@@ -724,11 +734,11 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border text-sm font-medium transition active:scale-95 ${
+      className={`rounded-full border text-sm font-semibold transition active:scale-95 ${
         square ? "grid h-11 w-11 place-items-center" : "min-h-[44px] px-4 py-2"
       } ${
         active
-          ? "border-emerald-600 bg-emerald-600 text-white"
+          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >

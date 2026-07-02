@@ -103,11 +103,13 @@ export function CommunityForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="animate-fadeUp rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <form onSubmit={onSubmit} className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">Create a post</h2>
-          <p className="mb-3 text-xs text-slate-500">Share a place — photo, review &amp; rating. Goes live instantly.</p>
+          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
+            <span className="text-gradient">Create a post</span>
+          </h2>
+          <p className="mb-3 text-xs font-medium text-slate-500">Share a place — photo, review &amp; rating. Goes live instantly.</p>
         </div>
         {onCancel && (
           <button
@@ -231,8 +233,9 @@ export function CommunityForm({
         <button
           type="submit"
           disabled={isPending}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
+          className="relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
         >
+          <span aria-hidden className="sheen-overlay animate-sheen" />
           {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           Post
         </button>

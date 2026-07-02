@@ -127,7 +127,7 @@ export function AreaPicker({ value, onChange }: Props) {
   );
 
   return (
-    <div className="space-y-5 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5">
+    <div className="space-y-5 rounded-3xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5">
       {/* Step 1 — State */}
       <div>
         <Label step="1" title="Pick a state" hint="Required — choose where in India you want to travel." />
@@ -307,9 +307,9 @@ export function AreaPicker({ value, onChange }: Props) {
 function Label({ step, title, hint }: { step?: string; title: string; hint?: string }) {
   return (
     <div className="mb-2">
-      <p className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+      <p className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
         {step && (
-          <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">
+          <span className="grid h-5 w-5 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[11px] font-bold text-white shadow-sm shadow-emerald-500/30">
             {step}
           </span>
         )}
@@ -365,9 +365,9 @@ function CheckGrid({
             key={it}
             type="button"
             onClick={() => onToggle(it)}
-            className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-medium transition active:scale-95 ${
+            className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
               on
-                ? "border-emerald-600 bg-emerald-600 text-white"
+                ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >

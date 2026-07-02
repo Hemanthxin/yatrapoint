@@ -19,12 +19,12 @@ export default async function HiddenPlacesPage() {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <div className="animate-fadeUp">
       <header className="mb-6 flex items-start gap-3">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
           <Sparkles className="h-6 w-6" />
         </div>
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-            Hidden Places
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+            Hidden <span className="text-gradient">Places</span>
           </h1>
           <p className="mt-1 text-sm font-medium text-slate-500">
             Offbeat destinations — the ones travel agents rarely sell.
@@ -33,7 +33,7 @@ export default async function HiddenPlacesPage() {
       </header>
 
       {items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center">
+        <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-sm">
           <p className="text-sm font-medium text-slate-500">
             No hidden places yet. Check back soon — we curate these monthly.
           </p>

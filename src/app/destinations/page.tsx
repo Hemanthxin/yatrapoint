@@ -44,10 +44,10 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <div className="animate-fadeUp">
       <header className="mb-5">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
-          Destinations
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
+          <span className="text-gradient">Destinations</span>
         </h1>
-        <p className="mt-1 text-sm font-medium text-slate-500">
+        <p className="mt-1 text-sm font-semibold text-slate-500">
           {items.length} {items.length === 1 ? "place" : "places"} matching your
           filters
         </p>

@@ -31,9 +31,9 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className={`flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-sm font-semibold transition ${
+              className={`flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-sm font-bold transition active:scale-95 ${
                 active
-                  ? "bg-emerald-50 text-emerald-700"
+                  ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
             >
@@ -41,7 +41,7 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
               <span className="hidden sm:inline">{t.label}</span>
               <span
                 className={`rounded-full px-1.5 text-xs ${
-                  active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
+                  active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
                 }`}
               >
                 {t.count}

@@ -50,14 +50,14 @@ export default async function ProfilePage() {
   // --- Trips content (Trips tab) ---
   const tripsContent =
     plans.length === 0 ? (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-        <p className="text-3xl">🧳</p>
-        <p className="mt-2 text-sm text-slate-500">
+      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+        <p className="text-4xl">🧳</p>
+        <p className="mt-3 text-sm font-semibold text-slate-500">
           You haven&apos;t saved any trip plans yet.
         </p>
         <Link
           href="/budget-planner"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
         >
           Plan your first trip
         </Link>
@@ -67,11 +67,11 @@ export default async function ProfilePage() {
         {plans.map((p) => (
           <article
             key={p.id}
-            className="card-hover overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            className="card-hover overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
           >
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/60 px-5 py-3">
               <div>
-                <h3 className="font-semibold text-slate-900">{p.name}</h3>
+                <h3 className="font-extrabold tracking-tight text-slate-900">{p.name}</h3>
                 <p className="text-xs text-slate-500">
                   Saved{" "}
                   {new Date(p.createdAt).toLocaleDateString("en-IN", {
@@ -95,7 +95,7 @@ export default async function ProfilePage() {
                   {p.travellers} {p.travellers === 1 ? "traveller" : "travellers"}
                 </span>
                 {p.category && (
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-bold text-emerald-700">
                     {categoryLabel(p.category)}
                   </span>
                 )}
@@ -128,9 +128,9 @@ export default async function ProfilePage() {
   // --- Saved destinations content (Saved tab) ---
   const savedContent =
     favorited.length === 0 ? (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-        <p className="text-3xl">❤️</p>
-        <p className="mt-2 text-sm text-slate-500">
+      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+        <p className="text-4xl">❤️</p>
+        <p className="mt-3 text-sm font-semibold text-slate-500">
           Tap the heart on any destination to save it for later.
         </p>
       </div>
