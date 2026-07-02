@@ -45,13 +45,13 @@ export function AnnouncementsManager({ initial }: { initial: Announcement[] }) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-1 flex items-center gap-2">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/30">
-          <Megaphone className="h-4 w-4" />
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="mb-1 flex items-center gap-2.5">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/30">
+          <Megaphone className="h-5 w-5" />
         </span>
-        <div>
-          <h2 className="font-bold text-slate-900">Headlines / News ticker</h2>
+        <div className="min-w-0">
+          <h2 className="font-extrabold tracking-tight text-slate-900">Headlines / News ticker</h2>
           <p className="text-xs text-slate-500">Type a message — it scrolls across the top of the app.</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export function AnnouncementsManager({ initial }: { initial: Announcement[] }) {
           initial.map((a) => (
             <li
               key={a.id}
-              className={`flex items-center gap-2 rounded-xl border px-3 py-2 ${
+              className={`flex items-center gap-2 rounded-2xl border px-3 py-2 ${
                 a.isActive ? "border-slate-200 bg-white" : "border-slate-200 bg-slate-50 opacity-60"
               }`}
             >
@@ -96,14 +96,14 @@ export function AnnouncementsManager({ initial }: { initial: Announcement[] }) {
               <button
                 onClick={() => toggle(a)}
                 title={a.isActive ? "Hide from ticker" : "Show in ticker"}
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
               >
                 {a.isActive ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </button>
               <button
                 onClick={() => remove(a.id)}
                 title="Delete"
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

@@ -50,15 +50,15 @@ export default async function AdminDashboardPage() {
     <AdminShell adminName={u.name || u.email || "Admin"} adminEmail={u.email}>
       {/* Title row */}
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">Dashboard overview</h1>
+        <div className="min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Dashboard overview</h1>
           <p className="mt-1 text-sm text-slate-500">
             Welcome back, {u.name || u.email}. Here&apos;s what&apos;s in the catalogue.
           </p>
         </div>
         <a
           href="#add-place"
-          className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95"
+          className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95 sm:w-auto"
         >
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <PlusCircle className="relative h-4 w-4" /> <span className="relative">Add a place</span>
@@ -66,7 +66,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* KPI cards */}
-      <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
         <Kpi label="Total places" value={stats.totalPlaces} icon={<Layers3 className="h-5 w-5" />} tone="from-indigo-500 to-violet-600" />
         <Kpi label="Visible places" value={stats.visiblePlaces} icon={<MapPinned className="h-5 w-5" />} tone="from-emerald-500 to-teal-600" />
         <Kpi label="Hidden places" value={stats.hiddenPlaces} icon={<EyeOff className="h-5 w-5" />} tone="from-amber-500 to-orange-600" />
@@ -80,7 +80,7 @@ export default async function AdminDashboardPage() {
             <div className="space-y-4">
               {adminRows.map((a, i) => (
                 <div key={a.email} className="flex items-center gap-3">
-                  <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-sm font-bold text-white ${avatarTone(i)}`}>
+                  <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-sm font-bold text-white shadow-md shadow-indigo-500/20 ${avatarTone(i)}`}>
                     {a.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -89,7 +89,7 @@ export default async function AdminDashboardPage() {
                         {a.name}
                         {i === 0 && a.total > 0 && <Trophy className="h-3.5 w-3.5 text-amber-500" />}
                       </p>
-                      <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+                      <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-700">
                         {a.total} {a.total === 1 ? "place" : "places"}
                       </span>
                     </div>
@@ -226,15 +226,15 @@ function avatarTone(i: number): string {
 
 function Kpi({ label, value, icon, tone }: { label: string; value: number | string; icon: React.ReactNode; tone: string }) {
   return (
-    <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${tone} text-white`}>
+        <div className={`grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br ${tone} text-white shadow-md shadow-indigo-500/30`}>
           {icon}
         </div>
         <ArrowUpRight className="h-4 w-4 text-slate-300" />
       </div>
-      <p className="mt-4 text-3xl font-extrabold text-slate-900">{value}</p>
-      <p className="mt-0.5 text-sm text-slate-500">{label}</p>
+      <p className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">{value}</p>
+      <p className="mt-0.5 text-sm font-medium text-slate-500">{label}</p>
     </div>
   );
 }
@@ -251,10 +251,10 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <div>
-          <h2 className="font-bold text-slate-900">{title}</h2>
+        <div className="min-w-0">
+          <h2 className="font-extrabold tracking-tight text-slate-900">{title}</h2>
           {subtitle && <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>}
         </div>
         {icon}

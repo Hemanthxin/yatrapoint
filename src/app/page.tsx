@@ -4,7 +4,7 @@ import { isAdminSession } from "@/lib/admin";
 import { BackgroundScene } from "@/components/BackgroundScene";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
-import { PhoneLoginCard } from "@/components/PhoneLoginCard";
+import { AuthCard } from "@/components/AuthCard";
 import { TrustStrip } from "@/components/TrustStrip";
 
 export default async function HomePage() {
@@ -20,7 +20,7 @@ export default async function HomePage() {
       <section className="relative z-10 mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 pb-12 pt-32 md:px-12 lg:flex-row lg:items-center lg:justify-between lg:pt-36">
         <Hero />
         <div id="login" className="w-full lg:w-auto">
-          <PhoneLoginCard googleClientId={process.env.AUTH_GOOGLE_ID} />
+          <AuthCard googleClientId={process.env.AUTH_GOOGLE_ID} />
         </div>
       </section>
 

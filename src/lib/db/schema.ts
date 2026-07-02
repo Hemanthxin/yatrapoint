@@ -19,6 +19,8 @@ export const users = pgTable("users", {
   phone: varchar("phone", { length: 20 }).unique(),
   phoneVerified: timestamp("phone_verified", { mode: "date" }),
   image: text("image"),
+  // Email/phone + password login (bcrypt hash; null for Google-only users).
+  passwordHash: text("password_hash"),
   // Instagram-style profile fields.
   username: varchar("username", { length: 40 }),
   bio: varchar("bio", { length: 300 }),

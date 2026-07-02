@@ -22,7 +22,7 @@ export default async function AdminLoginPage() {
       </Link>
 
       {/* Card centered */}
-      <div className="flex min-h-screen items-center justify-center px-6">
+      <div className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <AdminLoginCard />
       </div>
     </main>

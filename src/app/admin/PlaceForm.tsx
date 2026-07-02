@@ -178,15 +178,15 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
   return (
     <form onSubmit={onSubmit} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">{isEdit ? "Edit place" : "Add a new place"}</h2>
+        <div className="min-w-0">
+          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">{isEdit ? "Edit place" : "Add a new place"}</h2>
           <p className="mt-1 text-sm text-slate-500">
             {isEdit
               ? "Update the details and save your changes."
               : "Enter the full place details and it will be published immediately."}
           </p>
         </div>
-        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/40">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/40">
           {isEdit ? <Save className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
         </div>
       </div>
@@ -327,8 +327,8 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
           transition: border-color 0.15s ease;
         }
         .input:focus {
-          border-color: rgb(99 102 241);
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+          border-color: rgb(129 140 248);
+          box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         }
       `}</style>
     </form>

@@ -38,13 +38,13 @@ export default async function AdminPlacesPage({ searchParams }: PageProps) {
   return (
     <AdminShell adminName={u.name || u.email || "Admin"} adminEmail={u.email}>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">Places</h1>
+        <div className="min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Places</h1>
           <p className="mt-1 text-sm text-slate-500">{data.total} places in the catalogue — search, edit or remove any of them.</p>
         </div>
         <Link
           href="/admin/places/new"
-          className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95"
+          className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95 sm:w-auto"
         >
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <PlusCircle className="relative h-4 w-4" /> <span className="relative">Add place</span>
@@ -60,7 +60,7 @@ export default async function AdminPlacesPage({ searchParams }: PageProps) {
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {data.rows.map((p) => (
-            <div key={p.id} className="card-hover overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div key={p.id} className="card-hover overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="relative h-36 w-full bg-slate-100">
                 {p.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -88,7 +88,7 @@ export default async function AdminPlacesPage({ searchParams }: PageProps) {
                 <div className="mt-4 flex items-center gap-2">
                   <Link
                     href={`/admin/places/${p.id}/edit`}
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                    className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
                   >
                     <Pencil className="h-4 w-4" /> Edit
                   </Link>

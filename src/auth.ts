@@ -2,11 +2,12 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 import { authConfig } from "./auth.config";
 import { db } from "@/lib/db";
 import { accounts, sessions, users, verificationTokens } from "@/lib/db/schema";
-import { verifyOtpSchema, toE164 } from "@/lib/validators";
+import { verifyOtpSchema, toE164, loginSchema, classifyIdentifier } from "@/lib/validators";
 import { verifyOtp } from "@/lib/otp/service";
 import { verifyGoogleIdToken } from "@/lib/google-id-token";
 import {
@@ -43,6 +44,41 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     verificationTokensTable: verificationTokens,
   }),
   providers: [
+    // ── Email / phone + password ──
+    Credentials({
+      id: "password",
+      name: "Email or Phone",
+      credentials: {
+        identifier: { label: "Email or phone", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(raw) {
+        const parsed = loginSchema.safeParse(raw);
+        if (!parsed.success) return null;
+        const id = classifyIdentifier(parsed.data.identifier);
+        if (id.type === "invalid") return null;
+
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(id.type === "email" ? eq(users.email, id.value) : eq(users.phone, id.value))
+          .limit(1);
+        if (!user?.passwordHash) return null;
+
+        const ok = await bcrypt.compare(parsed.data.password, user.passwordHash);
+        if (!ok) return null;
+
+        return {
+          id: user.id,
+          name: user.name ?? undefined,
+          email: user.email ?? undefined,
+          phone: user.phone ?? undefined,
+          image: user.image ?? undefined,
+          role: isAdminEmail(user.email) ? ("ADMIN" as const) : ("USER" as const),
+        };
+      },
+    }),
+
     // ── Google Identity Services (ID-token flow, no client secret) ──
     Credentials({
       id: "google-id-token",

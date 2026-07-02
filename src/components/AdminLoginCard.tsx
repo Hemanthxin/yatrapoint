@@ -61,7 +61,7 @@ export function AdminLoginCard() {
         aria-hidden
         className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-amber-400/40 via-orange-400/20 to-transparent blur-2xl"
       />
-      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/85 p-8 text-slate-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:p-10">
+      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/85 p-6 text-slate-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl sm:p-8 md:p-10">
         <span
           aria-hidden
           className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/70 to-transparent"
@@ -71,7 +71,7 @@ export function AdminLoginCard() {
           <Luggage className="h-10 w-10" strokeWidth={1.6} />
         </div>
 
-      <h2 className="text-center text-3xl font-bold text-slate-900">Admin Login</h2>
+      <h2 className="text-center text-3xl font-extrabold tracking-tight text-slate-900">Admin Login</h2>
       <p className="mt-2 text-center text-sm text-slate-500">
         Access your travel app dashboard
       </p>
@@ -82,14 +82,14 @@ export function AdminLoginCard() {
           <label htmlFor="username" className="mb-1.5 block text-sm font-semibold text-slate-800">
             Username
           </label>
-          <div className="relative">
-            <User className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <div className="group relative">
+            <User className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-amber-500" />
             <input
               id="username"
               type="text"
               autoComplete="username"
               placeholder="Enter username"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25"
+              className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-amber-500 focus:shadow-[0_0_0_4px_rgba(245,158,11,0.18)]"
               {...register("username")}
             />
           </div>
@@ -103,14 +103,14 @@ export function AdminLoginCard() {
           <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-slate-800">
             Password
           </label>
-          <div className="relative">
-            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <div className="group relative">
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition group-focus-within:text-amber-500" />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               placeholder="Enter password"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25"
+              className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-sm outline-none transition focus:border-amber-500 focus:shadow-[0_0_0_4px_rgba(245,158,11,0.18)]"
               {...register("password")}
             />
             <button
