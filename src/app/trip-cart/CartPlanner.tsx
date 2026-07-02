@@ -61,14 +61,14 @@ export function CartPlanner() {
   if (cart.length === 0) {
     return (
       <div className="animate-fadeUp rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+        <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30">
           <ShoppingBag className="h-7 w-7" />
         </div>
         <p className="text-base font-extrabold tracking-tight text-slate-800">Your trip cart is empty.</p>
         <p className="mt-1 text-sm text-slate-400">Tap “Plan a trip” on any festival or place to add it here.</p>
         <Link
           href="/festivals"
-          className="mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
         >
           Browse festivals
         </Link>
@@ -97,7 +97,7 @@ export function CartPlanner() {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
               >
                 <Navigation className="h-4 w-4" /> Open in Google Maps
               </a>
@@ -115,7 +115,7 @@ export function CartPlanner() {
                 key={s.id}
                 className="card-hover flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm"
               >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                   {i + 1}
                 </span>
                 <div className="min-w-0 flex-1">

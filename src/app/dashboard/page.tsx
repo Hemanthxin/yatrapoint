@@ -147,7 +147,7 @@ export default async function DashboardPage() {
           </p>
           <Link
             href="/budget-planner"
-            className="group relative mt-5 inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+            className="group relative mt-5 inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative flex items-center gap-2">
@@ -211,7 +211,7 @@ export default async function DashboardPage() {
         <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
           {nearby.map((n) => {
             const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
-            const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-emerald-400 to-teal-600";
+            const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
             return (
               <Link
                 key={n.id}
@@ -263,7 +263,7 @@ export default async function DashboardPage() {
         <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
           {popularTrips.map((t) => {
             const cat = CATEGORY_BY_SLUG[t.category as CategorySlug];
-            const grad = CATEGORY_GRADIENT[t.category as CategorySlug] ?? "from-emerald-400 to-teal-600";
+            const grad = CATEGORY_GRADIENT[t.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
             const total = t.budgetPerDay * t.recommendedDays;
             return (
               <Link

@@ -309,7 +309,7 @@ function Label({ step, title, hint }: { step?: string; title: string; hint?: str
     <div className="mb-2">
       <p className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
         {step && (
-          <span className="grid h-5 w-5 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[11px] font-bold text-white shadow-sm shadow-emerald-500/30">
+          <span className="grid h-5 w-5 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 text-[11px] font-bold text-white shadow-sm shadow-emerald-500/30">
             {step}
           </span>
         )}
@@ -367,7 +367,7 @@ function CheckGrid({
             onClick={() => onToggle(it)}
             className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
               on
-                ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                ? "border-transparent bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >

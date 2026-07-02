@@ -276,7 +276,7 @@ export function WizardForm({ initial }: WizardFormProps) {
     <>
     <form onSubmit={onSubmit} className="animate-fadeUp space-y-6">
       {/* Hero — bold Play-Store gradient card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-6 shadow-xl shadow-emerald-500/30 md:p-8">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 via-teal-500 to-emerald-500 p-6 shadow-xl shadow-emerald-500/30 md:p-8">
         {/* Faint photo/glow overlay for depth */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.35),transparent_55%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(100%_80%_at_0%_110%,rgba(4,120,87,0.5),transparent_60%)] mix-blend-screen" />
@@ -304,7 +304,7 @@ export function WizardForm({ initial }: WizardFormProps) {
               <span
                 className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition ${
                   active
-                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40"
+                    ? "bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/40"
                     : "bg-slate-100 text-slate-500"
                 }`}
               >
@@ -460,7 +460,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                       onClick={() => pickTripType(key)}
                       className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 ${
                         active
-                          ? "border-transparent bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                          ? "border-transparent bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
@@ -487,7 +487,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                       onClick={() => toggleGroup(g.slug)}
                       className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
                         on
-                          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                          ? "border-transparent bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
@@ -534,7 +534,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="submit"
             disabled={geocoding}
-            className="group relative flex min-h-[56px] w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100"
+            className="group relative flex min-h-[56px] w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-6 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100"
           >
             {!geocoding && <span aria-hidden className="sheen-overlay animate-sheen" />}
             <span className="relative flex items-center gap-2">
@@ -564,7 +564,7 @@ export function WizardForm({ initial }: WizardFormProps) {
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
           <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30">✦</span>
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30">✦</span>
               Why use Budget Planner?
             </p>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
@@ -582,7 +582,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             </ul>
           </div>
 
-          <div className="card-hover relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 p-5 shadow-xl shadow-emerald-500/30">
+          <div className="card-hover relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-500 via-teal-500 to-emerald-500 p-5 shadow-xl shadow-emerald-500/30">
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <p className="relative text-xs font-bold uppercase tracking-[0.15em] text-white/85">Quick Preview</p>
             <p className="relative mt-1 text-3xl font-extrabold tracking-tight text-white">
@@ -710,7 +710,7 @@ function ModeCard({
     >
       <span
         className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition ${
-          active ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-500"
+          active ? "bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-500"
         }`}
       >
         {icon}
@@ -744,7 +744,7 @@ function Chip({
         square ? "grid h-11 w-11 place-items-center" : "min-h-[44px] px-4 py-2"
       } ${
         active
-          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+          ? "border-transparent bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >

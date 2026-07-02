@@ -57,7 +57,7 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
         </p>
         <Link
           href="/community"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
         >
           <ImagePlus className="h-4 w-4" />
           Share your first place
@@ -88,7 +88,7 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 p-2 text-center">
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-emerald-500 p-2 text-center">
                   <span className="line-clamp-3 text-xs font-bold text-white">
                     {post.title}
                   </span>
@@ -190,7 +190,7 @@ function PostModal({
               className="max-h-[55vh] w-full bg-slate-900 object-contain"
             />
           ) : (
-            <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 p-6 text-center">
+            <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-blue-500 to-emerald-500 p-6 text-center">
               <span className="text-xl font-extrabold text-white">
                 {post.title}
               </span>

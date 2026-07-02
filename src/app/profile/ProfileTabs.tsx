@@ -33,7 +33,7 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
               onClick={() => setTab(t.key)}
               className={`flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-sm font-bold transition active:scale-95 ${
                 active
-                  ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                  ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
             >

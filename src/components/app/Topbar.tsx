@@ -81,7 +81,7 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
       />
       <button
         onClick={onMenu}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 lg:hidden"
         aria-label="Toggle menu"
       >
         <Menu className="h-5 w-5" />
@@ -232,7 +232,7 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
             }}
             className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-white/70 active:scale-95"
           >
-            <span className="grid place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 p-[2px] shadow-sm shadow-emerald-500/40">
+            <span className="grid place-items-center rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 p-[2px] shadow-sm shadow-emerald-500/40">
               {userImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover ring-2 ring-white" />

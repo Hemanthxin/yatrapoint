@@ -42,7 +42,7 @@ export function TripsTabs() {
             title={t.sub}
             className={`group flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-bold transition ${
               active
-                ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >

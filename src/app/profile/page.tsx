@@ -57,7 +57,7 @@ export default async function ProfilePage() {
         </p>
         <Link
           href="/budget-planner"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
         >
           Plan your first trip
         </Link>

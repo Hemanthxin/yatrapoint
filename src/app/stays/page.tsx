@@ -85,7 +85,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <div className="animate-fadeUp">
         <header className="mb-6 flex items-center gap-3">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30">
             <BedDouble className="h-6 w-6" />
           </div>
           <div className="min-w-0">
@@ -206,7 +206,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                       href={bookUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+                      className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
                     >
                       Book <ExternalLink className="h-4 w-4" />
                     </a>
@@ -239,7 +239,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                   aria-current={active ? "page" : undefined}
                   className={`grid h-11 min-w-11 place-items-center rounded-xl px-3 text-sm font-bold transition active:scale-95 ${
                     active
-                      ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40"
+                      ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/40"
                       : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                   }`}
                 >

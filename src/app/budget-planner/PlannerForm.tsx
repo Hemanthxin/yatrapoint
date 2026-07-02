@@ -101,7 +101,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="group relative min-h-[48px] overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
+          className="group relative min-h-[48px] overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
         >
           {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
           <span className="relative">{isPending ? "Matching…" : "Find matching trips"}</span>

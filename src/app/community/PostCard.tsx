@@ -323,7 +323,7 @@ export function PostCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-500/20" />
         ) : (
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
+          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
             {initial}
           </div>
         )}
@@ -454,7 +454,7 @@ export function PostCard({
             <button
               onClick={saveEdit}
               disabled={saving}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               Save
@@ -514,7 +514,7 @@ export function PostCard({
                     onClick={() => react(r.type)}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
                       active
-                        ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                        ? "border-transparent bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
                         : "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50"
                     }`}
                   >
@@ -567,7 +567,7 @@ export function PostCard({
                   <button
                     onClick={submitComment}
                     disabled={posting || !text.trim()}
-                    className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-90 disabled:opacity-50"
+                    className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-90 disabled:opacity-50"
                   >
                     <span aria-hidden className="sheen-overlay animate-sheen" />
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}

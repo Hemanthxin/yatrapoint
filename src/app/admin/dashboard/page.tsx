@@ -68,7 +68,7 @@ export default async function AdminDashboardPage() {
       {/* KPI cards */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
         <Kpi label="Total places" value={stats.totalPlaces} icon={<Layers3 className="h-5 w-5" />} tone="from-indigo-500 to-violet-600" />
-        <Kpi label="Visible places" value={stats.visiblePlaces} icon={<MapPinned className="h-5 w-5" />} tone="from-emerald-500 to-teal-600" />
+        <Kpi label="Visible places" value={stats.visiblePlaces} icon={<MapPinned className="h-5 w-5" />} tone="from-blue-500 to-emerald-500" />
         <Kpi label="Hidden places" value={stats.hiddenPlaces} icon={<EyeOff className="h-5 w-5" />} tone="from-amber-500 to-orange-600" />
         <Kpi label="Avg popularity" value={stats.averagePopularity} icon={<BarChart3 className="h-5 w-5" />} tone="from-sky-500 to-cyan-600" />
       </section>
@@ -216,7 +216,7 @@ export default async function AdminDashboardPage() {
 function avatarTone(i: number): string {
   const tones = [
     "bg-gradient-to-br from-indigo-500 to-violet-600",
-    "bg-gradient-to-br from-emerald-500 to-teal-600",
+    "bg-gradient-to-br from-blue-500 to-emerald-500",
     "bg-gradient-to-br from-amber-500 to-orange-600",
     "bg-gradient-to-br from-sky-500 to-cyan-600",
     "bg-gradient-to-br from-rose-500 to-pink-600",

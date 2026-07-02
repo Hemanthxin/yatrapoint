@@ -22,7 +22,7 @@ export const CATEGORY_GRADIENT: Record<CategorySlug, string> = {
   pilgrimage: "from-amber-400 to-orange-500",
   adventure: "from-rose-500 to-red-600",
   beach: "from-sky-400 to-cyan-500",
-  hill_station: "from-emerald-400 to-teal-600",
+  hill_station: "from-sky-400 to-emerald-500",
   heritage: "from-violet-500 to-purple-700",
   wildlife: "from-lime-500 to-green-700",
 };

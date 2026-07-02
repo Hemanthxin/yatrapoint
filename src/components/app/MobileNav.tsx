@@ -42,7 +42,7 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
           aria-label="Plan a trip"
           className="relative -mt-9 flex flex-col items-center"
         >
-          <span className="relative grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white ring-[5px] ring-slate-50 shadow-lg shadow-emerald-500/40 animate-glow transition active:scale-95">
+          <span className="relative grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 text-white ring-[5px] ring-slate-50 shadow-lg shadow-emerald-500/40 animate-glow transition active:scale-95">
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <Wallet className="relative h-6 w-6" strokeWidth={2.2} />
           </span>

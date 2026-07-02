@@ -204,7 +204,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
             onClick={() => setGroup(g.slug)}
             className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition active:scale-95 ${
               group === g.slug
-                ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                ? "border-transparent bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -325,7 +325,7 @@ function SeedCard({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href={`/explore-bangalore/${place.slug}`}
-          className="inline-flex h-9 items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
+          className="inline-flex h-9 items-center rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 px-4 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
         >
           Details
         </Link>
