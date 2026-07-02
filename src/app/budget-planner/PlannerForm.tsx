@@ -42,7 +42,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
   return (
     <form
       onSubmit={onSubmit}
-      className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+      className="animate-fadeUp rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
     >
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Field label="Total budget (₹)" hint="Whole trip, all travellers">
@@ -101,10 +101,9 @@ export function PlannerForm({ initial }: PlannerFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="relative min-h-[48px] overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+          className="min-h-[48px] rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
         >
-          <span aria-hidden className="sheen-overlay animate-sheen" />
-          <span className="relative">{isPending ? "Matching…" : "Find matching trips"}</span>
+          {isPending ? "Matching…" : "Find matching trips"}
         </button>
         <p className="text-xs text-slate-500">
           Budgets are mid-range estimates (stay + food + local transport + sightseeing).

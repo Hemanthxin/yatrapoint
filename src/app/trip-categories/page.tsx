@@ -16,8 +16,8 @@ export default async function TripCategoriesPage() {
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <header className="mb-6 animate-fadeUp">
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-          Trip <span className="text-gradient animate-shimmer">Categories</span>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+          Trip Categories
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           Pick the kind of trip you're in the mood for.
@@ -29,7 +29,7 @@ export default async function TripCategoriesPage() {
           <Link
             key={c.slug}
             href={`/destinations?category=${c.slug}`}
-            className="card-hover animate-fadeUp group relative h-40 overflow-hidden rounded-3xl border border-slate-200 sm:h-48"
+            className="card-hover animate-fadeUp group relative h-40 overflow-hidden rounded-2xl border border-slate-200 shadow-sm sm:h-48"
           >
             <div
               className={`absolute inset-0 grid place-items-center bg-gradient-to-br ${
@@ -40,9 +40,9 @@ export default async function TripCategoriesPage() {
                 {c.emoji}
               </span>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-4">
-              <p className="text-lg font-extrabold tracking-tight text-white drop-shadow">
+              <p className="text-lg font-semibold tracking-tight text-white drop-shadow">
                 {c.label}
               </p>
               <p className="text-xs font-medium text-white/80">

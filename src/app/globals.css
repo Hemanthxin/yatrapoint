@@ -31,33 +31,64 @@ input[type="number"] {
 }
 
 @layer utilities {
-  /* Lift + deepen shadow on hover — the base interaction for every card. */
+  /* Clean minimal: a gentle lift + soft neutral shadow on hover. */
   .card-hover {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     will-change: transform;
   }
   .card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 24px 48px -18px rgba(2, 6, 23, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -14px rgba(15, 23, 42, 0.18);
+    border-color: rgb(226 232 240);
   }
 
-  /* Frosted-glass surface. */
+  /* Reusable clean-minimal building blocks. */
+  .card {
+    background: #fff;
+    border: 1px solid rgb(241 245 249);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.75rem;
+    background: #059669;
+    color: #fff;
+    font-weight: 600;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn-primary:hover { background: #047857; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.75rem;
+    background: #fff;
+    color: rgb(51 65 85);
+    font-weight: 600;
+    border: 1px solid rgb(226 232 240);
+    transition: background-color 0.15s ease;
+  }
+  .btn-secondary:hover { background: rgb(248 250 252); }
+
+  /* Clean frosted chrome — subtle blur, near-solid white. */
   .glass {
-    background: rgba(255, 255, 255, 0.72);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
-
-  /* Heavier glass for floating chrome (dock, top bar, drawer). */
   .glass-strong {
-    background: rgba(255, 255, 255, 0.78);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
-    backdrop-filter: blur(22px) saturate(180%);
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
   }
 
-  /* Ambient aurora canvas — layered conic/radial gradients drifting behind
-     the whole app. The wrapper clips; children animate. */
+  /* Calm, near-white ambient background (barely-there tint). */
   .aurora-canvas {
     position: fixed;
     inset: 0;
@@ -65,8 +96,8 @@ input[type="number"] {
     overflow: hidden;
     pointer-events: none;
     background:
-      radial-gradient(120% 80% at 50% -10%, rgba(209, 250, 229, 0.9), transparent 60%),
-      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      radial-gradient(120% 70% at 50% -20%, rgba(209, 250, 229, 0.35), transparent 55%),
+      linear-gradient(180deg, #fbfcfe 0%, #f6f8fb 100%);
   }
   .aurora-blob {
     position: absolute;

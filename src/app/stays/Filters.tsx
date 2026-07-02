@@ -14,9 +14,9 @@ interface CurrentFilters {
 }
 
 const inputCls =
-  "h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]";
+  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100";
 const selectCls =
-  "h-11 w-full rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]";
+  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100";
 
 export function Filters({
   cities,
@@ -78,7 +78,7 @@ export function Filters({
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur sm:flex-row sm:flex-wrap sm:items-end"
+      className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:flex-wrap sm:items-end"
     >
       {/* Search */}
       <div className="group relative min-w-0 flex-1 sm:min-w-[220px]">
@@ -170,7 +170,7 @@ export function Filters({
       {/* Apply */}
       <button
         type="submit"
-        className="h-11 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+        className="inline-flex h-11 items-center justify-center rounded-xl bg-emerald-600 px-5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
       >
         Apply
       </button>
@@ -180,7 +180,7 @@ export function Filters({
         <button
           type="button"
           onClick={clearAll}
-          className="inline-flex h-11 items-center justify-center gap-1.5 rounded-2xl border border-slate-200 px-4 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 active:scale-95"
+          className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"
         >
           <X className="h-4 w-4" /> Clear
         </button>

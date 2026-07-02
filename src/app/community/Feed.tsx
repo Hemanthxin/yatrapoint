@@ -79,32 +79,32 @@ export function Feed({
         <button
           type="button"
           onClick={() => setComposerOpen(true)}
-          className="card-hover flex w-full items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 text-left shadow-sm"
+          className="card-hover flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm"
         >
           {userImage ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={userImage}
               alt={userName}
-              className="h-10 w-10 shrink-0 rounded-full object-cover"
+              className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-slate-200"
             />
           ) : (
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-700">
               {initial}
             </span>
           )}
-          <span className="min-w-0 flex-1 truncate rounded-full bg-slate-100 px-4 py-2.5 text-sm text-slate-400">
+          <span className="min-w-0 flex-1 truncate rounded-full bg-slate-100 px-4 py-2.5 text-sm text-slate-500">
             Share a place, tip or hidden gem…
           </span>
-          <span className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95">
+          <span className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95">
             <Plus className="h-4 w-4" />
-            Add post
+            <span className="hidden sm:inline">Add post</span>
           </span>
         </button>
       )}
 
       {/* Pill tabs */}
-      <div className="sticky top-2 z-10 flex gap-1.5 rounded-2xl border border-slate-200 bg-white/90 p-1.5 shadow-sm backdrop-blur">
+      <div className="sticky top-2 z-10 flex gap-1 rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur">
         {TABS.map((t) => {
           const active = tab === t.id;
           const Icon = t.icon;
@@ -113,9 +113,9 @@ export function Feed({
               key={t.id}
               onClick={() => setTab(t.id)}
               aria-pressed={active}
-              className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-bold tracking-tight transition active:scale-95 ${
+              className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold tracking-tight transition active:scale-95 ${
                 active
-                  ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                  ? "bg-emerald-50 text-emerald-700"
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
             >
@@ -124,7 +124,7 @@ export function Feed({
               {t.id === "mine" && mineCount > 0 && (
                 <span
                   className={`rounded-full px-1.5 text-xs ${
-                    active ? "bg-white/25" : "bg-slate-100 text-slate-500"
+                    active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
                   }`}
                 >
                   {mineCount}
@@ -136,7 +136,7 @@ export function Feed({
       </div>
 
       {visible.length === 0 ? (
-        <div className="animate-fadeUp rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <div className="animate-fadeUp rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
           <p className="text-3xl">{emptyCopy[tab].emoji}</p>
           <p className="mt-2 text-sm text-slate-500">{emptyCopy[tab].text}</p>
         </div>

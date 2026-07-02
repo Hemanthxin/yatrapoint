@@ -27,7 +27,6 @@ import { formatINR } from "@/lib/format";
 import { calcBudget, defaultBudgetParams, VEHICLES, type VehicleKind } from "@/lib/budget";
 import {
   CATEGORY_BY_SLUG,
-  CATEGORY_CHIP,
   CATEGORY_GRADIENT,
   type CategorySlug,
 } from "@/lib/catalog/categories";
@@ -111,25 +110,25 @@ export function TripDetail({ trip }: TripDetailProps) {
         when: depart,
         title: "Depart",
         body: `From ${isFallback ? "Bangalore (fallback)" : "your location"}`,
-        dot: "bg-emerald-500 ring-emerald-100",
+        dot: "bg-emerald-600 ring-emerald-100",
       },
       {
         when: arrive,
         title: `Arrive at ${trip.name}`,
         body: `${formatKm(drivingKm)} · ${formatMinutes(drivingMins)} driving`,
-        dot: "bg-sky-500 ring-sky-100",
+        dot: "bg-emerald-600 ring-emerald-100",
       },
       {
         when: leave,
         title: "Leave for home",
         body: `${trip.idealHoursAtPlace} hours at ${trip.name}`,
-        dot: "bg-amber-500 ring-amber-100",
+        dot: "bg-slate-400 ring-slate-100",
       },
       {
         when: homeBack,
         title: "Back home",
         body: `Including a 1 hr food / break stop on the return`,
-        dot: "bg-rose-500 ring-rose-100",
+        dot: "bg-slate-400 ring-slate-100",
       },
     ];
   }, [departureTime, drivingMins, drivingKm, trip.idealHoursAtPlace, trip.name, isFallback]);
@@ -152,27 +151,23 @@ export function TripDetail({ trip }: TripDetailProps) {
   const gradient =
     CATEGORY_GRADIENT[trip.category as CategorySlug] ??
     "from-slate-400 to-slate-600";
-  const chip =
-    CATEGORY_CHIP[trip.category as CategorySlug] ?? "bg-slate-100 text-slate-800";
 
   const highlights = trip.highlights?.split(",").filter(Boolean) ?? [];
 
   return (
     <div className="mt-4 animate-fadeUp">
       {/* Hero — full-bleed on mobile */}
-      <section className="bleed overflow-hidden rounded-none shadow-2xl shadow-emerald-900/10 md:rounded-3xl md:border md:border-slate-200">
+      <section className="bleed overflow-hidden rounded-none shadow-sm md:rounded-2xl md:border md:border-slate-200">
         <div
           className={`relative grid h-56 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient} sm:h-64 md:h-72`}
         >
-          <span className="animate-float text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+          <span className="text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-6">
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur ${chip}`}
-            >
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-700">
               {cat?.emoji} {cat?.label ?? trip.category}
             </span>
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white drop-shadow md:text-4xl">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white drop-shadow md:text-4xl">
               {trip.name}
             </h1>
             <p className="mt-1 flex items-center gap-1 text-sm font-medium text-white/90">
@@ -203,7 +198,7 @@ export function TripDetail({ trip }: TripDetailProps) {
         {/* Map + live distances */}
         <section className="lg:col-span-2">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Route</h2>
+            <h2 className="text-lg font-semibold tracking-tight text-slate-900">Route</h2>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
               <Pill
                 icon={<Navigation className="h-3.5 w-3.5 text-emerald-600" />}
@@ -233,12 +228,12 @@ export function TripDetail({ trip }: TripDetailProps) {
           <div className="mt-6">
             <div className="mb-3 flex items-center gap-2">
               <Calendar className="h-4 w-4 text-emerald-700" />
-              <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Timeline</h2>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">Timeline</h2>
               <input
                 type="time"
                 value={departureTime}
                 onChange={(e) => setDepartureTime(e.target.value)}
-                className="ml-2 rounded-2xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                className="ml-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
               />
               <span className="text-xs text-slate-400">Depart at</span>
             </div>
@@ -263,17 +258,17 @@ export function TripDetail({ trip }: TripDetailProps) {
 
         {/* Budget + start trip */}
         <aside className="space-y-4">
-          <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+              <div className="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
                 <Wallet className="h-4 w-4" />
               </div>
-              <p className="text-sm font-bold text-emerald-900">
+              <p className="text-sm font-semibold text-slate-900">
                 Live budget
               </p>
             </div>
             <div className="mt-4 grid gap-3">
-              <label className="block text-xs font-medium uppercase tracking-wide text-emerald-900/70">
+              <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
                 Vehicle
                 <div className="mt-1 grid grid-cols-5 gap-1.5">
                   {(Object.keys(VEHICLES) as VehicleKind[]).map((k) => (
@@ -281,10 +276,10 @@ export function TripDetail({ trip }: TripDetailProps) {
                       key={k}
                       type="button"
                       onClick={() => setVehicle(k)}
-                      className={`rounded-lg border px-2 py-1.5 text-sm transition ${
+                      className={`min-h-[44px] rounded-lg border px-2 py-1.5 text-sm transition ${
                         vehicle === k
-                          ? "border-emerald-500 bg-white text-emerald-700 shadow"
-                          : "border-emerald-200 bg-white/60 text-slate-700 hover:bg-white"
+                          ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                          : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                       }`}
                       aria-label={VEHICLES[k].label}
                       title={`${VEHICLES[k].label} · ₹${VEHICLES[k].costPerKm}/km`}
@@ -320,14 +315,14 @@ export function TripDetail({ trip }: TripDetailProps) {
               <Row label="Food" value={formatINR(budget.foodTotal)} />
               <Row label="Parking" value={formatINR(budget.parking)} />
               <Row label={`Misc × ${people}`} value={formatINR(budget.miscTotal)} />
-              <div className="my-2 h-px bg-emerald-200" />
+              <div className="my-2 h-px bg-slate-200" />
               <div className="flex items-center justify-between">
-                <dt className="text-base font-bold text-emerald-900">Total</dt>
-                <dd className="text-xl font-extrabold text-emerald-900">
+                <dt className="text-base font-semibold text-slate-900">Total</dt>
+                <dd className="text-xl font-semibold text-emerald-700">
                   {formatINR(budget.total)}
                 </dd>
               </div>
-              <div className="flex items-center justify-between text-xs text-emerald-800/80">
+              <div className="flex items-center justify-between text-xs text-slate-500">
                 <dt>Per person</dt>
                 <dd className="font-semibold">{formatINR(budget.perPerson)}</dd>
               </div>
@@ -336,19 +331,16 @@ export function TripDetail({ trip }: TripDetailProps) {
 
           <Link
             href={`/one-day-trips/${trip.slug}/live`}
-            className="relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
           >
-            <span aria-hidden className="sheen-overlay animate-sheen" />
-            <span className="relative flex items-center gap-2">
-              <Play className="h-4 w-4 fill-current" />
-              Start live tracking
-            </span>
+            <Play className="h-4 w-4 fill-current" />
+            Start live tracking
           </Link>
           <a
             href={`https://www.google.com/maps/dir/?api=1&origin=${coords.lat},${coords.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-emerald-200 hover:text-emerald-700 active:scale-95"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"
           >
             Open in Google Maps
           </a>
@@ -370,8 +362,8 @@ function Pill({ icon, label }: { icon: React.ReactNode; label: string }) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <dt className="text-emerald-900/80">{label}</dt>
-      <dd className="font-semibold text-emerald-900">{value}</dd>
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="font-semibold text-slate-900">{value}</dd>
     </div>
   );
 }
@@ -394,9 +386,9 @@ function NumberField({
   prefix?: string;
 }) {
   return (
-    <label className="block text-xs font-medium uppercase tracking-wide text-emerald-900/70">
+    <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
       {label}
-      <div className="mt-1 flex items-center rounded-lg border border-emerald-200 bg-white px-2 py-1.5">
+      <div className="mt-1 flex items-center rounded-lg border border-slate-200 bg-white px-2 py-1.5">
         {prefix && (
           <span className="mr-1 text-sm text-slate-500">{prefix}</span>
         )}

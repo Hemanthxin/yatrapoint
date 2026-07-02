@@ -33,10 +33,10 @@ export function AddToCartButton({
         toggleCart(item);
       }}
       aria-pressed={added}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-3 py-2 text-sm font-bold transition active:scale-95 ${
+      className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold transition active:scale-95 ${
         added
-          ? "bg-emerald-100 text-emerald-700"
-          : "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 hover:scale-[1.02]"
+          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100"
+          : "bg-emerald-600 text-white hover:bg-emerald-700"
       } ${className}`}
     >
       {added ? (

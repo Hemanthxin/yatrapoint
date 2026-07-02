@@ -5,7 +5,6 @@ import { Clock, MapPin, Navigation, Wallet } from "lucide-react";
 import type { NearbyDestination } from "@/lib/db/schema";
 import {
   CATEGORY_BY_SLUG,
-  CATEGORY_CHIP,
   CATEGORY_GRADIENT,
   type CategorySlug,
 } from "@/lib/catalog/categories";
@@ -22,9 +21,6 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
   const gradient =
     CATEGORY_GRADIENT[destination.category as CategorySlug] ??
     "from-slate-400 to-slate-600";
-  const chip =
-    CATEGORY_CHIP[destination.category as CategorySlug] ??
-    "bg-slate-100 text-slate-800";
 
   // Quick estimate: round-trip + time at place + lunch buffer.
   const totalMinutes =
@@ -33,7 +29,7 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
     60; // food / breaks
 
   return (
-    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <Link href={`/one-day-trips/${destination.slug}`} className="relative block">
         <div
           className={`relative grid h-44 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient}`}
@@ -41,18 +37,16 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
           <span className="text-6xl drop-shadow-md transition duration-500 group-hover:scale-110">
             {cat?.emoji ?? "📍"}
           </span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-          <span
-            className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur ${chip}`}
-          >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700">
             {cat?.emoji} {cat?.label ?? destination.category}
           </span>
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur">
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-xs font-semibold text-white">
             <Navigation className="h-3 w-3" />
             {formatKm(userDistanceKm)}
           </span>
           <div className="absolute inset-x-0 bottom-0 p-4">
-            <h3 className="truncate text-lg font-extrabold tracking-tight text-white drop-shadow">
+            <h3 className="truncate text-lg font-semibold tracking-tight text-white drop-shadow">
               {destination.name}
             </h3>
             <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-white/85">

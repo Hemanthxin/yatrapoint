@@ -55,7 +55,7 @@ export function Filters({ states, initial }: FiltersProps) {
   );
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <form
         onSubmit={onSubmit}
         className="flex flex-col gap-3 md:flex-row md:items-end"
@@ -132,16 +132,15 @@ export function Filters({ states, initial }: FiltersProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+          className="min-h-[44px] rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
         >
-          <span aria-hidden className="sheen-overlay animate-sheen" />
-          <span className="relative">{isPending ? "…" : "Search"}</span>
+          {isPending ? "…" : "Search"}
         </button>
         {active && (
           <button
             type="button"
             onClick={clearAll}
-            className="inline-flex items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-50 active:scale-95"
+            className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"
           >
             <X className="h-4 w-4" /> Clear
           </button>

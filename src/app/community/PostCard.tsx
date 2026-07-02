@@ -315,15 +315,15 @@ export function PostCard({
   return (
     <article
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-      className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+      className="card-hover animate-fadeUp overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
         {post.authorImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-100" />
+          <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-1 ring-slate-200" />
         ) : (
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-sky-500 text-sm font-bold text-white ring-2 ring-emerald-100">
+          <div className="grid h-10 w-10 place-items-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-700 ring-1 ring-slate-200">
             {initial}
           </div>
         )}
@@ -359,7 +359,7 @@ export function PostCard({
             {menuOpen && (
               <div
                 role="menu"
-                className="animate-pop absolute right-0 top-12 z-20 w-40 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-xl shadow-slate-900/10"
+                className="animate-pop absolute right-0 top-12 z-20 w-40 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-lg"
               >
                 <button
                   role="menuitem"
@@ -391,7 +391,7 @@ export function PostCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.photoUrl} alt={post.title} className="max-h-[30rem] w-full object-cover" />
         ) : (
-          <div className="grid h-60 w-full place-items-center bg-gradient-to-br from-emerald-100 to-sky-100 text-5xl">🌄</div>
+          <div className="grid h-60 w-full place-items-center bg-slate-100 text-5xl">🌄</div>
         )}
         {burst && (
           <span className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -454,7 +454,7 @@ export function PostCard({
             <button
               onClick={saveEdit}
               disabled={saving}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               Save
@@ -465,7 +465,7 @@ export function PostCard({
                 setActionError(null);
               }}
               disabled={saving}
-              className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 active:scale-95 disabled:opacity-60"
+              className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95 disabled:opacity-60"
             >
               <X className="h-4 w-4" /> Cancel
             </button>
@@ -567,7 +567,7 @@ export function PostCard({
                   <button
                     onClick={submitComment}
                     disabled={posting || !text.trim()}
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 disabled:opacity-50"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
                   >
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </button>

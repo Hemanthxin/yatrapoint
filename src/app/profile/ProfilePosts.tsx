@@ -50,14 +50,14 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
         <p className="text-3xl">📸</p>
         <p className="mt-2 text-sm text-slate-500">
           You haven&apos;t shared any places yet.
         </p>
         <Link
           href="/community"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
         >
           <ImagePlus className="h-4 w-4" />
           Share your first place
@@ -88,8 +88,8 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-2 text-center">
-                  <span className="line-clamp-3 text-xs font-bold text-white drop-shadow">
+                <div className="flex h-full w-full items-center justify-center bg-emerald-50 p-2 text-center">
+                  <span className="line-clamp-3 text-xs font-semibold text-emerald-700">
                     {post.title}
                   </span>
                 </div>
@@ -169,7 +169,7 @@ function PostModal({
       aria-modal="true"
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-white shadow-2xl animate-pop"
+        className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl animate-pop"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -190,8 +190,8 @@ function PostModal({
               className="max-h-[55vh] w-full bg-slate-900 object-contain"
             />
           ) : (
-            <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 text-center">
-              <span className="text-xl font-extrabold text-white drop-shadow">
+            <div className="flex aspect-video w-full items-center justify-center bg-emerald-50 p-6 text-center">
+              <span className="text-xl font-semibold text-emerald-700">
                 {post.title}
               </span>
             </div>
@@ -199,7 +199,7 @@ function PostModal({
 
           <div className="p-5">
             <div className="flex items-start justify-between gap-3">
-              <h3 className="min-w-0 flex-1 text-lg font-extrabold tracking-tight text-slate-900">
+              <h3 className="min-w-0 flex-1 text-lg font-semibold tracking-tight text-slate-900">
                 {post.title}
               </h3>
               {post.rating ? (
@@ -241,7 +241,7 @@ function PostModal({
               type="button"
               onClick={onDelete}
               disabled={isPending}
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-5 py-3 text-sm font-bold text-red-600 transition hover:bg-red-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

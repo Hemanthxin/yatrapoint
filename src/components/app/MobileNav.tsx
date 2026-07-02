@@ -31,7 +31,7 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-50 via-slate-50/70 to-transparent"
       />
 
-      <nav className="relative mx-auto mb-[calc(env(safe-area-inset-bottom)+0.75rem)] flex h-16 max-w-[22rem] animate-dockIn items-center justify-around rounded-[1.75rem] border border-white/60 glass-strong px-2 shadow-[0_18px_50px_-12px_rgba(2,6,23,0.4)]">
+      <nav className="relative mx-auto mb-[calc(env(safe-area-inset-bottom)+0.75rem)] flex h-16 max-w-[22rem] items-center justify-around rounded-3xl border border-slate-200 bg-white/95 px-2 shadow-[0_8px_28px_-10px_rgba(15,23,42,0.25)] backdrop-blur">
         {LEFT.map((t) => (
           <TabLink key={t.href} tab={t} active={isActive(t.href)} />
         ))}
@@ -42,15 +42,8 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
           aria-label="Plan a trip"
           className="relative -mt-9 flex flex-col items-center"
         >
-          <span
-            className={`relative grid h-16 w-16 place-items-center overflow-hidden rounded-full text-white ring-[5px] ring-slate-50 transition active:scale-95 ${
-              isActive("/budget-planner")
-                ? "bg-gradient-to-br from-emerald-500 to-teal-600 animate-glow"
-                : "bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/40 animate-glow"
-            }`}
-          >
-            <span aria-hidden className="sheen-overlay animate-sheen" />
-            <Wallet className="relative h-6 w-6" strokeWidth={2.2} />
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-emerald-600 text-white ring-4 ring-white shadow-md shadow-emerald-600/30 transition active:scale-95">
+            <Wallet className="h-6 w-6" strokeWidth={2.2} />
           </span>
           <span className="mt-1 text-[11px] font-bold text-emerald-700">Plan</span>
         </Link>
@@ -79,24 +72,11 @@ function TabLink({ tab, active }: { tab: Tab; active: boolean }) {
       href={tab.href}
       className="group relative flex h-full flex-1 flex-col items-center justify-center gap-1"
     >
-      {/* Glowing active pill that springs in behind the icon */}
-      <span
-        aria-hidden
-        className={`absolute top-1.5 h-9 w-12 rounded-2xl bg-gradient-to-b from-emerald-100 to-emerald-50 shadow-[0_6px_16px_-6px_rgba(16,185,129,0.6)] transition-all duration-300 ${
-          active ? "scale-100 opacity-100" : "scale-50 opacity-0"
-        }`}
-      />
       <Icon
-        className={`relative h-5 w-5 transition-all duration-300 group-active:scale-90 ${
-          active ? "-translate-y-0.5 text-emerald-600" : "text-slate-400"
-        }`}
-        strokeWidth={active ? 2.5 : 1.9}
+        className={`h-5 w-5 transition group-active:scale-90 ${active ? "text-emerald-600" : "text-slate-400"}`}
+        strokeWidth={active ? 2.4 : 1.9}
       />
-      <span
-        className={`relative text-[10px] font-semibold transition-colors ${
-          active ? "text-emerald-700" : "text-slate-400"
-        }`}
-      >
+      <span className={`text-[10px] font-semibold ${active ? "text-emerald-700" : "text-slate-400"}`}>
         {tab.label}
       </span>
     </Link>

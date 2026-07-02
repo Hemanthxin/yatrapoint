@@ -31,7 +31,7 @@ const TABS = [
 export function TripsTabs() {
   const path = usePathname();
   return (
-    <nav className="mb-5 flex gap-1.5 overflow-x-auto rounded-full bg-slate-100 p-1.5 no-scrollbar">
+    <nav className="mb-5 flex gap-1 overflow-x-auto rounded-full bg-slate-100 p-1 no-scrollbar">
       {TABS.map((t) => {
         const active = path === t.href || path.startsWith(t.href + "/");
         const Icon = t.icon;
@@ -40,9 +40,9 @@ export function TripsTabs() {
             key={t.href}
             href={t.href}
             title={t.sub}
-            className={`group flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-bold transition ${
+            className={`group flex min-h-[44px] flex-1 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium transition ${
               active
-                ? "bg-white text-emerald-700 shadow"
+                ? "bg-white text-emerald-700 shadow-sm"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >

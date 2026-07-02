@@ -18,13 +18,10 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
 
   return (
     <div className="relative min-h-screen overflow-x-hidden text-slate-900">
-      {/* Immersive aurora canvas — drifting, breathing gradient light that lives
-          behind every screen and gives the whole app depth. */}
+      {/* Calm, barely-there ambient tint (clean-minimal). */}
       <div aria-hidden className="aurora-canvas">
-        <div className="aurora-blob -left-32 top-[-6rem] h-[26rem] w-[26rem] bg-emerald-300/40 animate-aurora" />
-        <div className="aurora-blob right-[-8rem] top-1/4 h-[30rem] w-[30rem] bg-sky-300/30 animate-aurora [animation-delay:-7s]" />
-        <div className="aurora-blob bottom-[-6rem] left-1/4 h-[28rem] w-[28rem] bg-violet-300/25 animate-aurora [animation-delay:-14s]" />
-        <div className="aurora-blob right-1/4 top-1/2 h-64 w-64 bg-amber-200/30 animate-breathe" />
+        <div className="aurora-blob -left-40 top-[-8rem] h-[24rem] w-[24rem] bg-emerald-200/20" />
+        <div className="aurora-blob right-[-10rem] top-1/3 h-[26rem] w-[26rem] bg-sky-200/15" />
       </div>
 
       <Sidebar open={open} onClose={() => setOpen(false)} />

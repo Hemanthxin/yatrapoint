@@ -19,13 +19,12 @@ export default async function OneDayTripsPage() {
       <div className="animate-fadeUp">
       <TripsTabs />
       <header className="mb-4 flex items-start gap-3">
-        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
           <Compass className="h-5 w-5" />
         </div>
         <div className="min-w-0">
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-            One-day trips from{" "}
-            <span className="text-gradient animate-shimmer">Bangalore</span>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            One-day trips from Bangalore
           </h1>
           <p className="mt-1 text-sm text-slate-500">
             {trips.length} curated picks. Sorted by distance from you.

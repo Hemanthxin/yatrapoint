@@ -269,26 +269,18 @@ export function WizardForm({ initial }: WizardFormProps) {
   return (
     <>
     <form onSubmit={onSubmit} className="animate-fadeUp space-y-6">
-      {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 shadow-xl shadow-emerald-500/20">
-        <div
-          className="absolute inset-y-0 right-0 w-2/3 bg-cover bg-center opacity-30 md:opacity-50"
-          style={{ backgroundImage: "url('/66245.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-700/90 via-emerald-600/70 to-teal-700/40" />
-        <span aria-hidden className="sheen-overlay animate-sheen" />
-        <div className="relative z-10 max-w-lg p-6 md:p-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white backdrop-blur">
-            <Wallet className="h-3.5 w-3.5" /> Smart planner
-          </span>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            Budget Planner
-          </h1>
-          <p className="mt-2 max-w-md text-sm text-white/90 md:text-base">
-            Plan your perfect trip within your budget. Tell us your preferences and we&apos;ll
-            handle the rest.
-          </p>
-        </div>
+      {/* Header */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
+          <Wallet className="h-3.5 w-3.5" /> Smart planner
+        </span>
+        <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
+          Budget Planner
+        </h1>
+        <p className="mt-2 max-w-md text-sm text-slate-500 md:text-base">
+          Plan your perfect trip within your budget. Tell us your preferences and we&apos;ll
+          handle the rest.
+        </p>
       </div>
 
       {/* Stepper — horizontal rail on mobile, no overflow */}
@@ -298,10 +290,10 @@ export function WizardForm({ initial }: WizardFormProps) {
           return (
             <div key={s} className="flex shrink-0 items-center gap-2">
               <span
-                className={`grid h-7 w-7 place-items-center rounded-full text-xs font-extrabold transition ${
+                className={`grid h-7 w-7 place-items-center rounded-full text-xs font-semibold transition ${
                   active
-                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/40"
-                    : "bg-slate-200 text-slate-500"
+                    ? "bg-emerald-600 text-white"
+                    : "bg-slate-100 text-slate-500"
                 }`}
               >
                 {i + 1}
@@ -321,7 +313,7 @@ export function WizardForm({ initial }: WizardFormProps) {
         {/* Form column */}
         <div className="space-y-4 lg:col-span-2">
           {/* Where to go — around me vs a chosen area in India */}
-          <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <CardHeader
               title="Where do you want to go?"
               tone="emerald"
@@ -356,8 +348,8 @@ export function WizardForm({ initial }: WizardFormProps) {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* 1. Budget */}
             <Card title="1. Your Budget" icon="💰" tone="emerald" className="sm:col-span-2">
-              <p className="mb-2 text-3xl font-extrabold tracking-tight">
-                <span className="text-gradient">₹{budget.toLocaleString("en-IN")}</span>
+              <p className="mb-2 text-3xl font-bold tracking-tight text-slate-900">
+                ₹{budget.toLocaleString("en-IN")}
               </p>
               <div className="flex items-center gap-2">
                 <div className="flex min-h-[44px] flex-1 items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
@@ -444,7 +436,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             )}
 
             {/* 4. Trip Type + categories to explore */}
-            <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
+            <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
               <CardHeader title="4. Trip Type" tone="emerald" icon="🏷️" />
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {TRIP_TYPES.map(({ key, icon: Icon }) => {
@@ -456,8 +448,8 @@ export function WizardForm({ initial }: WizardFormProps) {
                       onClick={() => pickTripType(key)}
                       className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-semibold transition active:scale-95 ${
                         active
-                          ? "border-transparent bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
-                          : "border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50"
+                          ? "border-emerald-600 bg-emerald-600 text-white"
+                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
                       <Icon className="h-5 w-5" />
@@ -483,8 +475,8 @@ export function WizardForm({ initial }: WizardFormProps) {
                       onClick={() => toggleGroup(g.slug)}
                       className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
                         on
-                          ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
-                          : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300"
+                          ? "border-emerald-600 bg-emerald-600 text-white"
+                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
                       <span>{g.emoji}</span>
@@ -530,27 +522,24 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="submit"
             disabled={geocoding}
-            className="relative flex min-h-[56px] w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70"
+            className="flex min-h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 text-base font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-70"
           >
-            <span aria-hidden className="sheen-overlay animate-sheen" />
-            <span className="relative flex items-center gap-2">
-              {geocoding ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" /> Locating your area…
-                </>
-              ) : (
-                <>
-                  {snapshot ? "Update Plan" : "Continue & Generate Plan"}
-                  <ArrowRight className="h-5 w-5" />
-                </>
-              )}
-            </span>
+            {geocoding ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" /> Locating your area…
+              </>
+            ) : (
+              <>
+                {snapshot ? "Update Plan" : "Continue & Generate Plan"}
+                <ArrowRight className="h-5 w-5" />
+              </>
+            )}
           </button>
 
-          <div className="flex items-start gap-2 rounded-2xl border border-sky-100 bg-sky-50 px-4 py-3 text-xs text-slate-600">
+          <div className="flex items-start gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
             <span className="text-base leading-none">💡</span>
             <span>
-              <span className="font-bold text-slate-800">Tip:</span> The more details you provide,
+              <span className="font-semibold text-slate-800">Tip:</span> The more details you provide,
               the better and more personalized your trip plan will be.
             </span>
           </div>
@@ -558,9 +547,9 @@ export function WizardForm({ initial }: WizardFormProps) {
 
         {/* Sidebar column */}
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-          <div className="card-hover rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-100 text-emerald-700">✦</span>
+          <div className="card-hover rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="flex items-center gap-2 text-base font-semibold tracking-tight text-slate-900">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-50 text-emerald-700">✦</span>
               Why use Budget Planner?
             </p>
             <ul className="mt-4 space-y-3 text-sm text-slate-600">
@@ -578,26 +567,26 @@ export function WizardForm({ initial }: WizardFormProps) {
             </ul>
           </div>
 
-          <div className="card-hover overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
-            <p className="text-sm font-extrabold uppercase tracking-wide text-emerald-700">Quick Preview</p>
-            <p className="mt-1 text-2xl font-extrabold tracking-tight">
-              <span className="text-gradient">₹{budget.toLocaleString("en-IN")}</span>
+          <div className="card-hover overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 p-5 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">Quick Preview</p>
+            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+              ₹{budget.toLocaleString("en-IN")}
             </p>
             <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700">
               <li className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-sky-600 shadow-sm">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-700 shadow-sm">
                   <CalendarDays className="h-4 w-4" />
                 </span>
                 {days} Trip
               </li>
               <li className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-violet-600 shadow-sm">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-700 shadow-sm">
                   <Users className="h-4 w-4" />
                 </span>
                 {travellersNum} Travelers
               </li>
               <li className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-600 shadow-sm">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-emerald-700 shadow-sm">
                   <MapPinned className="h-4 w-4" />
                 </span>
                 Total budget
@@ -605,9 +594,9 @@ export function WizardForm({ initial }: WizardFormProps) {
             </ul>
           </div>
 
-          <div className="flex items-center gap-3 rounded-3xl border border-amber-100 bg-amber-50 p-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs font-medium text-slate-600">
             <span>Next: Customize your preferences for a better plan</span>
-            <span className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md shadow-amber-500/30">
+            <span className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700">
               <ArrowRight className="h-4 w-4" />
             </span>
           </div>
@@ -621,12 +610,12 @@ export function WizardForm({ initial }: WizardFormProps) {
 }
 
 const CARD_TONES: Record<string, string> = {
-  emerald: "bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-700 ring-emerald-200/60",
-  sky: "bg-gradient-to-br from-sky-100 to-sky-50 text-sky-700 ring-sky-200/60",
-  amber: "bg-gradient-to-br from-amber-100 to-amber-50 text-amber-700 ring-amber-200/60",
-  violet: "bg-gradient-to-br from-violet-100 to-violet-50 text-violet-700 ring-violet-200/60",
-  rose: "bg-gradient-to-br from-rose-100 to-rose-50 text-rose-700 ring-rose-200/60",
-  teal: "bg-gradient-to-br from-teal-100 to-teal-50 text-teal-700 ring-teal-200/60",
+  emerald: "bg-emerald-50 text-emerald-700",
+  sky: "bg-slate-100 text-slate-600",
+  amber: "bg-slate-100 text-slate-600",
+  violet: "bg-slate-100 text-slate-600",
+  rose: "bg-slate-100 text-slate-600",
+  teal: "bg-slate-100 text-slate-600",
 };
 
 // Shared header used by every option card so icons, titles and badges line up
@@ -644,10 +633,10 @@ function CardHeader({
 }) {
   return (
     <div className="mb-4 flex items-center gap-3">
-      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-lg shadow-sm ring-1 ring-inset ${CARD_TONES[tone]}`}>
+      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-lg ${CARD_TONES[tone]}`}>
         {icon}
       </span>
-      <span className="flex-1 text-sm font-bold tracking-tight text-slate-900">{title}</span>
+      <span className="flex-1 text-sm font-semibold tracking-tight text-slate-900">{title}</span>
       {optional && (
         <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-400">
           Optional
@@ -673,7 +662,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`card-hover flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+    <div className={`card-hover flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
       <CardHeader title={title} icon={icon} tone={tone} optional={optional} />
       <div className="flex flex-1 flex-col">{children}</div>
     </div>
@@ -705,7 +694,7 @@ function ModeCard({
     >
       <span
         className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition ${
-          active ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-500"
+          active ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
         }`}
       >
         {icon}
@@ -735,12 +724,12 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl border text-sm font-semibold transition active:scale-95 ${
+      className={`rounded-full border text-sm font-medium transition active:scale-95 ${
         square ? "grid h-11 w-11 place-items-center" : "min-h-[44px] px-4 py-2"
       } ${
         active
-          ? "border-transparent bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
-          : "border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50"
+          ? "border-emerald-600 bg-emerald-600 text-white"
+          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >
       {children}

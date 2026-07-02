@@ -365,10 +365,10 @@ function CheckGrid({
             key={it}
             type="button"
             onClick={() => onToggle(it)}
-            className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
+            className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-medium transition active:scale-95 ${
               on
-                ? "border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
-                : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300"
+                ? "border-emerald-600 bg-emerald-600 text-white"
+                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
             {on && <span>✓</span>}
