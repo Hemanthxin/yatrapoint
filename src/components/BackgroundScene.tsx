@@ -8,8 +8,8 @@ import Image from "next/image";
 export function BackgroundScene() {
   return (
     <div className="absolute inset-0 -z-0 overflow-hidden">
-      {/* Slow cinematic pan/zoom wrapper */}
-      <div className="absolute inset-0 animate-kenburns will-change-transform">
+      {/* Static background image (no pan/zoom) */}
+      <div className="absolute inset-0">
         {/* Mobile / narrow viewports */}
         <Image
           src="/66245.jpg"
@@ -32,17 +32,17 @@ export function BackgroundScene() {
 
       {/* Cinematic darkening so the headline + login card stay readable */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/75" />
-      {/* Emerald brand wash from the bottom for warmth */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/60 via-transparent to-transparent" />
+      {/* Blue + green brand wash from the bottom for warmth */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-blue-950/60 via-transparent to-emerald-950/40" />
 
-      {/* Floating glow orbs for depth */}
+      {/* Static glow orbs for depth */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-emerald-400/25 blur-3xl animate-blob"
+        className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-blue-400/25 blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-teal-400/20 blur-3xl animate-blob [animation-delay:-8s]"
+        className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl"
       />
 
       {/* Vignette to focus the center */}
