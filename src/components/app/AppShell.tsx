@@ -5,7 +5,6 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
-import { FestivalTicker } from "./FestivalTicker";
 
 interface AppShellProps {
   userLabel: string;
@@ -38,18 +37,13 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
           location={location}
           onMenu={() => setOpen((v) => !v)}
         />
-        <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-5 pb-36 md:px-6 md:py-8 lg:pb-20">
+        <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-5 pb-32 md:px-6 md:py-8 lg:pb-10">
           {children}
         </main>
       </div>
 
       {/* Floating mobile dock */}
       <MobileNav onMenu={() => setOpen(true)} />
-
-      {/* Fixed full-width footer festivals ticker (next upcoming festival first).
-          Kept OUTSIDE <main> because main's fadeUp transform would trap a fixed
-          child; here it's positioned relative to the viewport. */}
-      <FestivalTicker />
     </div>
   );
 }
