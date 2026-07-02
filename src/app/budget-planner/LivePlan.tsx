@@ -19,14 +19,9 @@ import {
   X,
   TrainFront,
   Plane,
-  Bus,
   Car,
-  Bike,
   BedDouble,
   Star,
-  Zap,
-  TrendingDown,
-  Sparkles,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -199,6 +194,12 @@ export function LivePlan({
   const [swapIndex, setSwapIndex] = useState<number | null>(null);
   const [rerouting, setRerouting] = useState(false);
   const [swapError, setSwapError] = useState<string | null>(null);
+
+  // Which map view is showing — the traveller can flip the SAME trip between
+  // road / rail / flight map styles (no re-costing; just the map).
+  const [mapMode, setMapMode] = useState<"road" | "train" | "flight">(
+    mode === "train" ? "train" : mode === "flight" ? "flight" : "road"
+  );
 
   const overpassCategories = useMemo(() => groupsToOverpass(groups), [groups]);
 
@@ -637,62 +638,6 @@ export function LivePlan({
             </section>
           )}
 
-          {/* Ways to travel — multi-modal comparison with a recommendation */}
-          {plan.modeOptions && plan.modeOptions.length > 0 && (
-            <section className="animate-fadeUp">
-              <div className="mb-3 flex items-center gap-2">
-                <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Ways to travel</h2>
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">
-                  {formatKm(plan.totals.distanceKm)} round trip
-                </span>
-              </div>
-              <div className="-mx-4 flex gap-3 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 lg:grid-cols-5">
-                {plan.modeOptions.map((o) => {
-                  const Icon = MODE_ICON[o.mode as keyof typeof MODE_ICON] ?? Car;
-                  return (
-                    <div
-                      key={o.mode}
-                      className={`card-hover relative w-40 shrink-0 rounded-3xl border p-3.5 shadow-sm transition sm:w-auto ${
-                        o.recommended
-                          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-400/60"
-                          : "border-slate-200 bg-white"
-                      }`}
-                    >
-                      {o.recommended && (
-                        <span className="absolute -top-2 left-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/30">
-                          <Sparkles className="h-3 w-3" /> Best
-                        </span>
-                      )}
-                      <div className="flex items-center justify-between">
-                        <span className={`grid h-9 w-9 place-items-center rounded-xl ${o.recommended ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-600"}`}>
-                          <Icon className="h-5 w-5" />
-                        </span>
-                        <div className="flex flex-col items-end gap-1">
-                          {o.cheapest && (
-                            <span className="inline-flex items-center gap-0.5 rounded-full bg-sky-100 px-1.5 py-0.5 text-[9px] font-bold text-sky-700">
-                              <TrendingDown className="h-2.5 w-2.5" /> Cheapest
-                            </span>
-                          )}
-                          {o.fastest && (
-                            <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">
-                              <Zap className="h-2.5 w-2.5" /> Fastest
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <p className="mt-2 text-sm font-bold text-slate-900">{o.label}</p>
-                      <p className="text-lg font-extrabold tracking-tight text-slate-900">{formatINR(o.cost)}</p>
-                      <p className="text-[11px] text-slate-500">{formatMinutes(o.durationMinutes)} · {o.fareLabel}</p>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="mt-2 text-xs text-slate-500">
-                Comparison over your trip distance — <span className="font-semibold text-emerald-700">Best</span> balances low budget and time. Change the transport above to re-cost the whole plan.
-              </p>
-            </section>
-          )}
-
           {/* Primary CTA — navigate the whole trip in Google Maps */}
           <a
             href={googleMapsUrl}
@@ -768,18 +713,39 @@ export function LivePlan({
                   </button>
                 </div>
               </div>
+              {/* Map-mode pager — flip the SAME route between road / rail / flight views */}
+              <div className="mb-3 -mx-4 flex gap-2 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:px-0">
+                {MAP_MODES.map((m) => {
+                  const Icon = m.icon;
+                  const on = mapMode === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => setMapMode(m.id)}
+                      aria-pressed={on}
+                      className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold transition active:scale-95 ${
+                        on
+                          ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                          : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" /> {m.label}
+                    </button>
+                  );
+                })}
+              </div>
               <TripMap
                 origin={start}
                 stops={stopMarkers}
-                route={plan.geometry ?? undefined}
-                mode={mode === "train" ? "train" : mode === "flight" ? "flight" : "road"}
+                route={mapMode === "road" ? plan.geometry ?? undefined : undefined}
+                mode={mapMode}
                 height={440}
               />
               <p className="mt-2 text-xs text-slate-500">
                 Green pin is your location. Numbered pins are stops in optimal order — nearest first.{" "}
-                {mode === "train"
+                {mapMode === "train"
                   ? "The rail line links your stops in sequence."
-                  : mode === "flight"
+                  : mapMode === "flight"
                   ? "The dotted arcs show flight paths between stops."
                   : "The line follows real driving roads (OSRM)."}
               </p>
@@ -999,7 +965,11 @@ function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{children}</span>;
 }
 
-const MODE_ICON = { car: Car, bike: Bike, bus: Bus, train: TrainFront, flight: Plane };
+const MAP_MODES: { id: "road" | "train" | "flight"; label: string; icon: typeof Car }[] = [
+  { id: "road", label: "Road", icon: Car },
+  { id: "train", label: "Train", icon: TrainFront },
+  { id: "flight", label: "Flight", icon: Plane },
+];
 
 function StationCard({
   title,

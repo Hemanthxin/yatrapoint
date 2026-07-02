@@ -186,6 +186,12 @@ export function WizardForm({ initial }: WizardFormProps) {
     setGroups(new Set(TRIP_GROUPS[key] ?? TRIP_GROUPS.Family));
   }
 
+  // Choosing travellers; 1 traveller auto-selects the Solo trip type.
+  function pickTravellers(t: string) {
+    setTravellers(t);
+    if (t === "1") pickTripType("Solo");
+  }
+
   function toggleGroup(slug: string) {
     setGroups((prev) => {
       const next = new Set(prev);
@@ -407,7 +413,7 @@ export function WizardForm({ initial }: WizardFormProps) {
             <Card title="3. Number of Travelers" icon="👥" tone="violet">
               <div className="flex flex-wrap gap-2">
                 {TRAVELLER_OPTIONS.map((t) => (
-                  <Chip key={t} active={travellers === t} onClick={() => setTravellers(t)} square>
+                  <Chip key={t} active={travellers === t} onClick={() => pickTravellers(t)} square>
                     {t}
                   </Chip>
                 ))}
