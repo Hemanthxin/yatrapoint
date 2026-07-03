@@ -56,13 +56,13 @@ input[type="number"] {
     justify-content: center;
     gap: 0.5rem;
     border-radius: 1rem;
-    background-image: linear-gradient(to right, #10b981, #16a34a);
+    background-color: #059669;
     color: #fff;
     font-weight: 700;
-    box-shadow: 0 12px 26px -12px rgba(16, 163, 74, 0.5);
-    transition: transform 0.15s ease, filter 0.15s ease;
+    box-shadow: 0 12px 26px -12px rgba(5, 150, 105, 0.5);
+    transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
   }
-  .btn-primary:hover { transform: scale(1.03); filter: brightness(1.03); }
+  .btn-primary:hover { transform: scale(1.03); background-color: #047857; }
   .btn-primary:active { transform: scale(0.96); }
   .btn-secondary {
     display: inline-flex;

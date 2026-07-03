@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Calendar, Wallet, Sparkles } from "lucide-react";
+import { MapPin, Sparkles } from "lucide-react";
 import type { Destination } from "@/lib/db/schema";
 import {
   CATEGORY_BY_SLUG,
@@ -7,7 +7,6 @@ import {
   CATEGORY_GRADIENT,
   type CategorySlug,
 } from "@/lib/catalog/categories";
-import { formatINR, formatDays } from "@/lib/format";
 import { FavoriteButton } from "./FavoriteButton";
 import { AddToCartButton } from "./AddToCartButton";
 import { PlaceImage } from "./PlaceImage";
@@ -81,19 +80,8 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
           />
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2 text-xs font-bold text-slate-600">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700 ring-1 ring-emerald-100">
-            <Wallet className="h-3.5 w-3.5" />
-            {formatINR(destination.budgetPerDay)}/day
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">
-            <Calendar className="h-3.5 w-3.5 text-emerald-600" />
-            {formatDays(destination.recommendedDays)}
-          </span>
-        </div>
-
         <AddToCartButton
-          className="w-full py-2.5 shadow-lg shadow-emerald-500/40"
+          className="mt-auto w-full py-2.5 shadow-lg shadow-emerald-500/40"
           label="Plan a trip"
           item={{
             id: `dest-${destination.id}`,
