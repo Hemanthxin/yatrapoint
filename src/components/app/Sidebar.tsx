@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Briefcase,
+  Users,
   Wallet,
   MapPin,
-  BedDouble,
   Route,
   CalendarDays,
   Flag,
@@ -28,10 +27,9 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/one-day-trips", label: "Trips", icon: Briefcase },
+  { href: "/community", label: "Community", icon: Users },
   { href: "/budget-planner", label: "Budget Planner", icon: Wallet },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
-  { href: "/stays", label: "Stays", icon: BedDouble },
   { href: "/trip-categories", label: "Trips by Places", icon: Route },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
   { href: "/destinations", label: "State", icon: Flag },
@@ -58,7 +56,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       >
         <div className="flex h-16 items-center px-5">
           <Link href="/dashboard" className="text-slate-900" aria-label="Home">
-            <Logo />
+            <Logo tagline />
           </Link>
         </div>
 
@@ -72,7 +70,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
                 onClick={onClose}
                 className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-2.5 text-sm font-semibold transition ${
                   active
-                    ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+                    ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
                     : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
                 }`}
               >

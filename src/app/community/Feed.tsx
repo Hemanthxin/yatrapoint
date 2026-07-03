@@ -89,14 +89,14 @@ export function Feed({
               className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-emerald-500/20"
             />
           ) : (
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
               {initial}
             </span>
           )}
           <span className="min-w-0 flex-1 truncate rounded-full bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-500">
             Share a place, tip or hidden gem…
           </span>
-          <span className="relative inline-flex min-h-[44px] shrink-0 items-center gap-1.5 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95">
+          <span className="relative inline-flex min-h-[44px] shrink-0 items-center gap-1.5 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95">
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Add post</span>
@@ -116,7 +116,7 @@ export function Feed({
               aria-pressed={active}
               className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
                 active
-                  ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
+                  ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                   : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
             >

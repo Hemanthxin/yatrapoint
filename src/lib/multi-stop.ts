@@ -278,6 +278,27 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     const { pos, detour } = bestInsertion(c);
     if (feasible(c, detour)) place(c, pos, detour);
   }
+
+  // 1b) Far anchor — guarantee the trip genuinely reaches out toward the chosen
+  // radius. When a 100 km reach is picked we want to actually cover ~95 km, not
+  // just hop around the nearest cluster. Seed the FARTHEST feasible place that
+  // sits in the outer band [0.9 … 1.15] × reach (the window naturally excludes
+  // area-mode searches where the traveller is far outside the search area).
+  if (reachKm > 0 && tour.length < maxStops) {
+    const outer = pool
+      .filter((c) => !isFoodCat(c) && !tour.some((t) => t.id === c.id))
+      .map((c) => ({ c, d: haversineKm(start, { lat: c.lat, lng: c.lng }) }))
+      .filter((x) => x.d >= reachKm * 0.9 && x.d <= reachKm * 1.15)
+      .sort((a, b) => b.d - a.d);
+    for (const { c } of outer) {
+      const { pos, detour } = bestInsertion(c);
+      if (feasible(c, detour)) {
+        place(c, pos, detour);
+        break;
+      }
+    }
+  }
+
   const taken = new Set(tour.map((c) => c.id));
   pool = pool.filter((c) => !taken.has(c.id));
 

@@ -4,12 +4,16 @@ import { useEffect, useState } from "react";
 import { placeImageUrl, fallbackImageUrl } from "@/lib/place-images";
 import { resolvePlaceImage } from "@/lib/actions/place-image";
 
-// Shows a NAME-MATCHED photo for a place:
+// Shows a photo for a place, fast and reliably:
 //   1. a stored image, else
-//   2. its Wikipedia photo (resolved by name + location hint), else
-//   3. a category-relevant photo (e.g. a temple for a pilgrimage), else
-//   4. a neutral photo, else
-//   5. a category-coloured gradient tile with an emoji.
+//   2. a category-relevant photo (shown immediately — no server round-trip), else
+//   3. a neutral photo, else
+//   4. a category-coloured gradient tile with an emoji.
+//
+// Set `preferWiki` (detail heroes only) to additionally resolve a real,
+// name-matched Wikipedia photo in the background and upgrade to it if found.
+// We deliberately DON'T do that per card — a server action per list item made
+// the whole app slow and frequently left cards blank.
 export function PlaceImage({
   name,
   storedSrc,
@@ -19,6 +23,7 @@ export function PlaceImage({
   gradient,
   className = "",
   emojiClassName = "text-3xl",
+  preferWiki = false,
 }: {
   name: string;
   storedSrc?: string | null;
@@ -28,31 +33,39 @@ export function PlaceImage({
   gradient: string;
   className?: string;
   emojiClassName?: string;
+  preferWiki?: boolean;
 }) {
-  const [src, setSrc] = useState<string | null>(storedSrc || null);
-  const [fellBack, setFellBack] = useState(false);
+  // Start from a real photo immediately: stored image wins, otherwise a
+  // deterministic category photo so something is always on screen.
+  const [src, setSrc] = useState<string | null>(storedSrc || placeImageUrl(name, category));
+  // 0 = primary photo, 1 = neutral fallback, 2 = gradient tile.
+  const [stage, setStage] = useState(0);
 
+  // Optional background upgrade to a name-matched Wikipedia photo (detail pages).
   useEffect(() => {
-    if (storedSrc) return; // a real stored image always wins
+    if (storedSrc || !preferWiki) return;
     let alive = true;
     resolvePlaceImage(name, hint)
       .then((url) => {
-        if (alive) setSrc(url || placeImageUrl(name, category));
+        if (alive && url) {
+          setSrc(url);
+          setStage(0);
+        }
       })
       .catch(() => {
-        if (alive) setSrc(placeImageUrl(name, category));
+        /* keep the deterministic photo */
       });
     return () => {
       alive = false;
     };
-  }, [name, hint, category, storedSrc]);
+  }, [name, hint, storedSrc, preferWiki]);
 
   function onError() {
-    // Wiki/category image failed to load → neutral photo, then gradient.
-    if (!fellBack) {
-      setFellBack(true);
+    if (stage === 0) {
+      setStage(1);
       setSrc(fallbackImageUrl(name));
     } else {
+      setStage(2);
       setSrc(null);
     }
   }

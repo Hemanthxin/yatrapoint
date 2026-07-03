@@ -123,7 +123,7 @@ export default async function CityPlacePage({ params }: PageProps) {
           </a>
           <Link
             href="/budget-planner"
-            className="relative inline-flex h-11 items-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+            className="relative inline-flex h-11 items-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative">Build a trip including this</span>

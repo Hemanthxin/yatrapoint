@@ -60,7 +60,7 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
   return (
     <section className="mt-8 animate-fadeUp">
       <div className="mb-4 animate-pop overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-teal-500 to-emerald-500 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.3),transparent_55%)]" />
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <p className="relative text-xs font-bold uppercase tracking-[0.15em] text-white/85">Total budget</p>
@@ -114,7 +114,7 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
                     aria-pressed={isPicked}
                     className={`absolute left-3 top-3 z-20 inline-flex min-h-[36px] items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-bold shadow-sm backdrop-blur transition active:scale-95 ${
                       isPicked
-                        ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
+                        ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                         : "bg-white/90 text-slate-700 hover:bg-white"
                     }`}
                   >
@@ -152,7 +152,7 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
                   type="button"
                   onClick={onSave}
                   disabled={isSaving}
-                  className="inline-flex min-h-[44px] items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
                 >
                   <Save className="h-4 w-4" />
                   {isSaving ? "Saving…" : saved ? "Saved" : "Save trip"}

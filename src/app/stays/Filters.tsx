@@ -170,7 +170,7 @@ export function Filters({
       {/* Apply */}
       <button
         type="submit"
-        className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+        className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
       >
         Apply
       </button>

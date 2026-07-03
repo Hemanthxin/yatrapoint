@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 import { db } from "@/lib/db";
 import { accounts, sessions, users, verificationTokens } from "@/lib/db/schema";
-import { verifyOtpSchema, toE164, loginSchema, classifyIdentifier } from "@/lib/validators";
+import { verifyOtpSchema, toE164, loginSchema, normalisePhone } from "@/lib/validators";
 import { verifyOtp } from "@/lib/otp/service";
 import { verifyGoogleIdToken } from "@/lib/google-id-token";
 import {
@@ -44,24 +44,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     verificationTokensTable: verificationTokens,
   }),
   providers: [
-    // ── Email / phone + password ──
+    // ── Phone + password ──
     Credentials({
       id: "password",
-      name: "Email or Phone",
+      name: "Phone",
       credentials: {
-        identifier: { label: "Email or phone", type: "text" },
+        phone: { label: "Mobile number", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(raw) {
         const parsed = loginSchema.safeParse(raw);
         if (!parsed.success) return null;
-        const id = classifyIdentifier(parsed.data.identifier);
-        if (id.type === "invalid") return null;
+        const phone = normalisePhone(parsed.data.phone);
+        if (!phone) return null;
 
         const [user] = await db
           .select()
           .from(users)
-          .where(id.type === "email" ? eq(users.email, id.value) : eq(users.phone, id.value))
+          .where(eq(users.phone, phone))
           .limit(1);
         if (!user?.passwordHash) return null;
 

@@ -20,9 +20,9 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
     <div className="relative min-h-screen overflow-x-hidden text-slate-900">
       {/* Vibrant animated aurora — blue + green light behind every screen. */}
       <div aria-hidden className="aurora-canvas">
-        <div className="aurora-blob -left-32 top-[-6rem] h-[26rem] w-[26rem] bg-blue-300/35 animate-aurora" />
+        <div className="aurora-blob -left-32 top-[-6rem] h-[26rem] w-[26rem] bg-green-300/35 animate-aurora" />
         <div className="aurora-blob right-[-8rem] top-1/4 h-[30rem] w-[30rem] bg-emerald-300/35 animate-aurora [animation-delay:-7s]" />
-        <div className="aurora-blob bottom-[-6rem] left-1/4 h-[28rem] w-[28rem] bg-sky-300/30 animate-aurora [animation-delay:-14s]" />
+        <div className="aurora-blob bottom-[-6rem] left-1/4 h-[28rem] w-[28rem] bg-teal-300/30 animate-aurora [animation-delay:-14s]" />
         <div className="aurora-blob right-1/4 top-1/2 h-64 w-64 bg-teal-200/35 animate-breathe" />
       </div>
 

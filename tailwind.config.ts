@@ -6,8 +6,10 @@ export default {
     extend: {
       colors: {
         brand: {
-          green: "#22C55E",
+          green: "#16A34A",
           greenDark: "#15803D",
+          greenLight: "#22C55E",
+          navy: "#1B3E7A",
           dark: "#0B1B2B",
         },
       },

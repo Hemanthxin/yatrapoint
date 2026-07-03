@@ -36,7 +36,7 @@ export function AddToCartButton({
       className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-3 py-2 text-sm font-bold transition active:scale-95 ${
         added
           ? "bg-emerald-100 text-emerald-700"
-          : "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30 hover:scale-[1.03]"
+          : "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30 hover:scale-[1.03]"
       } ${className}`}
     >
       {added ? (

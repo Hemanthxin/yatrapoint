@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: 11 27 43;
-  --foreground: 255 255 255;
+  --background: 255 255 255;
+  --foreground: 15 23 42;
 }
 
 html,
@@ -49,17 +49,17 @@ input[type="number"] {
     border-radius: 1.25rem;
     box-shadow: 0 6px 22px -16px rgba(2, 6, 23, 0.25);
   }
-  /* Bold gradient primary action (blue → green). */
+  /* Bold gradient primary action (emerald → green). */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     border-radius: 1rem;
-    background-image: linear-gradient(to right, #3b82f6, #10b981);
+    background-image: linear-gradient(to right, #10b981, #16a34a);
     color: #fff;
     font-weight: 700;
-    box-shadow: 0 12px 26px -12px rgba(37, 99, 235, 0.5);
+    box-shadow: 0 12px 26px -12px rgba(16, 163, 74, 0.5);
     transition: transform 0.15s ease, filter 0.15s ease;
   }
   .btn-primary:hover { transform: scale(1.03); filter: brightness(1.03); }
@@ -99,9 +99,9 @@ input[type="number"] {
     overflow: hidden;
     pointer-events: none;
     background:
-      radial-gradient(110% 75% at 18% -10%, rgba(191, 219, 254, 0.8), transparent 55%),
+      radial-gradient(110% 75% at 18% -10%, rgba(187, 247, 208, 0.85), transparent 55%),
       radial-gradient(110% 75% at 85% -6%, rgba(167, 243, 208, 0.7), transparent 55%),
-      linear-gradient(180deg, #f6faff 0%, #eef6f4 100%);
+      linear-gradient(180deg, #f5fbf7 0%, #eefaf1 100%);
   }
   .aurora-blob {
     position: absolute;
@@ -141,9 +141,9 @@ input[type="number"] {
     animation-play-state: paused;
   }
 
-  /* Animated gradient brand text (blue → cyan → green). */
+  /* Animated gradient brand text (emerald → teal → green). */
   .text-gradient {
-    background: linear-gradient(110deg, #2563eb, #06b6d4 35%, #10b981 60%, #2563eb);
+    background: linear-gradient(110deg, #15803d, #10b981 35%, #22c55e 60%, #15803d);
     background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -172,9 +172,9 @@ input[type="number"] {
     transform: translateZ(40px);
   }
 
-  /* Shimmering gradient text (blue → green). */
+  /* Shimmering gradient text (emerald → green). */
   .text-shimmer {
-    background: linear-gradient(90deg, #2563eb, #10b981, #2563eb);
+    background: linear-gradient(90deg, #15803d, #22c55e, #15803d);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;

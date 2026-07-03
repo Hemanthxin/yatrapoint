@@ -101,7 +101,7 @@ function Chip({
       onClick={onClick}
       className={`min-h-[44px] shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition active:scale-95 ${
         active
-          ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30"
+          ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
           : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >

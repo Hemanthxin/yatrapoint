@@ -148,7 +148,7 @@ export default async function DestinationPage({ params }: PageProps) {
             />
             <Link
               href={`/budget-planner?destination=${destination.slug}`}
-              className="relative mt-2 block w-full overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 py-3 text-center text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+              className="relative mt-2 block w-full overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3 text-center text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
             >
               <span aria-hidden className="sheen-overlay animate-sheen" />
               <span className="relative">Plan a trip here</span>

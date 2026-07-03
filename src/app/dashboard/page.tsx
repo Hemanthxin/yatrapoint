@@ -147,7 +147,7 @@ export default async function DashboardPage() {
           </p>
           <Link
             href="/budget-planner"
-            className="group relative mt-5 inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+            className="group relative mt-5 inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative flex items-center gap-2">
@@ -204,7 +204,7 @@ export default async function DashboardPage() {
       <section className="mt-7">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Near by place</h2>
-          <Link href="/one-day-trips" className="text-sm font-bold text-emerald-600 hover:underline">
+          <Link href="/explore-bangalore" className="text-sm font-bold text-emerald-600 hover:underline">
             View all →
           </Link>
         </div>

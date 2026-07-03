@@ -32,13 +32,13 @@ export function BackgroundScene() {
 
       {/* Cinematic darkening so the headline + login card stay readable */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/75" />
-      {/* Blue + green brand wash from the bottom for warmth */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-950/60 via-transparent to-emerald-950/40" />
+      {/* Green brand wash from the bottom for warmth */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/60 via-transparent to-green-900/40" />
 
       {/* Static glow orbs for depth */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-blue-400/25 blur-3xl"
+        className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-green-400/25 blur-3xl"
       />
       <div
         aria-hidden

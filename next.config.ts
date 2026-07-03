@@ -2,10 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-    ],
+    // Allow any HTTPS image host. Place photos come from many sources
+    // (Wikimedia, LoremFlickr, Picsum, Google, admin-supplied URLs); an
+    // allowlist silently blanked heroes whose domain wasn't listed.
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
   experimental: {
     // Community photo uploads are sent as data URLs through a Server Action;

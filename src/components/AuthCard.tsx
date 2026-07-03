@@ -5,12 +5,10 @@ import Script from "next/script";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import {
-  AtSign,
   Lock,
   User,
   Eye,
   EyeOff,
-  Loader2,
   ArrowRight,
   ShieldCheck,
   Sparkles,
@@ -49,12 +47,18 @@ declare global {
 
 type Mode = "login" | "signup";
 
+// Accept only 10 digits in the phone box.
+function sanitizePhone(v: string) {
+  return v.replace(/\D/g, "").slice(0, 10);
+}
+
 export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
-  const [identifier, setIdentifier] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,19 +77,19 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
     setError(null);
 
     if (mode === "signup") {
-      const parsed = signupSchema.safeParse({ name, identifier, password });
+      const parsed = signupSchema.safeParse({ name, phone, password, confirmPassword });
       if (!parsed.success) {
         setError(parsed.error.issues[0]?.message ?? "Check your details.");
         return;
       }
       setSubmitting(true);
       try {
-        const res = await signupAction({ name, identifier, password });
+        const res = await signupAction({ name, phone, password, confirmPassword });
         if (!res.ok) {
           setError(res.error ?? "Could not sign you up.");
           return;
         }
-        const login = await signIn("password", { identifier, password, redirect: false });
+        const login = await signIn("password", { phone, password, redirect: false });
         if (!login || login.error) {
           setError("Account created — please log in.");
           setMode("login");
@@ -102,16 +106,16 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
     }
 
     // login
-    const parsed = loginSchema.safeParse({ identifier, password });
+    const parsed = loginSchema.safeParse({ phone, password });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "Enter your details.");
       return;
     }
     setSubmitting(true);
     try {
-      const res = await signIn("password", { identifier, password, redirect: false });
+      const res = await signIn("password", { phone, password, redirect: false });
       if (!res || res.error) {
-        setError("Wrong email/mobile or password.");
+        setError("Wrong mobile number or password.");
         return;
       }
       router.push("/dashboard");
@@ -165,12 +169,12 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
       {/* Glow aura */}
       <div
         aria-hidden
-        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-blue-400/50 via-emerald-400/25 to-transparent blur-2xl"
+        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-emerald-400/50 via-green-400/25 to-transparent blur-2xl"
       />
 
       <div className="relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/90 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
         {/* Gradient banner */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-teal-500 to-emerald-500 px-7 pb-8 pt-7 text-white">
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 px-7 pb-8 pt-7 text-white">
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <div className="relative">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
@@ -224,13 +228,15 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
               </Field>
             )}
 
-            <Field icon={<AtSign className="h-4 w-4" />}>
+            <Field icon={<span className="text-sm font-semibold text-slate-400">+91</span>} pad="left-3.5">
               <input
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                placeholder="Email or mobile number"
-                autoComplete="username"
-                className="w-full bg-transparent py-3 pl-10 pr-3 text-sm outline-none placeholder:text-slate-400"
+                type="tel"
+                inputMode="numeric"
+                value={phone}
+                onChange={(e) => setPhone(sanitizePhone(e.target.value))}
+                placeholder="10-digit mobile number"
+                autoComplete="tel"
+                className="w-full bg-transparent py-3 pl-14 pr-3 text-sm outline-none placeholder:text-slate-400"
               />
             </Field>
 
@@ -253,6 +259,19 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
               </button>
             </Field>
 
+            {mode === "signup" && (
+              <Field icon={<Lock className="h-4 w-4" />}>
+                <input
+                  type={showPw ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm password"
+                  autoComplete="new-password"
+                  className="w-full bg-transparent py-3 pl-10 pr-3 text-sm outline-none placeholder:text-slate-400"
+                />
+              </Field>
+            )}
+
             {error && (
               <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">
                 {error}
@@ -262,7 +281,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
             <button
               type="submit"
               disabled={submitting}
-              className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+              className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {!submitting && <span aria-hidden className="sheen-overlay animate-sheen" />}
               <span className="relative">
@@ -299,10 +318,18 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   );
 }
 
-function Field({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+function Field({
+  icon,
+  children,
+  pad = "left-3.5",
+}: {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  pad?: string;
+}) {
   return (
     <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
-      <span className="pointer-events-none absolute left-3.5 text-slate-400">{icon}</span>
+      <span className={`pointer-events-none absolute ${pad} text-slate-400`}>{icon}</span>
       {children}
     </div>
   );

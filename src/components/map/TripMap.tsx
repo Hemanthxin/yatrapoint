@@ -43,24 +43,44 @@ function numberedPin(n: number, active = false) {
           font:700 14px system-ui,sans-serif;color:white;
         ">${n}</div>
         <div style="
-          position:absolute;left:14px;top:30px;width:0;height:0;
-          border-left:4px solid transparent;border-right:4px solid transparent;
-          border-top:10px solid ${bg};
+          position:absolute;left:13px;top:30px;width:0;height:0;
+          border-left:5px solid transparent;border-right:5px solid transparent;
+          border-top:12px solid ${bg};
           filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));
         "></div>
       </div>
     `,
-    iconSize: [36, 46],
-    iconAnchor: [18, 46],
-    popupAnchor: [0, -42],
+    iconSize: [36, 42],
+    // The pin's visual tip is the bottom of the triangle (y ≈ 42); anchor there
+    // so the marker sits exactly on its coordinate instead of ~6px high.
+    iconAnchor: [18, 42],
+    popupAnchor: [0, -38],
   });
 }
 
 const USER_ICON = pulseIcon("#10b981");
+// A proper teardrop pin whose tip sits exactly on the coordinate (the previous
+// emoji + CSS-transform hack drifted the marker off the real location).
 const SINGLE_DEST_ICON = L.divIcon({
   className: "",
-  html: `<div style="font-size:28px;line-height:1;transform:translate(-14px,-26px);">📍</div>`,
-  iconSize: [28, 28],
+  html: `
+    <div style="position:relative;width:30px;height:40px;">
+      <div style="
+        position:absolute;left:0;top:0;width:30px;height:30px;
+        background:#10b981;border:3px solid white;border-radius:9999px;
+        box-shadow:0 2px 6px rgba(0,0,0,.35),0 0 0 1px #34d399;
+      "></div>
+      <div style="
+        position:absolute;left:11px;top:24px;width:0;height:0;
+        border-left:4px solid transparent;border-right:4px solid transparent;
+        border-top:12px solid #10b981;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));
+      "></div>
+      <div style="position:absolute;left:11px;top:8px;width:8px;height:8px;border-radius:9999px;background:white;"></div>
+    </div>
+  `,
+  iconSize: [30, 40],
+  iconAnchor: [15, 40],
+  popupAnchor: [0, -36],
 });
 
 export interface TripMapStop {

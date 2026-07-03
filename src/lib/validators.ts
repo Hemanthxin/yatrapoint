@@ -30,42 +30,40 @@ export function toE164(localPhone: string): string {
   return `+91${localPhone}`;
 }
 
-// ── Email / phone + password auth ────────────────────────────────────────────
+// ── Phone + password auth ────────────────────────────────────────────────────
 export const passwordSchema = z
   .string()
   .min(6, "Password must be at least 6 characters")
   .max(100, "Password is too long");
 
-const identifierSchema = z.string().trim().min(1, "Enter your email or mobile number");
+// Sign up with name, 10-digit Indian mobile, password + confirm password.
+export const signupSchema = z
+  .object({
+    name: z.string().trim().min(2, "Enter your name").max(120),
+    phone: phoneSchema,
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
-export const signupSchema = z.object({
-  name: z.string().trim().min(2, "Enter your name").max(120),
-  identifier: identifierSchema,
-  password: passwordSchema,
-});
-
+// Log in with 10-digit Indian mobile + password.
 export const loginSchema = z.object({
-  identifier: identifierSchema,
+  phone: phoneSchema,
   password: z.string().min(1, "Enter your password"),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 
-// Classify a login identifier as an email or an Indian phone (→ +91 E.164),
-// or invalid. Used by both the signup action and the credentials provider.
-export function classifyIdentifier(
-  raw: string
-): { type: "email"; value: string } | { type: "phone"; value: string } | { type: "invalid" } {
-  const s = (raw ?? "").trim();
-  if (s.includes("@")) {
-    const email = s.toLowerCase();
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-      ? { type: "email", value: email }
-      : { type: "invalid" };
-  }
-  const digits = s.replace(/[\s-]/g, "");
-  if (/^\+91[6-9]\d{9}$/.test(digits)) return { type: "phone", value: digits };
-  if (/^[6-9]\d{9}$/.test(digits)) return { type: "phone", value: `+91${digits}` };
-  return { type: "invalid" };
+// Normalise a raw mobile input to +91 E.164, or null when it isn't a valid
+// 10-digit Indian mobile. Used by the signup action and credentials provider.
+export function normalisePhone(raw: string): string | null {
+  const digits = (raw ?? "").replace(/[\s-]/g, "");
+  if (/^\+91[6-9]\d{9}$/.test(digits)) return digits;
+  if (/^91[6-9]\d{9}$/.test(digits)) return `+${digits}`;
+  if (/^[6-9]\d{9}$/.test(digits)) return `+91${digits}`;
+  return null;
 }

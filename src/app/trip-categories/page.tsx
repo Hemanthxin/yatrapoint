@@ -17,7 +17,7 @@ export default async function TripCategoriesPage() {
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <header className="mb-6 flex items-start gap-3 animate-fadeUp">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <LayoutGrid className="h-6 w-6" />
         </div>
         <div className="min-w-0">

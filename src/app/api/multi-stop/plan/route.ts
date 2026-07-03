@@ -21,8 +21,6 @@ import {
   FLIGHT_BASE,
   type TravelMode,
 } from "@/lib/transport";
-import { estimateNightlyRate, suggestStayHotel } from "@/lib/queries/hotels";
-import type { CategorySlug } from "@/lib/catalog/categories";
 
 export const runtime = "nodejs";
 
@@ -211,6 +209,23 @@ export async function POST(req: NextRequest) {
   const radiusKm = parsed.data.searchRadiusKm;
   const withinRadius = (lat: number, lng: number) =>
     haversineKm(searchCentre, { lat, lng }) <= radiusKm;
+
+  // Kick the slowest external call (live Overpass) off NOW so it runs in
+  // parallel with all the curated DB lookups below — this shaves seconds off
+  // plan generation instead of waiting for the DB round-trips first.
+  const initialOverpass =
+    wantedCats.length > 0
+      ? fetchOverpassPlaces({
+          centre: searchCentre,
+          categories: wantedCats,
+          radius: radiusKm * 1000,
+          limit: 200,
+          cap: 200,
+        }).then(
+          (places) => ({ places, error: null as string | null }),
+          (err) => ({ places: [] as Awaited<ReturnType<typeof fetchOverpassPlaces>>, error: err instanceof Error ? err.message : "Overpass failed" })
+        )
+      : Promise.resolve({ places: [] as Awaited<ReturnType<typeof fetchOverpassPlaces>>, error: null as string | null });
 
   // De-dup keys. We merge a place if EITHER it's within ~110 m of one already
   // taken, OR it has the same normalised name — so "Royal Meenakshi Mall" from
@@ -403,14 +418,7 @@ export async function POST(req: NextRequest) {
   let overpassCount = 0;
   let overpassError: string | null = null;
 
-  const addOverpass = async (km: number) => {
-    const places = await fetchOverpassPlaces({
-      centre: searchCentre,
-      categories: wantedCats,
-      radius: km * 1000,
-      limit: 250,
-      cap: 250,
-    });
+  const ingestOverpass = (places: Awaited<ReturnType<typeof fetchOverpassPlaces>>) => {
     overpassCount += places.length;
     for (const op of places) {
       // Railway stations legitimately contain "station"/"railway" in the name —
@@ -420,12 +428,22 @@ export async function POST(req: NextRequest) {
     }
   };
 
+  const addOverpass = async (km: number) => {
+    const places = await fetchOverpassPlaces({
+      centre: searchCentre,
+      categories: wantedCats,
+      radius: km * 1000,
+      limit: 200,
+      cap: 200,
+    });
+    ingestOverpass(places);
+  };
+
   let currentKm = radiusKm;
-  try {
-    if (wantedCats.length > 0) await addOverpass(currentKm);
-  } catch (err) {
-    overpassError = err instanceof Error ? err.message : "Overpass failed";
-  }
+  // The initial fetch was already started in parallel with the DB queries.
+  const first = await initialOverpass;
+  if (first.error) overpassError = first.error;
+  else ingestOverpass(first.places);
 
   // Gentle widen ONLY if the area is so sparse we can't fill the requested
   // stops — and never beyond ~1.5× the chosen distance, so we honour the km
@@ -553,38 +571,14 @@ export async function POST(req: NextRequest) {
     travelTotal = Math.round(distSum * effCostPerKm) + flightBaseTotal;
   }
 
-  // 5) Nightly stay for multi-day trips (nights = days − 1) — a CONCRETE hotel
-  // recommendation from the real dataset (Bengaluru rates for Bengaluru trips).
-  const stayCity = inBlr ? "Bengaluru" : parsed.data.areaDistricts[0] || undefined;
+  // 5) Stay suggestions were removed from the planner by product decision — the
+  // plan focuses purely on places, travel, entry and food. Keep the fields as
+  // zero/null so the client's cost breakdown simply omits the stay row.
   const nights = Math.max(0, parsed.data.days - 1);
-  let stayNightly = 0;
-  let stayRooms = 0;
-  let stayTotal = 0;
-  let staySuggestion: {
-    name: string; area: string | null; city: string | null; pricePerNight: number;
-    rating: number | null; nights: number; rooms: number; total: number; bookUrl: string;
-  } | null = null;
-  if (nights > 0) {
-    stayRooms = Math.max(1, Math.ceil(people / 2));
-    const hotel = await suggestStayHotel(stayCity);
-    stayNightly = hotel?.pricePerNight ?? (await estimateNightlyRate(stayCity));
-    stayTotal = stayNightly * stayRooms * nights;
-    if (hotel) {
-      staySuggestion = {
-        name: hotel.name,
-        area: hotel.area ?? hotel.city,
-        city: hotel.city,
-        pricePerNight: stayNightly,
-        rating: hotel.rating,
-        nights,
-        rooms: stayRooms,
-        total: stayTotal,
-        bookUrl: `https://www.google.com/search?q=${encodeURIComponent(
-          `${hotel.name} ${hotel.city ?? ""} hotel booking`
-        )}`,
-      };
-    }
-  }
+  const stayNightly = 0;
+  const stayRooms = 0;
+  const stayTotal = 0;
+  const staySuggestion: null = null;
 
   // 6) TRAIN-mode guidance — which station to board from (nearest to the
   // traveller) and which to reach (nearest to the destination area).
@@ -607,7 +601,6 @@ export async function POST(req: NextRequest) {
     { mode: "bike", label: "Bike", vehicle: "bike" },
     { mode: "bus", label: "Bus", vehicle: "suv" },
     { mode: "train", label: "Train", vehicle: "small_car" },
-    { mode: "flight", label: "Flight", vehicle: "small_car" },
   ];
   const roadDur = !isAir ? totalDurationMinutes : Math.round((totalDistanceKm / 30) * 60);
   const rawOptions = MODES.map((m) => {

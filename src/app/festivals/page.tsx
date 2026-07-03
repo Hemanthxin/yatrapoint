@@ -23,7 +23,7 @@ export default async function FestivalsPage() {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <div className="animate-fadeUp">
       <header className="mb-6 flex items-center gap-3">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/30">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <CalendarClock className="h-6 w-6" />
         </div>
         <div className="min-w-0">
@@ -54,7 +54,7 @@ export default async function FestivalsPage() {
                   {formatFestivalDate(f.dateISO)}
                 </span>
                 {isNext && (
-                  <span className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/40">
+                  <span className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/40">
                     Up next{d != null && d >= 0 ? ` · ${d === 0 ? "today" : d === 1 ? "tomorrow" : `${d} days`}` : ""}
                   </span>
                 )}

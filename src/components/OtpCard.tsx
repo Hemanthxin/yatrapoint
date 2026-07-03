@@ -168,7 +168,7 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
           aria-hidden
           className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent"
         />
-        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-lg shadow-emerald-500/40">
+        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/40">
           <Smartphone className="h-6 w-6" />
         </div>
 
@@ -228,7 +228,7 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
         type="button"
         onClick={onVerify}
         disabled={submitting || remaining === 0}
-        className="group relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+        className="group relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {!submitting && remaining !== 0 && <span aria-hidden className="sheen-overlay animate-sheen" />}
         <span className="relative">{submitting ? "Verifying..." : "Verify OTP"}</span>

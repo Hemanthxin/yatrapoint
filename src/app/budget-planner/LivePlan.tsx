@@ -18,10 +18,11 @@ import {
   Repeat,
   X,
   TrainFront,
-  Plane,
   Car,
   BedDouble,
   Star,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -128,6 +129,7 @@ interface PlanResponse {
 
 const PLAN_STORAGE_KEY = "yatra-point/multi-stop-plan";
 const PLAN_CACHE_KEY = "yatra-point/budget-plan-cache";
+const SAVED_TRIPS_KEY = "yatra-point/saved-trips";
 
 export interface LivePlanProps {
   budget: number;
@@ -187,6 +189,7 @@ export function LivePlan({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [shared, setShared] = useState(false);
+  const [saved, setSaved] = useState(false);
   const didAutoRun = useRef(false);
 
   // "Already visited / replace this place" — which stop's swap panel is open,
@@ -197,8 +200,8 @@ export function LivePlan({
 
   // Which map view is showing — the traveller can flip the SAME trip between
   // road / rail / flight map styles (no re-costing; just the map).
-  const [mapMode, setMapMode] = useState<"road" | "train" | "flight">(
-    mode === "train" ? "train" : mode === "flight" ? "flight" : "road"
+  const [mapMode, setMapMode] = useState<"road" | "train">(
+    mode === "train" ? "train" : "road"
   );
 
   const overpassCategories = useMemo(() => groupsToOverpass(groups), [groups]);
@@ -302,29 +305,27 @@ export function LivePlan({
     [plan?.stops]
   );
 
-  // Split the stops across the chosen days by TIME, not by an even count — so
-  // each day holds roughly a full day's worth of visiting + driving and the
-  // whole trip is realistically coverable in the days selected.
+  // Split the stops across the chosen days as EVENLY as possible so a multi-day
+  // trip genuinely shows a plan for every day (e.g. "2 Days" always yields a
+  // Day 1 and Day 2 when there are at least two stops), rather than cramming
+  // everything into day one. Stops keep their optimal order within each day.
   const dayBuckets = useMemo(() => {
-    if (!plan) return [] as PlanStop[][];
+    if (!plan || plan.stops.length === 0) return [] as PlanStop[][];
     const nDays = Math.max(1, days);
-    // Target minutes per day (visit + travel). Floor keeps short trips from
-    // spilling one stop per day.
-    const cap = Math.max(240, (hours / nDays) * 60);
-    const buckets: PlanStop[][] = [[]];
-    let acc = 0;
-    for (const s of plan.stops) {
-      const t = s.arrivalMinutesFromPrev + s.idealMinutes;
-      const cur = buckets[buckets.length - 1];
-      if (buckets.length < nDays && cur.length > 0 && acc + t > cap) {
-        buckets.push([]);
-        acc = 0;
-      }
-      buckets[buckets.length - 1].push(s);
-      acc += t;
+    if (nDays === 1) return [plan.stops];
+    const stops = plan.stops;
+    const base = Math.floor(stops.length / nDays);
+    let rem = stops.length % nDays;
+    const buckets: PlanStop[][] = [];
+    let idx = 0;
+    for (let d = 0; d < nDays; d++) {
+      const take = base + (rem > 0 ? 1 : 0);
+      if (rem > 0) rem--;
+      buckets.push(stops.slice(idx, idx + take));
+      idx += take;
     }
     return buckets;
-  }, [plan, days, hours]);
+  }, [plan, days]);
 
   // Same route, opened in Google Maps: start → each stop in order → back to start.
   const googleMapsUrl = useMemo(() => {
@@ -374,6 +375,37 @@ export function LivePlan({
       } catch {
         // ignore
       }
+    }
+  }
+
+  // Save the generated plan so the traveller can come back to it. Persists a
+  // compact snapshot to localStorage (works offline, no round-trip) and shows a
+  // "Saved" confirmation.
+  function saveTrip() {
+    if (!plan) return;
+    try {
+      const raw = localStorage.getItem(SAVED_TRIPS_KEY);
+      const list: unknown[] = raw ? JSON.parse(raw) : [];
+      const label = originOverride?.label
+        ? `Trip to ${originOverride.label}`
+        : `${plan.stops.length}-stop trip`;
+      const entry = {
+        id: `trip-${plan.stops.map((s) => s.id).join("-").slice(0, 60)}-${plan.totals.cost}`,
+        name: label,
+        stops: plan.stops.map((s) => ({ id: s.id, name: s.name, category: s.category, lat: s.lat, lng: s.lng })),
+        totals: plan.totals,
+        days,
+        people,
+        mapsUrl: googleMapsUrl,
+        savedAt: new Date().toISOString(),
+      };
+      // De-dup by id; newest first, keep the most recent 30.
+      const next = [entry, ...(Array.isArray(list) ? list : []).filter((t) => (t as { id?: string })?.id !== entry.id)].slice(0, 30);
+      localStorage.setItem(SAVED_TRIPS_KEY, JSON.stringify(next));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch {
+      // ignore (quota / disabled storage)
     }
   }
 
@@ -552,7 +584,7 @@ export function LivePlan({
         <>
           <section className="animate-pop overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
             {/* Summary total — bold Play-Store gradient hero */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-teal-500 to-emerald-500 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.3),transparent_55%)]" />
               <span aria-hidden className="sheen-overlay animate-sheen" />
               <div className="relative flex flex-wrap items-end justify-between gap-3">
@@ -623,7 +655,7 @@ export function LivePlan({
           {plan.trainInfo && (plan.trainInfo.board || plan.trainInfo.dest) && (
             <section className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
-                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30">
+                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30">
                   <TrainFront className="h-4 w-4" />
                 </span>
                 Your train journey
@@ -643,7 +675,7 @@ export function LivePlan({
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex items-center justify-between gap-3 overflow-hidden rounded-3xl bg-gradient-to-r from-blue-500 to-emerald-500 p-5 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-[0.99]"
+            className="group relative flex items-center justify-between gap-3 overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-500 to-green-600 p-5 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-[0.99]"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative flex items-center gap-3">
@@ -679,6 +711,24 @@ export function LivePlan({
                       </>
                     )}
                   </button>
+                  <button
+                    onClick={saveTrip}
+                    className={`inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
+                      saved
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    {saved ? (
+                      <>
+                        <BookmarkCheck className="h-4 w-4 text-emerald-600" /> Saved
+                      </>
+                    ) : (
+                      <>
+                        <Bookmark className="h-4 w-4 text-emerald-600" /> Save trip
+                      </>
+                    )}
+                  </button>
                   <a
                     href={googleMapsUrl}
                     target="_blank"
@@ -707,7 +757,7 @@ export function LivePlan({
                       );
                       router.push("/multi-stop/live");
                     }}
-                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
                   >
                     <Play className="h-4 w-4 fill-current" /> Start live tracking
                   </button>
@@ -725,7 +775,7 @@ export function LivePlan({
                       aria-pressed={on}
                       className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold transition active:scale-95 ${
                         on
-                          ? "bg-gradient-to-r from-blue-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30"
+                          ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                           : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
@@ -745,8 +795,6 @@ export function LivePlan({
                 Green pin is your location. Numbered pins are stops in optimal order — nearest first.{" "}
                 {mapMode === "train"
                   ? "The rail line links your stops in sequence."
-                  : mapMode === "flight"
-                  ? "The dotted arcs show flight paths between stops."
                   : "The line follows real driving roads (OSRM)."}
               </p>
             </section>
@@ -769,7 +817,7 @@ export function LivePlan({
                 <div key={d}>
                   {days > 1 && (
                     <div className="mb-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                         Day {d + 1}
                       </span>
                       <span className="text-xs font-medium text-slate-500">
@@ -782,7 +830,7 @@ export function LivePlan({
                       const i = running++;
                       return (
                 <li key={s.id} className="card-hover relative rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
+                  <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
                     {i + 1}
                   </span>
                   <div className="flex flex-wrap items-start justify-between gap-2">
@@ -930,7 +978,7 @@ export function LivePlan({
                           href={plan.staySuggestion.bookUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
+                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
                         >
                           <BedDouble className="h-3.5 w-3.5" /> Book
                         </a>
@@ -965,10 +1013,9 @@ function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{children}</span>;
 }
 
-const MAP_MODES: { id: "road" | "train" | "flight"; label: string; icon: typeof Car }[] = [
+const MAP_MODES: { id: "road" | "train"; label: string; icon: typeof Car }[] = [
   { id: "road", label: "Road", icon: Car },
   { id: "train", label: "Train", icon: TrainFront },
-  { id: "flight", label: "Flight", icon: Plane },
 ];
 
 function StationCard({
