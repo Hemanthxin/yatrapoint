@@ -122,6 +122,10 @@ export interface PlannerInput {
   // near/mid/far distance bands of this reach, so a bigger radius produces a
   // genuinely wider-ranging trip instead of the same nearby cluster.
   reachKm?: number;
+  // Hard cap on the TOTAL round-trip distance (km). The whole plan won't exceed
+  // this, so a 25 km pick yields a ~25 km trip, 50 → ~50, 100 → ~100 — instead
+  // of the route zig-zagging out to far more than the chosen distance.
+  maxTripKm?: number;
   // Effective travel cost per km (INR). Overrides the vehicle default so the
   // planner can cost bus/train/flight/fuel with real Karnataka rates. For public
   // transport this already includes the number of people.
@@ -205,6 +209,14 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   const minutesBudget = input.hoursAvailable * 60 * 0.85;
   const budget = input.totalBudget;
 
+  // Total-distance cap. The planner measures distance as straight-line
+  // (haversine); real roads run ~1.25× longer, so we divide the chosen km by
+  // that factor here — this keeps the FINAL routed (OSRM) round-trip close to
+  // the distance the traveller actually picked.
+  const ROAD_FACTOR = 1.25;
+  const distCap =
+    input.maxTripKm && input.maxTripKm > 0 ? input.maxTripKm / ROAD_FACTOR : Infinity;
+
   const D = (a: Pt, b: Pt) => haversineKm(a, b);
   const stopCostOf = (c: Candidate) =>
     c.entryFee * people + (isFoodCat(c) ? (c.foodCostPerPerson ?? 0) * people : 0);
@@ -256,6 +268,8 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   };
   const feasible = (c: Candidate, detour: number) => {
     const newDist = curDist + detour;
+    // Never let the total round-trip distance exceed the chosen distance.
+    if (newDist > distCap) return false;
     const newMin = (newDist / speed) * 60 + curStopMin + c.idealMinutes;
     const newCost = curStopCost + stopCostOf(c) + newDist * costPerKm;
     return newMin <= minutesBudget && newCost <= budget;
@@ -283,27 +297,6 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     if (tour.length >= maxStops) break;
     const { pos, detour } = bestInsertion(c);
     if (feasible(c, detour)) place(c, pos, detour);
-  }
-
-  // 1b) Far anchor — make the trip genuinely COVER the chosen distance. When the
-  // traveller picks 25 km we seed the farthest reachable place within 25 km
-  // (50 → ~50, 100 → ~100), so the plan spans the whole radius instead of
-  // clustering near the origin. We take the farthest FEASIBLE place at or inside
-  // the radius (a tiny 5% tolerance for OSM coordinate slop); if budget/time
-  // can't afford the very farthest, we step inward to the next farthest.
-  if (reachKm > 0 && tour.length < maxStops) {
-    const ranked = pool
-      .filter((c) => !isFoodCat(c) && !tour.some((t) => t.id === c.id))
-      .map((c) => ({ c, d: haversineKm(start, { lat: c.lat, lng: c.lng }) }))
-      .filter((x) => x.d <= reachKm * 1.05)
-      .sort((a, b) => b.d - a.d); // farthest first
-    for (const { c } of ranked) {
-      const { pos, detour } = bestInsertion(c);
-      if (feasible(c, detour)) {
-        place(c, pos, detour);
-        break;
-      }
-    }
   }
 
   const taken = new Set(tour.map((c) => c.id));

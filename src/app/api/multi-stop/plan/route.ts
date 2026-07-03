@@ -495,6 +495,9 @@ export async function POST(req: NextRequest) {
     maxStops: parsed.data.maxStops,
     candidates: finalCandidates,
     reachKm: radiusKm,
+    // The chosen km is a cap on the whole trip's distance, not just how far to
+    // look — so 25 km stays a ~25 km trip instead of routing out to ~69 km.
+    maxTripKm: radiusKm,
     costPerKm: effCostPerKm,
   });
 
