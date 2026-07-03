@@ -7,34 +7,37 @@ import { haversineKm } from "./geo";
 import type { OverpassCategory, OverpassPlace } from "./overpass";
 import { VEHICLES, type VehicleKind } from "./budget";
 
-// Per-category sensible defaults when OSM tells us nothing specific.
+// Per-category typical Indian entry fee (₹/person), visit duration and, for
+// eateries, a per-person spend. Calibrated to real 2024 averages so plan totals
+// land close to what a trip actually costs (temples/parks free or nominal;
+// ASI monuments/museums ₹25–50; theme parks ₹700–900).
 export const CATEGORY_DEFAULTS: Record<
   OverpassCategory,
   { entryFee: number; idealMinutes: number; foodCostPerPerson?: number }
 > = {
-  restaurant: { entryFee: 0, idealMinutes: 60, foodCostPerPerson: 350 },
-  cafe: { entryFee: 0, idealMinutes: 45, foodCostPerPerson: 200 },
-  fast_food: { entryFee: 0, idealMinutes: 30, foodCostPerPerson: 200 },
-  nightlife: { entryFee: 0, idealMinutes: 120, foodCostPerPerson: 800 },
+  restaurant: { entryFee: 0, idealMinutes: 60, foodCostPerPerson: 400 },
+  cafe: { entryFee: 0, idealMinutes: 45, foodCostPerPerson: 250 },
+  fast_food: { entryFee: 0, idealMinutes: 30, foodCostPerPerson: 220 },
+  nightlife: { entryFee: 0, idealMinutes: 120, foodCostPerPerson: 1000 },
   mall: { entryFee: 0, idealMinutes: 90 },
   marketplace: { entryFee: 0, idealMinutes: 45 },
-  temple: { entryFee: 0, idealMinutes: 30 },
+  temple: { entryFee: 0, idealMinutes: 40 },
   church: { entryFee: 0, idealMinutes: 30 },
   mosque: { entryFee: 0, idealMinutes: 30 },
   gurudwara: { entryFee: 0, idealMinutes: 30 },
   place_of_worship: { entryFee: 0, idealMinutes: 30 },
-  park: { entryFee: 0, idealMinutes: 60 },
-  garden: { entryFee: 50, idealMinutes: 60 },
-  museum: { entryFee: 100, idealMinutes: 90 },
-  viewpoint: { entryFee: 30, idealMinutes: 45 },
-  monument: { entryFee: 25, idealMinutes: 45 },
-  fort: { entryFee: 25, idealMinutes: 60 },
-  lake: { entryFee: 0, idealMinutes: 45 },
-  tourist_attraction: { entryFee: 25, idealMinutes: 60 },
-  cinema: { entryFee: 250, idealMinutes: 180 },
+  park: { entryFee: 20, idealMinutes: 60 },
+  garden: { entryFee: 30, idealMinutes: 60 },
+  museum: { entryFee: 50, idealMinutes: 90 },
+  viewpoint: { entryFee: 20, idealMinutes: 45 },
+  monument: { entryFee: 40, idealMinutes: 50 },
+  fort: { entryFee: 40, idealMinutes: 70 },
+  lake: { entryFee: 10, idealMinutes: 45 },
+  tourist_attraction: { entryFee: 50, idealMinutes: 60 },
+  cinema: { entryFee: 200, idealMinutes: 180 },
   theatre: { entryFee: 300, idealMinutes: 150 },
-  zoo: { entryFee: 200, idealMinutes: 120 },
-  amusement: { entryFee: 500, idealMinutes: 240 },
+  zoo: { entryFee: 100, idealMinutes: 120 },
+  amusement: { entryFee: 800, idealMinutes: 240 },
   station: { entryFee: 0, idealMinutes: 15 },
 };
 
@@ -89,7 +92,10 @@ export function candidateFromOverpass(p: OverpassPlace): Candidate {
     id: `osm:${p.osmId}`,
     name: p.name,
     category: p.category,
-    entryFee: fee.amount,
+    // Use the real OSM fee when tagged, otherwise a realistic category estimate
+    // so the plan total reflects what the trip actually costs (entryFeeKnown
+    // stays false so the UI can show it as an estimate).
+    entryFee: fee.known ? fee.amount : def.entryFee,
     entryFeeKnown: fee.known,
     lat: p.lat,
     lng: p.lng,
@@ -279,18 +285,19 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     if (feasible(c, detour)) place(c, pos, detour);
   }
 
-  // 1b) Far anchor — guarantee the trip genuinely reaches out toward the chosen
-  // radius. When a 100 km reach is picked we want to actually cover ~95 km, not
-  // just hop around the nearest cluster. Seed the FARTHEST feasible place that
-  // sits in the outer band [0.9 … 1.15] × reach (the window naturally excludes
-  // area-mode searches where the traveller is far outside the search area).
+  // 1b) Far anchor — make the trip genuinely COVER the chosen distance. When the
+  // traveller picks 25 km we seed the farthest reachable place within 25 km
+  // (50 → ~50, 100 → ~100), so the plan spans the whole radius instead of
+  // clustering near the origin. We take the farthest FEASIBLE place at or inside
+  // the radius (a tiny 5% tolerance for OSM coordinate slop); if budget/time
+  // can't afford the very farthest, we step inward to the next farthest.
   if (reachKm > 0 && tour.length < maxStops) {
-    const outer = pool
+    const ranked = pool
       .filter((c) => !isFoodCat(c) && !tour.some((t) => t.id === c.id))
       .map((c) => ({ c, d: haversineKm(start, { lat: c.lat, lng: c.lng }) }))
-      .filter((x) => x.d >= reachKm * 0.9 && x.d <= reachKm * 1.15)
-      .sort((a, b) => b.d - a.d);
-    for (const { c } of outer) {
+      .filter((x) => x.d <= reachKm * 1.05)
+      .sort((a, b) => b.d - a.d); // farthest first
+    for (const { c } of ranked) {
       const { pos, detour } = bestInsertion(c);
       if (feasible(c, detour)) {
         place(c, pos, detour);

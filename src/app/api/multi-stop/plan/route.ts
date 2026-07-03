@@ -315,7 +315,9 @@ export async function POST(req: NextRequest) {
         category: op,
         lat: Number(s.latitude),
         lng: Number(s.longitude),
-        entryFee: isOsmSeed ? 0 : s.entryFeePerPerson,
+        // Curated rows have a real fee; bulk OSM-seeded rows get a realistic
+        // category estimate (flagged as an estimate) so the total isn't ₹0.
+        entryFee: isOsmSeed ? CATEGORY_DEFAULTS[op].entryFee : s.entryFeePerPerson,
         entryFeeKnown: !isOsmSeed,
         idealMinutes: s.idealMinutesAtPlace,
         foodCostPerPerson:
@@ -445,18 +447,16 @@ export async function POST(req: NextRequest) {
   if (first.error) overpassError = first.error;
   else ingestOverpass(first.places);
 
-  // Gentle widen ONLY if the area is so sparse we can't fill the requested
-  // stops — and never beyond ~1.5× the chosen distance, so we honour the km
-  // the user asked to travel.
-  const maxWidenKm = radiusKm * 1.5;
-  let widen = 0;
-  while (wantedCats.length > 0 && finalCandidates.length < parsed.data.maxStops && currentKm < maxWidenKm && widen < 1 && !overpassError) {
-    currentKm = Math.min(maxWidenKm, currentKm * 1.5);
-    widen += 1;
+  // Honour the chosen distance: we DON'T widen beyond the selected radius, so a
+  // 25 km trip stays within 25 km, 50 within 50, etc. The only exception is a
+  // near-empty result (a very sparse rural area) — then we allow a small 20%
+  // safety widen just so the traveller still gets a plan instead of nothing.
+  if (wantedCats.length > 0 && finalCandidates.length < 2 && !overpassError) {
+    currentKm = radiusKm * 1.2;
     try {
       await addOverpass(currentKm);
     } catch {
-      break;
+      /* keep what we have */
     }
   }
 
@@ -632,9 +632,16 @@ export async function POST(req: NextRequest) {
   // Break the cost into travel + entry + food + stay so each can be shown.
   const entryFeesTotal = orderedStops.reduce((sum, s) => sum + s.entryFee * people, 0);
   const stopCostTotal = orderedStops.reduce((sum, s) => sum + s.stopCost, 0);
-  const foodTotal = Math.max(0, stopCostTotal - entryFeesTotal);
+  const stopFood = Math.max(0, stopCostTotal - entryFeesTotal);
+  // Realistic meals baseline: every traveller eats roughly 3 meals a day at a
+  // budget eatery (~₹350/person/day). The food line is at least this — so a
+  // multi-day trip doesn't undercount food to a single restaurant stop.
+  const MEALS_PER_PERSON_PER_DAY = 350;
+  const mealsBaseline = people * parsed.data.days * MEALS_PER_PERSON_PER_DAY;
+  const foodTotal = Math.max(stopFood, mealsBaseline);
+  const extraFood = foodTotal - stopFood; // meals beyond the eatery stops
   const fuelTotal = travelTotal;
-  const realTotalCost = fuelTotal + stopCostTotal + stayTotal;
+  const realTotalCost = fuelTotal + stopCostTotal + extraFood + stayTotal;
   const realPerPerson = Math.round(realTotalCost / Math.max(1, people));
 
   // Alternatives — strong candidates we considered but didn't include, so the

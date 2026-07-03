@@ -8,6 +8,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { ProfileForm } from "./ProfileForm";
 import { ProfilePosts } from "./ProfilePosts";
 import { ProfileTabs } from "./ProfileTabs";
+import { SavedTrips } from "./SavedTrips";
 import { listUserTripPlans } from "@/lib/queries/trip-plans";
 import { listFavoritedDestinations } from "@/lib/queries/destinations";
 import { listMyPosts, getFeedSocial } from "@/lib/queries/community";
@@ -47,22 +48,10 @@ export default async function ProfilePage() {
     saved: favorited.length,
   };
 
-  // --- Trips content (Trips tab) ---
-  const tripsContent =
-    plans.length === 0 ? (
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
-        <p className="text-4xl">🧳</p>
-        <p className="mt-3 text-sm font-semibold text-slate-500">
-          You haven&apos;t saved any trip plans yet.
-        </p>
-        <Link
-          href="/budget-planner"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
-        >
-          Plan your first trip
-        </Link>
-      </div>
-    ) : (
+  // --- Catalogue trip plans saved to the DB (rendered inside <SavedTrips/>,
+  // which also lists trips saved from the Budget Planner). ---
+  const dbPlansNode =
+    plans.length === 0 ? null : (
       <div className="space-y-4">
         {plans.map((p) => (
           <article
@@ -161,7 +150,7 @@ export default async function ProfilePage() {
         <ProfileTabs
           counts={counts}
           posts={<ProfilePosts posts={posts} social={social} />}
-          trips={tripsContent}
+          trips={<SavedTrips dbPlans={dbPlansNode} hasDbPlans={plans.length > 0} />}
           saved={savedContent}
         />
       </div>

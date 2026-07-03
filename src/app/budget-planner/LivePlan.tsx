@@ -305,6 +305,10 @@ export function LivePlan({
     [plan?.stops]
   );
 
+  // A train route only exists when we actually found a boarding AND an alighting
+  // station near the trip. Without both, there's no rail line to draw.
+  const hasTrainRoute = !!(plan?.trainInfo?.board && plan?.trainInfo?.dest);
+
   // Split the stops across the chosen days as EVENLY as possible so a multi-day
   // trip genuinely shows a plan for every day (e.g. "2 Days" always yields a
   // Day 1 and Day 2 when there are at least two stops), rather than cramming
@@ -784,19 +788,36 @@ export function LivePlan({
                   );
                 })}
               </div>
-              <TripMap
-                origin={start}
-                stops={stopMarkers}
-                route={mapMode === "road" ? plan.geometry ?? undefined : undefined}
-                mode={mapMode}
-                height={440}
-              />
-              <p className="mt-2 text-xs text-slate-500">
-                Green pin is your location. Numbered pins are stops in optimal order — nearest first.{" "}
-                {mapMode === "train"
-                  ? "The rail line links your stops in sequence."
-                  : "The line follows real driving roads (OSRM)."}
-              </p>
+              {mapMode === "train" && !hasTrainRoute ? (
+                <div className="grid h-[300px] place-items-center rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+                  <div className="max-w-sm">
+                    <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-200 text-slate-500">
+                      <TrainFront className="h-6 w-6" />
+                    </span>
+                    <p className="mt-3 text-sm font-extrabold text-slate-800">No train route in this plan</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      No railway station was found near your start or destination, so this trip can&apos;t
+                      be done by train. Try the Road view, or pick Car / Bus / Bike.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <TripMap
+                    origin={start}
+                    stops={stopMarkers}
+                    route={mapMode === "road" ? plan.geometry ?? undefined : undefined}
+                    mode={mapMode}
+                    height={440}
+                  />
+                  <p className="mt-2 text-xs text-slate-500">
+                    Green pin is your location. Numbered pins are stops in optimal order — nearest first.{" "}
+                    {mapMode === "train"
+                      ? "The rail line links your stops in sequence."
+                      : "The line follows real driving roads (OSRM)."}
+                  </p>
+                </>
+              )}
             </section>
           )}
 
@@ -851,16 +872,13 @@ export function LivePlan({
                     </div>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                    {s.entryFeeKnown ? (
-                      s.entryFee > 0 ? (
-                        <Chip>Entry {formatINR(s.entryFee)} / person</Chip>
-                      ) : (
-                        <Chip>Free entry</Chip>
-                      )
+                    {s.entryFee > 0 ? (
+                      <Chip>
+                        Entry {s.entryFeeKnown ? "" : "≈"}{formatINR(s.entryFee)} / person
+                        {s.entryFeeKnown ? "" : " (est.)"}
+                      </Chip>
                     ) : (
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-400">
-                        Entry fee not listed
-                      </span>
+                      <Chip>Free entry</Chip>
                     )}
                     {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
                     {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
