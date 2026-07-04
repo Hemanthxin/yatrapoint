@@ -11,53 +11,30 @@
    `accent`/`surface` Tailwind colours and by the app-wide overrides further
    down, so switching the attribute re-skins the whole app.
    ───────────────────────────────────────────────────────────────────────── */
-:root,
-:root[data-theme="light"] {
-  --background: 246 247 249;
+/* DESKTOP DEFAULT = the ORIGINAL look: GREEN brand + clean light surfaces.
+   The whole redesign (coral accent + dark/vibrant themes) is applied ONLY on
+   mobile (max-width: 1023px) in the media block below, so desktop stays exactly
+   as it was. The brand palette is expressed as RGB channels so a single media
+   query can flip green→coral across every emerald/green/teal utility at once. */
+:root {
+  --br-50: 236 253 245;  --br-100: 209 250 229; --br-200: 167 243 208;
+  --br-300: 110 231 183; --br-400: 52 211 153;  --br-500: 16 185 129;
+  --br-600: 5 150 105;   --br-700: 4 120 87;    --br-800: 6 95 70;
+  --br-900: 6 78 59;     --br-950: 2 44 34;
+
+  --background: 255 255 255;
   --foreground: 15 23 42;
-  --app-bg: #f5f6f8;
+  --app-bg: #ffffff;
   --surface: #ffffff;
   --surface-2: #f1f5f9;
   --text: #0f172a;
   --text-soft: #334155;
   --muted: #64748b;
-  --border: #e6e9ee;
-  --accent: #ef4f5f;
-  --accent-2: #dc3547;
+  --border: #e2e8f0;
+  --accent: #059669;
+  --accent-2: #047857;
   --nav-bg: rgba(255, 255, 255, 0.82);
-  --ring: rgba(239, 79, 95, 0.15);
-}
-
-:root[data-theme="dark"] {
-  --background: 11 15 20;
-  --foreground: 232 237 243;
-  --app-bg: #0b0f14;
-  --surface: #151b24;
-  --surface-2: #1c2431;
-  --text: #e8edf3;
-  --text-soft: #c4cfdb;
-  --muted: #94a3b4;
-  --border: #263242;
-  --accent: #ff5c6a;
-  --accent-2: #ef4f5f;
-  --nav-bg: rgba(18, 24, 33, 0.82);
-  --ring: rgba(255, 92, 106, 0.22);
-}
-
-:root[data-theme="vibrant"] {
-  --background: 24 12 40;
-  --foreground: 245 240 255;
-  --app-bg: #180c28;
-  --surface: rgba(255, 255, 255, 0.09);
-  --surface-2: rgba(255, 255, 255, 0.06);
-  --text: #f6f2ff;
-  --text-soft: #e6ddf8;
-  --muted: #c9bce6;
-  --border: rgba(255, 255, 255, 0.16);
-  --accent: #ff5c6a;
-  --accent-2: #b3277a;
-  --nav-bg: rgba(40, 18, 66, 0.6);
-  --ring: rgba(255, 92, 106, 0.28);
+  --ring: rgba(16, 185, 129, 0.15);
 }
 
 html,
@@ -74,71 +51,116 @@ body {
   transition: background-color 0.35s ease, color 0.35s ease;
 }
 
-/* Vibrant theme paints a fixed saturated gradient behind everything. */
-:root[data-theme="vibrant"] body {
-  background:
-    radial-gradient(120% 100% at 0% 0%, #4f2b8f 0%, transparent 55%),
-    radial-gradient(120% 100% at 100% 0%, #b3277a 0%, transparent 55%),
-    linear-gradient(160deg, #2a1148 0%, #6a1f66 45%, #b3384f 100%);
-  background-attachment: fixed;
-}
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE-ONLY REDESIGN (≤ 1023px). Everything here — coral accent, dark &
+   vibrant themes, and the app-wide surface re-skins — applies to phones/tablets
+   only. Desktop (≥ 1024px) never sees these rules, so it keeps the original
+   green + light look.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1023px) {
+  /* Flip the brand palette to CORAL and lighten the base surface. */
+  :root {
+    --br-50: 254 242 243;  --br-100: 253 225 228; --br-200: 251 199 205;
+    --br-300: 247 157 168; --br-400: 242 105 123; --br-500: 239 79 95;
+    --br-600: 220 53 71;   --br-700: 185 36 53;   --br-800: 153 31 46;
+    --br-900: 127 29 42;   --br-950: 69 10 18;
 
-/* ── App-wide theme overrides ──────────────────────────────────────────────
-   The app was built with hard-coded light utilities (bg-white, text-slate-*,
-   border-slate-*). Re-map the common surface / text / border utilities under
-   the dark & vibrant themes so the ENTIRE app re-skins without touching every
-   component. Accent-coloured utilities (emerald/green→coral) are untouched. */
-:root[data-theme="dark"] .bg-white,
-:root[data-theme="vibrant"] .bg-white {
-  background-color: var(--surface) !important;
-}
-:root[data-theme="dark"] .bg-slate-50,
-:root[data-theme="dark"] .bg-slate-100,
-:root[data-theme="vibrant"] .bg-slate-50,
-:root[data-theme="vibrant"] .bg-slate-100 {
-  background-color: var(--surface-2) !important;
-}
-:root[data-theme="dark"] .text-slate-900,
-:root[data-theme="dark"] .text-slate-800,
-:root[data-theme="vibrant"] .text-slate-900,
-:root[data-theme="vibrant"] .text-slate-800 {
-  color: var(--text) !important;
-}
-:root[data-theme="dark"] .text-slate-700,
-:root[data-theme="dark"] .text-slate-600,
-:root[data-theme="vibrant"] .text-slate-700,
-:root[data-theme="vibrant"] .text-slate-600 {
-  color: var(--text-soft) !important;
-}
-:root[data-theme="dark"] .text-slate-500,
-:root[data-theme="dark"] .text-slate-400,
-:root[data-theme="vibrant"] .text-slate-500,
-:root[data-theme="vibrant"] .text-slate-400 {
-  color: var(--muted) !important;
-}
-:root[data-theme="dark"] .border-slate-100,
-:root[data-theme="dark"] .border-slate-200,
-:root[data-theme="dark"] .border-slate-300,
-:root[data-theme="vibrant"] .border-slate-100,
-:root[data-theme="vibrant"] .border-slate-200,
-:root[data-theme="vibrant"] .border-slate-300 {
-  border-color: var(--border) !important;
-}
-:root[data-theme="dark"] .glass-strong,
-:root[data-theme="vibrant"] .glass-strong {
-  background: var(--nav-bg) !important;
-}
-:root[data-theme="dark"] .card,
-:root[data-theme="vibrant"] .card {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-}
-/* Dim the ambient aurora on dark so it doesn't wash out the UI. */
-:root[data-theme="dark"] .aurora-canvas {
-  opacity: 0.18;
-}
-:root[data-theme="vibrant"] .aurora-canvas {
-  opacity: 0.32;
+    --app-bg: #f5f6f8;
+    --accent: #ef4f5f;
+    --accent-2: #dc3547;
+    --ring: rgba(239, 79, 95, 0.15);
+  }
+
+  :root[data-theme="dark"] {
+    --app-bg: #0b0f14;
+    --surface: #151b24;
+    --surface-2: #1c2431;
+    --text: #e8edf3;
+    --text-soft: #c4cfdb;
+    --muted: #94a3b4;
+    --border: #263242;
+    --accent: #ff5c6a;
+    --accent-2: #ef4f5f;
+    --nav-bg: rgba(18, 24, 33, 0.82);
+    --ring: rgba(255, 92, 106, 0.22);
+  }
+
+  :root[data-theme="vibrant"] {
+    --app-bg: #180c28;
+    --surface: rgba(255, 255, 255, 0.09);
+    --surface-2: rgba(255, 255, 255, 0.06);
+    --text: #f6f2ff;
+    --text-soft: #e6ddf8;
+    --muted: #c9bce6;
+    --border: rgba(255, 255, 255, 0.16);
+    --accent: #ff5c6a;
+    --accent-2: #b3277a;
+    --nav-bg: rgba(40, 18, 66, 0.6);
+    --ring: rgba(255, 92, 106, 0.28);
+  }
+
+  /* Vibrant theme paints a fixed saturated gradient behind everything. */
+  :root[data-theme="vibrant"] body {
+    background:
+      radial-gradient(120% 100% at 0% 0%, #4f2b8f 0%, transparent 55%),
+      radial-gradient(120% 100% at 100% 0%, #b3277a 0%, transparent 55%),
+      linear-gradient(160deg, #2a1148 0%, #6a1f66 45%, #b3384f 100%);
+    background-attachment: fixed;
+  }
+
+  /* Re-map the common light utilities to the theme surface tokens so the whole
+     mobile app re-skins for dark/vibrant without touching every component. */
+  :root[data-theme="dark"] .bg-white,
+  :root[data-theme="vibrant"] .bg-white {
+    background-color: var(--surface) !important;
+  }
+  :root[data-theme="dark"] .bg-slate-50,
+  :root[data-theme="dark"] .bg-slate-100,
+  :root[data-theme="vibrant"] .bg-slate-50,
+  :root[data-theme="vibrant"] .bg-slate-100 {
+    background-color: var(--surface-2) !important;
+  }
+  :root[data-theme="dark"] .text-slate-900,
+  :root[data-theme="dark"] .text-slate-800,
+  :root[data-theme="vibrant"] .text-slate-900,
+  :root[data-theme="vibrant"] .text-slate-800 {
+    color: var(--text) !important;
+  }
+  :root[data-theme="dark"] .text-slate-700,
+  :root[data-theme="dark"] .text-slate-600,
+  :root[data-theme="vibrant"] .text-slate-700,
+  :root[data-theme="vibrant"] .text-slate-600 {
+    color: var(--text-soft) !important;
+  }
+  :root[data-theme="dark"] .text-slate-500,
+  :root[data-theme="dark"] .text-slate-400,
+  :root[data-theme="vibrant"] .text-slate-500,
+  :root[data-theme="vibrant"] .text-slate-400 {
+    color: var(--muted) !important;
+  }
+  :root[data-theme="dark"] .border-slate-100,
+  :root[data-theme="dark"] .border-slate-200,
+  :root[data-theme="dark"] .border-slate-300,
+  :root[data-theme="vibrant"] .border-slate-100,
+  :root[data-theme="vibrant"] .border-slate-200,
+  :root[data-theme="vibrant"] .border-slate-300 {
+    border-color: var(--border) !important;
+  }
+  :root[data-theme="dark"] .glass-strong,
+  :root[data-theme="vibrant"] .glass-strong {
+    background: var(--nav-bg) !important;
+  }
+  :root[data-theme="dark"] .card,
+  :root[data-theme="vibrant"] .card {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+  }
+  :root[data-theme="dark"] .aurora-canvas {
+    opacity: 0.18;
+  }
+  :root[data-theme="vibrant"] .aurora-canvas {
+    opacity: 0.32;
+  }
 }
 
 /* Hide number-input spinners (used for OTP boxes) */

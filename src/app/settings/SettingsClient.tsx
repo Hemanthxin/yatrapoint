@@ -78,7 +78,9 @@ export function SettingsClient({ initial }: { initial: Initial }) {
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
           <Palette className="h-4 w-4 text-emerald-600" /> Appearance
         </h2>
-        <p className="mt-1 text-xs text-slate-500">Pick a theme — it applies instantly across the whole app.</p>
+        <p className="mt-1 text-xs text-slate-500">
+          Pick a theme — it applies instantly on mobile devices. (Desktop keeps the classic look.)
+        </p>
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {THEMES.map((t) => {
             const active = theme === t.id;
