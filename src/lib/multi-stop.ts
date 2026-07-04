@@ -302,6 +302,36 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   const taken = new Set(tour.map((c) => c.id));
   pool = pool.filter((c) => !taken.has(c.id));
 
+  // 1b) Far anchor. The greedy "value per detour" scorer below always favours
+  // nearby places (a distant place's huge detour sinks its ratio), so on a wide
+  // reach the trip would otherwise hug the start — exactly the "I picked 200 km
+  // but it only covers 20-30 km" complaint. When the traveller asked for a wide
+  // radius, first seed the loop with the FARTHEST high-value place that still
+  // fits time + budget; the greedy fill then strings places along the corridor
+  // out to it, so the trip genuinely spans the chosen distance.
+  if (reachKm > 40 && tour.length < maxStops) {
+    const outer = reachKm * 0.55; // only the outer half counts as a real anchor
+    let anchor: { c: Candidate; pos: number; detour: number; dist: number } | null = null;
+    for (const c of pool) {
+      if (isFoodCat(c) && (foodUsed || !input.includeFood)) continue;
+      const dStart = haversineKm(start, { lat: c.lat, lng: c.lng });
+      if (dStart < outer) continue;
+      const { pos, detour } = bestInsertion(c);
+      if (!feasible(c, detour)) continue;
+      // Prefer the farthest reach; break ties by popularity.
+      const better =
+        !anchor ||
+        dStart > anchor.dist + 1 ||
+        (Math.abs(dStart - anchor.dist) <= 1 &&
+          (c.popularity ?? 50) > (anchor.c.popularity ?? 50));
+      if (better) anchor = { c, pos, detour, dist: dStart };
+    }
+    if (anchor) {
+      place(anchor.c, anchor.pos, anchor.detour);
+      pool = pool.filter((c) => c.id !== anchor!.c.id);
+    }
+  }
+
   // 2) Greedily insert the best value-per-detour candidate until full.
   while (tour.length < maxStops) {
     let best: { c: Candidate; pos: number; detour: number; ratio: number } | null = null;

@@ -15,9 +15,11 @@ interface ProfileTabsProps {
 export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
   const [tab, setTab] = useState<TabKey>("posts");
 
-  const tabs: { key: TabKey; label: string; icon: ReactNode; count: number }[] = [
+  // `count: null` hides the number bubble (Trips mixes DB plans + locally-saved
+  // budget trips, so a server count would be misleading).
+  const tabs: { key: TabKey; label: string; icon: ReactNode; count: number | null }[] = [
     { key: "posts", label: "Posts", icon: <Grid3x3 className="h-4 w-4" />, count: counts.posts },
-    { key: "trips", label: "Trips", icon: <Briefcase className="h-4 w-4" />, count: counts.trips },
+    { key: "trips", label: "Trips", icon: <Briefcase className="h-4 w-4" />, count: null },
     { key: "saved", label: "Saved", icon: <Heart className="h-4 w-4" />, count: counts.saved },
   ];
 
@@ -39,13 +41,15 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
             >
               {t.icon}
               <span className="hidden sm:inline">{t.label}</span>
-              <span
-                className={`rounded-full px-1.5 text-xs ${
-                  active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
-                }`}
-              >
-                {t.count}
-              </span>
+              {t.count !== null && (
+                <span
+                  className={`rounded-full px-1.5 text-xs ${
+                    active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
+                  }`}
+                >
+                  {t.count}
+                </span>
+              )}
             </button>
           );
         })}

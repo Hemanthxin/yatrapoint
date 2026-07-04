@@ -234,7 +234,6 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
             {/* Stats row */}
             <div className="mt-5 flex items-stretch justify-center gap-2 sm:justify-start">
               <Stat label="Posts" value={stats.posts} />
-              <Stat label="Trips" value={stats.trips} />
               <Stat label="Saved" value={stats.saved} />
             </div>
           </div>

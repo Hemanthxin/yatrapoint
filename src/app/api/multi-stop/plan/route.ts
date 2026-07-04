@@ -484,6 +484,14 @@ export async function POST(req: NextRequest) {
       : travelCostFor(mode, parsed.data.vehicle, 1, people, inBlr).cost;
   const flightBaseTotal = mode === "flight" ? Math.round((FLIGHT_BASE || 3000) * people) : 0;
 
+  // Average driving speed scales with how far the traveller wants to roam: a
+  // short in-city radius crawls in traffic (~30 km/h), while a long inter-city
+  // radius runs mostly on highways (~58 km/h). Without this, a 200 km trip is
+  // wrongly judged time-infeasible at an urban ~28 km/h and collapses back into
+  // a 20–30 km cluster near the start.
+  const avgSpeedKmh =
+    radiusKm <= 25 ? 30 : radiusKm <= 60 ? 42 : radiusKm <= 120 ? 52 : 58;
+
   // 3) Greedy pick.
   const plan = planMultiStop({
     start: parsed.data.start,
@@ -494,10 +502,14 @@ export async function POST(req: NextRequest) {
     includeFood: parsed.data.includeFood,
     maxStops: parsed.data.maxStops,
     candidates: finalCandidates,
+    avgSpeedKmh,
     reachKm: radiusKm,
-    // The chosen km is a cap on the whole trip's distance, not just how far to
-    // look — so 25 km stays a ~25 km trip instead of routing out to ~69 km.
-    maxTripKm: radiusKm,
+    // The chosen km is how FAR FROM THE TRAVELLER a place may be (a reach
+    // radius), not the whole loop length. Allow the round trip to actually reach
+    // the far edge and come back (plus inter-stop detours) — after the ×1.25
+    // road factor this bounds the routed trip at ~2× the chosen distance — so a
+    // big radius yields a genuinely wide-ranging trip instead of hugging home.
+    maxTripKm: radiusKm * 2.5,
     costPerKm: effCostPerKm,
   });
 
