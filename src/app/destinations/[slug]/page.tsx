@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Calendar,
   MapPin,
@@ -13,8 +12,9 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { BackButton } from "@/components/app/BackButton";
 import { FavoriteButton } from "@/components/app/FavoriteButton";
-import { AddToCartButton } from "@/components/app/AddToCartButton";
+import { LocationBanner } from "@/components/app/LocationBanner";
 import { DestinationCard } from "@/components/app/DestinationCard";
+import { DestinationDetail } from "./DestinationDetail";
 import {
   getDestinationBySlug,
   listDestinations,
@@ -118,15 +118,13 @@ export default async function DestinationPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="grid gap-6 p-5 sm:p-6 md:grid-cols-3 md:p-8">
-          <div className="md:col-span-2">
-            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">About</h2>
-            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
-              {destination.description}
-            </p>
-          </div>
+        <div className="p-5 sm:p-6 md:p-8">
+          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">About</h2>
+          <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
+            {destination.description}
+          </p>
 
-          <aside className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <div className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-4">
             <Stat
               icon={<Wallet className="h-4 w-4" />}
               label="Per day (mid-range)"
@@ -147,39 +145,15 @@ export default async function DestinationPage({ params }: PageProps) {
               label="Typical trip cost"
               value={`${formatINR(tripCost)} pp`}
             />
-            <AddToCartButton
-              className="mt-2 w-full py-3 shadow-lg shadow-emerald-500/40"
-              label="Plan a trip"
-              item={{
-                id: `dest-${destination.id}`,
-                name: destination.name,
-                subtitle: destination.district
-                  ? `${destination.district}, ${destination.state}`
-                  : destination.state,
-                kind: "destination",
-                emoji: cat?.emoji ?? "📍",
-                href: `/destinations/${destination.slug}`,
-              }}
-            />
-            <Link
-              href={`/budget-planner?destination=${destination.slug}`}
-              className="block w-full rounded-2xl border border-slate-200 bg-white py-3 text-center text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-100 active:scale-95"
-            >
-              Plan in budget planner
-            </Link>
-            {destination.latitude && destination.longitude && (
-              <a
-                href={`https://www.google.com/maps?q=${destination.latitude},${destination.longitude}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full rounded-2xl border border-slate-200 bg-white py-3 text-center text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-100 active:scale-95"
-              >
-                Open in Google Maps
-              </a>
-            )}
-          </aside>
+          </div>
         </div>
       </article>
+
+      {/* Live route + live budget + timeline, plus the Plan a trip action. */}
+      <div className="mt-4">
+        <LocationBanner />
+      </div>
+      <DestinationDetail destination={destination} />
 
       {relatedFiltered.length > 0 && (
         <section className="mt-10">
