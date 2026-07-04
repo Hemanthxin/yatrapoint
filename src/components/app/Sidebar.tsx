@@ -10,6 +10,7 @@ import {
   CalendarDays,
   Flag,
   Bookmark,
+  Settings,
   LogOut,
   ArrowRight,
   type LucideIcon,
@@ -32,6 +33,7 @@ const NAV: NavItem[] = [
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
   { href: "/profile", label: "Your Travel Places", icon: Bookmark },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {

@@ -2,9 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 255 255 255;
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME SYSTEM — three switchable themes (set via [data-theme] on <html>):
+     • "light"   → bold clean light (default)
+     • "dark"    → dark premium
+     • "vibrant" → saturated gradient
+   All share a coral/red accent. Semantic tokens below are consumed by the
+   `accent`/`surface` Tailwind colours and by the app-wide overrides further
+   down, so switching the attribute re-skins the whole app.
+   ───────────────────────────────────────────────────────────────────────── */
+:root,
+:root[data-theme="light"] {
+  --background: 246 247 249;
   --foreground: 15 23 42;
+  --app-bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --text: #0f172a;
+  --text-soft: #334155;
+  --muted: #64748b;
+  --border: #e6e9ee;
+  --accent: #ef4f5f;
+  --accent-2: #dc3547;
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --ring: rgba(239, 79, 95, 0.15);
+}
+
+:root[data-theme="dark"] {
+  --background: 11 15 20;
+  --foreground: 232 237 243;
+  --app-bg: #0b0f14;
+  --surface: #151b24;
+  --surface-2: #1c2431;
+  --text: #e8edf3;
+  --text-soft: #c4cfdb;
+  --muted: #94a3b4;
+  --border: #263242;
+  --accent: #ff5c6a;
+  --accent-2: #ef4f5f;
+  --nav-bg: rgba(18, 24, 33, 0.82);
+  --ring: rgba(255, 92, 106, 0.22);
+}
+
+:root[data-theme="vibrant"] {
+  --background: 24 12 40;
+  --foreground: 245 240 255;
+  --app-bg: #180c28;
+  --surface: rgba(255, 255, 255, 0.09);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --text: #f6f2ff;
+  --text-soft: #e6ddf8;
+  --muted: #c9bce6;
+  --border: rgba(255, 255, 255, 0.16);
+  --accent: #ff5c6a;
+  --accent-2: #b3277a;
+  --nav-bg: rgba(40, 18, 66, 0.6);
+  --ring: rgba(255, 92, 106, 0.28);
 }
 
 html,
@@ -13,11 +66,79 @@ body {
 }
 
 body {
-  background-color: rgb(var(--background));
-  color: rgb(var(--foreground));
+  background-color: var(--app-bg);
+  color: var(--text);
   font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Vibrant theme paints a fixed saturated gradient behind everything. */
+:root[data-theme="vibrant"] body {
+  background:
+    radial-gradient(120% 100% at 0% 0%, #4f2b8f 0%, transparent 55%),
+    radial-gradient(120% 100% at 100% 0%, #b3277a 0%, transparent 55%),
+    linear-gradient(160deg, #2a1148 0%, #6a1f66 45%, #b3384f 100%);
+  background-attachment: fixed;
+}
+
+/* ── App-wide theme overrides ──────────────────────────────────────────────
+   The app was built with hard-coded light utilities (bg-white, text-slate-*,
+   border-slate-*). Re-map the common surface / text / border utilities under
+   the dark & vibrant themes so the ENTIRE app re-skins without touching every
+   component. Accent-coloured utilities (emerald/green→coral) are untouched. */
+:root[data-theme="dark"] .bg-white,
+:root[data-theme="vibrant"] .bg-white {
+  background-color: var(--surface) !important;
+}
+:root[data-theme="dark"] .bg-slate-50,
+:root[data-theme="dark"] .bg-slate-100,
+:root[data-theme="vibrant"] .bg-slate-50,
+:root[data-theme="vibrant"] .bg-slate-100 {
+  background-color: var(--surface-2) !important;
+}
+:root[data-theme="dark"] .text-slate-900,
+:root[data-theme="dark"] .text-slate-800,
+:root[data-theme="vibrant"] .text-slate-900,
+:root[data-theme="vibrant"] .text-slate-800 {
+  color: var(--text) !important;
+}
+:root[data-theme="dark"] .text-slate-700,
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="vibrant"] .text-slate-700,
+:root[data-theme="vibrant"] .text-slate-600 {
+  color: var(--text-soft) !important;
+}
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-400,
+:root[data-theme="vibrant"] .text-slate-500,
+:root[data-theme="vibrant"] .text-slate-400 {
+  color: var(--muted) !important;
+}
+:root[data-theme="dark"] .border-slate-100,
+:root[data-theme="dark"] .border-slate-200,
+:root[data-theme="dark"] .border-slate-300,
+:root[data-theme="vibrant"] .border-slate-100,
+:root[data-theme="vibrant"] .border-slate-200,
+:root[data-theme="vibrant"] .border-slate-300 {
+  border-color: var(--border) !important;
+}
+:root[data-theme="dark"] .glass-strong,
+:root[data-theme="vibrant"] .glass-strong {
+  background: var(--nav-bg) !important;
+}
+:root[data-theme="dark"] .card,
+:root[data-theme="vibrant"] .card {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+/* Dim the ambient aurora on dark so it doesn't wash out the UI. */
+:root[data-theme="dark"] .aurora-canvas {
+  opacity: 0.18;
+}
+:root[data-theme="vibrant"] .aurora-canvas {
+  opacity: 0.32;
 }
 
 /* Hide number-input spinners (used for OTP boxes) */

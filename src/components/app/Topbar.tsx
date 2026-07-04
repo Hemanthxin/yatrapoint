@@ -11,6 +11,7 @@ import {
   ChevronDown,
   User,
   Briefcase,
+  Settings,
   LogOut,
   Loader2,
   ShoppingBag,
@@ -260,6 +261,13 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
                 className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
               >
                 <Briefcase className="h-4 w-4 text-slate-400" /> Community
+              </Link>
+              <Link
+                href="/settings"
+                onClick={() => setOpenUser(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+              >
+                <Settings className="h-4 w-4 text-slate-400" /> Settings
               </Link>
               <form action={signOutAction} className="border-t border-slate-100">
                 <button

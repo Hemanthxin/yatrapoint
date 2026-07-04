@@ -18,8 +18,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sans.variable} ${script.variable}`}>
-      <body className="min-h-screen bg-white text-slate-900">
+    <html lang="en" className={`${sans.variable} ${script.variable}`} data-theme="light">
+      <head>
+        {/* Apply the saved theme before first paint to avoid a flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('yatra-point/theme');if(t==='dark'||t==='vibrant'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="min-h-screen">
         <Providers>{children}</Providers>
       </body>
     </html>

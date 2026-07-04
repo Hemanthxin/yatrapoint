@@ -5,10 +5,33 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Brand recolor: the app used emerald/green/teal as its accent. Remapping
+        // those three scales to a Zomato-style CORAL/RED palette recolors every
+        // existing `emerald-*`/`green-*`/`teal-*` utility in one shot.
+        emerald: {
+          50: "#FEF2F3", 100: "#FDE1E4", 200: "#FBC7CD", 300: "#F79DA8",
+          400: "#F2697B", 500: "#EF4F5F", 600: "#DC3547", 700: "#B92435",
+          800: "#991F2E", 900: "#7F1D2A", 950: "#450A12",
+        },
+        green: {
+          50: "#FEF2F3", 100: "#FDE1E4", 200: "#FBC7CD", 300: "#F79DA8",
+          400: "#F2697B", 500: "#EF4F5F", 600: "#DC3547", 700: "#B92435",
+          800: "#991F2E", 900: "#7F1D2A", 950: "#450A12",
+        },
+        teal: {
+          50: "#FEF2F3", 100: "#FDE1E4", 200: "#FBC7CD", 300: "#F79DA8",
+          400: "#F2697B", 500: "#EF4F5F", 600: "#DC3547", 700: "#B92435",
+          800: "#991F2E", 900: "#7F1D2A", 950: "#450A12",
+        },
+        // Semantic tokens driven by the active theme (see globals.css).
+        accent: "var(--accent)",
+        "accent-2": "var(--accent-2)",
+        surface: "var(--surface)",
+        "surface-2": "var(--surface-2)",
         brand: {
-          green: "#16A34A",
-          greenDark: "#15803D",
-          greenLight: "#22C55E",
+          green: "#EF4F5F",
+          greenDark: "#DC3547",
+          greenLight: "#F2697B",
           navy: "#1B3E7A",
           dark: "#0B1B2B",
         },
@@ -49,8 +72,8 @@ export default {
         },
         // Pulsing emerald glow — used by the dock + raised Plan button.
         glow: {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(16,185,129,0.45), 0 12px 34px -10px rgba(16,185,129,0.55)" },
-          "50%": { boxShadow: "0 0 0 8px rgba(16,185,129,0), 0 18px 44px -8px rgba(16,185,129,0.7)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(239,79,95,0.45), 0 12px 34px -10px rgba(239,79,95,0.55)" },
+          "50%": { boxShadow: "0 0 0 8px rgba(239,79,95,0), 0 18px 44px -8px rgba(239,79,95,0.7)" },
         },
         // Indigo variant for the admin console.
         glowIndigo: {
