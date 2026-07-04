@@ -45,6 +45,15 @@ const DIRECTIONS = [
 ];
 const SESSION_KEY = "yatra-point/budget-wizard";
 
+// Human label for a distance-band chip: the km value is the floor, the ceiling
+// is double it (0 = anywhere nearby, 200 = 200 km and beyond).
+function distBandLabel(km: string): string {
+  const n = parseInt(km, 10) || 0;
+  if (n === 0) return "Anywhere";
+  if (n >= 200) return "200+ km";
+  return `${n}–${n * 2} km`;
+}
+
 // Budget slider uses a non-linear scale so the evenly-spaced ₹1K/5K/10K/20K/50K
 // labels line up with the thumb (more precision at lower budgets).
 const BUDGET_STOPS = [1000, 5000, 10000, 20000, 50000];
@@ -237,22 +246,19 @@ export function WizardForm({ initial }: WizardFormProps) {
   }
 
   const dirLabel = DIRECTIONS.find((d) => d.key === direction)?.label ?? "Circle";
-  const minKmNum = parseInt(km, 10) || 0;
   const aroundLabel =
-    (minKmNum > 0 ? `≥ ${minKmNum} km` : "nearby") +
-    (direction !== "any" ? ` · ${dirLabel}` : "");
+    distBandLabel(km) + (direction !== "any" ? ` · ${dirLabel}` : "");
   const whereLabel = planMode === "around" ? `Around me · ${aroundLabel}` : areaLabel(area);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setAreaError(null);
 
-    // In "around me" mode the km slider is the MINIMUM distance a place must be
-    // from the traveller; the reach (discovery radius) sits a corridor beyond it
-    // so there are genuinely far places to string the trip out to. A 0 minimum
-    // keeps the trip local.
+    // In "around me" mode the km chip picks a DISTANCE BAND from the traveller:
+    // 25 → 25-50 km, 50 → 50-100, 100 → 100-200, 200 → 200 km+, and 0 → anywhere
+    // nearby (0-50). `minDistanceKm` is the floor and `reachKm` the ceiling.
     const minKm = parseInt(km, 10) || 0;
-    const reachKm = minKm > 0 ? minKm + 120 : 60;
+    const reachKm = minKm === 0 ? 50 : minKm >= 200 ? 500 : minKm * 2;
 
     const snap: LivePlanProps = {
       budget,
@@ -450,16 +456,16 @@ export function WizardForm({ initial }: WizardFormProps) {
               </div>
               {planMode === "around" && (
                 <div>
-                  <StepLabel icon="📏">Minimum distance (km)</StepLabel>
+                  <StepLabel icon="📏">Distance band (km)</StepLabel>
                   <div className="flex flex-wrap gap-2">
                     {MIN_DIST_OPTIONS.map((k) => (
                       <Chip key={k} active={km === k} onClick={() => setKm(k)}>
-                        {k === "0" ? "Anywhere" : `${k}+ km`}
+                        {distBandLabel(k)}
                       </Chip>
                     ))}
                   </div>
                   <p className="pt-2 text-xs text-slate-500">
-                    Only include places at least this far from you — pick a bigger number for a proper outstation trip.
+                    How far the trip should range from you — e.g. 50 plans places roughly 50-100 km away.
                   </p>
                 </div>
               )}
@@ -549,10 +555,7 @@ export function WizardForm({ initial }: WizardFormProps) {
               <SummaryRow label="Travellers" value={`${travellersNum}`} />
               <SummaryRow label="Places" value={`${places} stops`} />
               {planMode === "around" && (
-                <SummaryRow
-                  label="Min distance"
-                  value={minKmNum > 0 ? `${minKmNum}+ km` : "Anywhere"}
-                />
+                <SummaryRow label="Distance" value={distBandLabel(km)} />
               )}
               {planMode === "around" && direction !== "any" && (
                 <SummaryRow label="Direction" value={dirLabel} />

@@ -71,7 +71,18 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
 
   const lat = Number(destination.latitude);
   const lng = Number(destination.longitude);
-  const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+  // Many imported places have no stored coordinates (null/empty). `Number(null)`
+  // is 0 — which is a real point off the coast of Africa — so we must reject
+  // null/blank/(0,0) explicitly, otherwise every coordless place would draw the
+  // same bogus ~8,600 km route to the Gulf of Guinea and show identical budgets.
+  const hasCoords =
+    destination.latitude != null &&
+    destination.longitude != null &&
+    String(destination.latitude).trim() !== "" &&
+    String(destination.longitude).trim() !== "" &&
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    !(lat === 0 && lng === 0);
   const destPoint = useMemo<LatLng>(() => ({ lat, lng }), [lat, lng]);
 
   // Budget inputs.
