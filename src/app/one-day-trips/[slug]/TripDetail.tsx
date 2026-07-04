@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
+import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { fetchDrivingRoute, type RouteResult } from "@/lib/routing";
 import {
   addMinutes,
@@ -333,6 +334,18 @@ export function TripDetail({ trip }: TripDetailProps) {
             </dl>
           </div>
 
+          <AddToCartButton
+            className="w-full py-3 shadow-lg shadow-emerald-500/40"
+            label="Plan a trip"
+            item={{
+              id: `nearby-${trip.id}`,
+              name: trip.name,
+              subtitle: trip.baseCity,
+              kind: "trip",
+              emoji: cat?.emoji ?? "📍",
+              href: `/one-day-trips/${trip.slug}`,
+            }}
+          />
           <Link
             href={`/one-day-trips/${trip.slug}/live`}
             className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"

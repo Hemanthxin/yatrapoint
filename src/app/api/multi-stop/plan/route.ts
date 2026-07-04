@@ -170,6 +170,26 @@ const WORSHIP_OPS = new Set<OverpassCategory>([
   "place_of_worship",
 ]);
 
+// Resolve ANY stored `destinations.category` to the Overpass place-types it can
+// satisfy, so a catalogue place is auto-discovered whenever the traveller picks
+// a matching place type. Handles all three category vocabularies:
+//   • the six broad catalogue slugs (pilgrimage / heritage / hill_station / …),
+//   • the ADMIN form's labels (Temple / Museum / Waterfall / Park / Lake / …),
+//   • anything else → a generic attraction,
+// which is what lets admin-added places show up in generated plans exactly like
+// the seeded ones. Worship places keep their by-name routing so a mosque/church
+// never surfaces under a "temples" request.
+function resolveDestOverpass(category: string, name: string): OverpassCategory[] {
+  if (category === "pilgrimage") return [worshipKind(name) ?? "temple"];
+  const slugMapped = DEST_CAT_TO_OVERPASS[category];
+  if (slugMapped) return slugMapped;
+  const adminMapped = DEST_CATEGORY_TO_OVERPASS[category];
+  if (adminMapped) {
+    return adminMapped === "temple" ? [worshipKind(name) ?? "temple"] : [adminMapped];
+  }
+  return ["tourist_attraction"];
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -309,7 +329,7 @@ export async function POST(req: NextRequest) {
       const lat = Number(d.latitude);
       const lng = Number(d.longitude);
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-      const op = DEST_CATEGORY_TO_OVERPASS[d.category] ?? "tourist_attraction";
+      const op = resolveDestOverpass(d.category, d.name)[0];
       pinnedCandidates.push({
         id: `dest:${d.id}`,
         name: d.name,
@@ -406,19 +426,13 @@ export async function POST(req: NextRequest) {
     if (JUNK_NAME.test(d.name)) continue;
     if (!withinReach(lat, lng)) continue;
     if (!matchesArea(d.district)) continue;
-    let op: OverpassCategory;
-    if (d.category === "pilgrimage") {
-      // Route the worship place to its real religion-specific filter so a
-      // mosque/dargah/church never shows up under a "temples" request.
-      const w = worshipKind(d.name) ?? "temple";
-      if (!wantedCats.includes(w)) continue;
-      op = w;
-    } else {
-      const mapped = DEST_CAT_TO_OVERPASS[d.category] ?? ["tourist_attraction"];
-      const matched = mapped.filter((c) => wantedCats.includes(c));
-      if (matched.length === 0) continue;
-      op = matched[0];
-    }
+    // Resolve the category across catalogue slugs AND admin-form labels, so
+    // admin-added places (category "Temple", "Museum", …) are discovered under
+    // the right place type instead of being silently dropped.
+    const ops = resolveDestOverpass(d.category, d.name);
+    const matched = ops.filter((c) => wantedCats.includes(c));
+    if (matched.length === 0) continue;
+    const op: OverpassCategory = matched[0];
     destCandidates.push({
       id: `dest:${d.id}`,
       name: d.name,

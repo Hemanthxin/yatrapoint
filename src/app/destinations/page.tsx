@@ -39,6 +39,9 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       query: sp.q,
       maxBudgetPerDay:
         maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
+      // Show the whole catalogue (currently ~600+ places) so admin-added and
+      // lower-popularity places aren't cut off by the default page size.
+      limit: 2000,
     }),
     listStates(),
     listDistricts(sp.state),

@@ -26,11 +26,11 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/destinations", label: "State", icon: Flag },
   { href: "/community", label: "Community", icon: Users },
   { href: "/budget-planner", label: "Budget Planner", icon: Wallet },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
-  { href: "/destinations", label: "State", icon: Flag },
   { href: "/profile", label: "Your Travel Places", icon: Bookmark },
 ];
 
