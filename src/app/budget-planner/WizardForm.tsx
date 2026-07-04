@@ -31,7 +31,18 @@ const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
 const TRAVELLER_OPTIONS = ["1", "2", "3", "4", "5+"];
 const PLACES_OPTIONS = ["3", "4", "5", "6", "8", "10"];
-const KM_OPTIONS = ["10", "25", "50", "100", "200"];
+// Minimum distance (km) from the traveller a place must be to count. "0" means
+// no minimum — include even the closest spots.
+const MIN_DIST_OPTIONS = ["0", "25", "50", "100", "200"];
+// Which compass direction to plan towards. "any" = plan in a full circle around
+// the traveller; the cardinals restrict the trip to a 90° sector.
+const DIRECTIONS = [
+  { key: "any", label: "Circle", emoji: "🧭" },
+  { key: "north", label: "North", emoji: "⬆️" },
+  { key: "east", label: "East", emoji: "➡️" },
+  { key: "south", label: "South", emoji: "⬇️" },
+  { key: "west", label: "West", emoji: "⬅️" },
+];
 const SESSION_KEY = "yatra-point/budget-wizard";
 
 // Budget slider uses a non-linear scale so the evenly-spaced ₹1K/5K/10K/20K/50K
@@ -130,7 +141,10 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [transport, setTransport] = useState("Any");
   const [food, setFood] = useState("Any");
   const [places, setPlaces] = useState("5");
-  const [km, setKm] = useState("25");
+  // `km` now means the MINIMUM distance (km) a place must be from the traveller.
+  const [km, setKm] = useState("0");
+  // Compass direction to plan towards ("any" = full circle).
+  const [direction, setDirection] = useState("any");
   // Categories to explore — preset from the trip type, fully editable.
   const [groups, setGroups] = useState<Set<string>>(new Set(TRIP_GROUPS.Family));
   // Where to plan: "around" = live GPS + radius; "area" = a chosen state /
@@ -170,6 +184,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       if (typeof f.food === "string") setFood(f.food);
       if (typeof f.places === "string") setPlaces(f.places);
       if (typeof f.km === "string") setKm(f.km);
+      if (typeof f.direction === "string") setDirection(f.direction);
       if (Array.isArray(f.groups)) setGroups(new Set(f.groups as string[]));
       if (f.planMode === "around" || f.planMode === "area") setPlanMode(f.planMode);
       if (f.area && typeof f.area === "object") setArea(f.area as AreaSelection);
@@ -221,11 +236,23 @@ export function WizardForm({ initial }: WizardFormProps) {
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   }
 
-  const whereLabel = planMode === "around" ? `Around me · within ${km} km` : areaLabel(area);
+  const dirLabel = DIRECTIONS.find((d) => d.key === direction)?.label ?? "Circle";
+  const minKmNum = parseInt(km, 10) || 0;
+  const aroundLabel =
+    (minKmNum > 0 ? `≥ ${minKmNum} km` : "nearby") +
+    (direction !== "any" ? ` · ${dirLabel}` : "");
+  const whereLabel = planMode === "around" ? `Around me · ${aroundLabel}` : areaLabel(area);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setAreaError(null);
+
+    // In "around me" mode the km slider is the MINIMUM distance a place must be
+    // from the traveller; the reach (discovery radius) sits a corridor beyond it
+    // so there are genuinely far places to string the trip out to. A 0 minimum
+    // keeps the trip local.
+    const minKm = parseInt(km, 10) || 0;
+    const reachKm = minKm > 0 ? minKm + 120 : 60;
 
     const snap: LivePlanProps = {
       budget,
@@ -239,7 +266,9 @@ export function WizardForm({ initial }: WizardFormProps) {
       // genuinely split across each day (honouring the chosen places count).
       maxStops: Math.min(15, Math.max(parseInt(places, 10) || 5, daysNum * 2)),
       days: daysNum,
-      radiusKm: Math.max(1, parseInt(km, 10) || 25),
+      radiusKm: reachKm,
+      minDistanceKm: minKm,
+      direction,
     };
 
     // Area mode — geocode the chosen state / district / taluk to a centre and
@@ -267,6 +296,10 @@ export function WizardForm({ initial }: WizardFormProps) {
         label: areaLabel(area),
       };
       snap.radiusKm = centre.radiusKm;
+      // Min-distance + direction are relative to the traveller and only apply to
+      // "around me" planning — an area plan is centred on the chosen area itself.
+      snap.minDistanceKm = 0;
+      snap.direction = "any";
       snap.placeIds = area.placeIds;
       // Constrain the curated catalogue to exactly the chosen district(s)/taluk
       // so places from other districts don't leak into the plan.
@@ -284,7 +317,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       sessionStorage.setItem(
         SESSION_KEY,
         JSON.stringify({
-          fields: { budget, days, travellers, tripType, transport, food, places, km, groups: [...groups], planMode, area },
+          fields: { budget, days, travellers, tripType, transport, food, places, km, direction, groups: [...groups], planMode, area },
           snapshot: snap,
         })
       );
@@ -417,14 +450,39 @@ export function WizardForm({ initial }: WizardFormProps) {
               </div>
               {planMode === "around" && (
                 <div>
-                  <StepLabel icon="🧭">How Far? (km)</StepLabel>
+                  <StepLabel icon="📏">Minimum distance (km)</StepLabel>
                   <div className="flex flex-wrap gap-2">
-                    {KM_OPTIONS.map((k) => (<Chip key={k} active={km === k} onClick={() => setKm(k)}>{k} km</Chip>))}
+                    {MIN_DIST_OPTIONS.map((k) => (
+                      <Chip key={k} active={km === k} onClick={() => setKm(k)}>
+                        {k === "0" ? "Anywhere" : `${k}+ km`}
+                      </Chip>
+                    ))}
                   </div>
-                  <p className="pt-2 text-xs text-slate-500">The plan will cover up to this distance from you.</p>
+                  <p className="pt-2 text-xs text-slate-500">
+                    Only include places at least this far from you — pick a bigger number for a proper outstation trip.
+                  </p>
                 </div>
               )}
             </div>
+
+            {planMode === "around" && (
+              <div>
+                <StepLabel icon="🧭">Which direction?</StepLabel>
+                <div className="flex flex-wrap gap-2">
+                  {DIRECTIONS.map((d) => (
+                    <Chip key={d.key} active={direction === d.key} onClick={() => setDirection(d.key)}>
+                      <span className="flex items-center gap-1">
+                        <span>{d.emoji}</span>
+                        {d.label}
+                      </span>
+                    </Chip>
+                  ))}
+                </div>
+                <p className="pt-2 text-xs text-slate-500">
+                  Plan in a full circle around you, or head one way — e.g. North keeps only places north of you.
+                </p>
+              </div>
+            )}
 
             <div>
               <StepLabel icon="🏷️">Trip Type</StepLabel>
@@ -490,7 +548,15 @@ export function WizardForm({ initial }: WizardFormProps) {
               <SummaryRow label="Days" value={days} />
               <SummaryRow label="Travellers" value={`${travellersNum}`} />
               <SummaryRow label="Places" value={`${places} stops`} />
-              {planMode === "around" && <SummaryRow label="Distance" value={`${km} km`} />}
+              {planMode === "around" && (
+                <SummaryRow
+                  label="Min distance"
+                  value={minKmNum > 0 ? `${minKmNum}+ km` : "Anywhere"}
+                />
+              )}
+              {planMode === "around" && direction !== "any" && (
+                <SummaryRow label="Direction" value={dirLabel} />
+              )}
               <SummaryRow label="Trip type" value={tripType} />
               <SummaryRow label="Transport" value={transport} />
               <SummaryRow label="Food" value={food} />

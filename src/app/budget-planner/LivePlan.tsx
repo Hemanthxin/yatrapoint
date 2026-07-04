@@ -151,6 +151,10 @@ export interface LivePlanProps {
   // Travel mode — "any" | "car" | "bike" | "bus" | "train" | "flight". Drives
   // the cost model and the map style (road route vs rail line vs flight arc).
   mode?: string;
+  // "Around me" planning only: the minimum distance (km) a place must be from
+  // the traveller, and the compass direction to head ("any" = full circle).
+  minDistanceKm?: number;
+  direction?: string;
 }
 
 export function LivePlan({
@@ -167,6 +171,8 @@ export function LivePlan({
   placeIds = [],
   areaDistricts = [],
   mode = "any",
+  minDistanceKm = 0,
+  direction = "any",
 }: LivePlanProps) {
   const router = useRouter();
   const live = useLocation();
@@ -209,8 +215,8 @@ export function LivePlan({
   // Signature of the inputs — lets us restore a cached plan only when it still
   // matches the current selections.
   const sig = useMemo(
-    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode }),
-    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode]
+    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode, minDistanceKm, direction }),
+    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode, minDistanceKm, direction]
   );
 
   const generate = useCallback(async () => {
@@ -236,6 +242,8 @@ export function LivePlan({
           includeFood,
           maxStops,
           searchRadiusKm: radiusKm,
+          minDistanceKm,
+          direction,
           areaDistricts,
           mode,
           days,
@@ -253,7 +261,7 @@ export function LivePlan({
     } finally {
       setLoading(false);
     }
-  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm, areaDistricts, mode, days]);
+  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm, minDistanceKm, direction, areaDistricts, mode, days]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
   // and pressing Back) so it isn't lost. Only if the inputs still match.

@@ -96,6 +96,10 @@ const bodySchema = z.object({
   includeFood: z.boolean().default(true),
   maxStops: z.number().int().min(2).max(15).default(6),
   searchRadiusKm: z.number().min(1).max(500).default(25),
+  // "Around me" planning: minimum distance (km) a place must be from the
+  // traveller, and the compass direction to head ("any" = full circle).
+  minDistanceKm: z.number().min(0).max(500).default(0),
+  direction: z.enum(["any", "north", "south", "east", "west"]).default("any"),
   // Area mode: restrict the curated catalogue to these district(s)/taluk so a
   // chosen area only yields places from that area.
   areaDistricts: z.array(z.string()).max(50).default([]),
@@ -210,6 +214,47 @@ export async function POST(req: NextRequest) {
   const withinRadius = (lat: number, lng: number) =>
     haversineKm(searchCentre, { lat, lng }) <= radiusKm;
 
+  // Direction + minimum-distance gate, measured from the TRAVELLER (start). Only
+  // active for "around me" planning; area plans leave these at their defaults.
+  // The compass sector is 90° wide centred on the chosen cardinal, so "North"
+  // keeps only places roughly north of the traveller.
+  const start = parsed.data.start;
+  const minDistanceKm = parsed.data.minDistanceKm;
+  const direction = parsed.data.direction;
+  const SECTOR_HALF = 45; // degrees either side of the cardinal
+  const DIR_BEARING: Record<string, number> = { north: 0, east: 90, south: 180, west: 270 };
+  const bearingDeg = (from: { lat: number; lng: number }, lat: number, lng: number) => {
+    const toRad = (d: number) => (d * Math.PI) / 180;
+    const lat1 = toRad(from.lat);
+    const lat2 = toRad(lat);
+    const dLng = toRad(lng - from.lng);
+    const y = Math.sin(dLng) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+    return (Math.atan2(y, x) * 180) / Math.PI; // -180..180, 0 = north, 90 = east
+  };
+  const angDiff = (a: number, b: number) => {
+    let d = Math.abs(a - b) % 360;
+    if (d > 180) d = 360 - d;
+    return d;
+  };
+  // A place passes when it's beyond the minimum distance AND (if a cardinal was
+  // chosen) inside that compass sector. Hand-picked pinned places bypass this.
+  const passesReach = (lat: number, lng: number) => {
+    const dFromMe = haversineKm(start, { lat, lng });
+    if (minDistanceKm > 0 && dFromMe < minDistanceKm) return false;
+    if (direction !== "any") {
+      const target = DIR_BEARING[direction];
+      // Very close places have a meaningless bearing — the min-distance gate
+      // already handles them; skip the sector test when essentially at origin.
+      if (dFromMe > 0.5 && angDiff(bearingDeg(start, lat, lng), target) > SECTOR_HALF)
+        return false;
+    }
+    return true;
+  };
+  // Combined gate for auto-discovered (non-pinned) candidates.
+  const withinReach = (lat: number, lng: number) =>
+    withinRadius(lat, lng) && passesReach(lat, lng);
+
   // Kick the slowest external call (live Overpass) off NOW so it runs in
   // parallel with all the curated DB lookups below — this shaves seconds off
   // plan generation instead of waiting for the DB round-trips first.
@@ -244,6 +289,14 @@ export async function POST(req: NextRequest) {
         .filter((t) => t.length > 1)
     );
   const isSubset = (a: Set<string>, b: Set<string>) => a.size > 0 && [...a].every((t) => b.has(t));
+  // Token overlap ratio (0..1) — catches near-identical names like "Ranganatha
+  // Swamy Temple" vs "Sri Ranganathaswamy Temple" that share most words.
+  const jaccard = (a: Set<string>, b: Set<string>) => {
+    if (a.size === 0 || b.size === 0) return 0;
+    let inter = 0;
+    for (const t of a) if (b.has(t)) inter++;
+    return inter / (a.size + b.size - inter);
+  };
 
   // 0) Hand-picked catalogue places — pinned so the planner pulls them in first.
   const pinnedCandidates: Candidate[] = [];
@@ -299,9 +352,10 @@ export async function POST(req: NextRequest) {
     .filter((s) => {
       const op = effectiveSeedCat(s.kind, s.name);
       if (!op || !wantedCats.includes(op) || JUNK_NAME.test(s.name)) return false;
-      // Honour the chosen radius — don't let the whole curated city catalogue
-      // leak in regardless of how far the traveller wants to roam.
-      return withinRadius(Number(s.latitude), Number(s.longitude));
+      // Honour the chosen radius, minimum distance and direction — don't let the
+      // whole curated city catalogue leak in regardless of where the traveller
+      // wants to roam.
+      return withinReach(Number(s.latitude), Number(s.longitude));
     })
     .map((s) => {
       const op = effectiveSeedCat(s.kind, s.name) ?? "tourist_attraction";
@@ -350,7 +404,7 @@ export async function POST(req: NextRequest) {
     const lng = Number(d.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     if (JUNK_NAME.test(d.name)) continue;
-    if (!withinRadius(lat, lng)) continue;
+    if (!withinReach(lat, lng)) continue;
     if (!matchesArea(d.district)) continue;
     let op: OverpassCategory;
     if (d.category === "pilgrimage") {
@@ -397,12 +451,13 @@ export async function POST(req: NextRequest) {
     if (usedKeys.has(ck) || (nk && usedNames.has(nk))) return false;
     const tk = tokensOf(c.name);
     for (const p of placedTokens) {
-      if (
-        haversineKm({ lat: c.lat, lng: c.lng }, { lat: p.lat, lng: p.lng }) <= 0.6 &&
-        (isSubset(tk, p.tokens) || isSubset(p.tokens, tk))
-      ) {
-        return false;
-      }
+      const gapKm = haversineKm({ lat: c.lat, lng: c.lng }, { lat: p.lat, lng: p.lng });
+      // Same complex mapped twice: one name's words are a subset of the other's
+      // and they sit close together (≤1.2 km).
+      if (gapKm <= 1.2 && (isSubset(tk, p.tokens) || isSubset(p.tokens, tk))) return false;
+      // Near-identical names (≥70% token overlap) a short distance apart (≤2 km)
+      // — the same place from two data sources with slightly different spellings.
+      if (gapKm <= 2 && jaccard(tk, p.tokens) >= 0.7) return false;
     }
     usedKeys.add(ck);
     if (nk) usedNames.add(nk);
@@ -426,6 +481,9 @@ export async function POST(req: NextRequest) {
       // Railway stations legitimately contain "station"/"railway" in the name —
       // don't junk-filter them (they're wanted in train mode).
       if (op.category !== "station" && JUNK_NAME.test(op.name)) continue;
+      // Honour the minimum distance + direction (radius is already applied by
+      // the Overpass fetch). Stations bypass so train-mode routing still works.
+      if (op.category !== "station" && !passesReach(op.lat, op.lng)) continue;
       addCandidate(candidateFromOverpass(op));
     }
   };
