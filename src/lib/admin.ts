@@ -6,6 +6,7 @@ export const ADMIN_ACCOUNTS = [
   { email: "sunil@admin.com", name: "Sunil" },
   { email: "loki@admin.com", name: "Loki" },
   { email: "subu@admin.com", name: "Subu" },
+  { email: "suhas@admin.com", name: "Suhas" },
 ] as const;
 
 export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "Admin@321";
