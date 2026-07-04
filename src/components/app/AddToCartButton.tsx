@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Check } from "lucide-react";
 import { inCart, toggleCart, CART_EVENT, type CartItem } from "@/lib/cart";
+import { showToast } from "@/lib/toast";
 
 // Reusable "Add to trip" toggle used on every place card, so adding to the trip
 // cart works the same everywhere. Stops link/card navigation when tapped.
@@ -30,7 +31,8 @@ export function AddToCartButton({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        toggleCart(item);
+        const nowAdded = toggleCart(item);
+        if (nowAdded) showToast("Trip added to cart", "🧳");
       }}
       aria-pressed={added}
       className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-3 py-2 text-sm font-bold transition active:scale-95 ${

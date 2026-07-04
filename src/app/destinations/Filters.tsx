@@ -7,15 +7,17 @@ import { CATEGORIES } from "@/lib/catalog/categories";
 
 interface FiltersProps {
   states: string[];
+  districts: string[];
   initial: {
     category?: string;
     state?: string;
+    district?: string;
     q?: string;
     maxBudget?: number;
   };
 }
 
-export function Filters({ states, initial }: FiltersProps) {
+export function Filters({ states, districts, initial }: FiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -40,6 +42,15 @@ export function Filters({ states, initial }: FiltersProps) {
     push(next);
   }
 
+  // Changing the state invalidates the chosen district (districts are per-state).
+  function setState(value: string | undefined) {
+    const next = new URLSearchParams(searchParams.toString());
+    if (value && value.length > 0) next.set("state", value);
+    else next.delete("state");
+    next.delete("district");
+    push(next);
+  }
+
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     setParam("q", q.trim());
@@ -50,7 +61,7 @@ export function Filters({ states, initial }: FiltersProps) {
     push(new URLSearchParams());
   }
 
-  const active = ["category", "state", "q", "maxBudget"].some((k) =>
+  const active = ["category", "state", "district", "q", "maxBudget"].some((k) =>
     searchParams.get(k)
   );
 
@@ -99,13 +110,32 @@ export function Filters({ states, initial }: FiltersProps) {
           </label>
           <select
             value={initial.state ?? ""}
-            onChange={(e) => setParam("state", e.target.value || undefined)}
+            onChange={(e) => setState(e.target.value || undefined)}
             className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           >
             <option value="">All states</option>
             {states.map((s) => (
               <option key={s} value={s}>
                 {s}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="md:w-44">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+            District
+          </label>
+          <select
+            value={initial.district ?? ""}
+            onChange={(e) => setParam("district", e.target.value || undefined)}
+            disabled={districts.length === 0}
+            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+          >
+            <option value="">All districts</option>
+            {districts.map((d) => (
+              <option key={d} value={d}>
+                {d}
               </option>
             ))}
           </select>

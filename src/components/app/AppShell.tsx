@@ -5,6 +5,7 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
+import { ToastHost } from "./ToastHost";
 
 interface AppShellProps {
   userLabel: string;
@@ -43,6 +44,9 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
 
       {/* Floating mobile dock */}
       <MobileNav onMenu={() => setOpen(true)} />
+
+      {/* App-wide transient popups (e.g. "Trip added to cart"). */}
+      <ToastHost />
     </div>
   );
 }

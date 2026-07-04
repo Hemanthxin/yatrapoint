@@ -13,6 +13,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { BackButton } from "@/components/app/BackButton";
 import { FavoriteButton } from "@/components/app/FavoriteButton";
+import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import {
   getDestinationBySlug,
@@ -146,12 +147,25 @@ export default async function DestinationPage({ params }: PageProps) {
               label="Typical trip cost"
               value={`${formatINR(tripCost)} pp`}
             />
+            <AddToCartButton
+              className="mt-2 w-full py-3 shadow-lg shadow-emerald-500/40"
+              label="Plan a trip"
+              item={{
+                id: `dest-${destination.id}`,
+                name: destination.name,
+                subtitle: destination.district
+                  ? `${destination.district}, ${destination.state}`
+                  : destination.state,
+                kind: "destination",
+                emoji: cat?.emoji ?? "📍",
+                href: `/destinations/${destination.slug}`,
+              }}
+            />
             <Link
               href={`/budget-planner?destination=${destination.slug}`}
-              className="relative mt-2 block w-full overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3 text-center text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+              className="block w-full rounded-2xl border border-slate-200 bg-white py-3 text-center text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-100 active:scale-95"
             >
-              <span aria-hidden className="sheen-overlay animate-sheen" />
-              <span className="relative">Plan a trip here</span>
+              Plan in budget planner
             </Link>
             {destination.latitude && destination.longitude && (
               <a

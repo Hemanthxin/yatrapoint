@@ -6,6 +6,7 @@ import type { Destination } from "@/lib/db/schema";
 export interface DestinationFilters {
   category?: string;
   state?: string;
+  district?: string;
   query?: string;
   maxBudgetPerDay?: number;
   minBudgetPerDay?: number;
@@ -19,6 +20,8 @@ export async function listDestinations(
   const where = [];
   if (filters.category) where.push(eq(destinations.category, filters.category));
   if (filters.state) where.push(eq(destinations.state, filters.state));
+  if (filters.district)
+    where.push(eq(destinations.district, filters.district));
   if (filters.maxBudgetPerDay)
     where.push(lte(destinations.budgetPerDay, filters.maxBudgetPerDay));
   if (filters.minBudgetPerDay)
@@ -106,4 +109,18 @@ export async function listStates(): Promise<string[]> {
     .from(destinations)
     .orderBy(destinations.state);
   return rows.map((r) => r.state);
+}
+
+// Distinct districts present in the catalogue — the same places the budget
+// planner draws from — optionally narrowed to one state. Powers the State-page
+// district dropdown so every catalogue place is filterable by its district.
+export async function listDistricts(state?: string): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ district: destinations.district })
+    .from(destinations)
+    .where(state ? eq(destinations.state, state) : undefined)
+    .orderBy(destinations.district);
+  return rows
+    .map((r) => r.district)
+    .filter((d): d is string => !!d && d.trim().length > 0);
 }

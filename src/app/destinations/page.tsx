@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
@@ -5,15 +6,17 @@ import { DestinationCard } from "@/components/app/DestinationCard";
 import { Filters } from "./Filters";
 import {
   listDestinations,
+  listDistricts,
   listFavoriteIds,
   listStates,
 } from "@/lib/queries/destinations";
-import { CATEGORIES } from "@/lib/catalog/categories";
+import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 
 interface PageProps {
   searchParams: Promise<{
     category?: string;
     state?: string;
+    district?: string;
     q?: string;
     maxBudget?: string;
   }>;
@@ -28,17 +31,32 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
   const maxBudget = sp.maxBudget ? Number(sp.maxBudget) : undefined;
   const validCat = CATEGORIES.find((c) => c.slug === sp.category)?.slug;
 
-  const [items, states, favIds] = await Promise.all([
+  const [items, states, districts, favIds] = await Promise.all([
     listDestinations({
       category: validCat,
       state: sp.state,
+      district: sp.district,
       query: sp.q,
       maxBudgetPerDay:
         maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
     }),
     listStates(),
+    listDistricts(sp.state),
     listFavoriteIds(u.id ?? ""),
   ]);
+
+  // Category quick-filters — the old "Trips by Places" browse, folded into the
+  // State page so every kind of trip is reachable from one place.
+  function catHref(slug?: CategorySlug) {
+    const next = new URLSearchParams();
+    if (sp.state) next.set("state", sp.state);
+    if (sp.district) next.set("district", sp.district);
+    if (sp.q) next.set("q", sp.q);
+    if (sp.maxBudget) next.set("maxBudget", sp.maxBudget);
+    if (slug) next.set("category", slug);
+    const qs = next.toString();
+    return qs ? `/destinations?${qs}` : "/destinations";
+  }
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
@@ -53,11 +71,45 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         </p>
       </header>
 
+      {/* Trips by place-type — quick category chips (folded in from the old
+          "Trips by Places" page). */}
+      <div className="mb-4 flex flex-wrap gap-2">
+        <Link
+          href={catHref(undefined)}
+          className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
+            !validCat
+              ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
+              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+          }`}
+        >
+          All places
+        </Link>
+        {CATEGORIES.map((c) => {
+          const on = validCat === c.slug;
+          return (
+            <Link
+              key={c.slug}
+              href={catHref(c.slug)}
+              className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
+                on
+                  ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
+                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <span>{c.emoji}</span>
+              {c.label}
+            </Link>
+          );
+        })}
+      </div>
+
       <Filters
         states={states}
+        districts={districts}
         initial={{
           category: validCat,
           state: sp.state,
+          district: sp.district,
           q: sp.q,
           maxBudget: maxBudget,
         }}
