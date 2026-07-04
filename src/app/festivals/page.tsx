@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { FESTIVALS, formatFestivalDate, daysUntil } from "@/lib/festivals";
+import { MobileFestivals } from "./MobileFestivals";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -21,6 +22,13 @@ export default async function FestivalsPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      {/* ── Mobile (< lg): bespoke app UI ── */}
+      <div className="lg:hidden">
+        <MobileFestivals festivals={FESTIVALS} nextUpcomingName={nextUpcoming?.name ?? null} />
+      </div>
+
+      {/* ── Desktop (≥ lg): the original festivals page, unchanged ── */}
+      <div className="hidden lg:block">
       <div className="animate-fadeUp">
       <header className="mb-6 flex items-center gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
@@ -87,6 +95,7 @@ export default async function FestivalsPage() {
             </div>
           );
         })}
+      </div>
       </div>
       </div>
     </AppShell>

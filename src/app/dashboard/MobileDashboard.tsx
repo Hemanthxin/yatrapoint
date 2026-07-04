@@ -1,0 +1,242 @@
+import Link from "next/link";
+import {
+  ArrowRight,
+  MapPin,
+  Wallet,
+  CalendarClock,
+  Users,
+  Search,
+  Sparkles,
+  Navigation,
+  Clock,
+} from "lucide-react";
+
+import { formatINR } from "@/lib/format";
+import { CATEGORIES, CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
+import { PlaceImage } from "@/components/app/PlaceImage";
+import type { NearbyDestination, Destination } from "@/lib/db/schema";
+
+interface Props {
+  firstName: string;
+  stats: { tripsPlanned: number; placesExplored: number; totalSaved: number };
+  nearby: NearbyDestination[];
+  popularTrips: Destination[];
+}
+
+// A bespoke, app-first mobile home — completely distinct from the desktop grid.
+// Rendered only below `lg`. Coral accent comes automatically from the mobile
+// theme, so all `emerald` utilities here paint coral on phones.
+export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Props) {
+  const featured = popularTrips[0];
+  const featuredCat = featured ? CATEGORY_BY_SLUG[featured.category as CategorySlug] : undefined;
+
+  return (
+    <div className="space-y-6 pb-4">
+      {/* Greeting + search launcher */}
+      <div className="animate-fadeUp">
+        <p className="text-[13px] font-semibold text-slate-500">Namaste 🙏</p>
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Hey {firstName}</h1>
+        <Link
+          href="/destinations"
+          className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-400 shadow-sm"
+        >
+          <Search className="h-4 w-4 text-emerald-600" />
+          Where do you want to go?
+        </Link>
+      </div>
+
+      {/* Category quick-access circles */}
+      <div className="animate-fadeUp">
+        <div className="no-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4">
+          {CATEGORIES.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/destinations?category=${c.slug}`}
+              className="flex w-16 shrink-0 flex-col items-center gap-1.5 active:scale-95"
+            >
+              <span
+                className={`grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br ${
+                  CATEGORY_GRADIENT[c.slug as CategorySlug]
+                } text-3xl shadow-lg shadow-emerald-500/10`}
+              >
+                {c.emoji}
+              </span>
+              <span className="truncate text-[11px] font-semibold text-slate-600">{c.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Featured hero card */}
+      {featured && (
+        <Link
+          href={`/destinations/${featured.slug}`}
+          className="animate-fadeUp relative block h-56 overflow-hidden rounded-3xl shadow-xl shadow-emerald-500/10"
+        >
+          <PlaceImage
+            name={featured.name}
+            storedSrc={featured.imageUrl}
+            hint={[featured.district, featured.state].filter(Boolean).join(", ")}
+            category={featured.category}
+            emoji={featuredCat?.emoji ?? "📍"}
+            gradient={CATEGORY_GRADIENT[featured.category as CategorySlug] ?? "from-sky-400 to-emerald-500"}
+            className="absolute inset-0 h-full w-full"
+            emojiClassName="text-6xl"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+          <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-700 backdrop-blur">
+            <Sparkles className="h-3 w-3 text-emerald-600" /> Featured
+          </span>
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80">
+              {featuredCat?.label ?? featured.category}
+            </p>
+            <h2 className="mt-0.5 text-2xl font-extrabold leading-tight drop-shadow">{featured.name}</h2>
+            <p className="mt-1 flex items-center gap-1 text-xs font-medium text-white/85">
+              <MapPin className="h-3 w-3" /> {featured.district ? `${featured.district}, ` : ""}
+              {featured.state}
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2 text-xs font-bold shadow-lg shadow-emerald-500/40">
+              Plan this trip <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </div>
+        </Link>
+      )}
+
+      {/* Quick actions */}
+      <div className="grid grid-cols-2 gap-3">
+        <QuickAction href="/budget-planner" icon={<Wallet className="h-5 w-5" />} title="Budget Planner" sub="Plan within budget" />
+        <QuickAction href="/destinations" icon={<MapPin className="h-5 w-5" />} title="By State" sub="Top places by state" />
+        <QuickAction href="/festivals" icon={<CalendarClock className="h-5 w-5" />} title="Festivals" sub="Events near you" />
+        <QuickAction href="/community" icon={<Users className="h-5 w-5" />} title="Community" sub="Tips & hidden gems" />
+      </div>
+
+      {/* Stats strip */}
+      <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
+        <StatPill value={stats.tripsPlanned.toString()} label="Trips planned" />
+        <StatPill value={stats.placesExplored.toString()} label="Places explored" />
+        <StatPill value={formatINR(stats.totalSaved)} label="Total saved" />
+      </div>
+
+      {/* Near you rail */}
+      {nearby.length > 0 && (
+        <Section title="Near you" href="/explore-bangalore">
+          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
+            {nearby.map((n) => {
+              const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
+              const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
+              return (
+                <Link
+                  key={n.id}
+                  href={`/one-day-trips/${n.slug}`}
+                  className="w-44 shrink-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm active:scale-[0.98]"
+                >
+                  <div className="relative h-28 w-full">
+                    <PlaceImage
+                      name={n.name}
+                      storedSrc={n.imageUrl}
+                      hint="Karnataka"
+                      category={n.category}
+                      emoji={cat?.emoji ?? "📍"}
+                      gradient={grad}
+                      className="h-full w-full"
+                      emojiClassName="text-4xl"
+                    />
+                    <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
+                      <Navigation className="h-2.5 w-2.5" /> {n.distanceKm} km
+                    </span>
+                  </div>
+                  <div className="p-3">
+                    <p className="truncate text-sm font-bold text-slate-900">{n.name}</p>
+                    <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-500">
+                      <Clock className="h-3 w-3" /> {n.drivingMinutes} min drive
+                    </p>
+                    <p className={`mt-1 text-xs font-bold ${n.entryFeePerPerson === 0 ? "text-emerald-600" : "text-slate-700"}`}>
+                      {n.entryFeePerPerson === 0 ? "Free entry" : `₹${n.entryFeePerPerson} entry`}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </Section>
+      )}
+
+      {/* Popular rail */}
+      {popularTrips.length > 0 && (
+        <Section title="Popular trips" href="/destinations">
+          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
+            {popularTrips.map((t) => {
+              const cat = CATEGORY_BY_SLUG[t.category as CategorySlug];
+              const grad = CATEGORY_GRADIENT[t.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
+              const total = t.budgetPerDay * t.recommendedDays;
+              return (
+                <Link
+                  key={t.id}
+                  href={`/destinations/${t.slug}`}
+                  className="relative h-44 w-60 shrink-0 overflow-hidden rounded-3xl shadow-sm active:scale-[0.98]"
+                >
+                  <PlaceImage
+                    name={t.name}
+                    storedSrc={t.imageUrl}
+                    hint={[t.district, t.state].filter(Boolean).join(", ")}
+                    category={t.category}
+                    emoji={cat?.emoji ?? "📍"}
+                    gradient={grad}
+                    className="absolute inset-0 h-full w-full"
+                    emojiClassName="text-5xl"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+                  <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-slate-700 backdrop-blur">
+                    {t.recommendedDays} {t.recommendedDays === 1 ? "Day" : "Days"}
+                  </span>
+                  <div className="absolute inset-x-0 bottom-0 p-3 text-white">
+                    <p className="truncate text-sm font-bold">{t.name}</p>
+                    <p className="text-xs text-white/85">
+                      from <span className="font-extrabold">{formatINR(total)}</span>
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </Section>
+      )}
+    </div>
+  );
+}
+
+function QuickAction({ href, icon, title, sub }: { href: string; icon: React.ReactNode; title: string; sub: string }) {
+  return (
+    <Link href={href} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm active:scale-[0.98]">
+      <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
+        {icon}
+      </span>
+      <p className="text-sm font-bold text-slate-900">{title}</p>
+      <p className="mt-0.5 text-[11px] text-slate-500">{sub}</p>
+    </Link>
+  );
+}
+
+function StatPill({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="min-w-[7.5rem] shrink-0 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <p className="text-lg font-extrabold text-slate-900">{value}</p>
+      <p className="text-[11px] font-medium text-slate-500">{label}</p>
+    </div>
+  );
+}
+
+function Section({ title, href, children }: { title: string; href: string; children: React.ReactNode }) {
+  return (
+    <section className="animate-fadeUp">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-extrabold tracking-tight text-slate-900">{title}</h2>
+        <Link href={href} className="text-sm font-bold text-emerald-600">
+          See all →
+        </Link>
+      </div>
+      {children}
+    </section>
+  );
+}

@@ -6,6 +6,7 @@ import { LocationBanner } from "@/components/app/LocationBanner";
 import { TripsTabs } from "@/components/app/TripsTabs";
 import { listNearby } from "@/lib/queries/nearby";
 import { TripsList } from "./TripsList";
+import { MobileTrips } from "./MobileTrips";
 
 export default async function OneDayTripsPage() {
   const session = await auth();
@@ -16,6 +17,13 @@ export default async function OneDayTripsPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      {/* ── Mobile (< lg): bespoke app UI ── */}
+      <div className="lg:hidden">
+        <MobileTrips trips={trips} />
+      </div>
+
+      {/* ── Desktop (≥ lg): the original list, unchanged ── */}
+      <div className="hidden lg:block">
       <div className="animate-fadeUp">
       <TripsTabs />
       <header className="mb-4 flex items-start gap-3">
@@ -34,6 +42,7 @@ export default async function OneDayTripsPage() {
 
       <LocationBanner />
       <TripsList trips={trips} />
+      </div>
       </div>
     </AppShell>
   );

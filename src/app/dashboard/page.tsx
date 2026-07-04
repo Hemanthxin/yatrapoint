@@ -21,6 +21,7 @@ import { listNearby } from "@/lib/queries/nearby";
 import { listDestinations } from "@/lib/queries/destinations";
 import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 import { PlaceImage } from "@/components/app/PlaceImage";
+import { MobileDashboard } from "./MobileDashboard";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -104,18 +105,19 @@ export default async function DashboardPage() {
 
   return (
     <AppShell userLabel={displayName} userImage={u.image}>
-      {/* Greeting — mobile echo of the header (desktop greets in the top bar) */}
-      <div className="mb-4 animate-fadeUp lg:hidden">
-        <p className="text-2xl font-extrabold tracking-tight text-slate-900">
-          Hi, {firstName} 👋
-        </p>
-        <p className="mt-0.5 flex items-center gap-1 text-xs font-semibold text-slate-500">
-          <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Bengaluru, Karnataka
-        </p>
+      {/* ── Mobile (< lg): bespoke app UI ── */}
+      <div className="lg:hidden">
+        <MobileDashboard
+          firstName={firstName}
+          stats={stats}
+          nearby={nearby}
+          popularTrips={popularTrips}
+        />
       </div>
 
-      {/* Hero banner — bleeds to the screen edges on mobile for an immersive,
-          full-bleed feel; settles into a rounded card on larger screens. */}
+      {/* ── Desktop (≥ lg): the original dashboard, unchanged ── */}
+      <div className="hidden lg:block">
+      {/* Hero banner — settles into a rounded card on larger screens. */}
       <section className="bleed animate-fadeUp relative overflow-hidden rounded-none border-slate-200 shadow-xl shadow-emerald-500/10 md:rounded-3xl md:border">
         <div className="relative h-64 w-full sm:h-72 md:h-80">
           <Image
@@ -296,6 +298,7 @@ export default async function DashboardPage() {
           })}
         </div>
       </section>
+      </div>
     </AppShell>
   );
 }

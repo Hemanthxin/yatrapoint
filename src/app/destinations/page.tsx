@@ -11,6 +11,7 @@ import {
   listStates,
 } from "@/lib/queries/destinations";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
+import { MobileDestinations } from "./MobileDestinations";
 
 interface PageProps {
   searchParams: Promise<{
@@ -63,6 +64,21 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      {/* ── Mobile (< lg): bespoke app UI ── */}
+      <div className="lg:hidden">
+        <MobileDestinations
+          items={items}
+          favIds={favIds}
+          states={states}
+          districts={districts}
+          validCat={validCat}
+          sp={sp}
+          maxBudget={maxBudget}
+        />
+      </div>
+
+      {/* ── Desktop (≥ lg): the original screen, unchanged ── */}
+      <div className="hidden lg:block">
       <div className="animate-fadeUp">
       <header className="mb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
@@ -135,6 +151,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           ))}
         </div>
       )}
+      </div>
       </div>
     </AppShell>
   );
