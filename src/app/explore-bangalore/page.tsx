@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { desc } from "drizzle-orm";
 import { Sparkles } from "lucide-react";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
@@ -13,9 +14,15 @@ export default async function ExploreBangalorePage() {
   if (!session?.user) redirect("/");
   const u = session.user;
 
-  // Server-side curated seed list — passed to the client so it always has
-  // something to render before/after the Overpass call.
-  const seed = await db.select().from(cityPlaces);
+  // Server-side curated seed list — the catalogue has ~10k rows; shipping all of
+  // them to the client made this page slow, so we send the top 500 by popularity
+  // (the client then sorts those by distance from the user). Live nearby places
+  // still stream in from Overpass when a category is selected.
+  const seed = await db
+    .select()
+    .from(cityPlaces)
+    .orderBy(desc(cityPlaces.popularity))
+    .limit(500);
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>

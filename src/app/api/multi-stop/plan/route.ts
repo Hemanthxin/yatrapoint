@@ -275,15 +275,27 @@ export async function POST(req: NextRequest) {
   const withinReach = (lat: number, lng: number) =>
     withinRadius(lat, lng) && passesReach(lat, lng);
 
+  // Live Overpass is only worth querying for LOCAL density. Two guards keep plan
+  // generation fast:
+  //   • Cap the query radius at 60 km — an Overpass scan over hundreds of km is
+  //     very slow and often times out; far places come from the curated DB
+  //     catalogue (already loaded in-memory) instead.
+  //   • Skip Overpass entirely for far "outstation" bands (a large minimum
+  //     distance): everything Overpass could return near the centre would be
+  //     filtered out by the min-distance gate anyway, so the call is pure waste.
+  const OVERPASS_MAX_KM = 60;
+  const overpassRadiusKm = Math.min(radiusKm, OVERPASS_MAX_KM);
+  const useOverpass = wantedCats.length > 0 && minDistanceKm <= 40;
+
   // Kick the slowest external call (live Overpass) off NOW so it runs in
   // parallel with all the curated DB lookups below — this shaves seconds off
   // plan generation instead of waiting for the DB round-trips first.
   const initialOverpass =
-    wantedCats.length > 0
+    useOverpass
       ? fetchOverpassPlaces({
           centre: searchCentre,
           categories: wantedCats,
-          radius: radiusKm * 1000,
+          radius: overpassRadiusKm * 1000,
           limit: 200,
           cap: 200,
         }).then(
@@ -513,18 +525,17 @@ export async function POST(req: NextRequest) {
     ingestOverpass(places);
   };
 
-  let currentKm = radiusKm;
+  let currentKm = overpassRadiusKm;
   // The initial fetch was already started in parallel with the DB queries.
   const first = await initialOverpass;
   if (first.error) overpassError = first.error;
   else ingestOverpass(first.places);
 
-  // Honour the chosen distance: we DON'T widen beyond the selected radius, so a
-  // 25 km trip stays within 25 km, 50 within 50, etc. The only exception is a
-  // near-empty result (a very sparse rural area) — then we allow a small 20%
-  // safety widen just so the traveller still gets a plan instead of nothing.
-  if (wantedCats.length > 0 && finalCandidates.length < 2 && !overpassError) {
-    currentKm = radiusKm * 1.2;
+  // Sparse-area safety net: only if Overpass was used and returned almost
+  // nothing, widen its (capped) radius by 20% once. Never for far outstation
+  // bands, which don't use Overpass at all.
+  if (useOverpass && finalCandidates.length < 2 && !overpassError) {
+    currentKm = Math.min(OVERPASS_MAX_KM, overpassRadiusKm * 1.2);
     try {
       await addOverpass(currentKm);
     } catch {

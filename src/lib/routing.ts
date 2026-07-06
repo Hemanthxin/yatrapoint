@@ -26,18 +26,26 @@ async function tryEachBase(
   pathAfterBase: string,
   signal?: AbortSignal
 ): Promise<Response | null> {
-  const MAX_PASSES = 3;
+  // Two passes max, and a hard 9s timeout per request, so a slow/hung OSRM
+  // mirror can't stall plan generation — the caller falls back to straight-line
+  // legs if routing doesn't respond in time.
+  const MAX_PASSES = 2;
   for (let pass = 0; pass < MAX_PASSES; pass++) {
     for (const base of OSRM_BASES) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 9_000);
+      if (signal) signal.addEventListener("abort", () => ctrl.abort(), { once: true });
       try {
         const res = await fetch(`${base}${pathAfterBase}`, {
-          signal,
+          signal: ctrl.signal,
           headers: { "User-Agent": OSRM_UA, Accept: "application/json" },
         });
         if (res.ok) return res;
         // 4xx/5xx — try next mirror.
       } catch {
-        // Network error — try next mirror.
+        // Network error / timeout — try next mirror.
+      } finally {
+        clearTimeout(timer);
       }
     }
     if (pass < MAX_PASSES - 1) await sleep(500 * (pass + 1));

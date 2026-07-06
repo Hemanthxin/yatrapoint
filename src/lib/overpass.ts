@@ -284,6 +284,12 @@ export async function fetchOverpassPlaces(
   let data: OverpassResponse | null = null;
   const errors: string[] = [];
   for (const endpoint of ENDPOINTS) {
+    // Per-mirror hard timeout so a hung/slow mirror can't stall plan generation
+    // — abort after 15s and fall through to the next mirror. Also honours any
+    // caller-provided abort signal.
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 15_000);
+    if (signal) signal.addEventListener("abort", () => ctrl.abort(), { once: true });
     try {
       const res = await fetch(endpoint, {
         method: "POST",
@@ -293,7 +299,7 @@ export async function fetchOverpassPlaces(
           Accept: "application/json",
         },
         body: `data=${encodeURIComponent(query)}`,
-        signal,
+        signal: ctrl.signal,
       });
       if (!res.ok) {
         const body = await res.text().catch(() => "");
@@ -306,6 +312,8 @@ export async function fetchOverpassPlaces(
       break;
     } catch (err) {
       errors.push(`${endpoint} → ${err instanceof Error ? err.message : "error"}`);
+    } finally {
+      clearTimeout(timer);
     }
   }
   if (!data) {

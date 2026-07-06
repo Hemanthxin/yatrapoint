@@ -60,15 +60,26 @@ body {
 @media (max-width: 1023px) {
   /* Flip the brand palette to CORAL and lighten the base surface. */
   :root {
-    --br-50: 254 242 243;  --br-100: 253 225 228; --br-200: 251 199 205;
-    --br-300: 247 157 168; --br-400: 242 105 123; --br-500: 239 79 95;
-    --br-600: 220 53 71;   --br-700: 185 36 53;   --br-800: 153 31 46;
-    --br-900: 127 29 42;   --br-950: 69 10 18;
+    /* Saafera brand green (from the logo) — the mobile accent. */
+    --br-50: 237 247 240;  --br-100: 211 236 220; --br-200: 169 218 188;
+    --br-300: 117 192 151; --br-400: 66 161 115;  --br-500: 46 139 87;
+    --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
+    --br-900: 18 61 40;    --br-950: 10 33 22;
 
-    --app-bg: #f5f6f8;
-    --accent: #ef4f5f;
-    --accent-2: #dc3547;
-    --ring: rgba(239, 79, 95, 0.15);
+    /* Warm cream canvas to match the mockup. */
+    --app-bg: #f7f2e9;
+    --surface: #ffffff;
+    --surface-2: #f3ede1;
+    --text: #16241c;
+    --text-soft: #3f4a43;
+    --muted: #6b7770;
+    --border: #e8e0d1;
+    --accent: #216e44;
+    --accent-2: #1b5a38;
+    /* Coral-red highlight (the "Journey" word) — used for small accents. */
+    --highlight: #e14434;
+    --nav-bg: rgba(247, 242, 233, 0.85);
+    --ring: rgba(46, 139, 87, 0.16);
   }
 
   :root[data-theme="dark"] {

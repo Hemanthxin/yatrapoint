@@ -1,19 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { placeImageUrl, fallbackImageUrl } from "@/lib/place-images";
+import { fallbackImageUrl } from "@/lib/place-images";
 import { resolvePlaceImage } from "@/lib/actions/place-image";
 
 // Shows a photo for a place, fast and reliably:
 //   1. a stored image, else
-//   2. a category-relevant photo (shown immediately — no server round-trip), else
-//   3. a neutral photo, else
-//   4. a category-coloured gradient tile with an emoji.
+//   2. a category-coloured gradient tile with an emoji (INSTANT — no network).
 //
-// Set `preferWiki` (detail heroes only) to additionally resolve a real,
-// name-matched Wikipedia photo in the background and upgrade to it if found.
-// We deliberately DON'T do that per card — a server action per list item made
-// the whole app slow and frequently left cards blank.
+// Cards deliberately do NOT hit an external image service: with hundreds of
+// cards on screen, one request each to loremflickr/picsum made the whole app
+// crawl. So a card with no stored image shows a clean gradient tile immediately.
+// Detail heroes pass `preferWiki` to resolve a real, name-matched Wikipedia
+// photo in the background and upgrade to it if found.
 export function PlaceImage({
   name,
   storedSrc,
@@ -35,9 +34,9 @@ export function PlaceImage({
   emojiClassName?: string;
   preferWiki?: boolean;
 }) {
-  // Start from a real photo immediately: stored image wins, otherwise a
-  // deterministic category photo so something is always on screen.
-  const [src, setSrc] = useState<string | null>(storedSrc || placeImageUrl(name, category));
+  // A stored image wins; otherwise show the gradient tile instantly (null src)
+  // rather than fetching a slow external photo per card.
+  const [src, setSrc] = useState<string | null>(storedSrc || null);
   // 0 = primary photo, 1 = neutral fallback, 2 = gradient tile.
   const [stage, setStage] = useState(0);
 

@@ -32,6 +32,11 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
   const maxBudget = sp.maxBudget ? Number(sp.maxBudget) : undefined;
   const validCat = CATEGORIES.find((c) => c.slug === sp.category)?.slug;
 
+  // When the user is filtering/searching, show every match (usually a small set)
+  // so nothing — including admin-added places — is hidden. When just browsing
+  // "all", cap the list so we don't render 600+ cards at once (keeps it fast).
+  const hasFilter = !!(validCat || sp.state || sp.district || sp.q || maxBudget);
+
   const [items, states, districts, favIds] = await Promise.all([
     listDestinations({
       category: validCat,
@@ -40,9 +45,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       query: sp.q,
       maxBudgetPerDay:
         maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
-      // Show the whole catalogue (currently ~600+ places) so admin-added and
-      // lower-popularity places aren't cut off by the default page size.
-      limit: 2000,
+      limit: hasFilter ? 2000 : 90,
     }),
     listStates(),
     listDistricts(sp.state),
