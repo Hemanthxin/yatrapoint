@@ -5,7 +5,6 @@ import {
   Wallet,
   CalendarClock,
   Users,
-  Search,
   Sparkles,
   Navigation,
   Clock,
@@ -32,17 +31,10 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
 
   return (
     <div className="space-y-6 pb-4">
-      {/* Greeting + search launcher */}
+      {/* Greeting (search lives in the top bar) */}
       <div className="animate-fadeUp">
         <p className="text-[13px] font-semibold text-slate-500">Namaste 🙏</p>
         <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Hey {firstName}</h1>
-        <Link
-          href="/destinations"
-          className="mt-3 flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-400 shadow-sm"
-        >
-          <Search className="h-4 w-4 text-emerald-600" />
-          Where do you want to go?
-        </Link>
       </div>
 
       {/* Category quick-access circles */}

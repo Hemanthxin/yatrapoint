@@ -28,8 +28,8 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/destinations", label: "State", icon: Flag },
-  { href: "/community", label: "Community", icon: Users },
   { href: "/budget-planner", label: "Budget Planner", icon: Wallet },
+  { href: "/community", label: "Community", icon: Users },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
   { href: "/profile", label: "Your Travel Places", icon: Bookmark },
@@ -88,13 +88,14 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           })}
         </nav>
 
-        {/* Promo card */}
+        {/* Promo card — uses emerald-tinted text (not slate) so it stays readable
+            in dark/vibrant themes, where the fixed light-green tile does not. */}
         <div className="mx-3 mb-3 rounded-2xl bg-gradient-to-b from-emerald-50 to-teal-50 p-4 text-center">
-          <div className="mx-auto mb-2 grid h-12 w-12 place-items-center rounded-full bg-white/70 text-emerald-600">
+          <div className="mx-auto mb-2 grid h-12 w-12 place-items-center rounded-full bg-white/80 text-emerald-600">
             <MapPin className="h-6 w-6" strokeWidth={1.8} />
           </div>
-          <p className="text-sm font-bold text-slate-900">Plan your trip smarter</p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          <p className="text-sm font-bold text-emerald-900">Plan your trip smarter</p>
+          <p className="mt-1 text-xs leading-relaxed text-emerald-800/80">
             Get AI powered suggestions, custom itineraries and budget friendly trips.
           </p>
           <Link

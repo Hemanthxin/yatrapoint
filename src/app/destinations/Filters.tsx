@@ -8,6 +8,9 @@ import { CATEGORIES } from "@/lib/catalog/categories";
 interface FiltersProps {
   states: string[];
   districts: string[];
+  // Hide the Category dropdown (used on mobile, where category chips already
+  // exist above the filters — avoids two category selectors).
+  hideCategory?: boolean;
   initial: {
     category?: string;
     state?: string;
@@ -17,7 +20,7 @@ interface FiltersProps {
   };
 }
 
-export function Filters({ states, districts, initial }: FiltersProps) {
+export function Filters({ states, districts, hideCategory = false, initial }: FiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -86,23 +89,25 @@ export function Filters({ states, districts, initial }: FiltersProps) {
           </div>
         </div>
 
-        <div className="md:w-44">
-          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Category
-          </label>
-          <select
-            value={initial.category ?? ""}
-            onChange={(e) => setParam("category", e.target.value || undefined)}
-            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
-          >
-            <option value="">All categories</option>
-            {CATEGORIES.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.emoji} {c.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        {!hideCategory && (
+          <div className="md:w-44">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Category
+            </label>
+            <select
+              value={initial.category ?? ""}
+              onChange={(e) => setParam("category", e.target.value || undefined)}
+              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            >
+              <option value="">All categories</option>
+              {CATEGORIES.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.emoji} {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="md:w-44">
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">

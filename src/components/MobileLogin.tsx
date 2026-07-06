@@ -66,7 +66,6 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
 
   const [gisLoaded, setGisLoaded] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
@@ -75,13 +74,11 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
   function switchMode(m: Mode) {
     setMode(m);
     setError(null);
-    setNotice(null);
   }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
-    setNotice(null);
 
     if (mode === "signup") {
       const parsed = signupSchema.safeParse({ name, phone, password, confirmPassword });
@@ -284,9 +281,9 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
             </Field>
           )}
 
-          {/* Remember + forgot */}
+          {/* Remember me */}
           {mode === "login" && (
-            <div className="flex items-center justify-between pt-0.5">
+            <div className="pt-0.5">
               <button
                 type="button"
                 onClick={() => setRemember((v) => !v)}
@@ -301,23 +298,9 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
                 </span>
                 Remember me
               </button>
-              <button
-                type="button"
-                onClick={() =>
-                  setNotice("Reset your password via the OTP flow — enter your mobile number and tap Log In to receive help.")
-                }
-                className="text-sm font-semibold text-emerald-700"
-              >
-                Forgot password?
-              </button>
             </div>
           )}
 
-          {notice && (
-            <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">
-              {notice}
-            </p>
-          )}
           {error && (
             <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">
               {error}

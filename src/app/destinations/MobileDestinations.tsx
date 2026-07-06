@@ -101,6 +101,7 @@ export function MobileDestinations({
         <Filters
           states={states}
           districts={districts}
+          hideCategory
           initial={{
             category: validCat,
             state: sp.state,

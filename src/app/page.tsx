@@ -7,6 +7,7 @@ import { Nav } from "@/components/Nav";
 import { AuthCard } from "@/components/AuthCard";
 import { TrustStrip } from "@/components/TrustStrip";
 import { MobileLogin } from "@/components/MobileLogin";
+import { LoginSwitch } from "@/components/LoginSwitch";
 
 export default async function HomePage() {
   const session = await auth();
@@ -16,26 +17,23 @@ export default async function HomePage() {
   const googleClientId = process.env.AUTH_GOOGLE_ID;
 
   return (
-    <>
-      {/* ── Desktop (≥ lg): the ORIGINAL login, unchanged ── */}
-      <main className="relative hidden min-h-screen overflow-hidden lg:block">
-        <BackgroundScene />
-        <Nav />
-        <section className="relative z-10 mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 pb-12 pt-32 md:px-12 lg:flex-row lg:items-center lg:justify-between lg:pt-36">
-          <Hero />
-          <div id="login" className="w-full lg:w-auto">
-            <AuthCard googleClientId={googleClientId} />
-          </div>
-        </section>
-        <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 md:px-12">
-          <TrustStrip />
-        </section>
-      </main>
-
-      {/* ── Mobile (< lg): the Saafera brand login ── */}
-      <div className="lg:hidden">
-        <MobileLogin googleClientId={googleClientId} />
-      </div>
-    </>
+    <LoginSwitch
+      mobile={<MobileLogin googleClientId={googleClientId} />}
+      desktop={
+        <main className="relative min-h-screen overflow-hidden">
+          <BackgroundScene />
+          <Nav />
+          <section className="relative z-10 mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 pb-12 pt-32 md:px-12 lg:flex-row lg:items-center lg:justify-between lg:pt-36">
+            <Hero />
+            <div id="login" className="w-full lg:w-auto">
+              <AuthCard googleClientId={googleClientId} />
+            </div>
+          </section>
+          <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 md:px-12">
+            <TrustStrip />
+          </section>
+        </main>
+      }
+    />
   );
 }
