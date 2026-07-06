@@ -15,7 +15,6 @@ import {
   Smartphone,
   Check,
   Plane,
-  MapPin,
 } from "lucide-react";
 
 import { signupAction } from "@/lib/actions/account";
@@ -173,38 +172,38 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
 
   return (
     <main className="relative min-h-screen overflow-hidden" style={{ background: "var(--app-bg)" }}>
-      {/* Hero photo — top-right with an organic rounded edge. */}
-      <div className="absolute right-0 top-0 h-72 w-[62%] overflow-hidden rounded-bl-[5.5rem] shadow-lg">
-        <Image src="/66242.jpg" alt="" fill priority sizes="60vw" className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/20 to-transparent" />
-      </div>
-      <Plane className="absolute left-8 top-7 h-5 w-5 -rotate-[18deg] text-emerald-700/70" />
-
-      <div className="relative px-6 pt-16">
-        {/* Wordmark */}
-        <div className="flex items-baseline gap-0.5">
-          <span className="text-3xl font-extrabold tracking-tight">
-            <span className="text-emerald-600">Saa</span>
-            <span className="text-[#1B3E7A]">fera</span>
-          </span>
+      {/* Hero photo banner — full width, fading cleanly into the cream canvas
+          so nothing overlaps the heading below. */}
+      <div className="relative h-56 w-full overflow-hidden rounded-b-[2.5rem]">
+        <Image src="/66242.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-transparent" />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--app-bg)] to-transparent"
+        />
+        <Plane className="absolute right-6 top-6 h-5 w-5 -rotate-[18deg] text-white/85" />
+        <div className="absolute left-6 top-7">
+          <div className="text-3xl font-extrabold tracking-tight drop-shadow-md">
+            <span className="text-emerald-300">Saa</span>
+            <span className="text-white">fera</span>
+          </div>
+          <p className="mt-1 text-xs font-semibold tracking-wide text-white/90 drop-shadow">
+            Travel More, Worry Less.
+          </p>
         </div>
-        <p className="mt-1 text-xs font-semibold tracking-wide text-slate-500">
-          Travel More, Worry Less.
-        </p>
+      </div>
 
-        <h1 className="mt-9 text-[2rem] font-extrabold leading-[1.12] tracking-tight text-slate-900">
+      {/* Heading on the cream canvas — clean, no overlap with the photo. */}
+      <div className="px-6 pt-4">
+        <h1 className="text-[2rem] font-extrabold leading-[1.12] tracking-tight text-slate-900">
           Your <span className="text-[#e14434]">Journey</span>,
           <br />
           Our Priority
         </h1>
         <span className="mt-3 block h-1 w-9 rounded-full bg-emerald-600" />
-        <p className="mt-3 max-w-[15.5rem] text-sm font-medium leading-relaxed text-slate-500">
+        <p className="mt-2.5 max-w-[17rem] text-sm font-medium leading-relaxed text-slate-500">
           Smart itineraries, real budgets and unforgettable experiences.
         </p>
-        <div className="mt-4 flex items-center gap-2 text-emerald-700/80">
-          <MapPin className="h-4 w-4" />
-          <span className="h-px flex-1 max-w-[7rem] border-t border-dashed border-emerald-700/40" />
-        </div>
       </div>
 
       {/* Bottom-sheet form card */}

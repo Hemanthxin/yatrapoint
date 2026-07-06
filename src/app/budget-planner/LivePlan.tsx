@@ -858,7 +858,7 @@ export function LivePlan({
                     {bucket.map((s) => {
                       const i = running++;
                       return (
-                <li key={s.id} className="card-hover relative rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                <li key={s.id} className="card-hover relative rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
                   <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
                     {i + 1}
                   </span>

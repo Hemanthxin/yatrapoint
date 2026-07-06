@@ -77,7 +77,7 @@ export function CartPlanner() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 pb-36 lg:space-y-5 lg:pb-0">
       {loading && (
         <div className="grid h-44 place-items-center rounded-3xl border border-slate-200 bg-white text-sm font-semibold text-slate-500 shadow-sm">
           <span className="flex flex-col items-center gap-3">
@@ -89,9 +89,26 @@ export function CartPlanner() {
 
       {!loading && stops && stops.length > 0 && (
         <>
+          {/* Mobile (< lg): order-summary strip */}
+          <div className="animate-fadeUp flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:hidden">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
+              <ShoppingBag className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-extrabold tracking-tight text-slate-900">
+                {stops.length} {stops.length === 1 ? "stop" : "stops"} in your route
+              </p>
+              <p className="text-xs font-medium text-slate-500">Mapped in order, ready to go.</p>
+            </div>
+            <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+              Ready
+            </span>
+          </div>
+
           {/* Route map */}
-          <section>
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <section className="animate-fadeUp">
+            {/* Desktop (≥ lg): header row with inline CTA — unchanged */}
+            <div className="mb-3 hidden flex-wrap items-center justify-between gap-2 lg:flex">
               <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Your trip route</h2>
               <a
                 href={googleMapsUrl}
@@ -102,18 +119,30 @@ export function CartPlanner() {
                 <Navigation className="h-4 w-4" /> Open in Google Maps
               </a>
             </div>
-            <TripMap origin={origin} stops={mapStops} mode="flight" height={440} />
-            <p className="mt-2 text-xs text-slate-500">
+
+            {/* Mobile (< lg): section heading only */}
+            <h2 className="mb-2 text-base font-extrabold tracking-tight text-slate-900 lg:hidden">
+              Your trip route
+            </h2>
+
+            {/* Framed map on mobile; bare on desktop */}
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-1.5 shadow-sm lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+              <TripMap origin={origin} stops={mapStops} mode="flight" height={440} />
+            </div>
+            <p className="mt-2 px-1 text-xs text-slate-500 lg:px-0">
               Dotted arcs connect your saved festivals & places in order. The green pin is your location.
             </p>
           </section>
 
           {/* Stop list */}
           <section className="space-y-2">
+            <h3 className="px-1 text-xs font-bold uppercase tracking-wide text-slate-400 lg:hidden">
+              Saved stops
+            </h3>
             {stops.map((s, i) => (
               <div
                 key={s.id}
-                className="card-hover flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm"
+                className="card-hover animate-fadeUp flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm"
               >
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                   {i + 1}
@@ -128,7 +157,7 @@ export function CartPlanner() {
                   href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-emerald-600"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-emerald-600 lg:h-9 lg:w-9 lg:rounded-lg"
                   aria-label="Open on map"
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -136,7 +165,7 @@ export function CartPlanner() {
                 <button
                   onClick={() => removeFromCart(s.id)}
                   aria-label="Remove"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-600"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 lg:h-9 lg:w-9 lg:rounded-lg"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -155,10 +184,25 @@ export function CartPlanner() {
       {/* Also plan the budget for these */}
       <Link
         href="/budget-planner"
-        className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
+        className="flex min-h-[44px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
       >
         <Wallet className="h-4 w-4" /> Plan budget & itinerary in the Budget Planner
       </Link>
+
+      {/* Mobile (< lg): sticky bottom action bar floating above the dock */}
+      {!loading && stops && stops.length > 0 && (
+        <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+6rem)] z-30 px-4 lg:hidden">
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-emerald-600/30 transition active:scale-[0.98]"
+          >
+            <Navigation className="h-4 w-4" /> Plan these {stops.length}{" "}
+            {stops.length === 1 ? "trip" : "trips"}
+          </a>
+        </div>
+      )}
     </div>
   );
 }

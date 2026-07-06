@@ -9,6 +9,7 @@ import { ProfileForm } from "./ProfileForm";
 import { ProfilePosts } from "./ProfilePosts";
 import { ProfileTabs } from "./ProfileTabs";
 import { SavedTrips } from "./SavedTrips";
+import { MobileProfile } from "./MobileProfile";
 import { listUserTripPlans } from "@/lib/queries/trip-plans";
 import { listFavoritedDestinations } from "@/lib/queries/destinations";
 import { listMyPosts, getFeedSocial } from "@/lib/queries/community";
@@ -131,28 +132,58 @@ export default async function ProfilePage() {
       </div>
     );
 
+  const formProps = {
+    initial: {
+      name: row.name ?? "",
+      email: row.email ?? "",
+      username: row.username ?? "",
+      bio: row.bio ?? "",
+      image: row.image ?? null,
+    },
+    phone: row.phone ?? "",
+    userId: row.id,
+    stats: counts,
+  };
+
+  const postsNode = <ProfilePosts posts={posts} social={social} />;
+  const tripsNode = <SavedTrips dbPlans={dbPlansNode} hasDbPlans={plans.length > 0} />;
+
   return (
     <AppShell userLabel={display} userImage={row.image}>
-      <div className="animate-fadeUp">
-        <ProfileForm
-          initial={{
-            name: row.name ?? "",
-            email: row.email ?? "",
-            username: row.username ?? "",
-            bio: row.bio ?? "",
-            image: row.image ?? null,
-          }}
-          phone={row.phone ?? ""}
-          userId={row.id}
-          stats={counts}
-        />
-
-        <ProfileTabs
+      {/* Bespoke, app-like mobile layout (reuses the same child components). */}
+      <div className="lg:hidden">
+        <MobileProfile
+          form={formProps}
           counts={counts}
-          posts={<ProfilePosts posts={posts} social={social} />}
-          trips={<SavedTrips dbPlans={dbPlansNode} hasDbPlans={plans.length > 0} />}
+          posts={postsNode}
+          trips={tripsNode}
           saved={savedContent}
         />
+      </div>
+
+      {/* Desktop layout — unchanged. */}
+      <div className="hidden lg:block">
+        <div className="animate-fadeUp">
+          <ProfileForm
+            initial={{
+              name: row.name ?? "",
+              email: row.email ?? "",
+              username: row.username ?? "",
+              bio: row.bio ?? "",
+              image: row.image ?? null,
+            }}
+            phone={row.phone ?? ""}
+            userId={row.id}
+            stats={counts}
+          />
+
+          <ProfileTabs
+            counts={counts}
+            posts={<ProfilePosts posts={posts} social={social} />}
+            trips={<SavedTrips dbPlans={dbPlansNode} hasDbPlans={plans.length > 0} />}
+            saved={savedContent}
+          />
+        </div>
       </div>
     </AppShell>
   );

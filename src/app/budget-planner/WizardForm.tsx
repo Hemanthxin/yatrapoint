@@ -338,8 +338,8 @@ export function WizardForm({ initial }: WizardFormProps) {
   return (
     <>
     <form onSubmit={onSubmit} className="animate-fadeUp mx-auto max-w-3xl space-y-5">
-      {/* Compact header */}
-      <div className="flex items-center gap-3">
+      {/* Compact header — desktop only; mobile uses the page hero above. */}
+      <div className="hidden items-center gap-3 lg:flex">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-500/30">
           <Wallet className="h-6 w-6" />
         </span>
@@ -509,7 +509,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                 {PLACE_GROUPS.map((g) => {
                   const on = groups.has(g.slug);
                   return (
-                    <button key={g.slug} type="button" onClick={() => toggleGroup(g.slug)} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${on ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
+                    <button key={g.slug} type="button" onClick={() => toggleGroup(g.slug)} className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-4 py-2.5 text-[13px] font-semibold transition active:scale-95 lg:min-h-[40px] lg:px-3.5 lg:py-2 lg:text-xs ${on ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
                       <span>{g.emoji}</span>{g.label}
                     </button>
                   );
@@ -585,7 +585,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="button"
             onClick={goBack}
-            className="flex min-h-[52px] flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
+            className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-base font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95 lg:min-h-[52px] lg:text-sm"
           >
             <ArrowLeft className="h-5 w-5" /> Back
           </button>
@@ -594,7 +594,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="button"
             onClick={goNext}
-            className="group flex min-h-[52px] flex-[2] items-center justify-center gap-2 rounded-2xl bg-emerald-600 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95"
+            className="group flex min-h-[56px] flex-[2] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 lg:min-h-[52px] lg:bg-emerald-600 lg:bg-none lg:text-sm"
           >
             Next <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
           </button>
@@ -602,7 +602,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="submit"
             disabled={geocoding}
-            className="group relative flex min-h-[52px] flex-[2] items-center justify-center gap-2 overflow-hidden rounded-2xl bg-emerald-600 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70"
+            className="group relative flex min-h-[56px] flex-[2] items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70 lg:min-h-[52px] lg:bg-emerald-600 lg:bg-none lg:text-sm"
           >
             {!geocoding && <span aria-hidden className="sheen-overlay animate-sheen" />}
             <span className="relative flex items-center gap-2">
@@ -699,8 +699,8 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border text-sm font-semibold transition active:scale-95 ${
-        square ? "grid h-11 w-11 place-items-center" : "min-h-[44px] px-4 py-2"
+      className={`rounded-full border text-[15px] font-semibold transition active:scale-95 lg:text-sm ${
+        square ? "grid h-12 w-12 place-items-center lg:h-11 lg:w-11" : "min-h-[48px] px-5 py-2.5 lg:min-h-[44px] lg:px-4 lg:py-2"
       } ${
         active
           ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30"

@@ -195,14 +195,47 @@ export function ExploreClient({ seed }: ExploreClientProps) {
   const liveCount = unified.filter((u) => u.kind === "osm").length;
 
   return (
-    <div className="mt-4">
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 no-scrollbar">
+    <div className="mt-4 flex flex-col">
+      {/* Controls — a prominent, sticky search bar on mobile; an inline row on
+          desktop (lg:) exactly as before. Ordered first on mobile, second on lg. */}
+      <div className="order-1 -mx-4 sticky top-16 z-10 bg-white/90 px-4 py-2 backdrop-blur lg:static lg:order-2 lg:mx-0 lg:mt-3 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+        <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:gap-3">
+          <div className="relative flex-1 lg:min-w-[12rem]">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 lg:left-3.5" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search nearby places…"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-3 text-[15px] outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] lg:py-2.5 lg:pl-10 lg:text-sm"
+            />
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <span className="shrink-0 font-medium text-slate-500">Within</span>
+            <select
+              value={radiusKm}
+              onChange={(e) => setRadiusKm(Number(e.target.value))}
+              className="min-h-[44px] flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] lg:min-h-0 lg:flex-none lg:py-2.5"
+            >
+              <option value={2}>2 km</option>
+              <option value={5}>5 km</option>
+              <option value={8}>8 km</option>
+              <option value={15}>15 km</option>
+              <option value={25}>25 km</option>
+              <option value={50}>50 km</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Category pill rail — a horizontal scroll rail. First on lg, below the
+          search on mobile. */}
+      <div className="order-2 mt-3 -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 pt-1 no-scrollbar lg:order-1 lg:mt-0 lg:pt-0">
         {GROUPS.map((g) => (
           <button
             key={g.slug}
             type="button"
             onClick={() => setGroup(g.slug)}
-            className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition active:scale-95 ${
+            className={`inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 lg:min-h-[40px] lg:px-3.5 ${
               group === g.slug
                 ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -214,34 +247,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
         ))}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <div className="relative min-w-[12rem] flex-1">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name…"
-            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
-          />
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="font-medium text-slate-500">Within</span>
-          <select
-            value={radiusKm}
-            onChange={(e) => setRadiusKm(Number(e.target.value))}
-            className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
-          >
-            <option value={2}>2 km</option>
-            <option value={5}>5 km</option>
-            <option value={8}>8 km</option>
-            <option value={15}>15 km</option>
-            <option value={25}>25 km</option>
-            <option value={50}>50 km</option>
-          </select>
-        </div>
-      </div>
-
-      <p className="mt-2 text-xs font-medium text-slate-500">
+      <p className="order-3 mt-2 text-xs font-medium text-slate-500">
         {loading ? (
           <span className="inline-flex items-center gap-1">
             <Loader2 className="h-3 w-3 animate-spin" /> Fetching live OSM data…
@@ -257,11 +263,11 @@ export function ExploreClient({ seed }: ExploreClientProps) {
       </p>
 
       {unified.length === 0 && !loading ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <div className="order-4 mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
           <p className="text-sm font-medium text-slate-500">No matches. Try a wider radius or a different category.</p>
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="order-4 mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-3">
           {unified.map((u) =>
             u.kind === "seed" ? (
               <SeedCard key={u.key} place={u.seed} userDistanceKm={u.userDistanceKm} />
@@ -283,13 +289,13 @@ function SeedCard({
   userDistanceKm: number;
 }) {
   return (
-    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-emerald-100 bg-emerald-50/50 p-4 shadow-sm">
+    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:border-emerald-100 lg:bg-emerald-50/50">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
             ★ Curated · {place.kind}
           </p>
-          <p className="mt-0.5 font-extrabold tracking-tight text-slate-900">{place.name}</p>
+          <p className="mt-0.5 text-[15px] font-extrabold tracking-tight text-slate-900 lg:text-base">{place.name}</p>
           <p className="text-xs font-medium text-slate-500">{place.area ?? place.city}</p>
         </div>
         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
@@ -325,7 +331,7 @@ function SeedCard({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href={`/explore-bangalore/${place.slug}`}
-          className="inline-flex h-9 items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-4 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
+          className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
         >
           Details
         </Link>
@@ -333,9 +339,9 @@ function SeedCard({
           href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-9 items-center gap-1 rounded-full border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+          className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
         >
-          Map <ExternalLink className="h-3 w-3" />
+          Map <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
         </a>
       </div>
     </article>
@@ -358,7 +364,7 @@ function OsmCard({
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
             {group?.emoji} Live · {place.category.replace("_", " ")}
           </p>
-          <p className="mt-0.5 font-extrabold tracking-tight text-slate-900">{place.name}</p>
+          <p className="mt-0.5 text-[15px] font-extrabold tracking-tight text-slate-900 lg:text-base">{place.name}</p>
           {place.tags.addrFull && (
             <p className="line-clamp-1 text-xs font-medium text-slate-500">{place.tags.addrFull}</p>
           )}
@@ -387,26 +393,26 @@ function OsmCard({
           href={`https://www.google.com/maps?q=${place.lat},${place.lng}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+          className="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition active:scale-95 lg:h-9 lg:min-h-0 lg:bg-none lg:bg-slate-100 lg:px-4 lg:text-xs lg:font-semibold lg:text-slate-700 lg:shadow-none lg:hover:bg-slate-200"
         >
-          Map <ExternalLink className="h-3 w-3" />
+          Map <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
         </a>
         <a
           href={`https://www.openstreetmap.org/${place.osmId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+          className="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-slate-100 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
         >
-          OSM <ExternalLink className="h-3 w-3" />
+          OSM <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
         </a>
         {place.tags.website && (
           <a
             href={place.tags.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+            className="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-slate-100 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
           >
-            Site <ExternalLink className="h-3 w-3" />
+            Site <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
           </a>
         )}
       </div>
