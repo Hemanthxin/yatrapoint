@@ -133,7 +133,7 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
             )}
           </button>
           {openCart && (
-            <div className="absolute right-0 mt-2 w-80 origin-top-right animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl">
+            <div className="fixed inset-x-3 top-[4.25rem] z-50 origin-top animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80 sm:origin-top-right">
               <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
                 <p className="text-sm font-bold text-slate-900">Trip cart ({cart.length})</p>
                 {cart.length > 0 && (
@@ -201,7 +201,7 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
             </span>
           </button>
           {openNotif && (
-            <div className="absolute right-0 mt-2 w-72 origin-top-right animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl">
+            <div className="fixed inset-x-3 top-[4.25rem] z-50 origin-top animate-slideDown overflow-hidden rounded-2xl border border-white/60 glass-strong shadow-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-72 sm:origin-top-right">
               <p className="border-b border-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-900">
                 Notifications
               </p>
