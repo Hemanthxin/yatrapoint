@@ -332,6 +332,31 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     }
   }
 
+  // 1c) Category coverage — guarantee AT LEAST ONE stop of every place type the
+  // traveller selected (that actually has a candidate here), before the greedy
+  // fill. Without this the greedy could spend every slot on one popular type and
+  // leave a chosen type with zero places. We add the best-value feasible
+  // candidate per still-uncovered category, cheapest categories first so we fit
+  // the most types within the budget/time/stop limits.
+  const categoriesPresent = [...new Set(pool.map((c) => c.category))];
+  for (const cat of categoriesPresent) {
+    if (tour.length >= maxStops) break;
+    if (covered.has(cat)) continue;
+    let pick: { c: Candidate; pos: number; detour: number; ratio: number } | null = null;
+    for (const c of pool) {
+      if (c.category !== cat) continue;
+      if (isFoodCat(c) && (foodUsed || !input.includeFood)) continue;
+      const { pos, detour } = bestInsertion(c);
+      if (!feasible(c, detour)) continue;
+      const ratio = valueOf(c, covered) / Math.max(5, (detour / speed) * 60 + c.idealMinutes);
+      if (!pick || ratio > pick.ratio) pick = { c, pos, detour, ratio };
+    }
+    if (pick) {
+      place(pick.c, pick.pos, pick.detour);
+      pool = pool.filter((c) => c.id !== pick!.c.id);
+    }
+  }
+
   // 2) Greedily insert the best value-per-detour candidate until full.
   while (tour.length < maxStops) {
     let best: { c: Candidate; pos: number; detour: number; ratio: number } | null = null;

@@ -268,9 +268,8 @@ export function WizardForm({ initial }: WizardFormProps) {
       mode: MODE_BY_TRANSPORT[transport] ?? "any",
       groups: [...groups],
       includeFood: true,
-      // At least ~2 stops per day so a multi-day trip has enough places to
-      // genuinely split across each day (honouring the chosen places count).
-      maxStops: Math.min(15, Math.max(parseInt(places, 10) || 5, daysNum * 2)),
+      // Return exactly the number of places the traveller asked for (2–15).
+      maxStops: Math.min(15, Math.max(2, parseInt(places, 10) || 5)),
       days: daysNum,
       radiusKm: reachKm,
       minDistanceKm: minKm,
