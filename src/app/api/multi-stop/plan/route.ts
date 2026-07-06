@@ -587,6 +587,7 @@ export async function POST(req: NextRequest) {
     candidates: finalCandidates,
     avgSpeedKmh,
     reachKm: radiusKm,
+    minDistanceKm,
     // The chosen km is how FAR FROM THE TRAVELLER a place may be (a reach
     // radius), not the whole loop length. Allow the round trip to actually reach
     // the far edge and come back (plus inter-stop detours) — after the ×1.25

@@ -130,6 +130,11 @@ export interface PlannerInput {
   // planner can cost bus/train/flight/fuel with real Karnataka rates. For public
   // transport this already includes the number of people.
   costPerKm?: number;
+  // Minimum distance (km) the traveller asked for. > 0 signals an intentional
+  // FAR / outstation trip → spread across distance bands + seed a far anchor.
+  // For a local trip (0) we just pick the nearest N, so the requested number of
+  // places actually gets filled instead of a far anchor eating the budget.
+  minDistanceKm?: number;
 }
 
 export interface PlannerStop extends Candidate {
@@ -221,17 +226,21 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   const stopCostOf = (c: Candidate) =>
     c.entryFee * people + (isFoodCat(c) ? (c.foodCostPerPerson ?? 0) * people : 0);
 
+  // Only spread across distance bands / seed a far anchor for an intentional FAR
+  // trip (a chosen minimum distance). For a local trip we pick the nearest N so
+  // the requested number of places gets filled — no far detours eating budget.
+  const wantFar = (input.minDistanceKm ?? 0) > 0;
+
   // Distance band of a place within the chosen reach: 0 = near, 1 = mid,
-  // 2 = far. Used to spread the trip across the whole radius.
-  const reachKm = input.reachKm && input.reachKm > 0 ? input.reachKm : 0;
+  // 2 = far. Used to spread the trip across the whole radius (far trips only).
+  const reachKm = wantFar && input.reachKm && input.reachKm > 0 ? input.reachKm : 0;
   const bandOf = (c: Candidate) =>
     reachKm ? Math.min(2, Math.floor(haversineKm(start, { lat: c.lat, lng: c.lng }) / (reachKm / 3))) : 0;
   const coveredBands = new Set<number>();
 
   // Worth of a place: base + popularity, a big bonus for a not-yet-covered
   // category (keeps the trip diverse), a bonus for reaching a not-yet-covered
-  // distance band (uses the chosen radius), and a decisive boost for hand-picked
-  // places so they always make the cut.
+  // distance band (far trips only), and a decisive boost for hand-picked places.
   const valueOf = (c: Candidate, covered: Set<string>) => {
     let val = 10 + (c.popularity ?? 50);
     if (!covered.has(c.category)) val += 60;
@@ -309,7 +318,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   // radius, first seed the loop with the FARTHEST high-value place that still
   // fits time + budget; the greedy fill then strings places along the corridor
   // out to it, so the trip genuinely spans the chosen distance.
-  if (reachKm > 40 && tour.length < maxStops) {
+  if (wantFar && reachKm > 40 && tour.length < maxStops) {
     const outer = reachKm * 0.55; // only the outer half counts as a real anchor
     let anchor: { c: Candidate; pos: number; detour: number; dist: number } | null = null;
     for (const c of pool) {

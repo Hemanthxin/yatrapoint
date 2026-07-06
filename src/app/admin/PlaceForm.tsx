@@ -1,23 +1,37 @@
 "use client";
 
 import { useMemo, useRef, useState, useTransition, type ChangeEvent, type FormEvent } from "react";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, Save, X, Upload } from "lucide-react";
+import { Loader2, Plus, Save, X, Upload, MapPin, ExternalLink } from "lucide-react";
 
 import { addAdminPlace, updateAdminPlace } from "@/lib/actions/admin";
 
-const LocationPicker = dynamic(
-  () => import("@/components/app/LocationPicker").then((m) => m.LocationPicker),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="grid h-72 place-items-center rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
-        Loading map…
-      </div>
-    ),
-  }
-);
+// Pull latitude/longitude out of a pasted Google Maps link OR a plain
+// "lat, lng" string. Handles the common Google Maps URL shapes.
+function parseCoords(input: string): { lat: number; lng: number } | null {
+  const s = input.trim();
+  const tryPair = (a?: string, b?: string) => {
+    if (a == null || b == null) return null;
+    const lat = Number(a);
+    const lng = Number(b);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+    return { lat, lng };
+  };
+  // Plain "12.97, 77.59"
+  let m = s.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+  if (m) return tryPair(m[1], m[2]);
+  // .../@12.97,77.59,15z
+  m = s.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+  if (m) return tryPair(m[1], m[2]);
+  // ...!3d12.97!4d77.59  (place URLs)
+  m = s.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/);
+  if (m) return tryPair(m[1], m[2]);
+  // ...?q=12.97,77.59  /  &query=12.97,77.59
+  m = s.match(/[?&](?:q|query|ll)=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+  if (m) return tryPair(m[1], m[2]);
+  return null;
+}
 
 export type PlaceFormState = {
   name: string;
@@ -74,6 +88,21 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
   const [photo, setPhoto] = useState<string>(initialPhoto ?? "");
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
+  const [mapLink, setMapLink] = useState("");
+  const [mapLinkError, setMapLinkError] = useState<string | null>(null);
+
+  function applyMapLink(value: string) {
+    setMapLink(value);
+    setMapLinkError(null);
+    if (!value.trim()) return;
+    const c = parseCoords(value);
+    if (c) {
+      update("latitude", String(c.lat));
+      update("longitude", String(c.lng));
+    } else {
+      setMapLinkError("Couldn't read coordinates from that. Paste a Google Maps link or “lat, lng”.");
+    }
+  }
 
   const categories = useMemo(
     () => ["Attraction", "Temple", "Waterfall", "Beach", "Hill Station", "Museum", "Park", "Restaurant", "Adventure", "Heritage", "Lake", "Market", "Other"],
@@ -245,22 +274,76 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
         <p className="mb-1.5 text-sm font-medium text-slate-700">
           Exact location <span className="text-rose-500">*</span>
         </p>
-        <p className="mb-2 text-xs text-slate-500">
-          Search the place or click/drag the pin to the exact spot — coordinates are captured automatically.
+        <p className="mb-3 text-xs text-slate-500">
+          Enter the coordinates directly, or open Google Maps, find the exact spot, then paste
+          its link (or “lat, lng”) below — we&apos;ll fill the fields for you.
         </p>
-        <LocationPicker
-          lat={form.latitude ? Number(form.latitude) : null}
-          lng={form.longitude ? Number(form.longitude) : null}
-          defaultQuery={[form.name, form.district, form.state].filter(Boolean).join(", ")}
-          onChange={(lat, lng) => {
-            update("latitude", String(lat));
-            update("longitude", String(lng));
-          }}
-        />
+
+        {/* Find on Google Maps */}
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            [form.name, form.district, form.state].filter(Boolean).join(", ") || "India"
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+        >
+          <MapPin className="h-4 w-4 text-emerald-600" /> Select on Google Maps
+          <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+        </a>
+
+        {/* Paste link / coords */}
+        <label className="mt-3 block">
+          <span className="mb-1 block text-xs font-medium text-slate-600">
+            Paste Google Maps link or “lat, lng”
+          </span>
+          <input
+            value={mapLink}
+            onChange={(e) => applyMapLink(e.target.value)}
+            placeholder="https://maps.google.com/…  or  12.9716, 77.5946"
+            className="input"
+          />
+          {mapLinkError && <span className="mt-1 block text-xs text-rose-600">{mapLinkError}</span>}
+        </label>
+
+        {/* Manual lat / long */}
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-slate-600">Latitude</span>
+            <input
+              value={form.latitude}
+              onChange={(e) => update("latitude", e.target.value)}
+              inputMode="decimal"
+              placeholder="12.9716"
+              className="input"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-slate-600">Longitude</span>
+            <input
+              value={form.longitude}
+              onChange={(e) => update("longitude", e.target.value)}
+              inputMode="decimal"
+              placeholder="77.5946"
+              className="input"
+            />
+          </label>
+        </div>
+
+        {form.latitude && form.longitude && (
+          <a
+            href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:underline"
+          >
+            <MapPin className="h-3.5 w-3.5" /> Preview {form.latitude}, {form.longitude} on the map
+          </a>
+        )}
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
