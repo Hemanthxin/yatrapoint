@@ -103,6 +103,10 @@ export function ExploreClient({ seed }: ExploreClientProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [overpass, setOverpass] = useState<OverpassPlaceClient[]>([]);
+  // Curated places WITHIN the chosen radius, pulled from the FULL catalogue by a
+  // bounding-box API (not the small popularity slice the page ships for first
+  // paint). Populated once we have the user's location.
+  const [nearbySeed, setNearbySeed] = useState<CityPlace[] | null>(null);
 
   // Pull Overpass data whenever group / location / radius changes (except for
   // "all" — too broad an Overpass query; for "all" we use just the seed).
@@ -138,9 +142,33 @@ export function ExploreClient({ seed }: ExploreClientProps) {
     return () => ctrl.abort();
   }, [group, radiusKm, coords.lat, coords.lng, status]);
 
+  // Pull the full set of curated places WITHIN the chosen radius (bounding-box
+  // API) whenever location or radius changes — so "within 8 km" really shows
+  // everything within 8 km, not just the popularity slice shipped for paint.
+  useEffect(() => {
+    if (status === "prompting" || status === "idle") return;
+    const ctrl = new AbortController();
+    const params = new URLSearchParams({
+      lat: String(coords.lat),
+      lng: String(coords.lng),
+      radiusKm: String(radiusKm),
+    });
+    fetch(`/api/nearby-places?${params}`, { signal: ctrl.signal })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && Array.isArray(data.places)) setNearbySeed(data.places);
+      })
+      .catch(() => {
+        /* keep the first-paint seed */
+      });
+    return () => ctrl.abort();
+  }, [coords.lat, coords.lng, radiusKm, status]);
+
   // Build a unified list: seed + Overpass, dedup by lat/lng proximity, sort by distance.
   const unified = useMemo(() => {
-    const seedFiltered = seed.filter((s) => {
+    // Prefer the within-radius set from the API; fall back to the shipped seed.
+    const seedSource = nearbySeed ?? seed;
+    const seedFiltered = seedSource.filter((s) => {
       if (group === "all") return true;
       const g = SEED_KIND_TO_GROUP[s.kind];
       return g === group;
@@ -179,17 +207,20 @@ export function ExploreClient({ seed }: ExploreClientProps) {
     }
     finalList.sort((a, b) => a.userDistanceKm - b.userDistanceKm);
 
+    // Keep only places WITHIN the chosen radius — "within 8 km" means 8 km.
+    const withinRadius = finalList.filter((item) => item.userDistanceKm <= radiusKm);
+
     // Text search.
     if (query.trim()) {
       const q = query.trim().toLowerCase();
-      return finalList.filter((item) => {
+      return withinRadius.filter((item) => {
         const name =
           item.kind === "seed" ? item.seed.name.toLowerCase() : item.osm.name.toLowerCase();
         return name.includes(q);
       });
     }
-    return finalList;
-  }, [seed, overpass, group, coords, query]);
+    return withinRadius;
+  }, [seed, nearbySeed, overpass, group, coords, query, radiusKm]);
 
   const seedCount = unified.filter((u) => u.kind === "seed").length;
   const liveCount = unified.filter((u) => u.kind === "osm").length;

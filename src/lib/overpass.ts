@@ -288,7 +288,7 @@ export async function fetchOverpassPlaces(
     // — abort after 15s and fall through to the next mirror. Also honours any
     // caller-provided abort signal.
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 15_000);
+    const timer = setTimeout(() => ctrl.abort(), 12_000);
     if (signal) signal.addEventListener("abort", () => ctrl.abort(), { once: true });
     try {
       const res = await fetch(endpoint, {

@@ -11,6 +11,7 @@ import {
   listStates,
 } from "@/lib/queries/destinations";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
+import { ResponsiveSwitch } from "@/components/app/ResponsiveSwitch";
 import { MobileDestinations } from "./MobileDestinations";
 
 interface PageProps {
@@ -45,7 +46,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       query: sp.q,
       maxBudgetPerDay:
         maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
-      limit: hasFilter ? 2000 : 90,
+      limit: hasFilter ? 2000 : 500,
     }),
     listStates(),
     listDistricts(sp.state),
@@ -67,22 +68,20 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      {/* ── Mobile (< lg): bespoke app UI ── */}
-      <div className="lg:hidden">
-        <MobileDestinations
-          items={items}
-          favIds={favIds}
-          states={states}
-          districts={districts}
-          validCat={validCat}
-          sp={sp}
-          maxBudget={maxBudget}
-        />
-      </div>
-
-      {/* ── Desktop (≥ lg): the original screen, unchanged ── */}
-      <div className="hidden lg:block">
-      <div className="animate-fadeUp">
+      <ResponsiveSwitch
+        mobile={
+          <MobileDestinations
+            items={items}
+            favIds={favIds}
+            states={states}
+            districts={districts}
+            validCat={validCat}
+            sp={sp}
+            maxBudget={maxBudget}
+          />
+        }
+        desktop={
+          <div className="animate-fadeUp">
       <header className="mb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
           <span className="text-gradient">Destinations</span>
@@ -154,8 +153,9 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           ))}
         </div>
       )}
-      </div>
-      </div>
+          </div>
+        }
+      />
     </AppShell>
   );
 }
