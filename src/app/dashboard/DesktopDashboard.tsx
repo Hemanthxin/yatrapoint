@@ -141,6 +141,7 @@ export function DesktopDashboard({ stats, nearby, upcoming }: Props) {
                       gradient={grad}
                       className="h-full w-full"
                       emojiClassName="text-4xl"
+                      preferWiki
                     />
                     <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
                       {n.distanceKm} km
@@ -150,7 +151,7 @@ export function DesktopDashboard({ stats, nearby, upcoming }: Props) {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold text-slate-900">{n.name}</p>
                       <p className="flex items-center gap-1 truncate text-[11px] text-slate-500">
-                        <MapPin className="h-3 w-3 shrink-0" /> {n.baseCity}, Karnataka
+                        <MapPin className="h-3 w-3 shrink-0" /> From {n.baseCity}
                       </p>
                     </div>
                     <span

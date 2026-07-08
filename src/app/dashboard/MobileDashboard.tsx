@@ -84,6 +84,7 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
             gradient={CATEGORY_GRADIENT[featured.category as CategorySlug] ?? "from-sky-400 to-emerald-500"}
             className="absolute inset-0 h-full w-full"
             emojiClassName="text-6xl"
+            preferWiki
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
           <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-700 backdrop-blur">
@@ -143,6 +144,7 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
                       gradient={grad}
                       className="h-full w-full"
                       emojiClassName="text-4xl"
+                      preferWiki
                     />
                     <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
                       <Navigation className="h-2.5 w-2.5" /> {n.distanceKm} km
@@ -187,6 +189,7 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
                     gradient={grad}
                     className="absolute inset-0 h-full w-full"
                     emojiClassName="text-5xl"
+                    preferWiki
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                   <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-slate-700 backdrop-blur">
