@@ -13,6 +13,7 @@ import {
 import { formatINR } from "@/lib/format";
 import { CATEGORIES, CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 import { PlaceImage } from "@/components/app/PlaceImage";
+import { WeatherCard } from "@/components/app/dashboard/WeatherCard";
 import type { NearbyDestination, Destination } from "@/lib/db/schema";
 
 interface Props {
@@ -39,6 +40,11 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
         </p>
         <h1 className="text-3xl font-black tracking-tight text-slate-900">Hey {firstName}</h1>
         <p className="mt-0.5 text-[13px] font-medium text-slate-500">Where are we headed today?</p>
+      </div>
+
+      {/* Live weather for the traveller's location */}
+      <div className="animate-fadeUp">
+        <WeatherCard />
       </div>
 
       {/* Category quick-access circles */}

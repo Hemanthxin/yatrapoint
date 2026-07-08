@@ -18,6 +18,7 @@ import {
   Gauge,
   Loader2,
   MoreHorizontal,
+  MapPin,
   type LucideIcon,
 } from "lucide-react";
 import { useLocation } from "@/components/app/LocationContext";
@@ -112,45 +113,60 @@ export function WeatherCard() {
     };
   }, [coords]);
 
-  if (failed) return null;
-
   const { label, Icon } = weather ? describe(weather.code) : { label: "", Icon: Cloud };
 
   return (
-    <div className="card p-5">
-      <div className="flex items-start justify-between">
-        <p className="text-sm font-bold text-slate-900">{place}</p>
-        <MoreHorizontal className="h-4 w-4 text-slate-300" />
-      </div>
-
-      {!weather ? (
-        <div className="grid h-24 place-items-center text-slate-400">
-          <Loader2 className="h-5 w-5 animate-spin" />
+    <div className="card relative overflow-hidden p-5">
+      {/* Soft sky wash so the weather card reads distinct from the others. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-100/60 via-transparent to-emerald-100/50"
+      />
+      <div className="relative">
+        <div className="flex items-start justify-between">
+          <p className="flex items-center gap-1.5 text-sm font-bold text-slate-900">
+            <MapPin className="h-3.5 w-3.5 text-emerald-600" /> {place}
+          </p>
+          <MoreHorizontal className="h-4 w-4 text-slate-300" />
         </div>
-      ) : (
-        <>
-          <div className="mt-2 flex items-center justify-between">
-            <p className="text-5xl font-black leading-none text-slate-900">
-              {weather.temp}
-              <span className="align-top text-2xl">°C</span>
-            </p>
-            <Icon className="h-14 w-14 text-emerald-600" strokeWidth={1.6} />
-          </div>
-          <p className="mt-1 text-sm font-bold text-slate-800">{label}</p>
-          <p className="text-xs text-slate-500">Feels like {weather.feels}°</p>
 
-          <div className="mt-4 grid grid-cols-3 gap-2 border-t border-[color:var(--border)] pt-3 text-center">
-            <Metric icon={<Droplets className="h-4 w-4" />} label="Humidity" value={`${weather.humidity}%`} />
-            <Metric icon={<Wind className="h-4 w-4" />} label="Wind" value={`${weather.wind} km/h`} />
-            <Metric
-              icon={<Gauge className="h-4 w-4" />}
-              label="AQI"
-              value={weather.aqi != null ? String(weather.aqi) : "—"}
-              tone={weather.aqi != null ? aqiTone(weather.aqi) : undefined}
-            />
+        {!weather ? (
+          <div className="grid h-24 place-items-center text-slate-400">
+            {failed ? (
+              <span className="text-xs font-medium">Weather unavailable</span>
+            ) : (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            )}
           </div>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <p className="text-5xl font-black leading-none text-slate-900">
+                  {weather.temp}
+                  <span className="align-top text-2xl">°C</span>
+                </p>
+                <p className="mt-1.5 text-sm font-bold text-slate-800">{label}</p>
+                <p className="text-xs text-slate-500">Feels like {weather.feels}°</p>
+              </div>
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-white/70 text-emerald-600 shadow-inner ring-1 ring-white/60">
+                <Icon className="h-9 w-9" strokeWidth={1.6} />
+              </span>
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2 rounded-2xl bg-white/60 p-3 text-center ring-1 ring-white/50">
+              <Metric icon={<Droplets className="h-4 w-4" />} label="Humidity" value={`${weather.humidity}%`} />
+              <Metric icon={<Wind className="h-4 w-4" />} label="Wind" value={`${weather.wind} km/h`} />
+              <Metric
+                icon={<Gauge className="h-4 w-4" />}
+                label="AQI"
+                value={weather.aqi != null ? String(weather.aqi) : "—"}
+                tone={weather.aqi != null ? aqiTone(weather.aqi) : undefined}
+              />
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -5,12 +5,14 @@ import { formatINR } from "@/lib/format";
 // Budget Overview donut. We store one total budget per trip (no per-category
 // split), so we break the user's real total across typical travel proportions
 // to render the ring + legend. An empty total shows a neutral ring at ₹0.
+// Colours follow the mockup legend: green shades for Transport/Stay/Food,
+// purple for Activities, blue for Others.
 const SEGMENTS = [
   { key: "Transport", ratio: 0.35, color: "#216e44" },
-  { key: "Stay", ratio: 0.3, color: "#2e8b57" },
-  { key: "Food", ratio: 0.2, color: "#7ac08d" },
-  { key: "Activities", ratio: 0.1, color: "#cf5b39" },
-  { key: "Others", ratio: 0.05, color: "#e0b04a" },
+  { key: "Stay", ratio: 0.3, color: "#3fa06a" },
+  { key: "Food", ratio: 0.2, color: "#8fd0a6" },
+  { key: "Activities", ratio: 0.1, color: "#8b5cf6" },
+  { key: "Others", ratio: 0.05, color: "#3b82f6" },
 ];
 
 export function BudgetOverview({ total }: { total: number }) {

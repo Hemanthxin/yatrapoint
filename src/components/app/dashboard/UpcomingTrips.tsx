@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
 import type { UpcomingTrip } from "@/lib/queries/trip-plans";
 
 // A trip whose status isn't "draft" counts as Confirmed; drafts are Pending.
@@ -39,8 +38,8 @@ export function UpcomingTrips({ trips }: { trips: UpcomingTrip[] }) {
             const b = badge(t.status);
             return (
               <li key={t.id} className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white">
-                  <MapPin className="h-5 w-5" />
+                <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-700 text-base shadow-sm">
+                  🏞️
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold text-slate-900">{t.name}</p>
