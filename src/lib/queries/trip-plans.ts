@@ -49,7 +49,40 @@ export interface DashboardStats {
   placesExplored: number;
   // Estimated savings vs typical market package price for the planned trips.
   totalSaved: number;
+  // Sum of every planned trip's budget — drives the Budget Overview donut.
+  totalBudget: number;
   upcomingTrip: { name: string; days: number } | null;
+}
+
+export interface UpcomingTrip {
+  id: string;
+  name: string;
+  days: number;
+  status: string;
+  createdAt: Date;
+}
+
+// The user's most recent trip plans, for the dashboard "Upcoming Trips" widget.
+export async function listUpcomingTrips(
+  userId: string,
+  limit = 3
+): Promise<UpcomingTrip[]> {
+  try {
+    return await db
+      .select({
+        id: tripPlans.id,
+        name: tripPlans.name,
+        days: tripPlans.days,
+        status: tripPlans.status,
+        createdAt: tripPlans.createdAt,
+      })
+      .from(tripPlans)
+      .where(eq(tripPlans.userId, userId))
+      .orderBy(desc(tripPlans.createdAt))
+      .limit(limit);
+  } catch {
+    return [];
+  }
 }
 
 // All dashboard headline numbers, derived from the user's real data. Falls back
@@ -85,9 +118,10 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       tripsPlanned,
       placesExplored: favRow[0]?.count ?? 0,
       totalSaved,
+      totalBudget: plannedBudget,
       upcomingTrip: latest[0] ? { name: latest[0].name, days: latest[0].days } : null,
     };
   } catch {
-    return { tripsPlanned: 0, placesExplored: 0, totalSaved: 0, upcomingTrip: null };
+    return { tripsPlanned: 0, placesExplored: 0, totalSaved: 0, totalBudget: 0, upcomingTrip: null };
   }
 }
