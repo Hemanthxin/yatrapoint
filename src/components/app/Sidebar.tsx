@@ -75,6 +75,13 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
                 }`}
               >
                 {active && <span aria-hidden className="sheen-overlay animate-sheen" />}
+                {/* Signature left rail on the active item. */}
+                <span
+                  aria-hidden
+                  className={`absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-[color:var(--highlight)] transition-all ${
+                    active ? "opacity-100" : "opacity-0"
+                  }`}
+                />
                 <span
                   className={`relative grid h-8 w-8 shrink-0 place-items-center rounded-xl transition ${
                     active ? "bg-white/20" : "bg-slate-100 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-600"

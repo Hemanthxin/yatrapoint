@@ -33,8 +33,12 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
     <div className="space-y-6 pb-4">
       {/* Greeting (search lives in the top bar) */}
       <div className="animate-fadeUp">
-        <p className="text-[13px] font-semibold text-slate-500">Namaste 🙏</p>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Hey {firstName}</h1>
+        <p className="flex items-center gap-1.5 text-[13px] font-bold text-[color:var(--highlight)]">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--highlight)]" />
+          Namaste 🙏
+        </p>
+        <h1 className="text-3xl font-black tracking-tight text-slate-900">Hey {firstName}</h1>
+        <p className="mt-0.5 text-[13px] font-medium text-slate-500">Where are we headed today?</p>
       </div>
 
       {/* Category quick-access circles */}
@@ -200,7 +204,11 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
 
 function QuickAction({ href, icon, title, sub }: { href: string; icon: React.ReactNode; title: string; sub: string }) {
   return (
-    <Link href={href} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm active:scale-[0.98]">
+    <Link
+      href={href}
+      className="group relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm active:scale-[0.98]"
+    >
+      <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-70" />
       <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
         {icon}
       </span>
@@ -212,9 +220,12 @@ function QuickAction({ href, icon, title, sub }: { href: string; icon: React.Rea
 
 function StatPill({ value, label }: { value: string; label: string }) {
   return (
-    <div className="min-w-[7.5rem] shrink-0 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <p className="text-lg font-extrabold text-slate-900">{value}</p>
-      <p className="text-[11px] font-medium text-slate-500">{label}</p>
+    <div className="flex min-w-[7.5rem] shrink-0 items-center gap-2.5 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 shadow-sm">
+      <span aria-hidden className="h-8 w-1 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
+      <div>
+        <p className="text-lg font-black text-slate-900">{value}</p>
+        <p className="text-[11px] font-medium text-slate-500">{label}</p>
+      </div>
     </div>
   );
 }
@@ -223,8 +234,11 @@ function Section({ title, href, children }: { title: string; href: string; child
   return (
     <section className="animate-fadeUp">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-lg font-extrabold tracking-tight text-slate-900">{title}</h2>
-        <Link href={href} className="text-sm font-bold text-emerald-600">
+        <h2 className="flex items-center gap-2 text-lg font-black tracking-tight text-slate-900">
+          <span aria-hidden className="h-4 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
+          {title}
+        </h2>
+        <Link href={href} className="text-sm font-bold text-emerald-700">
           See all →
         </Link>
       </div>

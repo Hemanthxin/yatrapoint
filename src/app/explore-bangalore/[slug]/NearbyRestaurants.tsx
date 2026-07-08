@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Clock, ExternalLink, Loader2, Navigation } from "lucide-react";
 import { formatKm, haversineKm } from "@/lib/geo";
+import { placeMapUrl } from "@/lib/maps";
 
 interface OsmPlace {
   osmId: string;
@@ -120,7 +121,7 @@ export function NearbyRestaurants({ centreLat, centreLng }: NearbyRestaurantsPro
             )}
             <div className="mt-3 flex gap-2">
               <a
-                href={`https://www.google.com/maps?q=${p.lat},${p.lng}`}
+                href={placeMapUrl({ name: p.name, area: p.tags.addrFull, latitude: p.lat, longitude: p.lng })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-9 items-center gap-1 rounded-full bg-slate-100 px-4 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"

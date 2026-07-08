@@ -8,6 +8,7 @@ import { Loader2, MapPin, Navigation, Trash2, ShoppingBag, Wallet, ExternalLink 
 import { useCart, removeFromCart } from "@/lib/cart";
 import { useLocation } from "@/components/app/LocationContext";
 import { resolveTripStops, type TripStop } from "@/lib/actions/trip-cart";
+import { placeMapUrl } from "@/lib/maps";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -154,7 +155,7 @@ export function CartPlanner() {
                   </p>
                 </div>
                 <a
-                  href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
+                  href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-emerald-600 lg:h-9 lg:w-9 lg:rounded-lg"

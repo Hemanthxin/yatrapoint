@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -115,101 +114,144 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* ── Desktop (≥ lg): the original dashboard, unchanged ── */}
-      <div className="hidden lg:block">
-      {/* Hero banner — settles into a rounded card on larger screens. */}
-      <section className="bleed animate-fadeUp relative overflow-hidden rounded-none border-slate-200 shadow-xl shadow-emerald-500/10 md:rounded-3xl md:border">
-        <div className="relative h-64 w-full sm:h-72 md:h-80">
-          <Image
-            src="/66242.jpg"
-            alt="Scenic Karnataka temple and waterfalls"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 70vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-          {/* Emerald glow wash for that Play-Store hero pop. */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_10%_110%,rgba(16,185,129,0.55),transparent_60%)] mix-blend-screen" />
-        </div>
-        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
-          <MapPin className="h-3 w-3 text-emerald-600" /> Coorg
-        </span>
-        <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
-          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
-            Featured destination
+      {/* ── Desktop (≥ lg): cream + green editorial dashboard ── */}
+      <div className="hidden space-y-8 lg:block">
+      {/* Greeting row */}
+      <div className="flex items-end justify-between gap-4 animate-fadeUp">
+        <div>
+          <p className="flex items-center gap-2 text-sm font-bold tracking-wide text-[color:var(--highlight)]">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--highlight)]" />
+            Namaste 🙏
           </p>
-          <h1 className="text-3xl font-extrabold leading-[1.05] tracking-tight text-white md:text-5xl">
-            Explore Karnataka,
-            <br />
-            <span className="text-gradient animate-shimmer">Create Memories</span>
+          <h1 className="mt-1 text-4xl font-black leading-tight tracking-tight text-slate-900">
+            Good to see you, {firstName}
           </h1>
-          <p className="mt-3 max-w-xs text-sm font-medium text-white/85">
-            Smart trips. Budget friendly. Unforgettable memories.
-          </p>
-          <Link
-            href="/budget-planner"
-            className="group relative mt-5 inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
-          >
-            <span aria-hidden className="sheen-overlay animate-sheen" />
-            <span className="relative flex items-center gap-2">
-              Explore Now
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </span>
-          </Link>
         </div>
+        <Link
+          href="/budget-planner"
+          className="btn-primary shrink-0 px-5 py-3 text-sm"
+        >
+          <Wallet className="h-4 w-4" /> Plan a new trip
+        </Link>
+      </div>
+
+      {/* Hero bento — a green story panel beside the featured place. */}
+      <section className="grid animate-fadeUp gap-4 lg:grid-cols-5">
+        <div className="relative col-span-3 overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-700 p-9 text-white shadow-xl shadow-emerald-900/20">
+          {/* Contour texture + warm glow for depth. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.14]"
+            style={{ backgroundImage: "repeating-linear-gradient(125deg, #fff 0 1px, transparent 1px 26px)" }}
+          />
+          <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[color:var(--highlight)]/30 blur-3xl" />
+          <div className="relative">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/70">Explore Karnataka</p>
+            <h2 className="mt-3 max-w-md text-4xl font-black leading-[1.05] tracking-tight">
+              Smart trips, within your budget.
+            </h2>
+            <p className="mt-3 max-w-sm text-sm font-medium text-white/80">
+              From ancient temples to hidden waterfalls — plan a full day out for exactly what you want to spend.
+            </p>
+            <Link
+              href="/budget-planner"
+              className="group mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#fffdf8] px-5 py-3 text-sm font-bold text-emerald-800 shadow-lg transition hover:scale-[1.03] active:scale-95"
+            >
+              Start planning
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </Link>
+            <div className="mt-7 flex gap-6 border-t border-white/15 pt-5">
+              <div>
+                <p className="text-2xl font-black">{stats.tripsPlanned.toString().padStart(2, "0")}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60">Trips planned</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black">{stats.placesExplored}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60">Places explored</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black">{formatINR(stats.totalSaved)}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60">Total saved</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {popularTrips[0] && (
+          <Link
+            href={`/destinations/${popularTrips[0].slug}`}
+            className="card-hover group relative col-span-2 overflow-hidden rounded-[2rem] border border-[color:var(--border)] shadow-sm"
+          >
+            <PlaceImage
+              name={popularTrips[0].name}
+              storedSrc={popularTrips[0].imageUrl}
+              hint={[popularTrips[0].district, popularTrips[0].state].filter(Boolean).join(", ")}
+              category={popularTrips[0].category}
+              emoji={CATEGORY_BY_SLUG[popularTrips[0].category as CategorySlug]?.emoji ?? "📍"}
+              gradient={CATEGORY_GRADIENT[popularTrips[0].category as CategorySlug] ?? "from-sky-400 to-emerald-500"}
+              className="absolute inset-0 h-full w-full"
+              emojiClassName="text-6xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+            <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-[#fffdf8]/90 px-3 py-1 text-xs font-bold text-emerald-800 backdrop-blur">
+              <MapPin className="h-3 w-3" /> Featured
+            </span>
+            <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+              <h3 className="text-xl font-black leading-tight drop-shadow">{popularTrips[0].name}</h3>
+              <p className="mt-1 text-xs font-medium text-white/85">
+                {[popularTrips[0].district, popularTrips[0].state].filter(Boolean).join(", ")}
+              </p>
+            </div>
+          </Link>
+        )}
       </section>
 
-      {/* Feature tiles */}
-      <section className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {/* Feature tiles — clean cream cards with a green top accent on hover. */}
+      <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {features.map((f) => (
           <Link
             key={f.title}
             href={f.href}
-            className="card-hover rounded-3xl border border-slate-200 bg-white p-3.5 shadow-sm"
+            className="card-hover group relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-sm"
           >
-            <div className={`mb-2 grid h-11 w-11 place-items-center rounded-2xl ${f.tone}`}>
+            <span aria-hidden className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-emerald-500 to-green-600 transition-transform duration-300 group-hover:scale-x-100" />
+            <div className={`mb-3 grid h-12 w-12 place-items-center rounded-2xl ${f.tone}`}>
               {f.icon}
             </div>
-            <p className="text-sm font-bold tracking-tight text-slate-900">{f.title}</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
+            <p className="flex items-center justify-between text-sm font-bold tracking-tight text-slate-900">
+              {f.title}
+              <ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+            </p>
+            <p className="mt-1 text-[12px] leading-snug text-slate-500">{f.desc}</p>
           </Link>
         ))}
       </section>
 
       {/* Activity stats */}
-      <section className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Trips Planned</h2>
-          <Link href="/one-day-trips" className="text-sm font-bold text-emerald-600 hover:underline">
-            View all →
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section>
+        <SectionHeader title="Your activity" href="/one-day-trips" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {statCards.map((s) => (
             <Link
               key={s.label}
               href={s.href}
-              className="card-hover rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="card-hover flex items-center gap-3 rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm"
             >
-              <div className={`mb-2 grid h-11 w-11 place-items-center rounded-2xl ${s.tone}`}>
+              <div className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${s.tone}`}>
                 {s.icon}
               </div>
-              <p className="truncate text-2xl font-extrabold text-slate-900">{s.value}</p>
-              <p className="text-xs font-medium text-slate-500">{s.label}</p>
+              <div className="min-w-0">
+                <p className="truncate text-2xl font-black text-slate-900">{s.value}</p>
+                <p className="text-xs font-medium text-slate-500">{s.label}</p>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
       {/* Near by place */}
-      <section className="mt-7">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Near by place</h2>
-          <Link href="/explore-bangalore" className="text-sm font-bold text-emerald-600 hover:underline">
-            View all →
-          </Link>
-        </div>
+      <section>
+        <SectionHeader title="Near by place" href="/explore-bangalore" />
         <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
           {nearby.map((n) => {
             const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
@@ -218,7 +260,7 @@ export default async function DashboardPage() {
               <Link
                 key={n.id}
                 href={`/one-day-trips/${n.slug}`}
-                className="card-hover w-40 shrink-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm lg:w-auto"
+                className="card-hover w-40 shrink-0 overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm lg:w-auto"
               >
                 <div className="relative h-24 w-full">
                   <PlaceImage
@@ -255,13 +297,8 @@ export default async function DashboardPage() {
       </section>
 
       {/* Popular trips */}
-      <section className="mt-7">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Popular Trips</h2>
-          <Link href="/destinations" className="text-sm font-bold text-emerald-600 hover:underline">
-            View all →
-          </Link>
-        </div>
+      <section>
+        <SectionHeader title="Popular Trips" href="/destinations" />
         <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
           {popularTrips.map((t) => {
             const cat = CATEGORY_BY_SLUG[t.category as CategorySlug];
@@ -271,7 +308,7 @@ export default async function DashboardPage() {
               <Link
                 key={t.id}
                 href={`/destinations/${t.slug}`}
-                className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-3xl border border-slate-200 shadow-sm lg:w-auto"
+                className="card-hover relative h-40 w-56 shrink-0 overflow-hidden rounded-3xl border border-[color:var(--border)] shadow-sm lg:w-auto"
               >
                 <PlaceImage
                   name={t.name}
@@ -300,5 +337,25 @@ export default async function DashboardPage() {
       </section>
       </div>
     </AppShell>
+  );
+}
+
+// Signature section header: a short green accent bar + title on the left, a
+// muted "View all" on the right. Used across the desktop dashboard rails so
+// every section reads as one system.
+function SectionHeader({ title, href }: { title: string; href: string }) {
+  return (
+    <div className="mb-4 flex items-center justify-between">
+      <h2 className="flex items-center gap-2.5 text-xl font-black tracking-tight text-slate-900">
+        <span aria-hidden className="h-5 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
+        {title}
+      </h2>
+      <Link
+        href={href}
+        className="text-sm font-bold text-emerald-700 transition hover:text-emerald-800 hover:underline"
+      >
+        View all →
+      </Link>
+    </div>
   );
 }

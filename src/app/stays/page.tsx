@@ -5,6 +5,7 @@ import { BedDouble, MapPin, Star, MapPinned, ExternalLink } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { listHotels, hotelCities } from "@/lib/queries/hotels";
+import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { Filters } from "./Filters";
 
@@ -122,7 +123,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
               const stars = h.starRating != null ? Math.max(0, Math.min(5, Math.round(h.starRating))) : 0;
               const place = [h.area, h.city].filter(Boolean).join(", ");
               const hasGeo = Boolean(h.latitude && h.longitude);
-              const mapUrl = `https://www.google.com/maps?q=${h.latitude},${h.longitude}`;
+              const mapUrl = placeMapUrl(h);
               const bookUrl = `https://www.google.com/search?q=${encodeURIComponent(
                 `${h.name} ${h.city || ""} hotel booking`
               )}`;

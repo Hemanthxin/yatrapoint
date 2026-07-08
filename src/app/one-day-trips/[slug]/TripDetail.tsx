@@ -32,6 +32,7 @@ import {
   type CategorySlug,
 } from "@/lib/catalog/categories";
 import type { NearbyDestination } from "@/lib/db/schema";
+import { placeDirectionsUrl } from "@/lib/maps";
 
 // Leaflet uses window — must be client-only.
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -357,7 +358,7 @@ export function TripDetail({ trip }: TripDetailProps) {
             </span>
           </Link>
           <a
-            href={`https://www.google.com/maps/dir/?api=1&origin=${coords.lat},${coords.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`}
+            href={placeDirectionsUrl({ name: trip.name, city: trip.baseCity }, coords)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"

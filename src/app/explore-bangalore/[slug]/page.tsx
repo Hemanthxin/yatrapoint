@@ -17,6 +17,7 @@ import { cityPlaces } from "@/lib/db/schema";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
+import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { formatMinutes } from "@/lib/geo";
 
@@ -114,7 +115,7 @@ export default async function CityPlacePage({ params }: PageProps) {
 
         <div className="mt-6 flex flex-wrap gap-2">
           <a
-            href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+            href={placeMapUrl(place)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex h-11 items-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:scale-[1.02] hover:bg-slate-50 active:scale-95"

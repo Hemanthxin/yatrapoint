@@ -17,6 +17,7 @@ import { useLocation } from "@/components/app/LocationContext";
 import { sortByUserDistance } from "@/lib/nearby-utils";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
+import { placeMapUrl } from "@/lib/maps";
 
 interface OverpassPlaceClient {
   osmId: string;
@@ -367,7 +368,7 @@ function SeedCard({
           Details
         </Link>
         <a
-          href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+          href={placeMapUrl(place)}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
@@ -421,7 +422,7 @@ function OsmCard({
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         <a
-          href={`https://www.google.com/maps?q=${place.lat},${place.lng}`}
+          href={placeMapUrl({ name: place.name, area: place.tags.addrFull, latitude: place.lat, longitude: place.lng })}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition active:scale-95 lg:h-9 lg:min-h-0 lg:bg-none lg:bg-slate-100 lg:px-4 lg:text-xs lg:font-semibold lg:text-slate-700 lg:shadow-none lg:hover:bg-slate-200"

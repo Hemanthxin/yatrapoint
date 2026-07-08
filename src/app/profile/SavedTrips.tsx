@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { MapPin, Navigation, Trash2, Calendar, Users, Wallet } from "lucide-react";
 import { formatINR } from "@/lib/format";
+import { placeMapUrl } from "@/lib/maps";
 
 const SAVED_TRIPS_KEY = "yatra-point/saved-trips";
 
@@ -127,7 +128,7 @@ export function SavedTrips({ dbPlans, hasDbPlans }: { dbPlans: ReactNode; hasDbP
                   {s.name}
                 </span>
                 <a
-                  href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
+                  href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:underline"

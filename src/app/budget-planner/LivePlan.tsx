@@ -28,6 +28,7 @@ import {
 import { useLocation } from "@/components/app/LocationContext";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
+import { placeMapUrl } from "@/lib/maps";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
 import { groupsToOverpass } from "@/lib/catalog/place-groups";
 
@@ -901,7 +902,7 @@ export function LivePlan({
                       Nearby Restaurants →
                     </a>
                     <a
-                      href={`https://www.google.com/maps?q=${s.lat},${s.lng}`}
+                      href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex min-h-[32px] items-center rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-200 active:scale-95"
@@ -1068,7 +1069,7 @@ function StationCard({
           <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
             <span>{formatKm(station.km)} away</span>
             <a
-              href={`https://www.google.com/maps?q=${station.lat},${station.lng}`}
+              href={placeMapUrl({ name: station.name, latitude: station.lat, longitude: station.lng })}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-semibold text-emerald-700 hover:underline"

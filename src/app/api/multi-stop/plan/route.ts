@@ -3,7 +3,7 @@ import { z } from "zod";
 import { inArray } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { cityPlaces, destinations } from "@/lib/db/schema";
+import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
 import { fetchOverpassPlaces, findNearestStation, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
 import { haversineKm } from "@/lib/geo";
@@ -459,6 +459,38 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // 1c) One-day-trip catalogue (`nearby_destinations`) — day-trip spots that
+  // aren't in the statewide `destinations` table. They use the same broad
+  // category slugs (heritage / hill_station / adventure / wildlife / pilgrimage)
+  // so resolveDestOverpass maps them identically. Included so EVERY curated place
+  // table feeds the planner, not just destinations + city_places.
+  const allNearby = await db.select().from(nearbyDestinations);
+  const nearbyCandidates: Candidate[] = [];
+  for (const n of allNearby) {
+    const lat = Number(n.latitude);
+    const lng = Number(n.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+    if (JUNK_NAME.test(n.name)) continue;
+    if (!withinReach(lat, lng)) continue;
+    const ops = resolveDestOverpass(n.category, n.name);
+    const matched = ops.filter((c) => wantedCats.includes(c));
+    if (matched.length === 0) continue;
+    const op: OverpassCategory = matched[0];
+    nearbyCandidates.push({
+      id: `nearby:${n.id}`,
+      name: n.name,
+      category: op,
+      lat,
+      lng,
+      entryFee: n.entryFeePerPerson,
+      entryFeeKnown: true,
+      // Stored in HOURS at the spot; the planner works in minutes.
+      idealMinutes: Math.max(15, Math.round(n.idealHoursAtPlace * 60)),
+      popularity: n.popularity,
+      meta: { citySeedSlug: n.slug },
+    });
+  }
+
   // 2) Live Overpass candidates, merged + de-duped. Auto-widen the radius when
   // the area is sparse so we can reliably reach the requested number of places.
   const finalCandidates: Candidate[] = [];
@@ -497,6 +529,10 @@ export async function POST(req: NextRequest) {
   // de-dup race against generic OSM points at the same spot.
   destCandidates.sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50));
   for (const c of destCandidates) addCandidate(c);
+  // One-day-trip catalogue, also popularity-first so well-known day trips win
+  // the de-dup race against generic OSM points at the same spot.
+  nearbyCandidates.sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50));
+  for (const c of nearbyCandidates) addCandidate(c);
 
   let overpassCount = 0;
   let overpassError: string | null = null;
@@ -767,7 +803,7 @@ export async function POST(req: NextRequest) {
     ok: true,
     candidatesConsidered: finalCandidates.length,
     overpassPlaces: overpassCount,
-    seedPlaces: seedCandidates.length + destCandidates.length,
+    seedPlaces: seedCandidates.length + destCandidates.length + nearbyCandidates.length,
     overpassError,
     stops: orderedStops,
     alternatives,

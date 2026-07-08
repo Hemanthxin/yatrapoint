@@ -30,6 +30,7 @@ import {
   type CategorySlug,
 } from "@/lib/catalog/categories";
 import type { Destination } from "@/lib/db/schema";
+import { placeDirectionsUrl, placeMapUrl } from "@/lib/maps";
 
 // Leaflet uses window — must be client-only.
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -253,10 +254,8 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
       <a
         href={
           hasCoords
-            ? `https://www.google.com/maps/dir/?api=1&origin=${coords.lat},${coords.lng}&destination=${lat},${lng}&travelmode=driving`
-            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                `${destination.name}, ${placeLabel}`
-              )}`
+            ? placeDirectionsUrl(destination, coords)
+            : placeMapUrl(destination)
         }
         target="_blank"
         rel="noopener noreferrer"

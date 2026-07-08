@@ -65,10 +65,10 @@ export default {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
         },
-        // Pulsing emerald glow — used by the dock + raised Plan button.
+        // Pulsing forest-green glow — used by the dock + raised Plan button.
         glow: {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(16,185,129,0.45), 0 12px 34px -10px rgba(16,185,129,0.55)" },
-          "50%": { boxShadow: "0 0 0 8px rgba(16,185,129,0), 0 18px 44px -8px rgba(16,185,129,0.7)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(46,139,87,0.45), 0 12px 34px -10px rgba(46,139,87,0.55)" },
+          "50%": { boxShadow: "0 0 0 8px rgba(46,139,87,0), 0 18px 44px -8px rgba(46,139,87,0.7)" },
         },
         // Indigo variant for the admin console.
         glowIndigo: {
