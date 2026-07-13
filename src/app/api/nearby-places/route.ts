@@ -2,21 +2,44 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { and, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { cityPlaces } from "@/lib/db/schema";
+import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
 import { haversineKm } from "@/lib/geo";
 
 export const runtime = "nodejs";
 
-// Curated seed places WITHIN a radius of the user — from the FULL catalogue
-// (~10k rows), not a fixed popularity slice. A latitude/longitude bounding box
-// keeps the DB scan tiny (only rows near the box), so it stays fast even though
-// the table is large. The client then filters to the exact radius and sorts.
+// Curated places WITHIN a radius of the user, unioned across every catalogue
+// table so it works ANYWHERE in India — not just Bengaluru:
+//   • city_places        (~10k, Bengaluru-heavy) — bounded by a lat/lng box so
+//                          the large table stays a tiny scan.
+//   • destinations       (~634, nationwide) — fetched whole (small) + filtered.
+//   • nearby_destinations (~50, day trips)   — fetched whole + filtered.
+// The result is a normalised list, nearest-first.
 const querySchema = z.object({
   lat: z.coerce.number().finite().gte(-90).lte(90),
   lng: z.coerce.number().finite().gte(-180).lte(180),
-  radiusKm: z.coerce.number().min(1).max(300).default(8),
-  limit: z.coerce.number().int().min(1).max(1200).default(800),
+  radiusKm: z.coerce.number().min(1).max(400).default(30),
+  limit: z.coerce.number().int().min(1).max(1200).default(24),
 });
+
+export interface NearPlace {
+  id: string;
+  name: string;
+  slug: string;
+  source: "city" | "destination" | "nearby";
+  category: string | null;
+  kind: string | null;
+  area: string | null;
+  imageUrl: string | null;
+  latitude: string;
+  longitude: string;
+  distanceKm: number;
+}
+
+const numeric = (v: string | null) => {
+  if (v == null || String(v).trim() === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+};
 
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
@@ -34,13 +57,15 @@ export async function GET(req: NextRequest) {
   }
 
   const { lat, lng, radiusKm, limit } = parsed.data;
+  const centre = { lat, lng };
   // Bounding box around the user (a little wider than the radius so the corners
   // aren't clipped before the exact circular filter below).
   const dLat = radiusKm / 111 + 0.02;
   const dLng = radiusKm / (111 * Math.max(0.2, Math.cos((lat * Math.PI) / 180))) + 0.02;
 
   try {
-    const rows = await db
+    // city_places: SQL bounding box keeps the ~10k-row scan tiny.
+    const cityRows = await db
       .select()
       .from(cityPlaces)
       .where(
@@ -51,13 +76,54 @@ export async function GET(req: NextRequest) {
       )
       .limit(1500);
 
-    // Exact circular filter + nearest-first, capped.
-    const places = rows
-      .map((r) => ({ r, d: haversineKm({ lat, lng }, { lat: Number(r.latitude), lng: Number(r.longitude) }) }))
-      .filter((x) => Number.isFinite(x.d) && x.d <= radiusKm)
-      .sort((a, b) => a.d - b.d)
-      .slice(0, limit)
-      .map((x) => x.r);
+    // Small nationwide tables — fetch whole, filter in JS (avoids casting the
+    // occasional blank/invalid coordinate in SQL).
+    const [destRows, nearRows] = await Promise.all([
+      db.select().from(destinations),
+      db.select().from(nearbyDestinations),
+    ]);
+
+    const all: NearPlace[] = [];
+
+    for (const r of cityRows) {
+      const la = numeric(r.latitude);
+      const lo = numeric(r.longitude);
+      if (la == null || lo == null) continue;
+      all.push({
+        id: r.id, name: r.name, slug: r.slug, source: "city",
+        category: r.category, kind: r.kind, area: r.area || r.city || null,
+        imageUrl: r.imageUrl, latitude: r.latitude!, longitude: r.longitude!,
+        distanceKm: haversineKm(centre, { lat: la, lng: lo }),
+      });
+    }
+    for (const r of destRows) {
+      const la = numeric(r.latitude);
+      const lo = numeric(r.longitude);
+      if (la == null || lo == null) continue;
+      all.push({
+        id: r.id, name: r.name, slug: r.slug, source: "destination",
+        category: r.category, kind: r.placeType ?? null,
+        area: [r.district, r.state].filter(Boolean).join(", ") || null,
+        imageUrl: r.imageUrl, latitude: r.latitude!, longitude: r.longitude!,
+        distanceKm: haversineKm(centre, { lat: la, lng: lo }),
+      });
+    }
+    for (const r of nearRows) {
+      const la = numeric(r.latitude);
+      const lo = numeric(r.longitude);
+      if (la == null || lo == null) continue;
+      all.push({
+        id: r.id, name: r.name, slug: r.slug, source: "nearby",
+        category: r.category, kind: null, area: `From ${r.baseCity}`,
+        imageUrl: r.imageUrl, latitude: r.latitude, longitude: r.longitude,
+        distanceKm: haversineKm(centre, { lat: la, lng: lo }),
+      });
+    }
+
+    const places = all
+      .filter((p) => p.distanceKm <= radiusKm)
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .slice(0, limit);
 
     return NextResponse.json({ ok: true, count: places.length, places });
   } catch (err) {
