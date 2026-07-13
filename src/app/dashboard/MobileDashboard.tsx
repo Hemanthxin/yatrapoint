@@ -6,27 +6,26 @@ import {
   CalendarClock,
   Users,
   Sparkles,
-  Navigation,
-  Clock,
 } from "lucide-react";
 
 import { formatINR } from "@/lib/format";
 import { CATEGORIES, CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 import { PlaceImage } from "@/components/app/PlaceImage";
 import { WeatherCard } from "@/components/app/dashboard/WeatherCard";
-import type { NearbyDestination, Destination } from "@/lib/db/schema";
+import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
+import type { CityPlace, Destination } from "@/lib/db/schema";
 
 interface Props {
   firstName: string;
   stats: { tripsPlanned: number; placesExplored: number; totalSaved: number };
-  nearby: NearbyDestination[];
+  citySeed: CityPlace[];
   popularTrips: Destination[];
 }
 
 // A bespoke, app-first mobile home — completely distinct from the desktop grid.
 // Rendered only below `lg`. Coral accent comes automatically from the mobile
 // theme, so all `emerald` utilities here paint coral on phones.
-export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Props) {
+export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Props) {
   const featured = popularTrips[0];
   const featuredCat = featured ? CATEGORY_BY_SLUG[featured.category as CategorySlug] : undefined;
 
@@ -121,50 +120,10 @@ export function MobileDashboard({ firstName, stats, nearby, popularTrips }: Prop
         <StatPill value={formatINR(stats.totalSaved)} label="Total saved" />
       </div>
 
-      {/* Near you rail */}
-      {nearby.length > 0 && (
-        <Section title="Near you" href="/explore-bangalore">
-          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
-            {nearby.map((n) => {
-              const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
-              const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
-              return (
-                <Link
-                  key={n.id}
-                  href={`/one-day-trips/${n.slug}`}
-                  className="w-44 shrink-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm active:scale-[0.98]"
-                >
-                  <div className="relative h-28 w-full">
-                    <PlaceImage
-                      name={n.name}
-                      storedSrc={n.imageUrl}
-                      hint="Karnataka"
-                      category={n.category}
-                      emoji={cat?.emoji ?? "📍"}
-                      gradient={grad}
-                      className="h-full w-full"
-                      emojiClassName="text-4xl"
-                      preferWiki
-                    />
-                    <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
-                      <Navigation className="h-2.5 w-2.5" /> {n.distanceKm} km
-                    </span>
-                  </div>
-                  <div className="p-3">
-                    <p className="truncate text-sm font-bold text-slate-900">{n.name}</p>
-                    <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-500">
-                      <Clock className="h-3 w-3" /> {n.drivingMinutes} min drive
-                    </p>
-                    <p className={`mt-1 text-xs font-bold ${n.entryFeePerPerson === 0 ? "text-emerald-600" : "text-slate-700"}`}>
-                      {n.entryFeePerPerson === 0 ? "Free entry" : `₹${n.entryFeePerPerson} entry`}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </Section>
-      )}
+      {/* Near you — the curated places actually closest to the traveller */}
+      <Section title="Near you" href="/explore-bangalore">
+        <NearbyPlaces seed={citySeed} />
+      </Section>
 
       {/* Popular rail */}
       {popularTrips.length > 0 && (

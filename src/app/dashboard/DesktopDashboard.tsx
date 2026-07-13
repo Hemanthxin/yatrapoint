@@ -14,22 +14,21 @@ import {
 } from "lucide-react";
 
 import { formatINR } from "@/lib/format";
-import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
-import { PlaceImage } from "@/components/app/PlaceImage";
 import { WeatherCard } from "@/components/app/dashboard/WeatherCard";
 import { UpcomingTrips } from "@/components/app/dashboard/UpcomingTrips";
 import { BudgetOverview } from "@/components/app/dashboard/BudgetOverview";
 import { TrustStrip } from "@/components/app/dashboard/TrustStrip";
+import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
-import type { NearbyDestination } from "@/lib/db/schema";
+import type { CityPlace } from "@/lib/db/schema";
 
 interface Props {
   stats: DashboardStats;
-  nearby: NearbyDestination[];
+  citySeed: CityPlace[];
   upcoming: UpcomingTrip[];
 }
 
-export function DesktopDashboard({ stats, nearby, upcoming }: Props) {
+export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
   const tone = "bg-emerald-100 text-emerald-700";
   const features = [
     { title: "Budget Planner", desc: "Plan your trip within budget", href: "/budget-planner", tone, icon: <Wallet className="h-5 w-5" /> },
@@ -118,53 +117,10 @@ export function DesktopDashboard({ stats, nearby, upcoming }: Props) {
           </div>
         </section>
 
-        {/* Near by place */}
+        {/* Near by place — the places actually closest to the traveller */}
         <section>
           <SectionHeader title="Near by place" href="/explore-bangalore" />
-          <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-            {nearby.slice(0, 4).map((n) => {
-              const cat = CATEGORY_BY_SLUG[n.category as CategorySlug];
-              const grad = CATEGORY_GRADIENT[n.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
-              return (
-                <Link
-                  key={n.id}
-                  href={`/one-day-trips/${n.slug}`}
-                  className="card-hover group relative overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm"
-                >
-                  <div className="relative h-32 w-full">
-                    <PlaceImage
-                      name={n.name}
-                      storedSrc={n.imageUrl}
-                      hint="Karnataka"
-                      category={n.category}
-                      emoji={cat?.emoji ?? "📍"}
-                      gradient={grad}
-                      className="h-full w-full"
-                      emojiClassName="text-4xl"
-                      preferWiki
-                    />
-                    <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
-                      {n.distanceKm} km
-                    </span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2 p-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-slate-900">{n.name}</p>
-                      <p className="flex items-center gap-1 truncate text-[11px] text-slate-500">
-                        <MapPin className="h-3 w-3 shrink-0" /> From {n.baseCity}
-                      </p>
-                    </div>
-                    <span
-                      aria-hidden
-                      className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[color:var(--border)] text-slate-300 transition group-hover:border-rose-200 group-hover:text-rose-400"
-                    >
-                      <Heart className="h-4 w-4" />
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <NearbyPlaces seed={citySeed} />
         </section>
       </div>
 
