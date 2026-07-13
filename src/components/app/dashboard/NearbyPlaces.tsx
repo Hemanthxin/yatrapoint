@@ -20,6 +20,25 @@ const GRADIENTS = [
   "from-lime-400 to-green-600",
 ];
 
+// Category-appropriate emoji for places with no photo, so a pub shows 🍺 rather
+// than a generic pin. Keyed on the city place's `kind`, then `category`.
+const KIND_EMOJI: Record<string, string> = {
+  restaurant: "🍽️", cafe: "☕", fast_food: "🍔", food: "🍽️",
+  nightlife: "🍺", bar: "🍸", pub: "🍺",
+  mall: "🛍️", market: "🛒", marketplace: "🛒", shopping: "🛍️",
+  temple: "🛕", church: "⛪", mosque: "🕌", gurudwara: "🛕", worship: "🛕",
+  museum: "🏛️", monument: "🏛️", heritage: "🏛️", fort: "🏰",
+  park: "🌳", garden: "🌷", lake: "🏞️", viewpoint: "🌄", nature: "🌿",
+  zoo: "🦁", wildlife: "🦌", amusement: "🎡", attraction: "🎡", cinema: "🎬",
+};
+function emojiFor(place: CityPlace): string {
+  return (
+    KIND_EMOJI[(place.kind ?? "").toLowerCase()] ??
+    KIND_EMOJI[(place.category ?? "").toLowerCase()] ??
+    "📍"
+  );
+}
+
 export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
   const { coords } = useLocation();
   const [places, setPlaces] = useState<CityPlace[]>(seed);
@@ -63,7 +82,7 @@ export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
               storedSrc={p.imageUrl}
               hint={[p.area, p.city].filter(Boolean).join(", ")}
               category={p.category}
-              emoji="📍"
+              emoji={emojiFor(p)}
               gradient={GRADIENTS[i % GRADIENTS.length]}
               className="h-full w-full"
               emojiClassName="text-4xl"

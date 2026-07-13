@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import {
-  Palette,
+  Cog,
   UserRound,
   Check,
   Save,
@@ -12,10 +12,13 @@ import {
   AtSign,
   Bookmark,
   ShieldCheck,
+  Info,
+  HelpCircle,
+  Lock,
+  FileText,
+  type LucideIcon,
 } from "lucide-react";
 
-import { THEMES, type ThemeId } from "@/lib/theme";
-import { useTheme } from "@/components/ThemeProvider";
 import { updateProfile } from "@/lib/actions/profile";
 import { signOutAction } from "@/lib/actions/auth";
 
@@ -27,15 +30,7 @@ interface Initial {
   phone: string;
 }
 
-// Little colour swatch preview per theme.
-const THEME_SWATCH: Record<ThemeId, string[]> = {
-  light: ["#ffffff", "#eef1f5", "#ef4f5f"],
-  dark: ["#0b0f14", "#1c2431", "#ff5c6a"],
-  vibrant: ["#2a1148", "#b3277a", "#ff5c6a"],
-};
-
 export function SettingsClient({ initial }: { initial: Initial }) {
-  const { theme, setTheme } = useTheme();
   const [name, setName] = useState(initial.name);
   const [username, setUsername] = useState(initial.username);
   const [bio, setBio] = useState(initial.bio);
@@ -61,7 +56,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
     <div className="animate-fadeUp mx-auto max-w-2xl space-y-6">
       <header className="flex items-center gap-3">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
-          <Palette className="h-6 w-6" />
+          <Cog className="h-6 w-6" />
         </span>
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
@@ -72,54 +67,6 @@ export function SettingsClient({ initial }: { initial: Initial }) {
           </p>
         </div>
       </header>
-
-      {/* Appearance / theme */}
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
-          <Palette className="h-4 w-4 text-emerald-600" /> Appearance
-        </h2>
-        <p className="mt-1 text-xs text-slate-500">
-          Pick a theme — it applies instantly on mobile devices. (Desktop keeps the classic look.)
-        </p>
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {THEMES.map((t) => {
-            const active = theme === t.id;
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setTheme(t.id)}
-                aria-pressed={active}
-                className={`group relative overflow-hidden rounded-2xl border p-4 text-left transition active:scale-[0.98] ${
-                  active
-                    ? "border-transparent ring-2 ring-emerald-500 shadow-lg shadow-emerald-500/20"
-                    : "border-slate-200 hover:border-emerald-300"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl">{t.emoji}</span>
-                  {active && (
-                    <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-white">
-                      <Check className="h-3.5 w-3.5" />
-                    </span>
-                  )}
-                </div>
-                <p className="mt-2 text-sm font-extrabold text-slate-900">{t.label}</p>
-                <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{t.desc}</p>
-                <div className="mt-3 flex gap-1.5">
-                  {THEME_SWATCH[t.id].map((c, i) => (
-                    <span
-                      key={i}
-                      className="h-5 w-5 rounded-full border border-black/10"
-                      style={{ backgroundColor: c }}
-                    />
-                  ))}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
 
       {/* Profile */}
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -211,6 +158,19 @@ export function SettingsClient({ initial }: { initial: Initial }) {
         </div>
       </section>
 
+      {/* About & Support */}
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
+          <Info className="h-4 w-4 text-emerald-600" /> About &amp; Support
+        </h2>
+        <div className="mt-3 divide-y divide-slate-100">
+          <SettingLink href="/about" icon={Info} label="About Saafera" desc="What the app does & how it works" />
+          <SettingLink href="/faq" icon={HelpCircle} label="FAQ / Q&A" desc="Answers to common questions" />
+          <SettingLink href="/privacy" icon={Lock} label="Privacy Policy" desc="How we handle your data" />
+          <SettingLink href="/terms" icon={FileText} label="Terms of Service" desc="The rules for using Saafera" />
+        </div>
+      </section>
+
       {/* Account */}
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
@@ -237,5 +197,30 @@ export function SettingsClient({ initial }: { initial: Initial }) {
         </div>
       </section>
     </div>
+  );
+}
+
+function SettingLink({
+  href,
+  icon: Icon,
+  label,
+  desc,
+}: {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  desc: string;
+}) {
+  return (
+    <Link href={href} className="flex items-center gap-3 py-3 transition hover:opacity-80">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-slate-800">{label}</span>
+        <span className="block text-xs text-slate-500">{desc}</span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" />
+    </Link>
   );
 }
