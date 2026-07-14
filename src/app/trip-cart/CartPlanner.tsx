@@ -9,6 +9,8 @@ import { useCart, removeFromCart } from "@/lib/cart";
 import { useLocation } from "@/components/app/LocationContext";
 import { resolveTripStops, type TripStop } from "@/lib/actions/trip-cart";
 import { placeMapUrl } from "@/lib/maps";
+import { EmptyState } from "@/components/app/EmptyState";
+import { EmptyCartIllustration } from "@/components/illustrations";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -61,19 +63,19 @@ export function CartPlanner() {
 
   if (cart.length === 0) {
     return (
-      <div className="animate-fadeUp rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
-          <ShoppingBag className="h-7 w-7" />
-        </div>
-        <p className="text-base font-extrabold tracking-tight text-slate-800">Your trip cart is empty.</p>
-        <p className="mt-1 text-sm text-slate-400">Tap “Plan a trip” on any festival or place to add it here.</p>
-        <Link
-          href="/festivals"
-          className="mt-4 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
-        >
-          Browse festivals
-        </Link>
-      </div>
+      <EmptyState
+        illustration={EmptyCartIllustration}
+        title="Your trip cart is empty."
+        description="Tap “Plan a trip” on any festival or place to add it here."
+        action={
+          <Link
+            href="/festivals"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+          >
+            Browse festivals
+          </Link>
+        }
+      />
     );
   }
 

@@ -15,6 +15,7 @@ import { useLocation } from "@/components/app/LocationContext";
 import { haversineKm, formatKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
 import { PlaceImage } from "@/components/app/PlaceImage";
+import { LocationSearchIllustration } from "@/components/illustrations";
 
 // Detail-page route for a curated place, by which table it came from.
 function hrefFor(source: NearPlace["source"], slug: string): string {
@@ -174,7 +175,8 @@ export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
   if (nearest.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-[color:var(--border)] px-4 py-8 text-center">
-        <p className="text-sm font-semibold text-slate-600">Finding places near you…</p>
+        <LocationSearchIllustration className="mx-auto h-24 w-24" />
+        <p className="mt-2 text-sm font-semibold text-slate-600">Finding places near you…</p>
         <p className="mt-0.5 text-xs text-slate-400">Allow location access for the closest spots.</p>
       </div>
     );

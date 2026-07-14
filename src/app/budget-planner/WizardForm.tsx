@@ -26,6 +26,7 @@ import { PLACE_GROUPS, TRIP_GROUPS } from "@/lib/catalog/place-groups";
 import { geocodeArea } from "@/lib/actions/areas";
 import { AreaPicker, EMPTY_AREA, type AreaSelection } from "./AreaPicker";
 import { LivePlan, type LivePlanProps } from "./LivePlan";
+import { PersonalFinanceIllustration } from "@/components/illustrations";
 
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
@@ -342,10 +343,11 @@ export function WizardForm({ initial }: WizardFormProps) {
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-500/30">
           <Wallet className="h-6 w-6" />
         </span>
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Budget Planner</h1>
           <p className="text-sm text-slate-500">Plan a trip within your budget — {STEPS.length} quick steps.</p>
         </div>
+        <PersonalFinanceIllustration className="h-20 w-20 shrink-0" />
       </div>
 
       {/* Progress bar + clickable step markers */}

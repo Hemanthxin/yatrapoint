@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { listDestinations, listFavoriteIds } from "@/lib/queries/destinations";
+import { EmptyState } from "@/components/app/EmptyState";
+import { NoDataIllustration } from "@/components/illustrations";
 
 export default async function HiddenPlacesPage() {
   const session = await auth();
@@ -33,11 +35,11 @@ export default async function HiddenPlacesPage() {
       </header>
 
       {items.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-sm">
-          <p className="text-sm font-medium text-slate-500">
-            No hidden places yet. Check back soon — we curate these monthly.
-          </p>
-        </div>
+        <EmptyState
+          illustration={NoDataIllustration}
+          title="No hidden places yet."
+          description="Check back soon — we curate these monthly."
+        />
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((d) => (

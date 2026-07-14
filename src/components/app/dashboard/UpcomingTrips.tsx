@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { UpcomingTrip } from "@/lib/queries/trip-plans";
+import { TravelersIllustration } from "@/components/illustrations";
 
 // A trip whose status isn't "draft" counts as Confirmed; drafts are Pending.
 function badge(status: string): { label: string; cls: string } {
@@ -29,7 +30,8 @@ export function UpcomingTrips({ trips }: { trips: UpcomingTrip[] }) {
 
       {trips.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[color:var(--border)] px-4 py-6 text-center">
-          <p className="text-sm font-semibold text-slate-600">No trips yet</p>
+          <TravelersIllustration className="mx-auto h-20 w-20" />
+          <p className="mt-2 text-sm font-semibold text-slate-600">No trips yet</p>
           <p className="mt-0.5 text-xs text-slate-400">Plan one and it’ll show up here.</p>
         </div>
       ) : (

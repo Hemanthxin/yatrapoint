@@ -13,6 +13,8 @@ import {
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 import { ResponsiveSwitch } from "@/components/app/ResponsiveSwitch";
 import { MobileDestinations } from "./MobileDestinations";
+import { EmptyState } from "@/components/app/EmptyState";
+import { NoDataIllustration } from "@/components/illustrations";
 
 interface PageProps {
   searchParams: Promise<{
@@ -137,11 +139,12 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       />
 
       {items.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm font-medium text-slate-500">
-            No destinations match those filters. Try removing one.
-          </p>
-        </div>
+        <EmptyState
+          className="mt-8"
+          illustration={NoDataIllustration}
+          title="No destinations match those filters."
+          description="Try removing one to see more places."
+        />
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((d) => (

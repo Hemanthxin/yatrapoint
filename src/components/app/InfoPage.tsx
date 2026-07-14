@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { BackButton } from "@/components/app/BackButton";
+import { ResearchingIllustration } from "@/components/illustrations";
 
 // Shared layout for the static info pages (About / FAQ / Privacy / Terms) so
 // they all read as one system: a gradient icon header + a clean white card.
@@ -23,12 +24,13 @@ export function InfoPage({
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Icon className="h-6 w-6" />
         </span>
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             {title}
           </h1>
           <p className="text-sm font-medium text-slate-500">{subtitle}</p>
         </div>
+        <ResearchingIllustration className="hidden h-20 w-20 shrink-0 sm:block" />
       </header>
 
       <article className="space-y-7 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">

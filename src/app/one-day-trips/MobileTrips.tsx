@@ -7,6 +7,8 @@ import { useLocation } from "@/components/app/LocationContext";
 import { sortByUserDistance } from "@/lib/nearby-utils";
 import { NearbyTripCard } from "@/components/app/NearbyTripCard";
 import { CATEGORIES } from "@/lib/catalog/categories";
+import { EmptyState } from "@/components/app/EmptyState";
+import { NoDataIllustration } from "@/components/illustrations";
 
 interface MobileTripsProps {
   trips: NearbyDestination[];
@@ -99,12 +101,11 @@ export function MobileTrips({ trips }: MobileTripsProps) {
 
       {/* Single-column list of rich trip cards */}
       {filtered.length === 0 ? (
-        <div className="animate-fadeUp rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-          <p className="text-4xl">🗺️</p>
-          <p className="mt-2 text-sm font-medium text-slate-500">
-            No places match those filters. Try removing one.
-          </p>
-        </div>
+        <EmptyState
+          illustration={NoDataIllustration}
+          title="No places match those filters."
+          description="Try removing one to see more trips."
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {filtered.map((d) => (

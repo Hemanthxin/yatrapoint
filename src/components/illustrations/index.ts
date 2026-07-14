@@ -1,0 +1,9 @@
+export { CommunityIllustration } from "./CommunityIllustration";
+export { DestinationsIllustration } from "./DestinationsIllustration";
+export { EmptyCartIllustration } from "./EmptyCartIllustration";
+export { LocationSearchIllustration } from "./LocationSearchIllustration";
+export { NoDataIllustration } from "./NoDataIllustration";
+export { PageNotFoundIllustration } from "./PageNotFoundIllustration";
+export { PersonalFinanceIllustration } from "./PersonalFinanceIllustration";
+export { ResearchingIllustration } from "./ResearchingIllustration";
+export { TravelersIllustration } from "./TravelersIllustration";

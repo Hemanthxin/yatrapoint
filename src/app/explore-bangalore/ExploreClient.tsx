@@ -18,6 +18,8 @@ import { sortByUserDistance } from "@/lib/nearby-utils";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
+import { EmptyState } from "@/components/app/EmptyState";
+import { NoDataIllustration } from "@/components/illustrations";
 
 interface OverpassPlaceClient {
   osmId: string;
@@ -295,9 +297,12 @@ export function ExploreClient({ seed }: ExploreClientProps) {
       </p>
 
       {unified.length === 0 && !loading ? (
-        <div className="order-4 mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-sm font-medium text-slate-500">No matches. Try a wider radius or a different category.</p>
-        </div>
+        <EmptyState
+          className="order-4 mt-6"
+          illustration={NoDataIllustration}
+          title="No matches."
+          description="Try a wider radius or a different category."
+        />
       ) : (
         <div className="order-4 mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-3">
           {unified.map((u) =>

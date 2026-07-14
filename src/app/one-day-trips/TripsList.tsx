@@ -6,6 +6,8 @@ import { useLocation } from "@/components/app/LocationContext";
 import { sortByUserDistance } from "@/lib/nearby-utils";
 import { NearbyTripCard } from "@/components/app/NearbyTripCard";
 import { CATEGORIES } from "@/lib/catalog/categories";
+import { EmptyState } from "@/components/app/EmptyState";
+import { NoDataIllustration } from "@/components/illustrations";
 
 interface TripsListProps {
   trips: NearbyDestination[];
@@ -65,12 +67,12 @@ export function TripsList({ trips }: TripsListProps) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-sm">
-          <p className="text-4xl">🗺️</p>
-          <p className="mt-2 text-sm font-medium text-slate-500">
-            No places match those filters. Try removing one.
-          </p>
-        </div>
+        <EmptyState
+          className="mt-8"
+          illustration={NoDataIllustration}
+          title="No places match those filters."
+          description="Try removing one to see more trips."
+        />
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((d) => (

@@ -7,6 +7,8 @@ import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
 import { CommunityForm } from "./CommunityForm";
 import { PostCard } from "./PostCard";
+import { EmptyState } from "@/components/app/EmptyState";
+import { CommunityIllustration } from "@/components/illustrations";
 
 // Local default — NOT imported from "@/lib/queries/community" because that module
 // pulls in the server DB client, which would crash when bundled into this
@@ -61,10 +63,10 @@ export function Feed({
     [posts, currentUserId]
   );
 
-  const emptyCopy: Record<Tab, { emoji: string; text: string }> = {
-    latest: { emoji: "📸", text: "No posts yet — be the first to share a place!" },
-    popular: { emoji: "🔥", text: "Nothing trending yet — react to posts to heat them up." },
-    mine: { emoji: "🧳", text: "You haven't posted yet — share your first place above!" },
+  const emptyCopy: Record<Tab, { title: string; text: string }> = {
+    latest: { title: "No posts yet", text: "Be the first to share a place!" },
+    popular: { title: "Nothing trending yet", text: "React to posts to heat them up." },
+    mine: { title: "You haven't posted yet", text: "Share your first place above!" },
   };
 
   return (
@@ -137,10 +139,11 @@ export function Feed({
       </div>
 
       {visible.length === 0 ? (
-        <div className="animate-fadeUp rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <p className="text-4xl">{emptyCopy[tab].emoji}</p>
-          <p className="mt-3 text-sm font-semibold text-slate-500">{emptyCopy[tab].text}</p>
-        </div>
+        <EmptyState
+          illustration={CommunityIllustration}
+          title={emptyCopy[tab].title}
+          description={emptyCopy[tab].text}
+        />
       ) : (
         visible.map((p, i) => (
           <PostCard
