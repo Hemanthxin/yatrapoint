@@ -22,19 +22,19 @@ export default async function ProfilePage() {
   const session = await auth();
   if (!session?.user) redirect("/");
 
-  const [row] = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, session.user.id!))
-    .limit(1);
+  const userId = session.user.id!;
+
+  // All four independent of each other — run in parallel instead of the DB
+  // round trip for `row` blocking the other three. `social` genuinely depends
+  // on `posts` (needs post IDs first) so it stays as a second step.
+  const [[row], plans, favorited, posts] = await Promise.all([
+    db.select().from(users).where(eq(users.id, userId)).limit(1),
+    listUserTripPlans(userId),
+    listFavoritedDestinations(userId),
+    listMyPosts(userId),
+  ]);
 
   if (!row) redirect("/");
-
-  const [plans, favorited, posts] = await Promise.all([
-    listUserTripPlans(row.id),
-    listFavoritedDestinations(row.id),
-    listMyPosts(row.id),
-  ]);
 
   const social = await getFeedSocial(
     posts.map((p) => p.id),

@@ -12,11 +12,10 @@ export interface DestinationFilters {
   minBudgetPerDay?: number;
   isHidden?: boolean;
   limit?: number;
+  offset?: number;
 }
 
-export async function listDestinations(
-  filters: DestinationFilters = {}
-): Promise<Destination[]> {
+function buildDestinationsWhere(filters: DestinationFilters) {
   const where = [];
   if (filters.category) where.push(eq(destinations.category, filters.category));
   if (filters.state) where.push(eq(destinations.state, filters.state));
@@ -39,15 +38,32 @@ export async function listDestinations(
       )!
     );
   }
+  return where.length ? and(...where) : undefined;
+}
 
+export async function listDestinations(
+  filters: DestinationFilters = {}
+): Promise<Destination[]> {
   const rows = await db
     .select()
     .from(destinations)
-    .where(where.length ? and(...where) : undefined)
+    .where(buildDestinationsWhere(filters))
     .orderBy(desc(destinations.popularity))
-    .limit(filters.limit ?? 200);
+    .limit(filters.limit ?? 200)
+    .offset(filters.offset ?? 0);
 
   return rows;
+}
+
+// Total count matching the same filters as `listDestinations`, for pagination.
+export async function countDestinations(
+  filters: DestinationFilters = {}
+): Promise<number> {
+  const [row] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(destinations)
+    .where(buildDestinationsWhere(filters));
+  return row?.count ?? 0;
 }
 
 export async function getDestinationBySlug(slug: string) {

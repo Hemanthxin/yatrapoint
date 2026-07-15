@@ -1,5 +1,6 @@
 import {
   boolean,
+  index,
   integer,
   pgTable,
   primaryKey,
@@ -111,7 +112,13 @@ export const destinations = pgTable("destinations", {
   addedByEmail: varchar("added_by_email", { length: 255 }),
   addedByName: varchar("added_by_name", { length: 120 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  stateIdx: index("destinations_state_idx").on(table.state),
+  districtIdx: index("destinations_district_idx").on(table.district),
+  categoryIdx: index("destinations_category_idx").on(table.category),
+  popularityIdx: index("destinations_popularity_idx").on(table.popularity),
+  isHiddenIdx: index("destinations_is_hidden_idx").on(table.isHidden),
+}));
 
 export const tripPlans = pgTable("trip_plans", {
   id: text("id").primaryKey().$defaultFn(() => createId()),
@@ -125,7 +132,10 @@ export const tripPlans = pgTable("trip_plans", {
   category: varchar("category", { length: 40 }),
   status: varchar("status", { length: 20 }).default("draft").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  // Every trip-plan query filters by userId then sorts by createdAt desc.
+  userCreatedIdx: index("trip_plans_user_created_idx").on(table.userId, table.createdAt),
+}));
 
 export const tripPlanItems = pgTable(
   "trip_plan_items",
@@ -211,7 +221,9 @@ export const cityPlaces = pgTable("city_places", {
   googlePlaceId: text("google_place_id"),
   popularity: integer("popularity").default(50).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  popularityIdx: index("city_places_popularity_idx").on(table.popularity),
+}));
 
 // --- Community / Hidden Places (Module 4) ---
 // User-submitted hidden gems: photo + live location + description, held for
@@ -235,7 +247,12 @@ export const communityPosts = pgTable("community_posts", {
   // Posts go live instantly now ("published"); kept for compatibility.
   status: varchar("status", { length: 20 }).default("published").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  // Feed queries filter by status then sort by createdAt desc; "my posts"
+  // filters by userId then sorts by createdAt desc.
+  statusCreatedIdx: index("community_posts_status_created_idx").on(table.status, table.createdAt),
+  userCreatedIdx: index("community_posts_user_created_idx").on(table.userId, table.createdAt),
+}));
 
 export type CommunityPost = typeof communityPosts.$inferSelect;
 export type NewCommunityPost = typeof communityPosts.$inferInsert;
@@ -268,7 +285,9 @@ export const communityComments = pgTable("community_comments", {
   authorImage: text("author_image"),
   body: text("body").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  postCreatedIdx: index("community_comments_post_created_idx").on(table.postId, table.createdAt),
+}));
 
 export type CommunityComment = typeof communityComments.$inferSelect;
 
@@ -293,7 +312,11 @@ export const hotels = pgTable("hotels", {
   nearestLandmark: text("nearest_landmark"),
   source: varchar("source", { length: 40 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  priceIdx: index("hotels_price_idx").on(table.pricePerNight),
+  ratingIdx: index("hotels_rating_idx").on(table.rating),
+  cityIdx: index("hotels_city_idx").on(table.city),
+}));
 
 export type Hotel = typeof hotels.$inferSelect;
 export type NewHotel = typeof hotels.$inferInsert;

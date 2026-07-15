@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { Filters } from "./Filters";
 import {
+  countDestinations,
   listDestinations,
   listDistricts,
   listFavoriteIds,
@@ -15,6 +16,9 @@ import { ResponsiveSwitch } from "@/components/app/ResponsiveSwitch";
 import { MobileDestinations } from "./MobileDestinations";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
+import { Pagination } from "./Pagination";
+
+const PAGE_SIZE = 48;
 
 interface PageProps {
   searchParams: Promise<{
@@ -23,6 +27,7 @@ interface PageProps {
     district?: string;
     q?: string;
     maxBudget?: string;
+    page?: string;
   }>;
 }
 
@@ -34,29 +39,34 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
 
   const maxBudget = sp.maxBudget ? Number(sp.maxBudget) : undefined;
   const validCat = CATEGORIES.find((c) => c.slug === sp.category)?.slug;
+  const page = Math.max(1, Number(sp.page) || 1);
 
-  // When the user is filtering/searching, show every match (usually a small set)
-  // so nothing — including admin-added places — is hidden. When just browsing
-  // "all", cap the list so we don't render 600+ cards at once (keeps it fast).
-  const hasFilter = !!(validCat || sp.state || sp.district || sp.q || maxBudget);
+  const destinationFilters = {
+    category: validCat,
+    state: sp.state,
+    district: sp.district,
+    query: sp.q,
+    maxBudgetPerDay:
+      maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
+  };
 
-  const [items, states, districts, favIds] = await Promise.all([
+  const [items, total, states, districts, favIds] = await Promise.all([
     listDestinations({
-      category: validCat,
-      state: sp.state,
-      district: sp.district,
-      query: sp.q,
-      maxBudgetPerDay:
-        maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
-      limit: hasFilter ? 2000 : 500,
+      ...destinationFilters,
+      limit: PAGE_SIZE,
+      offset: (page - 1) * PAGE_SIZE,
     }),
+    countDestinations(destinationFilters),
     listStates(),
     listDistricts(sp.state),
     listFavoriteIds(u.id ?? ""),
   ]);
 
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
   // Category quick-filters — the old "Trips by Places" browse, folded into the
-  // State page so every kind of trip is reachable from one place.
+  // State page so every kind of trip is reachable from one place. Changing a
+  // filter always resets to page 1 (no `page` param carried over).
   function catHref(slug?: CategorySlug) {
     const next = new URLSearchParams();
     if (sp.state) next.set("state", sp.state);
@@ -68,18 +78,35 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
     return qs ? `/destinations?${qs}` : "/destinations";
   }
 
+  // Same filters, different page — for the pager.
+  function pageHref(p: number) {
+    const next = new URLSearchParams();
+    if (sp.state) next.set("state", sp.state);
+    if (sp.district) next.set("district", sp.district);
+    if (sp.q) next.set("q", sp.q);
+    if (sp.maxBudget) next.set("maxBudget", sp.maxBudget);
+    if (validCat) next.set("category", validCat);
+    if (p > 1) next.set("page", String(p));
+    const qs = next.toString();
+    return qs ? `/destinations?${qs}` : "/destinations";
+  }
+
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <ResponsiveSwitch
         mobile={
           <MobileDestinations
             items={items}
+            total={total}
             favIds={favIds}
             states={states}
             districts={districts}
             validCat={validCat}
             sp={sp}
             maxBudget={maxBudget}
+            page={page}
+            totalPages={totalPages}
+            pageHref={pageHref}
           />
         }
         desktop={
@@ -89,8 +116,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           <span className="text-gradient">Destinations</span>
         </h1>
         <p className="mt-1 text-sm font-semibold text-slate-500">
-          {items.length} {items.length === 1 ? "place" : "places"} matching your
-          filters
+          {total} {total === 1 ? "place" : "places"} matching your filters
         </p>
       </header>
 
@@ -146,15 +172,18 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           description="Try removing one to see more places."
         />
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {items.map((d) => (
-            <DestinationCard
-              key={d.id}
-              destination={d}
-              favored={favIds.has(d.id)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {items.map((d) => (
+              <DestinationCard
+                key={d.id}
+                destination={d}
+                favored={favIds.has(d.id)}
+              />
+            ))}
+          </div>
+          <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
+        </>
       )}
           </div>
         }

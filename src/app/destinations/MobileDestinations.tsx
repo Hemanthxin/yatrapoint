@@ -5,9 +5,11 @@ import { DestinationCard } from "@/components/app/DestinationCard";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 import type { Destination } from "@/lib/db/schema";
 import { Filters } from "./Filters";
+import { Pagination } from "./Pagination";
 
 interface Props {
   items: Destination[];
+  total: number;
   favIds: Set<string>;
   states: string[];
   districts: string[];
@@ -20,6 +22,9 @@ interface Props {
     maxBudget?: string;
   };
   maxBudget?: number;
+  page: number;
+  totalPages: number;
+  pageHref: (page: number) => string;
 }
 
 // A bespoke, app-first mobile layout for the Destinations / State screen.
@@ -27,12 +32,16 @@ interface Props {
 // theme, so every `emerald`/`green` utility here paints coral on phones.
 export function MobileDestinations({
   items,
+  total,
   favIds,
   states,
   districts,
   validCat,
   sp,
   maxBudget,
+  page,
+  totalPages,
+  pageHref,
 }: Props) {
   // Build a category-chip href that preserves the other active filters.
   function catHref(slug?: CategorySlug) {
@@ -58,7 +67,7 @@ export function MobileDestinations({
         </h1>
         <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-500">
           <MapPin className="h-3.5 w-3.5 text-emerald-600" />
-          {items.length} {items.length === 1 ? "place" : "places"} matching your filters
+          {total} {total === 1 ? "place" : "places"} matching your filters
         </p>
       </header>
 
@@ -130,11 +139,14 @@ export function MobileDestinations({
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
-          {items.map((d) => (
-            <DestinationCard key={d.id} destination={d} favored={favIds.has(d.id)} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            {items.map((d) => (
+              <DestinationCard key={d.id} destination={d} favored={favIds.has(d.id)} />
+            ))}
+          </div>
+          <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
+        </>
       )}
     </div>
   );

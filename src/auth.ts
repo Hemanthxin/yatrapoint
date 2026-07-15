@@ -227,8 +227,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
         if (typeof user.phone === "string") token.phone = user.phone;
       }
-      // Hydrate phone lazily so it survives across requests.
-      if (token.id && !token.phone) {
+      // Hydrate phone lazily so older tokens survive across requests — but only
+      // once per token (via `phoneChecked`), not on every request. Without this
+      // flag, users who simply have no phone (Google/admin sign-in) would fail
+      // the `!token.phone` check forever and re-query the DB on every `auth()`
+      // call, i.e. on nearly every page load.
+      if (token.id && !token.phone && !token.phoneChecked) {
         const [row] = await db
           .select({ phone: users.phone, email: users.email })
           .from(users)
@@ -236,6 +240,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           .limit(1);
         if (row?.phone) token.phone = row.phone;
         if (!token.role) token.role = row?.email && isAdminEmail(row.email) ? "ADMIN" : "USER";
+        token.phoneChecked = true;
       }
       if (!token.role) token.role = "USER";
       return token;
