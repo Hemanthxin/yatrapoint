@@ -8,6 +8,7 @@ async function run() {
   );
   const { seedDestinations } = await import("../src/lib/db/seed-data");
   const { karnatakaDestinations } = await import("../src/lib/db/seed-karnataka");
+  const { indiaDestinations } = await import("../src/lib/db/seed-india");
   const { bangaloreOneDayTrips } = await import("../src/lib/db/seed-nearby");
   const { bangaloreOneDayTripsExtra } = await import("../src/lib/db/seed-nearby-extra");
   const { bangaloreCityPlaces } = await import("../src/lib/db/seed-city");
@@ -21,8 +22,15 @@ async function run() {
     return rows.filter((r) => (seen.has(r.slug) ? false : (seen.add(r.slug), true)));
   };
 
-  // Curated pan-India picks + the full Karnataka catalogue (all 31 districts).
-  const allDestinations = bySlug([...seedDestinations, ...karnatakaDestinations]);
+  // Curated pan-India picks + the full Karnataka catalogue (all 31 districts) +
+  // the comprehensive all-India catalogue (every other state & UT). Order matters:
+  // bySlug keeps the first row per slug, so the canonical curated/Karnataka
+  // entries win over any overlapping all-India row.
+  const allDestinations = bySlug([
+    ...seedDestinations,
+    ...karnatakaDestinations,
+    ...indiaDestinations,
+  ]);
 
   console.log(`Seeding ${allDestinations.length} destinations...`);
   for (const d of allDestinations) {
