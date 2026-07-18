@@ -19,6 +19,7 @@ import {
   Map as MapIcon,
   Loader2,
   Wallet,
+  Utensils,
 } from "lucide-react";
 
 import type { VehicleKind } from "@/lib/budget";
@@ -150,6 +151,10 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [tripType, setTripType] = useState("Family");
   const [transport, setTransport] = useState("Any");
   const [food, setFood] = useState("Any");
+  // Food is optional. When on, the traveller may enter their own trip food
+  // budget (₹) — blank means "estimate it for me" (₹350/person/day).
+  const [includeFood, setIncludeFood] = useState(true);
+  const [foodBudget, setFoodBudget] = useState("");
   const [places, setPlaces] = useState("5");
   // `km` now means the MINIMUM distance (km) a place must be from the traveller.
   const [km, setKm] = useState("0");
@@ -192,6 +197,8 @@ export function WizardForm({ initial }: WizardFormProps) {
       if (typeof f.tripType === "string") setTripType(f.tripType);
       if (typeof f.transport === "string") setTransport(f.transport);
       if (typeof f.food === "string") setFood(f.food);
+      if (typeof f.includeFood === "boolean") setIncludeFood(f.includeFood);
+      if (typeof f.foodBudget === "string") setFoodBudget(f.foodBudget);
       if (typeof f.places === "string") setPlaces(f.places);
       if (typeof f.km === "string") setKm(f.km);
       if (typeof f.direction === "string") setDirection(f.direction);
@@ -268,7 +275,9 @@ export function WizardForm({ initial }: WizardFormProps) {
       vehicle: TRANSPORT_VEHICLE[transport] ?? "small_car",
       mode: MODE_BY_TRANSPORT[transport] ?? "any",
       groups: [...groups],
-      includeFood: true,
+      includeFood,
+      // Blank field → let the planner estimate; a number → that exact food budget.
+      foodBudget: includeFood && foodBudget.trim() !== "" ? Math.max(0, parseInt(foodBudget, 10) || 0) : null,
       // Return exactly the number of places the traveller asked for (2–15).
       maxStops: Math.min(15, Math.max(2, parseInt(places, 10) || 5)),
       days: daysNum,
@@ -323,7 +332,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       sessionStorage.setItem(
         SESSION_KEY,
         JSON.stringify({
-          fields: { budget, days, travellers, tripType, transport, food, places, km, direction, groups: [...groups], planMode, area },
+          fields: { budget, days, travellers, tripType, transport, food, includeFood, foodBudget, places, km, direction, groups: [...groups], planMode, area },
           snapshot: snap,
         })
       );
@@ -539,6 +548,48 @@ export function WizardForm({ initial }: WizardFormProps) {
                 {FOOD.map((f) => (<Chip key={f} active={food === f} onClick={() => setFood(f)}>{f}</Chip>))}
               </div>
             </div>
+
+            {/* Food is optional — turn it off to leave meals out of the budget,
+                or enter your own food budget for the trip. */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+              <label className="flex cursor-pointer items-center justify-between gap-3">
+                <span className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                  <Utensils className="h-4 w-4 text-emerald-600" /> Include food in my budget
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={includeFood}
+                  onClick={() => setIncludeFood((v) => !v)}
+                  className={`relative h-6 w-11 shrink-0 rounded-full transition ${includeFood ? "bg-emerald-500" : "bg-slate-300"}`}
+                >
+                  <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${includeFood ? "left-[22px]" : "left-0.5"}`} />
+                </button>
+              </label>
+
+              {includeFood && (
+                <div className="mt-3">
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Your food budget (optional)
+                  </label>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">₹</span>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      value={foodBudget}
+                      onChange={(e) => setFoodBudget(e.target.value)}
+                      placeholder={`Leave blank to estimate (~₹${(travellersNum * daysNum * 350).toLocaleString("en-IN")})`}
+                      className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                    />
+                  </div>
+                  <p className="mt-1.5 text-xs text-slate-500">
+                    Total food spend for {travellersNum} {travellersNum === 1 ? "traveller" : "travellers"} over {daysNum} {daysNum === 1 ? "day" : "days"}. Blank = we estimate it.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -564,6 +615,16 @@ export function WizardForm({ initial }: WizardFormProps) {
               <SummaryRow label="Trip type" value={tripType} />
               <SummaryRow label="Transport" value={transport} />
               <SummaryRow label="Food" value={food} />
+              <SummaryRow
+                label="Food budget"
+                value={
+                  !includeFood
+                    ? "Not included"
+                    : foodBudget.trim() !== ""
+                    ? `₹${Number(parseInt(foodBudget, 10) || 0).toLocaleString("en-IN")}`
+                    : `Estimated (~₹${(travellersNum * daysNum * 350).toLocaleString("en-IN")})`
+                }
+              />
               <SummaryRow label="Interests" value={`${groups.size} selected`} />
             </dl>
             <div className="flex items-start gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">

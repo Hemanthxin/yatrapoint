@@ -94,6 +94,10 @@ const bodySchema = z.object({
   // Curated-catalogue place ids the traveller explicitly chose to include.
   includePlaceIds: z.array(z.string()).max(50).default([]),
   includeFood: z.boolean().default(true),
+  // Optional user-entered food budget for the WHOLE trip (INR). When provided it
+  // replaces the ₹350/person/day estimate as the meals baseline, so travellers
+  // control exactly how much food money the plan reserves. Null/absent → estimate.
+  foodBudget: z.number().int().min(0).max(1_000_000).nullable().default(null),
   maxStops: z.number().int().min(2).max(15).default(6),
   searchRadiusKm: z.number().min(1).max(500).default(25),
   // "Around me" planning: minimum distance (km) a place must be from the
@@ -611,6 +615,19 @@ export async function POST(req: NextRequest) {
   const avgSpeedKmh =
     radiusKm <= 25 ? 30 : radiusKm <= 60 ? 42 : radiusKm <= 120 ? 52 : 58;
 
+  // Food money the trip must account for. Food is optional (`includeFood`); when
+  // on, the traveller may enter their own trip food budget — otherwise we
+  // estimate 3 budget meals/person/day. This baseline is RESERVED in the planner
+  // (below) so the final total never silently blows past the chosen budget.
+  const MEALS_PER_PERSON_PER_DAY = 350;
+  const mealsBaseline = !parsed.data.includeFood
+    ? 0
+    : parsed.data.foodBudget != null
+    ? parsed.data.foodBudget
+    : people * parsed.data.days * MEALS_PER_PERSON_PER_DAY;
+  // Fixed costs the planner doesn't itself pick but that land in the final total.
+  const reservedCost = mealsBaseline + flightBaseTotal;
+
   // 3) Greedy pick.
   const plan = planMultiStop({
     start: parsed.data.start,
@@ -624,6 +641,7 @@ export async function POST(req: NextRequest) {
     avgSpeedKmh,
     reachKm: radiusKm,
     minDistanceKm,
+    reservedCost,
     // The chosen km is how FAR FROM THE TRAVELLER a place may be (a reach
     // radius), not the whole loop length. Allow the round trip to actually reach
     // the far edge and come back (plus inter-stop detours) — after the ×1.25
@@ -634,11 +652,23 @@ export async function POST(req: NextRequest) {
   });
 
   if (plan.stops.length === 0) {
+    // Distinguish "budget can't even cover the basics" from "nothing nearby fits"
+    // so the traveller knows whether to raise the budget or change the trip.
+    const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
+    const tooLowForBasics = reservedCost >= parsed.data.totalBudget;
+    const basics: string[] = [];
+    if (mealsBaseline > 0) basics.push(`${inr(mealsBaseline)} for food`);
+    if (flightBaseTotal > 0) basics.push(`${inr(flightBaseTotal)} for flights`);
     return NextResponse.json(
       {
         ok: false,
-        error:
-          "Nothing fits within this budget and time from your location. Try a higher budget, more hours/days, a larger distance — or pick an area closer to where you are.",
+        error: tooLowForBasics
+          ? `This budget of ${inr(parsed.data.totalBudget)} is too low — the basics alone need about ${inr(
+              reservedCost
+            )}${basics.length ? ` (${basics.join(" + ")})` : ""} for ${people} traveller${
+              people > 1 ? "s" : ""
+            } over ${parsed.data.days} day${parsed.data.days > 1 ? "s" : ""}. Raise the budget, lower your food budget, or reduce people/days.`
+          : "Nothing fits within this budget and time from your location. Try a higher budget, more hours/days, a larger distance — or pick an area closer to where you are.",
       },
       { status: 422 }
     );
@@ -768,11 +798,9 @@ export async function POST(req: NextRequest) {
   const entryFeesTotal = orderedStops.reduce((sum, s) => sum + s.entryFee * people, 0);
   const stopCostTotal = orderedStops.reduce((sum, s) => sum + s.stopCost, 0);
   const stopFood = Math.max(0, stopCostTotal - entryFeesTotal);
-  // Realistic meals baseline: every traveller eats roughly 3 meals a day at a
-  // budget eatery (~₹350/person/day). The food line is at least this — so a
-  // multi-day trip doesn't undercount food to a single restaurant stop.
-  const MEALS_PER_PERSON_PER_DAY = 350;
-  const mealsBaseline = people * parsed.data.days * MEALS_PER_PERSON_PER_DAY;
+  // The food line is at least the reserved meals baseline (the traveller's own
+  // food budget, or the 3-meals/person/day estimate) — computed before planning
+  // so the plan already fits it — but rises if food stops cost more.
   const foodTotal = Math.max(stopFood, mealsBaseline);
   const extraFood = foodTotal - stopFood; // meals beyond the eatery stops
   const fuelTotal = travelTotal;

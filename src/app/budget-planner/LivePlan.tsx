@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
+import { BrandLoader } from "@/components/app/BrandLoader";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
@@ -139,6 +140,9 @@ export interface LivePlanProps {
   vehicle: VehicleKind;
   groups: string[];
   includeFood: boolean;
+  // Optional user-entered food budget for the whole trip (INR). null → the
+  // planner estimates ₹350/person/day. Ignored when includeFood is false.
+  foodBudget?: number | null;
   maxStops: number;
   radiusKm?: number;
   days?: number;
@@ -165,6 +169,7 @@ export function LivePlan({
   vehicle,
   groups,
   includeFood,
+  foodBudget = null,
   maxStops,
   radiusKm = 25,
   days = 1,
@@ -216,8 +221,8 @@ export function LivePlan({
   // Signature of the inputs — lets us restore a cached plan only when it still
   // matches the current selections.
   const sig = useMemo(
-    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode, minDistanceKm, direction }),
-    [budget, people, hours, vehicle, groups, includeFood, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode, minDistanceKm, direction]
+    () => JSON.stringify({ budget, people, hours, vehicle, groups, includeFood, foodBudget, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode, minDistanceKm, direction }),
+    [budget, people, hours, vehicle, groups, includeFood, foodBudget, maxStops, radiusKm, days, originOverride, placeIds, areaDistricts, mode, minDistanceKm, direction]
   );
 
   const generate = useCallback(async () => {
@@ -241,6 +246,7 @@ export function LivePlan({
           categories: overpassCategories,
           includePlaceIds: placeIds,
           includeFood,
+          foodBudget,
           maxStops,
           searchRadiusKm: radiusKm,
           minDistanceKm,
@@ -262,7 +268,7 @@ export function LivePlan({
     } finally {
       setLoading(false);
     }
-  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, maxStops, radiusKm, minDistanceKm, direction, areaDistricts, mode, days]);
+  }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, foodBudget, maxStops, radiusKm, minDistanceKm, direction, areaDistricts, mode, days]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
   // and pressing Back) so it isn't lost. Only if the inputs still match.
@@ -581,11 +587,8 @@ export function LivePlan({
       </section>
 
       {loading && !plan && (
-        <div className="grid h-44 place-items-center rounded-2xl border border-slate-200 bg-white text-sm font-medium text-slate-500 shadow-sm">
-          <span className="flex flex-col items-center gap-3">
-            <Loader2 className="h-7 w-7 animate-spin text-emerald-600" />
-            Finding the nearest places around you…
-          </span>
+        <div className="grid h-52 place-items-center rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <BrandLoader label="Mapping the best places for your budget…" />
         </div>
       )}
 

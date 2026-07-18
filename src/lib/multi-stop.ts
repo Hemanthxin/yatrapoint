@@ -130,6 +130,12 @@ export interface PlannerInput {
   // planner can cost bus/train/flight/fuel with real Karnataka rates. For public
   // transport this already includes the number of people.
   costPerKm?: number;
+  // Fixed costs the caller will ADD to the trip total after planning but that
+  // the planner itself doesn't pick (the day's meals baseline, a flight base
+  // fare, etc.). Reserved up-front so the FINAL total genuinely stays within
+  // `totalBudget` — otherwise a low budget (e.g. ₹200) picks stops that fit,
+  // then these baselines push the shown total far over what the traveller set.
+  reservedCost?: number;
   // Minimum distance (km) the traveller asked for. > 0 signals an intentional
   // FAR / outstation trip → spread across distance bands + seed a far anchor.
   // For a local trip (0) we just pick the nearest N, so the requested number of
@@ -212,7 +218,13 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
 
   // 15% buffer of time for traffic + breaks.
   const minutesBudget = input.hoursAvailable * 60 * 0.85;
+  // Money the planner may spend on stops + travel = the total budget MINUS the
+  // fixed costs the caller adds afterwards (meals baseline, flight base). If the
+  // budget can't even cover those basics, `spendable` goes negative and no stop
+  // is feasible → an honest "budget too low" result instead of an over-budget plan.
+  const reserved = Math.max(0, input.reservedCost ?? 0);
   const budget = input.totalBudget;
+  const spendable = budget - reserved;
 
   // Total-distance cap. The planner measures distance as straight-line
   // (haversine); real roads run ~1.25× longer, so we divide the chosen km by
@@ -280,8 +292,10 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     // Never let the total round-trip distance exceed the chosen distance.
     if (newDist > distCap) return false;
     const newMin = (newDist / speed) * 60 + curStopMin + c.idealMinutes;
-    const newCost = curStopCost + stopCostOf(c) + newDist * costPerKm;
-    return newMin <= minutesBudget && newCost <= budget;
+    // Estimate travel cost against the real road distance (~1.25× haversine) so
+    // the planner's budget check matches the OSRM-routed total the API reports.
+    const newCost = curStopCost + stopCostOf(c) + newDist * costPerKm * ROAD_FACTOR;
+    return newMin <= minutesBudget && newCost <= spendable;
   };
   const place = (c: Candidate, pos: number, detour: number) => {
     tour.splice(pos, 0, c);
@@ -417,7 +431,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     totalMinutes: forwardMins,
     totalCost,
     perPersonCost: perPerson,
-    unspentBudget: Math.max(0, Math.round(budget - totalCost)),
+    unspentBudget: Math.max(0, Math.round(budget - reserved - totalCost)),
     unspentMinutes: Math.max(0, Math.round(minutesBudget - forwardMins)),
   };
 }

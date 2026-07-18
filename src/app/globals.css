@@ -244,16 +244,34 @@ input[type="number"] {
   .btn-secondary:hover { background: var(--surface-2); }
   .btn-secondary:active { transform: scale(0.96); }
 
-  /* Rich frosted chrome — warm cream tint. */
+  /* Rich frosted chrome — warm cream tint. Blur radii are kept modest: a large
+     backdrop-filter re-samples everything behind it every frame, which is the
+     main cause of scroll jank on the sticky top bar. A higher base opacity keeps
+     the frosted look at a fraction of the cost. */
   .glass {
-    background: rgba(255, 253, 248, 0.72);
-    -webkit-backdrop-filter: blur(16px) saturate(150%);
-    backdrop-filter: blur(16px) saturate(150%);
+    background: rgba(255, 253, 248, 0.82);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    backdrop-filter: blur(10px) saturate(140%);
   }
   .glass-strong {
-    background: rgba(255, 253, 248, 0.82);
-    -webkit-backdrop-filter: blur(22px) saturate(170%);
-    backdrop-filter: blur(22px) saturate(170%);
+    background: rgba(255, 253, 248, 0.9);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    backdrop-filter: blur(12px) saturate(150%);
+  }
+  /* Phones: backdrop-filter is the single biggest scroll-jank cost and mobile
+     GPUs handle it worst. Drop it entirely and lean on a near-opaque tint — the
+     sticky header then scrolls glass-smooth. */
+  @media (max-width: 767px) {
+    .glass {
+      background: rgba(255, 253, 248, 0.95);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .glass-strong {
+      background: rgba(255, 253, 248, 0.98);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
   }
 
   /* Ambient canvas — a warm cream field with a soft green glow top-left and a
@@ -265,6 +283,8 @@ input[type="number"] {
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
+    /* Isolate the ambient layer so its paints never invalidate page content. */
+    contain: layout paint style;
     background:
       radial-gradient(115% 80% at 12% -10%, rgba(117, 192, 151, 0.55), transparent 55%),
       radial-gradient(110% 75% at 90% -6%, rgba(207, 91, 57, 0.16), transparent 52%),
@@ -274,8 +294,16 @@ input[type="number"] {
   .aurora-blob {
     position: absolute;
     border-radius: 9999px;
-    filter: blur(60px);
+    filter: blur(45px);
     will-change: transform;
+  }
+  /* Phones: keep the ambient blobs but hold them STILL — animating a blurred
+     layer forces a full re-raster every frame, which stutters scrolling. */
+  @media (max-width: 767px) {
+    .aurora-blob {
+      animation: none !important;
+      filter: blur(34px);
+    }
   }
 
   /* Edge-to-edge: cancel the content gutter so a child can bleed to the
