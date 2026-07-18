@@ -3,12 +3,13 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Loader2, MapPin, Navigation, Trash2, ShoppingBag, Wallet, ExternalLink } from "lucide-react";
+import { Loader2, MapPin, Navigation, Trash2, ShoppingBag, Wallet, ExternalLink, Minus, Plus, Ticket, BedDouble } from "lucide-react";
 
 import { useCart, removeFromCart } from "@/lib/cart";
 import { useLocation } from "@/components/app/LocationContext";
 import { resolveTripStops, type TripStop } from "@/lib/actions/trip-cart";
 import { placeMapUrl } from "@/lib/maps";
+import { formatINR } from "@/lib/format";
 import { EmptyState } from "@/components/app/EmptyState";
 import { EmptyCartIllustration } from "@/components/illustrations";
 
@@ -26,8 +27,23 @@ export function CartPlanner() {
   const live = useLocation();
   const [stops, setStops] = useState<TripStop[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [travellers, setTravellers] = useState(1);
 
   const sig = cart.map((c) => c.id).join(",");
+
+  // Estimated budget from the catalogue places in the cart. `budgetPerDay` is a
+  // per-person mid-range figure covering stay, food & local travel; entry fees
+  // are per person too. Festivals / places without catalogue budget data are
+  // simply not counted (and we say so).
+  const budgetStops = (stops ?? []).filter((s) => s.budgetPerDay != null);
+  const entryPerPerson = budgetStops.reduce((a, s) => a + (s.entryFee ?? 0), 0);
+  const dailyPerPerson = budgetStops.reduce(
+    (a, s) => a + (s.budgetPerDay ?? 0) * (s.recommendedDays ?? 1),
+    0
+  );
+  const totalDays = budgetStops.reduce((a, s) => a + (s.recommendedDays ?? 1), 0);
+  const perPerson = entryPerPerson + dailyPerPerson;
+  const grandTotal = perPerson * travellers;
 
   // Ask for location once so the route can start from where the traveller is.
   useEffect(() => {
@@ -182,6 +198,86 @@ export function CartPlanner() {
         <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm font-semibold text-amber-800">
           Couldn’t locate any of your cart items on the map. Try adding places with a known location.
         </div>
+      )}
+
+      {/* Estimated budget for the selected places */}
+      {!loading && budgetStops.length > 0 && (
+        <section className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h3 className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
+                <Wallet className="h-4 w-4" />
+              </span>
+              Estimated budget
+            </h3>
+            {/* Travellers stepper — scales the whole estimate. */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-500">Travellers</span>
+              <div className="flex items-center gap-1 rounded-full border border-slate-200 p-1">
+                <button
+                  type="button"
+                  onClick={() => setTravellers((n) => Math.max(1, n - 1))}
+                  className="grid h-7 w-7 place-items-center rounded-full text-slate-600 transition hover:bg-slate-100 active:scale-90 disabled:opacity-40"
+                  disabled={travellers <= 1}
+                  aria-label="Fewer travellers"
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <span className="w-6 text-center text-sm font-bold tabular-nums text-slate-900">{travellers}</span>
+                <button
+                  type="button"
+                  onClick={() => setTravellers((n) => Math.min(20, n + 1))}
+                  className="grid h-7 w-7 place-items-center rounded-full text-slate-600 transition hover:bg-slate-100 active:scale-90"
+                  aria-label="More travellers"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <dl className="mt-4 space-y-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <dt className="flex items-center gap-2 text-sm text-slate-600">
+                <Ticket className="h-4 w-4 text-slate-400" /> Entry fees
+              </dt>
+              <dd className="text-sm font-semibold tabular-nums text-slate-900">
+                {entryPerPerson === 0 ? "Free" : formatINR(entryPerPerson * travellers)}
+              </dd>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <dt className="flex items-center gap-2 text-sm text-slate-600">
+                <BedDouble className="h-4 w-4 text-slate-400" /> Stay, food &amp; local travel
+                <span className="text-xs text-slate-400">· {totalDays} {totalDays === 1 ? "day" : "days"}</span>
+              </dt>
+              <dd className="text-sm font-semibold tabular-nums text-slate-900">
+                {formatINR(dailyPerPerson * travellers)}
+              </dd>
+            </div>
+            <div className="mt-1 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+              <dt className="text-sm font-bold text-slate-900">
+                Estimated total
+                <span className="ml-1 text-xs font-medium text-slate-400">
+                  · {travellers} {travellers === 1 ? "traveller" : "travellers"}
+                </span>
+              </dt>
+              <dd className="text-lg font-extrabold tabular-nums text-emerald-700">{formatINR(grandTotal)}</dd>
+            </div>
+            {travellers > 1 && (
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-xs font-medium text-slate-400">Per person</dt>
+                <dd className="text-xs font-semibold tabular-nums text-slate-500">{formatINR(perPerson)}</dd>
+              </div>
+            )}
+          </dl>
+
+          <p className="mt-3 text-xs leading-relaxed text-slate-500">
+            Mid-range estimate for {budgetStops.length} {budgetStops.length === 1 ? "place" : "places"}
+            {stops && budgetStops.length < stops.length
+              ? ` (festivals & unpriced stops not included)`
+              : ""}. Excludes intercity travel between places — get an exact multi-stop cost with routes below.
+          </p>
+        </section>
       )}
 
       {/* Also plan the budget for these */}

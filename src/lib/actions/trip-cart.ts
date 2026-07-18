@@ -10,6 +10,11 @@ export interface TripStop {
   label: string;
   lat: number;
   lng: number;
+  // Budget fields — present for catalogue destinations (used to estimate the
+  // trip cost). Festivals / geocoded-only stops leave these undefined.
+  entryFee?: number;
+  budgetPerDay?: number;
+  recommendedDays?: number;
 }
 
 // Geocode a free-text place via Nominatim (India-scoped, cached at the data layer).
@@ -59,6 +64,9 @@ export async function resolveTripStops(
           label: [d.district, d.state].filter(Boolean).join(", ") || item.name,
           lat: Number(d.latitude),
           lng: Number(d.longitude),
+          entryFee: d.entryFees,
+          budgetPerDay: d.budgetPerDay,
+          recommendedDays: d.recommendedDays,
         });
         continue;
       }
