@@ -6,20 +6,18 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Menu,
   Search,
-  MapPin,
   Bell,
   ChevronDown,
   User,
   Briefcase,
   Settings,
   LogOut,
-  Loader2,
   ShoppingBag,
   Trash2,
   ArrowRight,
+  X,
 } from "lucide-react";
 
-import { useLocation } from "@/components/app/LocationContext";
 import { signOutAction } from "@/lib/actions/auth";
 import { useCart, removeFromCart, clearCart } from "@/lib/cart";
 import { ThemeToggle } from "@/components/app/ThemeToggle";
@@ -37,12 +35,12 @@ const NOTIFICATIONS = [
   { title: "Festival season starts this month", time: "1d", href: "/festivals" },
 ];
 
-export function Topbar({ userLabel, userImage, location = "Bengaluru, India", onMenu }: TopbarProps) {
+export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
   const router = useRouter();
-  const { status, isFallback, request } = useLocation();
   const firstName = userLabel.split(" ")[0] || userLabel;
 
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [openNotif, setOpenNotif] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [openCart, setOpenCart] = useState(false);
@@ -65,18 +63,12 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
   function onSearch(e: FormEvent) {
     e.preventDefault();
     const q = query.trim();
+    setSearchOpen(false);
     router.push(q ? `/destinations?q=${encodeURIComponent(q)}` : "/destinations");
   }
 
-  const locationLabel =
-    status === "prompting"
-      ? "Locating…"
-      : status === "granted" && !isFallback
-      ? "Your location"
-      : location;
-
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-2.5 border-b border-[color:var(--border)] glass-strong px-4 md:gap-3 md:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-1.5 border-b border-[color:var(--border)] glass-strong px-3 md:gap-3 md:px-6">
       <button
         onClick={onMenu}
         className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[color:var(--accent)] text-white transition hover:bg-[color:var(--accent-2)] active:scale-95 lg:hidden"
@@ -85,7 +77,9 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
         <Menu className="h-5 w-5" />
       </button>
 
-      <form onSubmit={onSearch} className="group relative flex-1 lg:max-w-xl">
+      {/* Tablet / desktop: inline search. On phones it collapses to an icon
+          (below) that expands into a full-width bar. */}
+      <form onSubmit={onSearch} className="group relative hidden flex-1 md:block lg:max-w-xl">
         <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-emerald-600" />
         <input
           type="search"
@@ -96,19 +90,43 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
         />
       </form>
 
-      <div className="ml-auto flex items-center gap-2 md:gap-3">
-        {/* Location — always visible as a compact pill (label shows from sm up). */}
-        <button
-          onClick={() => request()}
-          title="Use my live location"
-          className="flex items-center gap-1.5 rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] px-2.5 py-1.5 text-sm font-medium text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)]"
+      {/* Phone: full-width search that slides over the header when tapped. */}
+      {searchOpen && (
+        <form
+          onSubmit={onSearch}
+          className="absolute inset-0 z-40 flex animate-slideDown items-center gap-2 bg-[color:var(--surface)] px-3 md:hidden"
         >
-          {status === "prompting" ? (
-            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-emerald-500" />
-          ) : (
-            <MapPin className={`h-4 w-4 shrink-0 ${isFallback ? "text-[color:var(--muted)]" : "text-emerald-500"}`} />
-          )}
-          <span className="hidden max-w-[130px] truncate sm:inline">{locationLabel}</span>
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              autoFocus
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search places, trips…"
+              className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setSearchOpen(false)}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)]"
+            aria-label="Close search"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </form>
+      )}
+
+      <div className="ml-auto flex items-center gap-0.5 md:gap-2">
+        {/* Phone: tap to open the search bar */}
+        <button
+          type="button"
+          onClick={() => setSearchOpen(true)}
+          className="grid h-10 w-10 place-items-center rounded-full text-slate-600 transition hover:bg-white/70 active:scale-90 md:hidden"
+          aria-label="Search"
+        >
+          <Search className="h-5 w-5" />
         </button>
 
         {/* Light ⇄ black theme toggle */}
