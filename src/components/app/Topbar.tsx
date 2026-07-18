@@ -97,18 +97,18 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
       </form>
 
       <div className="ml-auto flex items-center gap-2 md:gap-3">
-        {/* Location */}
+        {/* Location — always visible as a compact pill (label shows from sm up). */}
         <button
           onClick={() => request()}
           title="Use my live location"
-          className="hidden items-center gap-1.5 rounded-full px-2 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 sm:flex"
+          className="flex items-center gap-1.5 rounded-full border border-[color:var(--border)] bg-[color:var(--surface)] px-2.5 py-1.5 text-sm font-medium text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)]"
         >
           {status === "prompting" ? (
-            <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-emerald-500" />
           ) : (
-            <MapPin className={`h-4 w-4 ${isFallback ? "text-slate-400" : "text-emerald-600"}`} />
+            <MapPin className={`h-4 w-4 shrink-0 ${isFallback ? "text-[color:var(--muted)]" : "text-emerald-500"}`} />
           )}
-          {locationLabel}
+          <span className="hidden max-w-[130px] truncate sm:inline">{locationLabel}</span>
         </button>
 
         {/* Light ⇄ black theme toggle */}

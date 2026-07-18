@@ -213,10 +213,11 @@ body {
   opacity: 1;
   contain: layout paint style;
   background:
-    radial-gradient(58% 44% at 12% -4%, rgba(16, 185, 129, 0.22), transparent 62%),
-    radial-gradient(52% 40% at 104% 8%, rgba(13, 148, 136, 0.16), transparent 60%),
-    radial-gradient(75% 55% at 50% 118%, rgba(52, 211, 153, 0.13), transparent 60%),
-    #05080a;
+    radial-gradient(56% 42% at 10% -6%, rgba(16, 185, 129, 0.30), transparent 60%),
+    radial-gradient(50% 40% at 106% 6%, rgba(13, 148, 136, 0.22), transparent 58%),
+    radial-gradient(46% 40% at 88% 96%, rgba(45, 109, 240, 0.12), transparent 60%),
+    radial-gradient(80% 60% at 45% 116%, rgba(52, 211, 153, 0.18), transparent 62%),
+    #04070a;
 }
 
 /* Re-skin the common light utilities to the dark tokens (global — the mobile
@@ -258,6 +259,62 @@ body {
 :root[data-theme="dark"] .app-logo {
   border-radius: 0.6rem;
   box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.18);
+}
+
+/* Soft tint backgrounds (icon tiles, badges, chips) → dark, hue-preserving so
+   they still read as green / amber / rose accents on black instead of glowing
+   light patches. */
+:root[data-theme="dark"] .bg-emerald-50,
+:root[data-theme="dark"] .bg-emerald-100,
+:root[data-theme="dark"] .bg-green-50,
+:root[data-theme="dark"] .bg-green-100,
+:root[data-theme="dark"] .bg-teal-50,
+:root[data-theme="dark"] .bg-lime-50,
+:root[data-theme="dark"] .bg-lime-100 { background-color: rgba(52, 211, 153, 0.13) !important; }
+:root[data-theme="dark"] .bg-amber-50,
+:root[data-theme="dark"] .bg-amber-100 { background-color: rgba(240, 163, 90, 0.15) !important; }
+:root[data-theme="dark"] .bg-rose-50,
+:root[data-theme="dark"] .bg-rose-100 { background-color: rgba(244, 63, 94, 0.14) !important; }
+:root[data-theme="dark"] .bg-sky-50,
+:root[data-theme="dark"] .bg-cyan-50 { background-color: rgba(56, 189, 248, 0.12) !important; }
+:root[data-theme="dark"] .bg-violet-50,
+:root[data-theme="dark"] .bg-indigo-50 { background-color: rgba(139, 92, 246, 0.14) !important; }
+/* Translucent-white surfaces used by dropdowns/overlays. */
+:root[data-theme="dark"] .bg-white\/70,
+:root[data-theme="dark"] .bg-white\/60,
+:root[data-theme="dark"] .bg-white\/80,
+:root[data-theme="dark"] .bg-white\/90 { background-color: rgba(18, 28, 23, 0.85) !important; }
+
+/* Darken LIGHT gradient panels (e.g. the festival card headers
+   `from-emerald-50 via-white to-teal-50`) so they don't stay bright on black.
+   These override the Tailwind gradient-stop custom properties. */
+:root[data-theme="dark"] .from-emerald-50 {
+  --tw-gradient-from: #0f1a15 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(15 26 21 / 0) var(--tw-gradient-to-position) !important;
+}
+:root[data-theme="dark"] .from-emerald-100 { --tw-gradient-from: #122a1e var(--tw-gradient-from-position) !important; }
+:root[data-theme="dark"] .from-sky-100 { --tw-gradient-from: #0e1a1f var(--tw-gradient-from-position) !important; }
+:root[data-theme="dark"] .via-white {
+  --tw-gradient-stops: var(--tw-gradient-from), #0c1310 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+:root[data-theme="dark"] .via-emerald-50 {
+  --tw-gradient-stops: var(--tw-gradient-from), #0f1a15 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+:root[data-theme="dark"] .to-teal-50 { --tw-gradient-to: #0f1a18 var(--tw-gradient-to-position) !important; }
+:root[data-theme="dark"] .to-emerald-50 { --tw-gradient-to: #0f1a15 var(--tw-gradient-to-position) !important; }
+:root[data-theme="dark"] .to-emerald-100 { --tw-gradient-to: #122a1e var(--tw-gradient-to-position) !important; }
+/* Light card borders that tint emerald → dark green hairline. */
+:root[data-theme="dark"] .border-emerald-100\/60,
+:root[data-theme="dark"] .border-emerald-100,
+:root[data-theme="dark"] .border-emerald-200 { border-color: rgba(52, 211, 153, 0.18) !important; }
+
+/* Richer aura + green glow on the sticky chrome for the "aura-filled" feel. */
+:root[data-theme="dark"] .glass-strong {
+  box-shadow: 0 1px 0 rgba(52, 211, 153, 0.12), 0 8px 30px -20px rgba(0, 0, 0, 0.8);
+}
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] input:focus-visible {
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18) !important;
 }
 
 /* Hide number-input spinners (used for OTP boxes) */
