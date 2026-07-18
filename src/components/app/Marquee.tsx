@@ -35,7 +35,7 @@ export function Marquee() {
   const durationSec = Math.max(55, items.length * 11);
 
   return (
-    <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-sm">
+    <div className="marquee-mask relative overflow-hidden bg-gradient-to-r from-emerald-700 via-green-700 to-emerald-800 text-white shadow-sm">
       <div
         className="flex w-max animate-marquee whitespace-nowrap py-1.5 pl-28"
         style={{ animationDuration: `${durationSec}s` }}
@@ -48,11 +48,11 @@ export function Marquee() {
         ))}
       </div>
       {/* Fixed label that masks messages passing behind it */}
-      <span className="pointer-events-none absolute left-0 top-0 z-10 flex h-full items-center gap-1.5 bg-red-800 px-3 text-[11px] font-extrabold uppercase tracking-wide shadow-lg">
+      <span className="pointer-events-none absolute left-0 top-0 z-10 flex h-full items-center gap-1.5 bg-emerald-900 px-3 text-[11px] font-extrabold uppercase tracking-wide shadow-lg">
         <Megaphone className="h-3.5 w-3.5" /> News
       </span>
       {/* Soft fade on the right edge */}
-      <span className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-red-700 to-transparent" />
+      <span className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-emerald-800 to-transparent" />
     </div>
   );
 }
