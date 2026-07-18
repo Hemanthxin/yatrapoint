@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -16,7 +17,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import { Logo } from "@/components/Logo";
 import { signOutAction } from "@/lib/actions/auth";
 
 interface NavItem {
@@ -54,9 +54,16 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 items-center px-5">
-          <Link href="/dashboard" className="text-slate-900" aria-label="Home">
-            <Logo tagline />
+        <div className="flex items-center justify-center border-b border-[color:var(--border)] px-4 py-4">
+          <Link href="/dashboard" aria-label="Saafera — home" className="block">
+            <Image
+              src="/saafera-logo.jpg"
+              alt="Saafera"
+              width={280}
+              height={280}
+              priority
+              className="h-auto w-[132px] object-contain"
+            />
           </Link>
         </div>
 
