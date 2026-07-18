@@ -41,7 +41,7 @@ export default async function HiddenPlacesPage() {
           description="Check back soon — we curate these monthly."
         />
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
           {items.map((d) => (
             <DestinationCard
               key={d.id}

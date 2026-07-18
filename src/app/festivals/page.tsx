@@ -44,7 +44,7 @@ export default async function FestivalsPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {FESTIVALS.map((f, i) => {
           const d = daysUntil(f.nextISO);
           const isNext = nextUpcoming?.name === f.name;

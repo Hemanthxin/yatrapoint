@@ -37,7 +37,7 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
           location={location}
           onMenu={() => setOpen((v) => !v)}
         />
-        <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-5 pb-32 md:px-6 md:py-8 lg:pb-10">
+        <main className="mx-auto max-w-[1800px] animate-fadeUp px-4 py-5 pb-32 md:px-6 md:py-8 lg:px-8 lg:pb-10 2xl:px-10">
           {children}
         </main>
       </div>

@@ -29,7 +29,7 @@ export function SkeletonShell({ children }: { children: React.ReactNode }) {
           <div className="h-4 w-40 rounded-full bg-[color:var(--surface-2)]" />
           <div className="h-8 w-8 rounded-full bg-[color:var(--surface-2)]" />
         </div>
-        <main className="mx-auto max-w-7xl px-4 py-5 pb-32 md:px-6 md:py-8 lg:pb-10">
+        <main className="mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:px-8 lg:pb-10 2xl:px-10">
           {children}
         </main>
       </div>
