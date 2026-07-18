@@ -4,7 +4,7 @@ import { CalendarClock, MapPin } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
-import { FESTIVALS, formatFestivalDate, daysUntil } from "@/lib/festivals";
+import { festivalsByNextOccurrence, formatFestivalDate, daysUntil } from "@/lib/festivals";
 import { MobileFestivals } from "./MobileFestivals";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -14,11 +14,11 @@ export default async function FestivalsPage() {
   if (!session?.user) redirect("/");
   const u = session.user;
 
-  // Next upcoming festival gets a highlighted badge.
-  const nextUpcoming = FESTIVALS.find((f) => {
-    const d = daysUntil(f.dateISO);
-    return d != null && d >= 0;
-  });
+  // Ordered by next occurrence — upcoming festivals first (nearest first),
+  // anything already finished this year rolls to the end with next year's date.
+  const FESTIVALS = festivalsByNextOccurrence();
+  // The very first one is always the next upcoming festival.
+  const nextUpcoming = FESTIVALS[0] ?? null;
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
@@ -36,7 +36,7 @@ export default async function FestivalsPage() {
         </div>
         <div className="min-w-0">
           <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-            <span className="text-gradient">Festivals &amp; Events</span> <span className="text-lg font-bold text-slate-400">2026</span>
+            <span className="text-gradient">Festivals &amp; Events</span>
           </h1>
           <p className="mt-1 text-sm font-medium text-slate-500">
             Major Indian festivals through the year — plan a trip around them.
@@ -46,7 +46,7 @@ export default async function FestivalsPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {FESTIVALS.map((f, i) => {
-          const d = daysUntil(f.dateISO);
+          const d = daysUntil(f.nextISO);
           const isNext = nextUpcoming?.name === f.name;
           return (
             <div
@@ -59,7 +59,7 @@ export default async function FestivalsPage() {
               <div className="relative flex items-center justify-between border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
                 <span className="text-4xl drop-shadow-sm sm:text-5xl">{f.emoji}</span>
                 <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 ring-1 ring-slate-200">
-                  {formatFestivalDate(f.dateISO)}
+                  {formatFestivalDate(f.nextISO)}
                 </span>
                 {isNext && (
                   <span className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/40">
@@ -84,7 +84,7 @@ export default async function FestivalsPage() {
                     item={{
                       id: `festival-${festSlug(f.name)}`,
                       name: f.name,
-                      subtitle: [f.hub, formatFestivalDate(f.dateISO)].filter(Boolean).join(" · "),
+                      subtitle: [f.hub, formatFestivalDate(f.nextISO)].filter(Boolean).join(" · "),
                       kind: "festival",
                       emoji: f.emoji,
                       href: "/festivals",

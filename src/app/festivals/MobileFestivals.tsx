@@ -1,7 +1,7 @@
 import { CalendarClock, MapPin, Sparkles, Clock } from "lucide-react";
 
 import { AddToCartButton } from "@/components/app/AddToCartButton";
-import { formatFestivalDate, daysUntil, type Festival } from "@/lib/festivals";
+import { formatFestivalDate, daysUntil, type FestivalOccurrence } from "@/lib/festivals";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -26,7 +26,7 @@ function countdown(iso: string | null): string | null {
 }
 
 interface Props {
-  festivals: Festival[];
+  festivals: FestivalOccurrence[];
   nextUpcomingName: string | null;
 }
 
@@ -37,7 +37,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
   // "This month" rail = the nearest upcoming festivals (nearest first).
   const thisMonth = festivals
     .filter((f) => {
-      const d = daysUntil(f.dateISO);
+      const d = daysUntil(f.nextISO);
       return d != null && d >= 0;
     })
     .slice(0, 8);
@@ -53,7 +53,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
           <div className="min-w-0">
             <p className="text-[13px] font-semibold text-slate-500">Plan around the celebrations</p>
             <h1 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-900">
-              Festivals &amp; Events <span className="text-slate-400">2026</span>
+              Festivals &amp; Events
             </h1>
           </div>
         </div>
@@ -68,8 +68,8 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
           </div>
           <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
             {thisMonth.map((f) => {
-              const badge = dateBadge(f.dateISO, f.dateLabel);
-              const cd = countdown(f.dateISO);
+              const badge = dateBadge(f.nextISO, f.dateLabel);
+              const cd = countdown(f.nextISO);
               const isNext = nextUpcomingName === f.name;
               return (
                 <div
@@ -108,8 +108,8 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
         <h2 className="mb-3 text-lg font-extrabold tracking-tight text-slate-900">All festivals</h2>
         <div className="space-y-4">
           {festivals.map((f, i) => {
-            const badge = dateBadge(f.dateISO, f.dateLabel);
-            const cd = countdown(f.dateISO);
+            const badge = dateBadge(f.nextISO, f.dateLabel);
+            const cd = countdown(f.nextISO);
             const isNext = nextUpcomingName === f.name;
             return (
               <div
@@ -145,7 +145,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
                 <div className="p-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">
-                      {formatFestivalDate(f.dateISO) || f.dateLabel}
+                      {formatFestivalDate(f.nextISO) || f.dateLabel}
                     </span>
                     {cd && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
@@ -170,7 +170,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
                       item={{
                         id: `festival-${festSlug(f.name)}`,
                         name: f.name,
-                        subtitle: [f.hub, formatFestivalDate(f.dateISO)].filter(Boolean).join(" · "),
+                        subtitle: [f.hub, formatFestivalDate(f.nextISO)].filter(Boolean).join(" · "),
                         kind: "festival",
                         emoji: f.emoji,
                         href: "/festivals",

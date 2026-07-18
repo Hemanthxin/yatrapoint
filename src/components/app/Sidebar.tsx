@@ -27,10 +27,10 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/destinations", label: "State", icon: Flag },
-  { href: "/budget-planner", label: "Budget Planner", icon: Wallet },
-  { href: "/community", label: "Community", icon: Users },
+  { href: "/destinations", label: "Tourist Places", icon: Flag },
+  { href: "/budget-planner", label: "Trip Planner", icon: Wallet },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
+  { href: "/community", label: "Community", icon: Users },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
   { href: "/profile", label: "Your Travel Places", icon: Bookmark },
   { href: "/settings", label: "Settings", icon: Settings },

@@ -31,7 +31,7 @@ interface Props {
 export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
   const tone = "bg-emerald-100 text-emerald-700";
   const features = [
-    { title: "Budget Planner", desc: "Plan your trip within budget", href: "/budget-planner", tone, icon: <Wallet className="h-5 w-5" /> },
+    { title: "Trip Planner", desc: "Plan your trip within budget", href: "/budget-planner", tone, icon: <Wallet className="h-5 w-5" /> },
     { title: "By State Places", desc: "Explore top places by state", href: "/destinations", tone, icon: <MapPin className="h-5 w-5" /> },
     { title: "Festivals & Events", desc: "Upcoming festivals & events", href: "/festivals", tone, icon: <CalendarClock className="h-5 w-5" /> },
     { title: "Community", desc: "Share tips, hidden gems & more", href: "/community", tone, icon: <Users className="h-5 w-5" /> },

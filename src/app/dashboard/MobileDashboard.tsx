@@ -107,7 +107,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
 
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
-        <QuickAction href="/budget-planner" icon={<Wallet className="h-5 w-5" />} title="Budget Planner" sub="Plan within budget" />
+        <QuickAction href="/budget-planner" icon={<Wallet className="h-5 w-5" />} title="Trip Planner" sub="Plan within budget" />
         <QuickAction href="/destinations" icon={<MapPin className="h-5 w-5" />} title="By State" sub="Top places by state" />
         <QuickAction href="/festivals" icon={<CalendarClock className="h-5 w-5" />} title="Festivals" sub="Events near you" />
         <QuickAction href="/community" icon={<Users className="h-5 w-5" />} title="Community" sub="Tips & hidden gems" />

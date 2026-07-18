@@ -18,7 +18,7 @@ export default async function BudgetPlannerPage() {
             <Wallet className="h-6 w-6" />
           </span>
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Budget Planner</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Trip Planner</h1>
             <p className="text-sm text-slate-500">Plan a trip that fits your budget — in a few quick steps.</p>
           </div>
         </div>

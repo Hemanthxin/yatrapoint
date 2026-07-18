@@ -63,7 +63,7 @@ export function MobileDestinations({
           <Compass className="h-4 w-4 text-emerald-600" /> Explore India
         </p>
         <h1 className="mt-0.5 text-3xl font-extrabold tracking-tight text-slate-900">
-          Destinations
+          Tourist Places
         </h1>
         <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-500">
           <MapPin className="h-3.5 w-3.5 text-emerald-600" />

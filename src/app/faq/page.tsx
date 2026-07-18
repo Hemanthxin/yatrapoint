@@ -12,7 +12,7 @@ const QA: { q: string; a: React.ReactNode }[] = [
     a: "Yes. Planning trips, exploring places, and all core features are free. Any fees for entry tickets, hotels or transport are paid directly to those providers, not to Saafera.",
   },
   {
-    q: "How does the Budget Planner work?",
+    q: "How does the Trip Planner work?",
     a: "You enter your total budget, available time, number of travellers, travel mode and the kinds of places you want. Saafera finds nearby and curated places within your reach, then builds an efficient multi-stop route whose total cost (travel + entry + food) stays within your budget. You get a full breakdown and can swap any stop.",
   },
   {

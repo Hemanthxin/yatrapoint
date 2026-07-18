@@ -189,7 +189,7 @@ export function CartPlanner() {
         href="/budget-planner"
         className="flex min-h-[44px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
       >
-        <Wallet className="h-4 w-4" /> Plan budget & itinerary in the Budget Planner
+        <Wallet className="h-4 w-4" /> Plan budget & itinerary in the Trip Planner
       </Link>
 
       {/* Mobile (< lg): sticky bottom action bar floating above the dock */}

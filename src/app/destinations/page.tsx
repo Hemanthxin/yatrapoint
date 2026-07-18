@@ -113,7 +113,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           <div className="animate-fadeUp">
       <header className="mb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
-          <span className="text-gradient">Destinations</span>
+          <span className="text-gradient">Tourist Places</span>
         </h1>
         <p className="mt-1 text-sm font-semibold text-slate-500">
           {total} {total === 1 ? "place" : "places"} matching your filters

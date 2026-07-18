@@ -35,9 +35,9 @@ export default async function AboutPage() {
         <InfoSection title="What you can do">
           <InfoList
             items={[
-              <><strong>Budget Planner</strong> — tell us your budget, hours, group size and travel mode, and Saafera builds an optimised multi-stop itinerary that fits, with a full cost breakdown (travel, entry fees, food, and more).</>,
+              <><strong>Trip Planner</strong> — tell us your budget, hours, group size and travel mode, and Saafera builds an optimised multi-stop itinerary that fits, with a full cost breakdown (travel, entry fees, food, and more).</>,
               <><strong>Explore nearby places</strong> — see curated attractions, restaurants, temples, parks and more, sorted by distance from your live location.</>,
-              <><strong>By-state destinations</strong> — browse top places across India, with recommended days, best months to visit and estimated budgets.</>,
+              <><strong>Tourist Places</strong> — browse top places across India, with recommended days, best months to visit and estimated budgets.</>,
               <><strong>One-day trips</strong> — ready-made day trips from your base city with driving time, entry fees and a live-tracking route.</>,
               <><strong>Festivals &amp; events</strong> — discover what's happening so you can time your trip around it.</>,
               <><strong>Community</strong> — share hidden places you've found, with photos and locations, and react to others' finds.</>,

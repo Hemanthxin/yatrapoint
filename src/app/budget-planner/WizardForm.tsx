@@ -353,7 +353,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <Wallet className="h-6 w-6" />
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Budget Planner</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Trip Planner</h1>
           <p className="text-sm text-slate-500">Plan a trip within your budget — {STEPS.length} quick steps.</p>
         </div>
         <PersonalFinanceIllustration className="h-20 w-20 shrink-0" />
