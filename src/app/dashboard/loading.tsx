@@ -1,9 +1,5 @@
-import { SkeletonShell, DashboardSkeleton } from "@/components/app/skeletons/Skeleton";
+import { PageLoader } from "@/components/app/skeletons/Skeleton";
 
 export default function Loading() {
-  return (
-    <SkeletonShell>
-      <DashboardSkeleton />
-    </SkeletonShell>
-  );
+  return <PageLoader label="Loading your dashboard…" />;
 }

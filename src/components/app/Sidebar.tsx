@@ -50,7 +50,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-white/50 glass-strong shadow-2xl transition-transform duration-300 ease-out lg:w-64 lg:translate-x-0 lg:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[color:var(--border)] bg-[color:var(--surface)] shadow-xl transition-transform duration-300 ease-out lg:w-64 lg:translate-x-0 lg:shadow-none ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -68,55 +68,47 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
                 key={href}
                 href={href}
                 onClick={onClose}
-                className={`group relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-2.5 text-sm font-semibold transition ${
+                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
                   active
-                    ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
-                    : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
+                    ? "bg-[color:var(--surface-2)] font-semibold text-[color:var(--accent)]"
+                    : "font-medium text-[color:var(--text-soft)] hover:bg-[color:var(--surface-2)] hover:text-[color:var(--text)]"
                 }`}
               >
-                {active && <span aria-hidden className="sheen-overlay animate-sheen" />}
-                {/* Signature left rail on the active item. */}
+                {/* Thin accent rail on the active item. */}
                 <span
                   aria-hidden
-                  className={`absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-[color:var(--highlight)] transition-all ${
+                  className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[color:var(--accent)] transition-opacity ${
                     active ? "opacity-100" : "opacity-0"
                   }`}
                 />
-                <span
-                  className={`relative grid h-8 w-8 shrink-0 place-items-center rounded-xl transition ${
-                    active ? "bg-white/20" : "bg-slate-100 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-600"
-                  }`}
-                >
-                  <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
-                </span>
-                <span className="relative">{label}</span>
+                <Icon
+                  className={`h-[18px] w-[18px] shrink-0 transition ${active ? "text-[color:var(--accent)]" : "text-[color:var(--muted)] group-hover:text-[color:var(--text)]"}`}
+                  strokeWidth={2}
+                />
+                <span>{label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Promo card — uses emerald-tinted text (not slate) so it stays readable
-            in dark/vibrant themes, where the fixed light-green tile does not. */}
-        <div className="mx-3 mb-3 rounded-2xl bg-gradient-to-b from-emerald-50 to-teal-50 p-4 text-center">
-          <div className="mx-auto mb-2 grid h-12 w-12 place-items-center rounded-full bg-white/80 text-emerald-600">
-            <MapPin className="h-6 w-6" strokeWidth={1.8} />
-          </div>
-          <p className="text-sm font-bold text-emerald-900">Plan your trip smarter</p>
-          <p className="mt-1 text-xs leading-relaxed text-emerald-800/80">
-            Get AI powered suggestions, custom itineraries and budget friendly trips.
+        {/* Promo — minimalist tinted panel. */}
+        <div className="mx-3 mb-3 rounded-xl border border-[color:var(--border)] bg-[color:var(--surface-2)] p-4">
+          <p className="text-sm font-semibold text-[color:var(--text)]">Plan your trip smarter</p>
+          <p className="mt-1 text-xs leading-relaxed text-[color:var(--muted)]">
+            AI suggestions, custom itineraries and budget-friendly trips.
           </p>
           <Link
             href="/budget-planner"
-            className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+            className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[color:var(--accent)] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[color:var(--accent-2)]"
           >
             Explore Now <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
-        <form action={signOutAction} className="border-t border-slate-100 p-3">
+        <form action={signOutAction} className="border-t border-[color:var(--border)] p-3">
           <button
             type="submit"
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)] hover:text-[color:var(--text)]"
           >
             <LogOut className="h-5 w-5" strokeWidth={1.8} /> Logout
           </button>

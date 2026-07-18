@@ -25,23 +25,24 @@
   --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
   --br-900: 18 61 40;    --br-950: 10 33 22;
 
-  --background: 246 241 231;
-  --foreground: 22 36 28;
-  /* Cream paper canvas + warm-white surfaces. */
-  --app-bg: #f6f1e7;
-  --surface: #fffdf8;
-  --surface-2: #efe8da;
-  --text: #16241c;
-  --text-soft: #3f4a43;
-  --muted: #6b7770;
-  --border: #e7ddcb;
-  --accent: #216e44;
-  --accent-2: #1b5a38;
-  /* Terracotta secondary accent — the warm counterpoint to green in the
-     cream+green palette (small highlights, the "Journey"-style words). */
-  --highlight: #cf5b39;
-  --nav-bg: rgba(246, 241, 231, 0.85);
-  --ring: rgba(46, 139, 87, 0.16);
+  --background: 248 250 249;
+  --foreground: 17 24 20;
+  /* Minimalist canvas — a whisper-cool near-white with clean white surfaces,
+     hairline neutral borders and a single forest-green accent. Calm, lots of
+     whitespace, almost no shadow. */
+  --app-bg: #f7f9f8;
+  --surface: #ffffff;
+  --surface-2: #f2f5f4;
+  --text: #111814;
+  --text-soft: #414b45;
+  --muted: #7c857f;
+  --border: #e8ebe9;
+  --accent: #1f6b45;
+  --accent-2: #17573a;
+  /* Sun-orange secondary accent (from the Saafera logo) — used sparingly. */
+  --highlight: #e8883a;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --ring: rgba(31, 107, 69, 0.14);
 }
 
 html,
@@ -73,20 +74,20 @@ body {
     --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
     --br-900: 18 61 40;    --br-950: 10 33 22;
 
-    /* Warm cream canvas to match the mockup. */
-    --app-bg: #f7f2e9;
+    /* Minimalist near-white canvas (matches desktop). */
+    --app-bg: #f7f9f8;
     --surface: #ffffff;
-    --surface-2: #f3ede1;
-    --text: #16241c;
-    --text-soft: #3f4a43;
-    --muted: #6b7770;
-    --border: #e8e0d1;
-    --accent: #216e44;
-    --accent-2: #1b5a38;
-    /* Coral-red highlight (the "Journey" word) — used for small accents. */
-    --highlight: #e14434;
-    --nav-bg: rgba(247, 242, 233, 0.85);
-    --ring: rgba(46, 139, 87, 0.16);
+    --surface-2: #f2f5f4;
+    --text: #111814;
+    --text-soft: #414b45;
+    --muted: #7c857f;
+    --border: #e8ebe9;
+    --accent: #1f6b45;
+    --accent-2: #17573a;
+    /* Sun-orange highlight from the Saafera logo. */
+    --highlight: #e8883a;
+    --nav-bg: rgba(255, 255, 255, 0.85);
+    --ring: rgba(31, 107, 69, 0.14);
   }
 
   :root[data-theme="dark"] {
@@ -192,83 +193,74 @@ input[type="number"] {
 }
 
 @layer utilities {
-  /* Bold: a confident lift + deep shadow on hover — Play-Store hero energy. */
+  /* Minimalist hover — a restrained 2px lift and a soft, low shadow. No bounce,
+     no deep glow; calm and precise. */
   .card-hover {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-      box-shadow 0.3s ease, border-color 0.3s ease;
-    will-change: transform;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
   .card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 30px 54px -22px rgba(27, 90, 56, 0.34);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -18px rgba(17, 24, 20, 0.18);
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
   }
 
-  /* Reusable building blocks. Warm-white card on cream, with a hairline warm
-     border, an inset top highlight and a soft green-tinted drop shadow — the
-     app's signature "cream paper" card. */
+  /* Minimalist card — flat white, a single hairline border, whisper shadow. */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 1.4rem;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 12px 32px -20px rgba(27, 90, 56, 0.38);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(17, 24, 20, 0.04);
   }
-  /* Bold primary action — warm forest green. */
+  /* Primary action — solid forest green, flat, no glow. */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     background-color: var(--accent);
     color: #fff;
-    font-weight: 700;
-    box-shadow: 0 12px 26px -12px rgba(33, 110, 68, 0.55);
-    transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+    font-weight: 600;
+    transition: background-color 0.15s ease, transform 0.12s ease;
   }
-  .btn-primary:hover { transform: scale(1.03); background-color: var(--accent-2); }
-  .btn-primary:active { transform: scale(0.96); }
+  .btn-primary:hover { background-color: var(--accent-2); }
+  .btn-primary:active { transform: scale(0.98); }
   .btn-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     background: var(--surface);
     color: var(--text-soft);
-    font-weight: 700;
+    font-weight: 600;
     border: 1px solid var(--border);
-    transition: background-color 0.15s ease, transform 0.15s ease;
+    transition: background-color 0.15s ease, transform 0.12s ease;
   }
   .btn-secondary:hover { background: var(--surface-2); }
-  .btn-secondary:active { transform: scale(0.96); }
+  .btn-secondary:active { transform: scale(0.98); }
 
-  /* Rich frosted chrome — warm cream tint. Blur radii are kept modest: a large
-     backdrop-filter re-samples everything behind it every frame, which is the
-     main cause of scroll jank on the sticky top bar. A higher base opacity keeps
-     the frosted look at a fraction of the cost. */
+  /* Chrome — clean, near-solid white with a light blur. Minimalism favours a
+     quiet, almost-opaque bar over a heavy frosted-glass effect. */
   .glass {
-    background: rgba(255, 253, 248, 0.82);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
-    backdrop-filter: blur(10px) saturate(140%);
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
   .glass-strong {
-    background: rgba(255, 253, 248, 0.9);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-    backdrop-filter: blur(12px) saturate(150%);
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
-  /* Phones: backdrop-filter is the single biggest scroll-jank cost and mobile
-     GPUs handle it worst. Drop it entirely and lean on a near-opaque tint — the
-     sticky header then scrolls glass-smooth. */
+  /* Phones: drop backdrop-filter (the biggest scroll-jank cost) for a solid bar. */
   @media (max-width: 767px) {
     .glass {
-      background: rgba(255, 253, 248, 0.95);
+      background: rgba(255, 255, 255, 0.96);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
     .glass-strong {
-      background: rgba(255, 253, 248, 0.98);
+      background: rgba(255, 255, 255, 0.98);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
@@ -285,25 +277,53 @@ input[type="number"] {
     pointer-events: none;
     /* Isolate the ambient layer so its paints never invalidate page content. */
     contain: layout paint style;
+    /* Minimalist canvas — a calm near-white with the faintest single green
+       whisper from the top. No texture, no competing glows. */
     background:
-      radial-gradient(115% 80% at 12% -10%, rgba(117, 192, 151, 0.55), transparent 55%),
-      radial-gradient(110% 75% at 90% -6%, rgba(207, 91, 57, 0.16), transparent 52%),
-      repeating-linear-gradient(135deg, rgba(33, 110, 68, 0.035) 0 1px, transparent 1px 22px),
-      linear-gradient(180deg, #f7f2e9 0%, #f1ead9 100%);
+      radial-gradient(120% 70% at 50% -20%, rgba(31, 107, 69, 0.06), transparent 60%),
+      var(--app-bg);
   }
+  /* Ambient blobs are retired in the minimalist look — the calm canvas above
+     replaces them. Kept as a no-op so any lingering markup stays invisible. */
   .aurora-blob {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(45px);
-    will-change: transform;
+    display: none;
   }
-  /* Phones: keep the ambient blobs but hold them STILL — animating a blurred
-     layer forces a full re-raster every frame, which stutters scrolling. */
-  @media (max-width: 767px) {
-    .aurora-blob {
-      animation: none !important;
-      filter: blur(34px);
-    }
+
+  /* ── Saafera loader — the brand "S-route" draws itself while a pin glides
+     along it. The pin's offset-path MUST match SAAFERA_PATH in SaaferaLoader. */
+  .saafera-draw {
+    stroke-dasharray: 250;
+    stroke-dashoffset: 250;
+    animation: saafera-draw 2s ease-in-out infinite;
+  }
+  @keyframes saafera-draw {
+    0% { stroke-dashoffset: 250; }
+    55% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 0; opacity: 0.35; }
+  }
+  .saafera-pin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    place-items: center;
+    margin-left: -11px;
+    margin-top: -22px;
+    offset-path: path("M78 24 C 40 30, 40 66, 66 74 C 92 82, 92 116, 54 122");
+    offset-rotate: 0deg;
+    animation: saafera-pin 2s ease-in-out infinite;
+    /* Scale the 132×146 viewBox path down to the rendered box (~0.97). */
+    scale: 0.97;
+  }
+  @keyframes saafera-pin {
+    0% { offset-distance: 0%; opacity: 0; transform: translateY(-2px); }
+    12% { opacity: 1; transform: translateY(0); }
+    55% { offset-distance: 100%; opacity: 1; }
+    70%, 100% { offset-distance: 100%; opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .saafera-draw { animation: none; stroke-dashoffset: 0; }
+    .saafera-pin { animation: none; offset-distance: 100%; }
   }
 
   /* Edge-to-edge: cancel the content gutter so a child can bleed to the

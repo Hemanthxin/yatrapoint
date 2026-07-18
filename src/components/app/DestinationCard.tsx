@@ -26,7 +26,7 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
     "bg-slate-100 text-slate-800";
 
   return (
-    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5">
+    <article className="card card-hover animate-fadeIn group flex flex-col overflow-hidden">
       <Link
         href={`/destinations/${destination.slug}`}
         className="relative block aspect-[4/3] w-full overflow-hidden"

@@ -75,14 +75,10 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
       : location;
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-2.5 border-b border-white/50 glass-strong px-4 shadow-[0_8px_30px_-18px_rgba(2,6,23,0.45)] md:gap-3 md:px-6">
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent"
-      />
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-2.5 border-b border-[color:var(--border)] glass-strong px-4 md:gap-3 md:px-6">
       <button
         onClick={onMenu}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[color:var(--accent)] text-white transition hover:bg-[color:var(--accent-2)] active:scale-95 lg:hidden"
         aria-label="Toggle menu"
       >
         <Menu className="h-5 w-5" />

@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
-import { BrandLoader } from "@/components/app/BrandLoader";
+import { SaaferaLoader } from "@/components/app/SaaferaLoader";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
@@ -587,8 +587,8 @@ export function LivePlan({
       </section>
 
       {loading && !plan && (
-        <div className="grid h-52 place-items-center rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <BrandLoader label="Mapping the best places for your budget…" />
+        <div className="grid h-64 place-items-center rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]">
+          <SaaferaLoader label="Mapping the best places for your budget…" />
         </div>
       )}
 
