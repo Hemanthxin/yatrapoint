@@ -62,7 +62,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
               width={280}
               height={280}
               priority
-              className="h-auto w-[132px] object-contain"
+              className="app-logo h-auto w-[132px] object-contain"
             />
           </Link>
         </div>

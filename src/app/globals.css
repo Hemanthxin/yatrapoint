@@ -182,6 +182,84 @@ body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BLACK + GREEN AURA — the dark theme, global (every screen size). Deep
+   near-black grounds with a bright emerald accent and soft green aura glows
+   behind the app. Declared AFTER the mobile block so it wins everywhere,
+   including desktop (which the mobile block never covered).
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root[data-theme="dark"] {
+  --app-bg: #05080a;
+  --surface: #0c1310;
+  --surface-2: #121c17;
+  --text: #e9f3ec;
+  --text-soft: #b3c4ba;
+  --muted: #7f9188;
+  --border: #1d2b24;
+  --accent: #34d399;
+  --accent-2: #10b981;
+  --highlight: #f0a35a;
+  --nav-bg: rgba(8, 13, 11, 0.72);
+  --ring: rgba(52, 211, 153, 0.30);
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] body {
+  background-color: var(--app-bg);
+}
+
+/* The signature green aura — layered emerald glows on black. */
+:root[data-theme="dark"] .aurora-canvas {
+  opacity: 1;
+  contain: layout paint style;
+  background:
+    radial-gradient(58% 44% at 12% -4%, rgba(16, 185, 129, 0.22), transparent 62%),
+    radial-gradient(52% 40% at 104% 8%, rgba(13, 148, 136, 0.16), transparent 60%),
+    radial-gradient(75% 55% at 50% 118%, rgba(52, 211, 153, 0.13), transparent 60%),
+    #05080a;
+}
+
+/* Re-skin the common light utilities to the dark tokens (global — the mobile
+   block only covered phones, so desktop needs these too). */
+:root[data-theme="dark"] .bg-white { background-color: var(--surface) !important; }
+:root[data-theme="dark"] .bg-slate-50,
+:root[data-theme="dark"] .bg-slate-100 { background-color: var(--surface-2) !important; }
+:root[data-theme="dark"] .text-slate-900,
+:root[data-theme="dark"] .text-slate-800 { color: var(--text) !important; }
+:root[data-theme="dark"] .text-slate-700,
+:root[data-theme="dark"] .text-slate-600 { color: var(--text-soft) !important; }
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-400 { color: var(--muted) !important; }
+:root[data-theme="dark"] .border-slate-100,
+:root[data-theme="dark"] .border-slate-200,
+:root[data-theme="dark"] .border-slate-300 { border-color: var(--border) !important; }
+
+/* Frosted chrome + cards on black, edged with a faint green glow. */
+:root[data-theme="dark"] .glass,
+:root[data-theme="dark"] .glass-strong {
+  background: var(--nav-bg) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+:root[data-theme="dark"] .card {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(52, 211, 153, 0.04);
+}
+:root[data-theme="dark"] .card-hover:hover {
+  box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.8), 0 0 24px -6px rgba(52, 211, 153, 0.35);
+  border-color: rgba(52, 211, 153, 0.45) !important;
+}
+/* Green glow on primary actions — the "aura" reads as energy. */
+:root[data-theme="dark"] .btn-primary {
+  box-shadow: 0 0 20px -4px rgba(52, 211, 153, 0.55);
+}
+/* The white-background logo jpeg reads as an intentional plate on black. */
+:root[data-theme="dark"] .app-logo {
+  border-radius: 0.6rem;
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.18);
+}
+
 /* Hide number-input spinners (used for OTP boxes) */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

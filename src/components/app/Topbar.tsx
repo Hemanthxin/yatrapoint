@@ -22,6 +22,7 @@ import {
 import { useLocation } from "@/components/app/LocationContext";
 import { signOutAction } from "@/lib/actions/auth";
 import { useCart, removeFromCart, clearCart } from "@/lib/cart";
+import { ThemeToggle } from "@/components/app/ThemeToggle";
 
 interface TopbarProps {
   userLabel: string;
@@ -109,6 +110,9 @@ export function Topbar({ userLabel, userImage, location = "Bengaluru, India", on
           )}
           {locationLabel}
         </button>
+
+        {/* Light ⇄ black theme toggle */}
+        <ThemeToggle />
 
         {/* Trip cart */}
         <div className="relative" ref={cartRef}>
