@@ -10,7 +10,7 @@
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { LatLng } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
 
@@ -150,6 +150,11 @@ export default function TripMap({
   const stopMarkersRef = useRef<L.Marker[]>([]);
   const routeLineRef = useRef<L.Polyline | null>(null);
   const trailLineRef = useRef<L.Polyline | null>(null);
+  // Nav-style "follow me". Off by default so zoom/pan always work; when on, the
+  // camera pans with the live location at the current zoom, and any touch of the
+  // map turns it back off — exactly like Google Maps.
+  const [following, setFollowing] = useState(false);
+  const followingRef = useRef(false);
 
   // Initialise once, dispose on unmount.
   useEffect(() => {
@@ -161,21 +166,55 @@ export default function TripMap({
 
     const map = L.map(node, {
       center: [origin.lat, origin.lng],
-      zoom: 11,
+      zoom: 12,
+      // Full Google-Maps-style interactivity — wheel, pinch, double-click,
+      // drag, box-zoom and keyboard all enabled, with smooth fractional zoom.
+      zoomControl: true,
       scrollWheelZoom: true,
+      doubleClickZoom: true,
+      touchZoom: true,
+      dragging: true,
+      boxZoom: true,
+      keyboard: true,
+      zoomSnap: 0.5,
+      zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 90,
     });
+    L.control.scale({ imperial: false }).addTo(map);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
+
+    // The container is often sized after Leaflet initialises (dynamic import,
+    // flex/grid layout settling); recompute so tiles fill and zoom works.
+    const invalidate = () => map.invalidateSize();
+    const t = setTimeout(invalidate, 60);
+    const ro = new ResizeObserver(invalidate);
+    ro.observe(node);
 
     userMarkerRef.current = L.marker([origin.lat, origin.lng], { icon: USER_ICON })
       .bindPopup("You")
       .addTo(map);
 
+    // Any user gesture (drag, wheel/pinch zoom) breaks out of follow mode.
+    // Our own follow uses panTo (no zoom, no drag), so these only fire for the
+    // user or the Re-center button — all of which should stop following.
+    const stopFollow = () => {
+      if (followingRef.current) {
+        followingRef.current = false;
+        setFollowing(false);
+      }
+    };
+    map.on("dragstart", stopFollow);
+    map.on("zoomstart", stopFollow);
+
     mapRef.current = map;
     const cleanupNode = node;
     return () => {
+      clearTimeout(t);
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
       userMarkerRef.current = null;
@@ -187,10 +226,14 @@ export default function TripMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Move user marker as coords change.
+  // Move user marker as coords change; if following, pan the camera with it at
+  // the CURRENT zoom (never changes zoom, so it never fights the user).
   useEffect(() => {
     if (userMarkerRef.current) {
       userMarkerRef.current.setLatLng([origin.lat, origin.lng]);
+    }
+    if (followingRef.current && mapRef.current) {
+      mapRef.current.panTo([origin.lat, origin.lng], { animate: true, duration: 0.5 });
     }
   }, [origin.lat, origin.lng]);
 
@@ -307,39 +350,99 @@ export default function TripMap({
     }
   }, [trailPositions]);
 
-  // Fit bounds whenever the set of "anchor" points changes — origin, stops,
-  // and (if present) the route geometry. We deliberately exclude the live
-  // trail so the camera doesn't fight the user during tracking.
-  useEffect(() => {
-    const m = mapRef.current;
-    if (!m) return;
+  // Gather every "anchor" point (origin + stops/destination + route geometry)
+  // for framing the trip. Excludes the live breadcrumb trail on purpose.
+  const collectPoints = (): [number, number][] => {
     const pts: [number, number][] = [[origin.lat, origin.lng]];
     if (stops) for (const s of stops) pts.push([s.lat, s.lng]);
     if (destination) pts.push([destination.lat, destination.lng]);
     if (route) for (const r of route) pts.push(r);
+    return pts;
+  };
+
+  // Auto-fit ONCE (the first render that has ≥2 points). After that the map is
+  // the user's to pan/zoom — we never yank it back, so live GPS updates don't
+  // fight your gestures. Use the "Re-center" button to reframe on demand.
+  const fittedRef = useRef(false);
+  useEffect(() => {
+    const m = mapRef.current;
+    if (!m || fittedRef.current) return;
+    const pts = collectPoints();
     if (pts.length < 2) return;
-    const bounds = L.latLngBounds(pts);
-    m.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, animate: false });
-  }, [
-    route,
-    stops,
-    destination?.lat,
-    destination?.lng,
-    origin.lat,
-    origin.lng,
-    destination,
-  ]);
+    m.fitBounds(L.latLngBounds(pts), { padding: [40, 40], maxZoom: 15, animate: false });
+    fittedRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route, stops, destination, origin.lat, origin.lng]);
+
+  // Manual re-center: frame the whole trip (or centre on the user if it's the
+  // only point). Preserves the "you control the map" model.
+  function recenter() {
+    const m = mapRef.current;
+    if (!m) return;
+    const pts = collectPoints();
+    if (pts.length < 2) {
+      m.setView([origin.lat, origin.lng], 15, { animate: true });
+      return;
+    }
+    m.fitBounds(L.latLngBounds(pts), { padding: [40, 40], maxZoom: 16, animate: true });
+  }
+
+  // Toggle nav-style follow. Turning it ON pans to the user at the current zoom
+  // (no zoom change → doesn't trip the stop-follow guard).
+  function toggleFollow() {
+    const m = mapRef.current;
+    if (!m) return;
+    const next = !followingRef.current;
+    followingRef.current = next;
+    setFollowing(next);
+    if (next) m.panTo([origin.lat, origin.lng], { animate: true });
+  }
 
   return (
     <div
-      ref={containerRef}
       className={
         height
-          ? "overflow-hidden rounded-2xl border border-slate-200"
-          : "h-full w-full"
+          ? "relative overflow-hidden rounded-2xl border border-slate-200"
+          : "relative h-full w-full"
       }
       style={height ? { height, width: "100%" } : { width: "100%" }}
-    />
+    >
+      <div ref={containerRef} className="h-full w-full" />
+
+      {/* Map controls — stacked bottom-right, like Google Maps. */}
+      <div className="absolute bottom-3 right-3 z-[500] flex flex-col gap-2">
+        {/* Follow me (nav mode). Off by default; highlights emerald when on. */}
+        <button
+          type="button"
+          onClick={toggleFollow}
+          aria-pressed={following}
+          aria-label={following ? "Stop following my location" : "Follow my location"}
+          title={following ? "Following you — tap or move the map to stop" : "Follow my location"}
+          className={`grid h-11 w-11 place-items-center rounded-full border shadow-lg transition active:scale-95 ${
+            following
+              ? "border-emerald-500 bg-emerald-500 text-white"
+              : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+          }`}
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 11l19-9-9 19-2-8-8-2z" />
+          </svg>
+        </button>
+        {/* Re-center — frame the whole trip. */}
+        <button
+          type="button"
+          onClick={recenter}
+          aria-label="Re-center map"
+          title="Re-center on the whole trip"
+          className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg transition hover:bg-slate-50 active:scale-95"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+          </svg>
+        </button>
+      </div>
+    </div>
   );
 }
 
