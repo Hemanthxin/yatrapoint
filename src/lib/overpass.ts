@@ -19,8 +19,71 @@ const ENDPOINTS: string[] = (() => {
     "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
     "https://overpass.private.coffee/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+    "https://overpass.osm.jp/api/interpreter",
   ];
 })();
+
+// POST an Overpass query to ALL mirrors AT ONCE and return the first that
+// answers with 2xx JSON. Racing beats the old sequential fallback: Overpass
+// queries can take 10–20s under load, and trying mirrors one-by-one with a
+// short client timeout made every mirror "abort" before any could reply. In
+// parallel, the fastest healthy mirror wins in a second or two; the losers are
+// cancelled. Each mirror has its own timeout so a single hung mirror can't stall
+// the race. Throws with all mirror errors only if every mirror fails.
+async function raceOverpass<T = OverpassResponse>(
+  query: string,
+  signal?: AbortSignal,
+  timeoutMs = 25_000
+): Promise<T> {
+  const master = new AbortController();
+  const onOuterAbort = () => master.abort();
+  if (signal) {
+    if (signal.aborted) master.abort();
+    else signal.addEventListener("abort", onOuterAbort, { once: true });
+  }
+
+  const attempt = async (endpoint: string): Promise<T> => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    const linkMaster = () => ctrl.abort();
+    master.signal.addEventListener("abort", linkMaster, { once: true });
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": USER_AGENT,
+          Accept: "application/json",
+        },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: ctrl.signal,
+      });
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`${endpoint} → ${res.status}${body ? " " + body.slice(0, 80) : ""}`);
+      }
+      return (await res.json()) as T;
+    } finally {
+      clearTimeout(timer);
+      master.signal.removeEventListener("abort", linkMaster);
+    }
+  };
+
+  try {
+    const data = await Promise.any(ENDPOINTS.map(attempt));
+    master.abort(); // cancel the slower mirrors now that we have an answer
+    return data;
+  } catch (err) {
+    const errs =
+      err instanceof AggregateError
+        ? err.errors.map((e) => (e instanceof Error ? e.message : String(e)))
+        : [err instanceof Error ? err.message : String(err)];
+    throw new Error(`All Overpass mirrors failed: ${errs.join("; ")}`);
+  } finally {
+    if (signal) signal.removeEventListener("abort", onOuterAbort);
+  }
+}
 
 export type OverpassCategory =
   | "restaurant"
@@ -93,30 +156,8 @@ export async function runOverpassQuery(
   ql: string,
   signal?: AbortSignal
 ): Promise<OverpassElement[]> {
-  const errors: string[] = [];
-  for (const endpoint of ENDPOINTS) {
-    try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": USER_AGENT,
-          Accept: "application/json",
-        },
-        body: `data=${encodeURIComponent(ql)}`,
-        signal,
-      });
-      if (!res.ok) {
-        errors.push(`${endpoint} → ${res.status}`);
-        continue;
-      }
-      const data = (await res.json()) as { elements?: OverpassElement[] };
-      return data.elements ?? [];
-    } catch (err) {
-      errors.push(`${endpoint} → ${err instanceof Error ? err.message : "error"}`);
-    }
-  }
-  throw new Error(`All Overpass mirrors failed: ${errors.join("; ")}`);
+  const data = await raceOverpass<{ elements?: OverpassElement[] }>(ql, signal);
+  return data.elements ?? [];
 }
 
 export interface NearestStation {
@@ -134,7 +175,7 @@ export async function findNearestStation(
   radiusKm = 45
 ): Promise<NearestStation | null> {
   const around = `around:${Math.round(radiusKm * 1000)},${centre.lat},${centre.lng}`;
-  const q = `[out:json][timeout:25];(node[railway~"^(station|halt)$"][name](${around});way[railway~"^(station|halt)$"][name](${around}););out center 80;`;
+  const q = `[out:json][timeout:20];(node[railway~"^(station|halt)$"][name](${around});way[railway~"^(station|halt)$"][name](${around}););out center 80;`;
   let els;
   try {
     els = await runOverpassQuery(q);
@@ -201,14 +242,16 @@ function buildQuery(
   for (const cat of categories) {
     const filters = CATEGORY_FILTERS[cat];
     for (const f of filters) {
-      // node + way + relation, plus require a name tag.
+      // node + way only (both require a name). Relations are dropped: they're
+      // rarely a single POI and roughly triple the query cost, which is what
+      // pushes the public mirrors into 504/timeout. `nwr` isn't used because the
+      // per-type form lets Overpass short-circuit faster.
       clauses.push(`node[${f}][name](${around});`);
       clauses.push(`way[${f}][name](${around});`);
-      clauses.push(`relation[${f}][name](${around});`);
     }
   }
 
-  return `[out:json][timeout:25];(${clauses.join("")});out tags center ${cap};`;
+  return `[out:json][timeout:20];(${clauses.join("")});out tags center ${cap};`;
 }
 
 interface OverpassResponse {
@@ -278,47 +321,9 @@ export async function fetchOverpassPlaces(
     return hit.value.slice(0, limit);
   }
 
-  // Try each mirror in order; the first 2xx wins. Most failures are 429
-  // (over-quota) or 504 (timeout) on the public demo — both signals to fall
-  // through to the next mirror.
-  let data: OverpassResponse | null = null;
-  const errors: string[] = [];
-  for (const endpoint of ENDPOINTS) {
-    // Per-mirror hard timeout so a hung/slow mirror can't stall plan generation
-    // — abort after 15s and fall through to the next mirror. Also honours any
-    // caller-provided abort signal.
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 12_000);
-    if (signal) signal.addEventListener("abort", () => ctrl.abort(), { once: true });
-    try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": USER_AGENT,
-          Accept: "application/json",
-        },
-        body: `data=${encodeURIComponent(query)}`,
-        signal: ctrl.signal,
-      });
-      if (!res.ok) {
-        const body = await res.text().catch(() => "");
-        errors.push(
-          `${endpoint} → ${res.status}${body ? " " + body.slice(0, 100) : ""}`
-        );
-        continue;
-      }
-      data = await res.json();
-      break;
-    } catch (err) {
-      errors.push(`${endpoint} → ${err instanceof Error ? err.message : "error"}`);
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-  if (!data) {
-    throw new Error(`All Overpass mirrors failed: ${errors.join("; ")}`);
-  }
+  // Race all mirrors in parallel — the first healthy one wins, so a slow or
+  // down mirror can't make the whole query time out.
+  const data = await raceOverpass<OverpassResponse>(query, signal);
 
   const matchesCategory = (
     tags: Record<string, string>,

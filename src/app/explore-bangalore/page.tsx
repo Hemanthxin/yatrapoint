@@ -37,7 +37,7 @@ export default async function ExploreBangalorePage() {
           Explore <span className="text-gradient">Bengaluru</span>
         </h1>
         <p className="mt-0.5 text-xs font-medium text-slate-500">
-          {seed.length} curated + live picks, sorted by distance from you.
+          Places near you, sorted by distance.
         </p>
       </header>
 
@@ -51,8 +51,7 @@ export default async function ExploreBangalorePage() {
             <span className="text-gradient">Explore Bengaluru</span>
           </h1>
           <p className="mt-1 text-sm font-medium text-slate-500">
-            {seed.length} curated picks plus live OpenStreetMap data — restaurants, malls,
-            temples, parks, museums, nightlife, all sorted by distance from you.
+            Restaurants, malls, temples, parks, museums and more — sorted by distance from you.
           </p>
         </div>
       </header>

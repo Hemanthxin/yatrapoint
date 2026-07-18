@@ -23,6 +23,8 @@ import {
 } from "@/lib/transport";
 
 export const runtime = "nodejs";
+// Plan generation fans out to Overpass (mirror race) + OSRM + DB; give it room.
+export const maxDuration = 60;
 
 const ALL_OVERPASS: OverpassCategory[] = [
   "restaurant",

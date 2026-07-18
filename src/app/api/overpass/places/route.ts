@@ -3,6 +3,9 @@ import { z } from "zod";
 import { fetchOverpassPlaces, type OverpassCategory } from "@/lib/overpass";
 
 export const runtime = "nodejs";
+// Give the mirror race room to finish (default serverless limits can be ~10s,
+// which cut the query off before Overpass replied).
+export const maxDuration = 30;
 // Cache responses at the HTTP edge — Overpass results don't change minute-to-
 // minute and this saves the upstream server from repeated identical queries.
 export const revalidate = 300;

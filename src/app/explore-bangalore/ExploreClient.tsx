@@ -225,9 +225,6 @@ export function ExploreClient({ seed }: ExploreClientProps) {
     return withinRadius;
   }, [seed, nearbySeed, overpass, group, coords, query, radiusKm]);
 
-  const seedCount = unified.filter((u) => u.kind === "seed").length;
-  const liveCount = unified.filter((u) => u.kind === "osm").length;
-
   return (
     <div className="mt-4 flex flex-col">
       {/* Controls — a prominent, sticky search bar on mobile; an inline row on
@@ -284,16 +281,13 @@ export function ExploreClient({ seed }: ExploreClientProps) {
       <p className="order-3 mt-2 text-xs font-medium text-slate-500">
         {loading ? (
           <span className="inline-flex items-center gap-1">
-            <Loader2 className="h-3 w-3 animate-spin" /> Fetching live OSM data…
+            <Loader2 className="h-3 w-3 animate-spin" /> Finding places near you…
           </span>
         ) : (
           <>
-            {unified.length} {unified.length === 1 ? "place" : "places"} ·{" "}
-            {seedCount} curated · {liveCount} live from OpenStreetMap
-            {isFallback && " · using fallback location"}
+            {unified.length} {unified.length === 1 ? "place" : "places"} nearby
           </>
         )}
-        {error && <span className="ml-2 text-amber-600">({error})</span>}
       </p>
 
       {unified.length === 0 && !loading ? (
