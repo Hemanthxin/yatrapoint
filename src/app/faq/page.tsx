@@ -1,10 +1,18 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { HelpCircle } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { InfoPage } from "@/components/app/InfoPage";
+import { InfoPage, InfoSection } from "@/components/app/InfoPage";
 
-export const metadata = { title: "FAQ — Saafera" };
+export const metadata: Metadata = {
+  title: "FAQ",
+  description:
+    "Get answers about using Saafera for India travel planning, itinerary building, budgeting, and trip discovery.",
+  alternates: {
+    canonical: "/faq",
+  },
+};
 
 const QA: { q: string; a: React.ReactNode }[] = [
   {

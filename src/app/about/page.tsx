@@ -1,10 +1,18 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Info } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { InfoPage, InfoSection, InfoList } from "@/components/app/InfoPage";
 
-export const metadata = { title: "About — Saafera" };
+export const metadata: Metadata = {
+  title: "About Saafera",
+  description:
+    "Learn how Saafera helps travellers plan budget-friendly India trips with curated destinations, route planning, festivals, and stays.",
+  alternates: {
+    canonical: "/about",
+  },
+};
 
 export default async function AboutPage() {
   const session = await auth();

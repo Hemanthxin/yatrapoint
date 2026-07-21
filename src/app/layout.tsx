@@ -7,9 +7,69 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const script = Caveat({ subsets: ["latin"], variable: "--font-script" });
 
 export const metadata: Metadata = {
-  title: "Saafera – Explore More. Fulfill Soul.",
+  metadataBase: new URL("https://saafera.com"),
+  title: {
+    default: "Saafera – Smart Travel Planning for India",
+    template: "%s | Saafera",
+  },
   description:
-    "Budget-friendly travel planning. From ancient temples to majestic waterfalls, find the perfect trip within your budget.",
+    "Plan memorable India trips with Saafera. Discover places, build budget-friendly routes, compare stays, and explore festivals and hidden gems.",
+  keywords: [
+    "India travel planner",
+    "trip planner",
+    "budget travel India",
+    "tourist places",
+    "festivals in India",
+    "hidden places",
+    "one day trip planner",
+  ],
+  applicationName: "Saafera",
+  authors: [{ name: "Saafera" }],
+  creator: "Saafera",
+  publisher: "Saafera",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://saafera.com",
+    siteName: "Saafera",
+    title: "Saafera – Smart Travel Planning for India",
+    description:
+      "Plan memorable India trips with Saafera. Discover places, build budget-friendly routes, and explore festivals and hidden gems.",
+    images: [
+      {
+        url: "/saafera-logo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Saafera travel planning app",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Saafera – Smart Travel Planning for India",
+    description:
+      "Plan memorable India trips with Saafera. Discover places, build budget-friendly routes, and explore festivals and hidden gems.",
+    images: ["/saafera-logo.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/saafera-logo.jpg",
+    shortcut: "/saafera-logo.jpg",
+    apple: "/saafera-logo.jpg",
+  },
 };
 
 export default function RootLayout({

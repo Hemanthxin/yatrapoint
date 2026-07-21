@@ -1,10 +1,17 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Lock } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { InfoPage, InfoSection, InfoList } from "@/components/app/InfoPage";
+import { InfoList, InfoPage, InfoSection } from "@/components/app/InfoPage";
 
-export const metadata = { title: "Privacy Policy — Saafera" };
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Read how Saafera handles your data, account information, and privacy preferences.",
+  alternates: {
+    canonical: "/privacy",
+  },
+};
 
 export default async function PrivacyPage() {
   const session = await auth();
