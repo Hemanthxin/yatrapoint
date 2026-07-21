@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Caveat } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { SEO_KEYWORDS } from "@/lib/seo";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const script = Caveat({ subsets: ["latin"], variable: "--font-script" });
@@ -14,15 +15,7 @@ export const metadata: Metadata = {
   },
   description:
     "Plan memorable India trips with Saafera. Discover places, build budget-friendly routes, compare stays, and explore festivals and hidden gems.",
-  keywords: [
-    "India travel planner",
-    "trip planner",
-    "budget travel India",
-    "tourist places",
-    "festivals in India",
-    "hidden places",
-    "one day trip planner",
-  ],
+  keywords: SEO_KEYWORDS,
   applicationName: "Saafera",
   authors: [{ name: "Saafera" }],
   creator: "Saafera",

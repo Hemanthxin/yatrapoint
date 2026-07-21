@@ -1,0 +1,17 @@
+export const SEO_KEYWORDS = [
+  "India travel planner",
+  "budget travel India",
+  "trip planner",
+  "tourist attractions India",
+  "one day trips India",
+  "festival guide India",
+  "hidden gems India",
+  "budget-friendly travel",
+  "travel itinerary planner",
+  "travel app India",
+  "nearby places",
+  "travel budget calculator",
+  "city travel planning",
+  "travel recommendations",
+  "local travel routes",
+];
