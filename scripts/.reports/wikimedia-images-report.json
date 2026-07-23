@@ -1,0 +1,635 @@
+[
+  {
+    "slug": "devanahalli-fort",
+    "name": "Devanahalli Fort",
+    "wikiTitle": "Devanahalli Fort",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Devanahalli_fort_entrance_2007.jpg/1280px-Devanahalli_fort_entrance_2007.jpg",
+    "status": "set",
+    "reason": "coord check: 109m"
+  },
+  {
+    "slug": "manjarabad-fort",
+    "name": "Manjarabad Fort",
+    "wikiTitle": "Manjarabad Fort",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Manjarabad_Fort_2.jpg/1280px-Manjarabad_Fort_2.jpg",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "hutridurga-fort-trek",
+    "name": "Hutridurga",
+    "wikiTitle": "Tumakuru district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 45223m"
+  },
+  {
+    "slug": "huliyurdurga-hill",
+    "name": "Huliyurdurga",
+    "wikiTitle": "Tumakuru district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 54962m"
+  },
+  {
+    "slug": "channarayana-durga-fort",
+    "name": "Channarayana Durga",
+    "wikiTitle": "Channarayana Durga",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Channarayanadurga1.jpg/1280px-Channarayanadurga1.jpg",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "nagara-bidanur-fort",
+    "name": "Nagara Fort (Bidanur)",
+    "wikiTitle": "Nagara, Karnataka",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Nagara_Fort.jpg/1280px-Nagara_Fort.jpg",
+    "status": "set",
+    "reason": "coord check: 390m"
+  },
+  {
+    "slug": "doddagaddavalli-lakshmi-temple",
+    "name": "Doddagaddavalli Lakshmi Devi Temple",
+    "wikiTitle": "Lakshmi Devi Temple, Doddagaddavalli",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/1113_CE_Lakshmi_Devi_temple%2C_Doddagaddavalli_Karnataka.jpg/1280px-1113_CE_Lakshmi_Devi_temple%2C_Doddagaddavalli_Karnataka.jpg",
+    "status": "set",
+    "reason": "coord check: 21m"
+  },
+  {
+    "slug": "koravangala-bucheshwara-temple",
+    "name": "Koravangala Bucheshwara Temple",
+    "wikiTitle": "Hassan, Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 9107m"
+  },
+  {
+    "slug": "nuggehalli-lakshminarasimha-temple",
+    "name": "Nuggehalli Lakshminarasimha Temple",
+    "wikiTitle": "Lakshmi Narasimha Temple, Nuggehalli",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakshmi_Narasimha_temple_at_Nuggehalli.JPG/1280px-Lakshmi_Narasimha_temple_at_Nuggehalli.JPG",
+    "status": "set",
+    "reason": "coord check: 18m"
+  },
+  {
+    "slug": "aralaguppe-chennakeshava-temple",
+    "name": "Aralaguppe Chennakeshava Temple",
+    "wikiTitle": "Chennakeshava Temple, Aralaguppe",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Chennakeshava_temple_at_Aralaguppe.jpg",
+    "status": "set",
+    "reason": "coord check: 122m"
+  },
+  {
+    "slug": "govindanahalli-panchalingeshwara-temple",
+    "name": "Govindanahalli Panchalingeshwara Temple",
+    "wikiTitle": "Panchalingeshwara Temple, Govindanahalli",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Panchlingeshvara_temple_at_Govindanahalli_-_north_western_view.jpg/1280px-Panchlingeshvara_temple_at_Govindanahalli_-_north_western_view.jpg",
+    "status": "set",
+    "reason": "coord check: 14m"
+  },
+  {
+    "slug": "basaralu-mallikarjuna-temple",
+    "name": "Basaralu Mallikarjuna Temple",
+    "wikiTitle": "Mallikarjuna Temple, Basaralu",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Mallikarjuna_Temple_at_Basaral.jpg/1280px-Mallikarjuna_Temple_at_Basaral.jpg",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "turuvekere-chennakeshava-temple",
+    "name": "Turuvekere Chennakeshava Temple",
+    "wikiTitle": "Chennakeshava Temple, Turuvekere",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Chennakeshava_temple_at_Turuvekere%2CTumkur_district.JPG/1280px-Chennakeshava_temple_at_Turuvekere%2CTumkur_district.JPG",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "hulikere-kalyani-halebidu",
+    "name": "Hulikere Kalyani",
+    "wikiTitle": "Halebidu",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Halebidu_monuments_map%2C_1930_survey%2C_the_Dorasamudra_of_Hoysala_dynasty.jpg",
+    "status": "set",
+    "reason": "coord check: 1954m"
+  },
+  {
+    "slug": "arasikere-ishwara-temple",
+    "name": "Arasikere Ishwara Temple",
+    "wikiTitle": "Ishvara Temple, Arasikere",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Le_temple_Kalameshwara_%28Arsikere%2C_Inde%29_%2814571148061%29.jpg/1280px-Le_temple_Kalameshwara_%28Arsikere%2C_Inde%29_%2814571148061%29.jpg",
+    "status": "set",
+    "reason": "coord check: 11m"
+  },
+  {
+    "slug": "javagal-lakshminarasimha-temple",
+    "name": "Javagal Lakshminarasimha Temple",
+    "wikiTitle": "Lakshminarasimha Temple, Javagal",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Sri_LakshmiNarasimha_Temple_-_Javagal_West_Side_View.jpg/1280px-Sri_LakshmiNarasimha_Temple_-_Javagal_West_Side_View.jpg",
+    "status": "set",
+    "reason": "coord check: 19m"
+  },
+  {
+    "slug": "kambadahalli-panchakuta-basadi",
+    "name": "Kambadahalli Panchakuta Basadi",
+    "wikiTitle": "Panchakuta Basadi, Kambadahalli",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Panchakuta_Basadi_%2810th_century_AD%29_at_Kambadahalli.JPG/1280px-Panchakuta_Basadi_%2810th_century_AD%29_at_Kambadahalli.JPG",
+    "status": "set",
+    "reason": "coord check: 9m"
+  },
+  {
+    "slug": "hosaholalu-lakshminarayana-temple",
+    "name": "Hosaholalu Lakshminarayana Temple",
+    "wikiTitle": "Lakshminarayana Temple, Hosaholalu",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Lakshminayarana_Temple_%2C_Hosaholalu%2C_South_West_View.jpg/1280px-Lakshminayarana_Temple_%2C_Hosaholalu%2C_South_West_View.jpg",
+    "status": "set",
+    "reason": "coord check: 7m"
+  },
+  {
+    "slug": "mosale-temples-hassan",
+    "name": "Mosale Temples",
+    "wikiTitle": "Hassan district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 9184m"
+  },
+  {
+    "slug": "marehalli-lakshminarasimha-temple",
+    "name": "Marehalli Lakshminarasimha Temple",
+    "wikiTitle": "List of Monuments of National Importance in Bangalore circle",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "ittagi-mahadeva-temple",
+    "name": "Ittagi Mahadeva Temple",
+    "wikiTitle": "Mahadeva Temple, Itagi",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 33151m"
+  },
+  {
+    "slug": "kukkanoor-navalinga-temples",
+    "name": "Kukkanoor Navalinga Temples",
+    "status": "no-title"
+  },
+  {
+    "slug": "annigeri-amruteshwara-temple",
+    "name": "Annigeri Amruteshwara Temple",
+    "wikiTitle": "Annigeri",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Amrtesvara_Temple_at_Annigeri.JPG/1280px-Amrtesvara_Temple_at_Annigeri.JPG",
+    "status": "set",
+    "reason": "coord check: 759m"
+  },
+  {
+    "slug": "nanjangud-srikanteshwara-temple",
+    "name": "Nanjangud Srikanteshwara Temple",
+    "wikiTitle": "Srikanteshwara Temple, Nanjangud",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Srikanteshvara_Temple%2C_Nanjangud.JPG/1280px-Srikanteshvara_Temple%2C_Nanjangud.JPG",
+    "status": "set",
+    "reason": "coord check: 30m"
+  },
+  {
+    "slug": "gunja-narasimhaswamy-temple",
+    "name": "Gunja Narasimhaswamy Temple, T. Narasipura",
+    "status": "no-title"
+  },
+  {
+    "slug": "adichunchanagiri-kalabhairaveshwara",
+    "name": "Adichunchanagiri",
+    "wikiTitle": "Adichunchanagiri Hills",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Adichunchanagiri.3.jpg/1280px-Adichunchanagiri.3.jpg",
+    "status": "set",
+    "reason": "coord check: 798m"
+  },
+  {
+    "slug": "karighatta-temple-viewpoint",
+    "name": "Karighatta Temple",
+    "wikiTitle": "Karighatta Temple",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Karigatte_temple.JPG",
+    "status": "set",
+    "reason": "coord check: 5m"
+  },
+  {
+    "slug": "bilikal-rangaswamy-betta",
+    "name": "Bilikal Rangaswamy Betta",
+    "wikiTitle": "Bengaluru South district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 220877m"
+  },
+  {
+    "slug": "magadi-someshwara-temple",
+    "name": "Magadi Someshwara Temple",
+    "wikiTitle": "Group of temples at Magadi, Karnataka",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Ranganatha_Swamy_Temple_at_Magadi%2C_Karnataka.JPG/1280px-Ranganatha_Swamy_Temple_at_Magadi%2C_Karnataka.JPG",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "kigga-rishyashringeshwara-temple",
+    "name": "Kigga Rishyashringeshwara Temple",
+    "status": "no-title"
+  },
+  {
+    "slug": "basavana-bagewadi-temple",
+    "name": "Basavana Bagewadi Basaveshwara Temple",
+    "wikiTitle": "Basava",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "chandragutti-renukamba-temple",
+    "name": "Chandragutti Renukamba Temple",
+    "wikiTitle": "Chandragutti Renukamba Temple",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "humcha-padmavati-jain-temple",
+    "name": "Humcha Padmavati Jain Temple",
+    "wikiTitle": "Shimoga district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 28009m"
+  },
+  {
+    "slug": "polali-rajarajeshwari-temple",
+    "name": "Polali Rajarajeshwari Temple",
+    "wikiTitle": "Polali Rajarajeshwari Temple",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/Polali_Rajarajeshwari_Temple_festival.jpg",
+    "status": "set",
+    "reason": "coord check: 9m"
+  },
+  {
+    "slug": "southadka-ganapathi-temple",
+    "name": "Southadka Ganapathi Temple",
+    "wikiTitle": "List of Hindu temples in Tulu Nadu",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "chikka-tirupati-temple",
+    "name": "Chikka Tirupati",
+    "wikiTitle": "Arsikere",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 179400m"
+  },
+  {
+    "slug": "honnamana-kere",
+    "name": "Honnamana Kere",
+    "wikiTitle": "Honnamana Kere",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Honnamana_Kere.jpg",
+    "status": "set",
+    "reason": "coord check: 55m"
+  },
+  {
+    "slug": "karkala-gomateshwara-statue",
+    "name": "Karkala Gomateshwara Statue",
+    "wikiTitle": "Tourism in Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "mudabidri-saavira-kambada-basadi",
+    "name": "Mudabidri Saavira Kambada Basadi",
+    "wikiTitle": "Moodabidri",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 18248m"
+  },
+  {
+    "slug": "venur-gomateshwara-statue",
+    "name": "Venur Gomateshwara",
+    "wikiTitle": "Venur",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 5280m"
+  },
+  {
+    "slug": "barkur-heritage-town",
+    "name": "Barkur Heritage Town",
+    "wikiTitle": "Barkur",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Barkur_main_town..JPG/1280px-Barkur_main_town..JPG",
+    "status": "set",
+    "reason": "coord check: 907m"
+  },
+  {
+    "slug": "halasi-bhuvaraha-narasimha-temple",
+    "name": "Halasi Bhuvaraha Narasimha Temple",
+    "wikiTitle": "Halasi",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Halasi_12.jpg/1280px-Halasi_12.jpg",
+    "status": "set",
+    "reason": "coord check: 179m"
+  },
+  {
+    "slug": "sonda-vadiraja-matha",
+    "name": "Sonda Vadiraja Matha",
+    "wikiTitle": "Sonda, Karnataka",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "bhatkal-khetapai-narayana-temple",
+    "name": "Bhatkal Khetapai Narayana Temple",
+    "wikiTitle": "List of Vijayanagara era temples in Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "attur-st-lawrence-basilica",
+    "name": "Attur St. Lawrence Basilica",
+    "wikiTitle": "St. Lawrence Shrine Basilica",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/St._Lawrence_Shrine_%28Karkala%29.jpg",
+    "status": "set",
+    "reason": "coord check: 5m"
+  },
+  {
+    "slug": "muthyala-maduvu-pearl-valley",
+    "name": "Muthyala Maduvu (Pearl Valley)",
+    "status": "no-title"
+  },
+  {
+    "slug": "thottikallu-falls-tk-falls",
+    "name": "Thottikallu Falls",
+    "wikiTitle": "Thottikallu",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Thottikallu_falls.jpg/1280px-Thottikallu_falls.jpg",
+    "status": "set",
+    "reason": "coord check: 75m"
+  },
+  {
+    "slug": "chunchanakatte-falls",
+    "name": "Chunchanakatte Falls",
+    "wikiTitle": "Geography of Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "balmuri-edmuri-falls",
+    "name": "Balmuri and Edmuri Falls",
+    "status": "no-title"
+  },
+  {
+    "slug": "hanumanagundi-falls",
+    "name": "Hanumanagundi Falls",
+    "wikiTitle": "Hanumana Gundi Falls",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Hanumanagundi_Falls.jpg/1280px-Hanumanagundi_Falls.jpg",
+    "status": "set",
+    "reason": "coord check: 90m"
+  },
+  {
+    "slug": "sirimane-falls",
+    "name": "Sirimane Falls",
+    "wikiTitle": "Chikmagalur district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 62034m"
+  },
+  {
+    "slug": "jomlu-theertha-falls",
+    "name": "Jomlu Theertha Falls",
+    "wikiTitle": "List of waterfalls in Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "onake-abbi-falls",
+    "name": "Onake Abbi Falls",
+    "wikiTitle": "Geography of Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "barkana-falls",
+    "name": "Barkana Falls",
+    "wikiTitle": "Jog Falls",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "achakanya-falls",
+    "name": "Achakanya Falls",
+    "wikiTitle": "Shimoga district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 39514m"
+  },
+  {
+    "slug": "chelavara-falls",
+    "name": "Chelavara Falls",
+    "wikiTitle": "Kodagu district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 6514m"
+  },
+  {
+    "slug": "hidlumane-falls",
+    "name": "Hidlumane Falls",
+    "wikiTitle": "Kodachadri",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 3583m"
+  },
+  {
+    "slug": "koosalli-falls",
+    "name": "Koosalli Falls",
+    "wikiTitle": "Koosalli Waterfalls",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "bandaje-arbi-falls",
+    "name": "Bandaje Falls",
+    "wikiTitle": "Bandaje Falls",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/81/Bandaje_falls.jpg",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "yagachi-dam",
+    "name": "Yagachi Dam",
+    "wikiTitle": "Hassan district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 7227m"
+  },
+  {
+    "slug": "gorur-dam-hemavathi",
+    "name": "Gorur Dam (Hemavathi Reservoir)",
+    "wikiTitle": "List of dams and reservoirs in Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "kunigal-lake",
+    "name": "Kunigal Lake",
+    "wikiTitle": "Tumakuru district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 37428m"
+  },
+  {
+    "slug": "thippagondanahalli-reservoir",
+    "name": "Thippagondanahalli Reservoir",
+    "wikiTitle": "Thippagondanahalli Reservoir",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/TGHallidam.JPG/1280px-TGHallidam.JPG",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "kabini-backwaters",
+    "name": "Kabini Backwaters",
+    "wikiTitle": "Kabini River",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 66248m"
+  },
+  {
+    "slug": "bheemeshwari-nature-camp",
+    "name": "Bheemeshwari",
+    "wikiTitle": "Mandya district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 31348m"
+  },
+  {
+    "slug": "galibore-nature-camp",
+    "name": "Galibore",
+    "wikiTitle": "Mekedatu",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 14996m"
+  },
+  {
+    "slug": "cauvery-wildlife-sanctuary",
+    "name": "Cauvery Wildlife Sanctuary",
+    "wikiTitle": "List of wildlife sanctuaries of India",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "attiveri-bird-sanctuary",
+    "name": "Attiveri Bird Sanctuary",
+    "wikiTitle": "Uttara Kannada",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 61098m"
+  },
+  {
+    "slug": "kokkarebellur-pelican-sanctuary",
+    "name": "Kokkarebellur Pelican Sanctuary",
+    "wikiTitle": "Kokrebellur",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Kokkare_Bellur_Pelicans.jpg",
+    "status": "set",
+    "reason": "coord check: 270m"
+  },
+  {
+    "slug": "arabithittu-wildlife-sanctuary",
+    "name": "Arabithittu Wildlife Sanctuary",
+    "wikiTitle": "Dandeli Wildlife Sanctuary",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/The_calm_of_river_kali.jpg/1280px-The_calm_of_river_kali.jpg",
+    "status": "set",
+    "reason": "name overlap (no coords to check)"
+  },
+  {
+    "slug": "someshwara-wildlife-sanctuary",
+    "name": "Someshwara Wildlife Sanctuary",
+    "wikiTitle": "Someshwara Wildlife Sanctuary",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 25303m"
+  },
+  {
+    "slug": "bhimgad-wildlife-sanctuary",
+    "name": "Bhimgad Wildlife Sanctuary",
+    "wikiTitle": "Bhimgad Wildlife Sanctuary",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Otomops_wroughtoni.jpg",
+    "status": "set",
+    "reason": "coord check: 2086m"
+  },
+  {
+    "slug": "pushpagiri-wildlife-sanctuary",
+    "name": "Pushpagiri Wildlife Sanctuary",
+    "wikiTitle": "Pushpagiri Wildlife Sanctuary",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 5842m"
+  },
+  {
+    "slug": "charmadi-ghat",
+    "name": "Charmadi Ghat",
+    "wikiTitle": "Chikmagalur",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 44032m"
+  },
+  {
+    "slug": "bisle-ghat-viewpoint",
+    "name": "Bisle Ghat Viewpoint",
+    "wikiTitle": "Ghat Roads",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 410577m"
+  },
+  {
+    "slug": "ballalarayana-durga-trek",
+    "name": "Ballalarayana Durga",
+    "wikiTitle": "Bandaje Falls",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "ombattu-gudda-trek",
+    "name": "Ombattu Gudda",
+    "wikiTitle": "Sakleshpur",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 18400m"
+  },
+  {
+    "slug": "ettina-bhuja-trek",
+    "name": "Ettina Bhuja",
+    "wikiTitle": "Chikmagalur district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 47913m"
+  },
+  {
+    "slug": "devaramane-hills",
+    "name": "Devaramane",
+    "wikiTitle": "Devaramane",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Temple_of_kalabhairava%2C_skyline_from_Devaramane%2C_Guthi_village%2C_July_5%2C_2011.jpg/1280px-Temple_of_kalabhairava%2C_skyline_from_Devaramane%2C_Guthi_village%2C_July_5%2C_2011.jpg",
+    "status": "set",
+    "reason": "coord check: 98m"
+  },
+  {
+    "slug": "avala-betta",
+    "name": "Avala Betta",
+    "status": "no-title"
+  },
+  {
+    "slug": "kavala-caves-dandeli",
+    "name": "Kavala Caves",
+    "wikiTitle": "Uttara Kannada",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 63647m"
+  },
+  {
+    "slug": "padubidri-beach",
+    "name": "Padubidri Beach",
+    "wikiTitle": "Padubidri",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Padubidri_NH_66_and_State_highway_1_intersection.jpg/1280px-Padubidri_NH_66_and_State_highway_1_intersection.jpg",
+    "status": "set",
+    "reason": "coord check: 1515m"
+  },
+  {
+    "slug": "mattu-beach-udupi",
+    "name": "Mattu Beach",
+    "wikiTitle": "Udupi",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 13931m"
+  },
+  {
+    "slug": "kodi-bengre-beach",
+    "name": "Kodi Bengre Beach",
+    "wikiTitle": "Delta Beach",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "byndoor-ottinene-viewpoint",
+    "name": "Byndoor Ottinene Viewpoint",
+    "status": "no-title"
+  },
+  {
+    "slug": "gangolli-beach-estuary",
+    "name": "Gangolli Beach",
+    "wikiTitle": "Kapu, Udupi",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 47742m"
+  },
+  {
+    "slug": "visvesvaraya-industrial-technological-museum",
+    "name": "Visvesvaraya Industrial and Technological Museum",
+    "wikiTitle": "Bengaluru",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/View_from_Visvesvaraya_Industrial_and_Technological_Museum_%282025%29_02.jpg/1280px-View_from_Visvesvaraya_Industrial_and_Technological_Museum_%282025%29_02.jpg",
+    "status": "set",
+    "reason": "coord check: 661m"
+  },
+  {
+    "slug": "regional-natural-history-museum-mysuru",
+    "name": "Regional Natural History Museum, Mysuru",
+    "wikiTitle": "Mysore",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/Mysuru_Montage.jpg",
+    "status": "set",
+    "reason": "coord check: 765m"
+  }
+]

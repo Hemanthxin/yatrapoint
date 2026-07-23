@@ -1,0 +1,2648 @@
+[
+  {
+    "slug": "bangalore-palace",
+    "name": "Bangalore Palace",
+    "website": "https://karnatakatourism.org/tour-item/bangalore-palace/",
+    "editorialSummary": "Modern royal palace modeled on Windsor Castle offering tours, outdoor concerts & an amusement park.",
+    "mapsUrl": "https://maps.google.com/?cid=12824201691588268751"
+  },
+  {
+    "slug": "lalbagh-botanical-garden",
+    "name": "Lalbagh Botanical Garden",
+    "website": "https://horticulturedir.karnataka.gov.in/21/lalbagh/en",
+    "editorialSummary": "Botanical garden with an aquarium & glasshouse designed to mimic London's former Crystal Palace.",
+    "mapsUrl": "https://maps.google.com/?cid=10236976183492197922"
+  },
+  {
+    "slug": "cubbon-park",
+    "name": "Cubbon Park",
+    "website": "https://bengaluruurban.nic.in/tourist-place/%E0%B2%95%E0%B2%AC%E0%B3%8D%E0%B2%AC%E0%B2%A8%E0%B3%8D-%E0%B2%AA%E0%B2%BE%E0%B2%B0%E0%B3%8D%E0%B2%95%E0%B3%8D/",
+    "editorialSummary": "Established in 1870, this vibrant city park has walking paths, landscaped gardens & play areas.",
+    "mapsUrl": "https://maps.google.com/?cid=14279970654781693880"
+  },
+  {
+    "slug": "iskcon-bengaluru",
+    "name": "ISKCON Temple Bengaluru",
+    "website": "https://www.iskconbangalore.org/",
+    "editorialSummary": "Expansive, modern Hare Krishna temple campus, including shrines, food stalls & souvenir shops.",
+    "mapsUrl": "https://maps.google.com/?cid=8826969826668229299"
+  },
+  {
+    "slug": "bull-temple-basavanagudi",
+    "name": "Bull Temple (Dodda Basavana Gudi)",
+    "website": null,
+    "editorialSummary": "16th-century Hindu temple containing a sculpture of the sacred bull carved out of granite.",
+    "mapsUrl": "https://maps.google.com/?cid=3749301732374641988"
+  },
+  {
+    "slug": "tipu-sultan-summer-palace-bengaluru",
+    "name": "Tipu Sultan's Summer Palace",
+    "website": "https://www.karnatakatourism.org/tour-item/tipu-sultans-summer-palace/",
+    "editorialSummary": "Ornate summer home of 18th century ruler Tipu Sultan offering scenic grounds & a historical exhibit.",
+    "mapsUrl": "https://maps.google.com/?cid=1903329272418901877"
+  },
+  {
+    "slug": "bangalore-fort",
+    "name": "Bangalore Fort",
+    "website": null,
+    "editorialSummary": "Monumental, carved stone gate, one of few surviving elements of the city's 18th-century fort.",
+    "mapsUrl": "https://maps.google.com/?cid=12872511500219967191"
+  },
+  {
+    "slug": "vidhana-soudha",
+    "name": "Vidhana Soudha",
+    "website": null,
+    "editorialSummary": "Massive, architecturally notable building housing the state legislative chambers.",
+    "mapsUrl": "https://maps.google.com/?cid=18419828420748109693"
+  },
+  {
+    "slug": "ulsoor-lake",
+    "name": "Ulsoor Lake",
+    "website": null,
+    "editorialSummary": "Boating & walking in a peaceful, leafy spot, one of the largest lakes in Bangalore.",
+    "mapsUrl": "https://maps.google.com/?cid=6690815370819827500"
+  },
+  {
+    "slug": "bannerghatta-national-park",
+    "name": "Bannerghatta National Park",
+    "website": "https://bannerughattabiopark.org/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10858813127091543257"
+  },
+  {
+    "slug": "hesaraghatta-lake",
+    "name": "Hesaraghatta Lake & Grasslands",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8093414706988129909"
+  },
+  {
+    "slug": "national-gallery-modern-art-bengaluru",
+    "name": "National Gallery of Modern Art, Bengaluru",
+    "website": "http://ngmaindia.gov.in/ngma_bangaluru.asp",
+    "editorialSummary": "Museum housing paintings by modern & contemporary Indian artists, plus a cafe & an auditorium.",
+    "mapsUrl": "https://maps.google.com/?cid=7626967474370196347"
+  },
+  {
+    "slug": "gavi-gangadhareshwara-temple",
+    "name": "Gavi Gangadhareshwara Cave Temple",
+    "website": null,
+    "editorialSummary": "Built into a cave, this 1500s temple features monolithic sculptures & an annual sun illumination.",
+    "mapsUrl": "https://maps.google.com/?cid=12870864208658552655"
+  },
+  {
+    "slug": "hal-aerospace-museum",
+    "name": "HAL Aerospace Museum",
+    "website": null,
+    "editorialSummary": "Aerospace company's museum featuring photographs & models tracing aviation & aeronautics history.",
+    "mapsUrl": "https://maps.google.com/?cid=17011693062771985142"
+  },
+  {
+    "slug": "jawaharlal-nehru-planetarium-bengaluru",
+    "name": "Jawaharlal Nehru Planetarium",
+    "website": "https://taralaya.karnataka.gov.in/en",
+    "editorialSummary": "Planetarium with shows in Kannada & English, plus a science center for educational activities.",
+    "mapsUrl": "https://maps.google.com/?cid=8465952466687240245"
+  },
+  {
+    "slug": "ghati-subramanya-temple",
+    "name": "Ghati Subramanya Temple",
+    "website": null,
+    "editorialSummary": "Dravidian-style Hindu temple to the god of snakes & site of an annual snake festival.",
+    "mapsUrl": "https://maps.google.com/?cid=5766224174541192614"
+  },
+  {
+    "slug": "shivagange",
+    "name": "Shivagange",
+    "website": null,
+    "editorialSummary": "Soaring mountain peak known for its temples, sacred sculptures & sweeping views.",
+    "mapsUrl": "https://maps.google.com/?cid=16570579160940127376"
+  },
+  {
+    "slug": "nrityagram",
+    "name": "Nrityagram Dance Village",
+    "website": "https://nrityagram.org/",
+    "editorialSummary": "Residential dance school offering training & performances in a relaxed, garden-filled setting.",
+    "mapsUrl": "https://maps.google.com/?cid=3373598085068319120"
+  },
+  {
+    "slug": "kanva-reservoir",
+    "name": "Kanva Reservoir",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15839441530708032240"
+  },
+  {
+    "slug": "ramadevarabetta-ramanagara",
+    "name": "Ramadevarabetta Vulture Sanctuary",
+    "website": "http://www.aranya.gov.in/Static%20Pages/Sanctuary.aspx",
+    "editorialSummary": "India’s only vulture sanctuary, this area of rocky hills is popular for hiking & birdwatching.",
+    "mapsUrl": "https://maps.google.com/?cid=15551293820793188987"
+  },
+  {
+    "slug": "janapada-loka",
+    "name": "Janapada Loka",
+    "website": "https://janapadaloka.in/",
+    "editorialSummary": "Open-air museum featuring a wide collection of folk art, traditional crafts, household items & more.",
+    "mapsUrl": "https://maps.google.com/?cid=14729420254739735671"
+  },
+  {
+    "slug": "channapatna-toy-town",
+    "name": "Channapatna (Toy Town)",
+    "website": "https://www.toysofcpt.com/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=535125262640964078"
+  },
+  {
+    "slug": "revana-siddeshwara-betta",
+    "name": "Revana Siddeshwara Betta",
+    "website": "http://www.revanasiddeshwaratrust.org/",
+    "editorialSummary": "Tranquil Hindu temple complex on a hillside featuring sweeping valley & farmland views.",
+    "mapsUrl": "https://maps.google.com/?cid=13977519600623767401"
+  },
+  {
+    "slug": "savandurga",
+    "name": "Savandurga",
+    "website": null,
+    "editorialSummary": "Distinctive mountain peak popular for challenging rock-climbing experiences & scenic summit views.",
+    "mapsUrl": "https://maps.google.com/?cid=9017128946003689359"
+  },
+  {
+    "slug": "manchanabele-dam",
+    "name": "Manchanabele Dam",
+    "website": null,
+    "editorialSummary": "Dam forming a reservoir framed by forested hills, known for birdwatching, picnics & sunset views.",
+    "mapsUrl": "https://maps.google.com/?cid=17643317414656162324"
+  },
+  {
+    "slug": "mekedatu-sangama",
+    "name": "Mekedatu & Sangama",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5230529045289478073"
+  },
+  {
+    "slug": "kabbaladurga",
+    "name": "Kabbaladurga",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15350767498266099701"
+  },
+  {
+    "slug": "big-banyan-tree",
+    "name": "Big Banyan Tree (Dodda Aalada Mara)",
+    "website": null,
+    "editorialSummary": "Planted in the 17th century, this 400-year-old banyan tree covers 3 acres & is a popular photo spot.",
+    "mapsUrl": "https://maps.google.com/?cid=11082610220164241779"
+  },
+  {
+    "slug": "devarayanadurga",
+    "name": "Devarayanadurga",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6642606921539624475"
+  },
+  {
+    "slug": "namada-chilume",
+    "name": "Namada Chilume",
+    "website": null,
+    "editorialSummary": "Wooded deer park with nature trails leading to a spring thought to have healing powers.",
+    "mapsUrl": "https://maps.google.com/?cid=12867496860470489462"
+  },
+  {
+    "slug": "siddara-betta",
+    "name": "Siddara Betta",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8518867578193985022"
+  },
+  {
+    "slug": "madhugiri-fort",
+    "name": "Madhugiri Fort",
+    "website": null,
+    "editorialSummary": "Monolithic hill with hiking trails to ruined late-1600s fortifications adorned with stone carvings.",
+    "mapsUrl": "https://maps.google.com/?cid=14619722896400635815"
+  },
+  {
+    "slug": "goravanahalli-mahalakshmi-temple",
+    "name": "Goravanahalli Mahalakshmi Temple",
+    "website": "https://goravanahallimahalakshmitrust.org/Home",
+    "editorialSummary": "Bright Hindu temple dedicated to the goddess Lakshmi with a 3-tiered tower & carved stone pillars.",
+    "mapsUrl": "https://maps.google.com/?cid=2333139097717932598"
+  },
+  {
+    "slug": "sira-fort-town",
+    "name": "Sira (Fort & Jumma Masjid)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3574118119555611164"
+  },
+  {
+    "slug": "kaidala-chennakeshava-temple",
+    "name": "Kaidala Chennakeshava Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=865424029241210941"
+  },
+  {
+    "slug": "jayamangali-blackbuck-reserve",
+    "name": "Jayamangali Blackbuck Reserve (Maidenahalli)",
+    "website": null,
+    "editorialSummary": "Remote, open grassland conservation area for blackbuck antelopes, with several observation towers.",
+    "mapsUrl": "https://maps.google.com/?cid=12143577593678782186"
+  },
+  {
+    "slug": "pavagada-fort",
+    "name": "Pavagada Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13301141258563264616"
+  },
+  {
+    "slug": "kolar-kotilingeshwara",
+    "name": "Kotilingeshwara Temple",
+    "website": "https://kotilingeshwara.wixsite.com/mysite",
+    "editorialSummary": "Built in 1980, this Hindu complex boasts 1,000+ shiva linga, including one standing 33 m tall.",
+    "mapsUrl": "https://maps.google.com/?cid=1524730246699001278"
+  },
+  {
+    "slug": "antaragange",
+    "name": "Antara Gange",
+    "website": null,
+    "editorialSummary": "Boulder-covered mountain peak with caves & a Hindu temple on the way up & rural views from the top.",
+    "mapsUrl": "https://maps.google.com/?cid=7054022894460164628"
+  },
+  {
+    "slug": "avani-kolar",
+    "name": "Avani",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11623286713196293614"
+  },
+  {
+    "slug": "kolaramma-temple",
+    "name": "Kolaramma Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2697887703438224931"
+  },
+  {
+    "slug": "someshwara-temple-kolar",
+    "name": "Someshwara Temple, Kolar",
+    "website": null,
+    "editorialSummary": "Hindu temple dating from the 14th century with an elaborately decorated gopuram, or entry gate.",
+    "mapsUrl": "https://maps.google.com/?cid=15376643520407329075"
+  },
+  {
+    "slug": "kgf-kolar-gold-fields",
+    "name": "Kolar Gold Fields (KGF)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6672915188461486217"
+  },
+  {
+    "slug": "kurudumale-ganesha-temple",
+    "name": "Kurudumale Ganesha Temple",
+    "website": "https://youtube.com/@kurudumaleganeshatemple?feature=shared",
+    "editorialSummary": "Hindu temple built out of stone, featuring an ornate tower & a tall statue of Lord Ganesha.",
+    "mapsUrl": "https://maps.google.com/?cid=13610539158703772162"
+  },
+  {
+    "slug": "anthargange-mulbagal-anjaneya",
+    "name": "Mulbagal Anjaneya Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4254026036276160717"
+  },
+  {
+    "slug": "nandi-hills",
+    "name": "Nandi Hills",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1601582899467478536"
+  },
+  {
+    "slug": "skandagiri",
+    "name": "Skandagiri (Kalavara Durga)",
+    "website": null,
+    "editorialSummary": "Popular hiking trail offering scenic views of the sunrise & sunset among the clouds.",
+    "mapsUrl": "https://maps.google.com/?cid=7704917194824313299"
+  },
+  {
+    "slug": "bhoga-nandeeshwara-temple",
+    "name": "Bhoga Nandeeshwara Temple",
+    "website": null,
+    "editorialSummary": "Hindu temple complex dating to the 9th century CE, with ornate carved pillars & a reflecting pool.",
+    "mapsUrl": "https://maps.google.com/?cid=4309617941452201004"
+  },
+  {
+    "slug": "gudibande-fort",
+    "name": "Gudibande Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1328515598704877695"
+  },
+  {
+    "slug": "vidurashwatha",
+    "name": "Vidurashwatha",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11950466812504956254"
+  },
+  {
+    "slug": "kaiwara-amaranarayana-temple",
+    "name": "Kaiwara (Amaranarayana Temple & Yogi Nareyana Ashram)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11464400017421081722"
+  },
+  {
+    "slug": "kaivara-kailasagiri",
+    "name": "Kailasagiri Hill, Kaiwara",
+    "website": null,
+    "editorialSummary": "Hindu religious complex featuring shrines carved into the rock, accessible by cobblestone paths.",
+    "mapsUrl": "https://maps.google.com/?cid=3701188600325848456"
+  },
+  {
+    "slug": "vivekananda-falls-nandi",
+    "name": "Vivekananda Falls, Nandi Hills",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2323614936728292800"
+  },
+  {
+    "slug": "rangasthala-ranganatha-temple",
+    "name": "Rangasthala Ranganathaswamy Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15349568170818021070"
+  },
+  {
+    "slug": "mysore-palace",
+    "name": "Mysore Palace",
+    "website": "https://mysorepalace.karnataka.gov.in/",
+    "editorialSummary": "Indo-Saracenic palace, completed in 1912, with a grand durbar hall and weekly illuminations.",
+    "mapsUrl": "https://maps.google.com/?cid=14087183641967122957"
+  },
+  {
+    "slug": "chamundi-hills",
+    "name": "Chamundi Hills",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13428631853731226543"
+  },
+  {
+    "slug": "brindavan-gardens",
+    "name": "Brindavan Gardens (KRS)",
+    "website": null,
+    "editorialSummary": "Terraced gardens featuring colourful ornamentals, plus fountain shows & views of the adjacent dam.",
+    "mapsUrl": "https://maps.google.com/?cid=10475296312388925106"
+  },
+  {
+    "slug": "st-philomenas-church",
+    "name": "St Philomena's Church",
+    "website": "https://mysorestphilomenachurch.com/",
+    "editorialSummary": "Majestic Neo-Gothic cathedral known for its airy sanctuary, stained glass & soaring twin spires.",
+    "mapsUrl": "https://maps.google.com/?cid=10272723517749388077"
+  },
+  {
+    "slug": "mysore-zoo",
+    "name": "Mysore Zoo",
+    "website": "https://www.mysuruzoo.info/",
+    "editorialSummary": "Vast zoo with a lake featuring numerous animals, including exotic species, plus a souvenir shop.",
+    "mapsUrl": "https://maps.google.com/?cid=16886021732772397003"
+  },
+  {
+    "slug": "karanji-lake",
+    "name": "Karanji Lake",
+    "website": null,
+    "editorialSummary": "222-acre lake set in a nature park with a walk-through aviary, butterfly garden & a museum.",
+    "mapsUrl": "https://maps.google.com/?cid=7526733972683057633"
+  },
+  {
+    "slug": "jaganmohan-palace",
+    "name": "Jaganmohan Palace",
+    "website": null,
+    "editorialSummary": "Former royal palace built in 1861, now a gallery displaying paintings, carvings & other artifacts.",
+    "mapsUrl": "https://maps.google.com/?cid=17670511572562239436"
+  },
+  {
+    "slug": "mysore-rail-museum",
+    "name": "Mysore Rail Museum",
+    "website": null,
+    "editorialSummary": "Museum with old train cars & exhibits on the history of India's rail system, plus a mini train ride.",
+    "mapsUrl": "https://maps.google.com/?cid=3588062565120394314"
+  },
+  {
+    "slug": "lalitha-mahal-palace",
+    "name": "Lalitha Mahal Palace",
+    "website": "http://www.lalithamahalpalace.co.in/",
+    "editorialSummary": "Posh hotel in a 20th-century palace offering a bar, an outdoor pool & a spa, plus 2 restaurants.",
+    "mapsUrl": "https://maps.google.com/?cid=14381959970581603095"
+  },
+  {
+    "slug": "ranganathaswamy-temple-srirangapatna",
+    "name": "Ranganathaswamy Temple, Srirangapatna",
+    "website": null,
+    "editorialSummary": "Revered temple & pilgrimage site along the river featuring ornate carvings & historic architecture.",
+    "mapsUrl": "https://maps.google.com/?cid=12336976085771085671"
+  },
+  {
+    "slug": "daria-daulat-bagh",
+    "name": "Daria Daulat Bagh (Tipu's Summer Palace)",
+    "website": null,
+    "editorialSummary": "Built for famous ruler, Tipu Sultan, this summer palace is now open to the public with a museum.",
+    "mapsUrl": "https://maps.google.com/?cid=11165544669763128114"
+  },
+  {
+    "slug": "gumbaz-srirangapatna",
+    "name": "Gumbaz, Srirangapatna",
+    "website": null,
+    "editorialSummary": "Lavish mausoleum of Tipu Sultan, featuring a domed structure with latticework & manicured grounds.",
+    "mapsUrl": "https://maps.google.com/?cid=5086254759013532302"
+  },
+  {
+    "slug": "srirangapatna-fort",
+    "name": "Srirangapatna Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9414953194572676732"
+  },
+  {
+    "slug": "nimishamba-temple",
+    "name": "Nimishamba Temple",
+    "website": null,
+    "editorialSummary": "17th-century Hindu temple on the banks of the Kaveri River with a colorful, ornate gopuram.",
+    "mapsUrl": "https://maps.google.com/?cid=1402437713162488487"
+  },
+  {
+    "slug": "ranganathittu-bird-sanctuary",
+    "name": "Ranganathittu Bird Sanctuary",
+    "website": null,
+    "editorialSummary": "Sanctuary for birds & other animals on 6 islets of the Kaveri River, offering guided boat tours.",
+    "mapsUrl": "https://maps.google.com/?cid=16128088101496208451"
+  },
+  {
+    "slug": "somanathapura-keshava-temple",
+    "name": "Somanathapura Keshava Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8973397999446488817"
+  },
+  {
+    "slug": "talakadu",
+    "name": "Talakadu",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11109202366297917580"
+  },
+  {
+    "slug": "melukote",
+    "name": "Melukote (Cheluvanarayana Swamy Temple)",
+    "website": null,
+    "editorialSummary": "Popular pilgrimage destination with ornate carvings & a dome top decorated with detailed sculptures.",
+    "mapsUrl": "https://maps.google.com/?cid=8264406652412530171"
+  },
+  {
+    "slug": "shivanasamudra-falls",
+    "name": "Shivanasamudra Falls (Gaganachukki & Bharachukki)",
+    "website": null,
+    "editorialSummary": "One of a pair of island waterfalls plunging down a deep gorge with hydroelectric power since 1902.",
+    "mapsUrl": "https://maps.google.com/?cid=7177175119823958164"
+  },
+  {
+    "slug": "sangama-bluff-mekedatu",
+    "name": "Sangama & Mekedatu",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=198127557688921107"
+  },
+  {
+    "slug": "biligiriranga-hills-br-hills",
+    "name": "Biligiriranga Hills (BR Hills)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17036666535093924647"
+  },
+  {
+    "slug": "male-mahadeshwara-hills",
+    "name": "Male Mahadeshwara Hills (MM Hills)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4310006601502902339"
+  },
+  {
+    "slug": "bandipur-national-park",
+    "name": "Bandipur National Park",
+    "website": "https://bandipurtigerreserve.org/",
+    "editorialSummary": "Established in 1974, this 875-sq.-km. forest park is home to tigers & other endangered wildlife.",
+    "mapsUrl": "https://maps.google.com/?cid=1298765931598943099"
+  },
+  {
+    "slug": "gopalaswamy-betta",
+    "name": "Himavad Gopalaswamy Betta",
+    "website": null,
+    "editorialSummary": "Elephants & other animals roam these wooded hills with a Hindu temple in Bandipur National Park.",
+    "mapsUrl": "https://maps.google.com/?cid=325670362915068174"
+  },
+  {
+    "slug": "belur-chennakeshava-temple",
+    "name": "Chennakeshava Temple, Belur",
+    "website": null,
+    "editorialSummary": "Historic Hindu temple complex known for its elaborate stone carvings & sculptures.",
+    "mapsUrl": "https://maps.google.com/?cid=7688865978615606028"
+  },
+  {
+    "slug": "halebidu-hoysaleswara-temple",
+    "name": "Hoysaleswara Temple, Halebidu",
+    "website": null,
+    "editorialSummary": "Shiva temple known for its elaborate relief designs, geometric pillars, stone carvings & statues.",
+    "mapsUrl": "https://maps.google.com/?cid=8279048145515292133"
+  },
+  {
+    "slug": "shravanabelagola",
+    "name": "Shravanabelagola (Gomateshwara)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6395763018059913890"
+  },
+  {
+    "slug": "hasanamba-temple-hassan",
+    "name": "Hasanamba Temple, Hassan",
+    "website": "https://hassan.nic.in/en/tourist-place/hasanamba-temple/",
+    "editorialSummary": "Restored Dravidian-style, 12th-century temple open to visitors only for a week during Diwali.",
+    "mapsUrl": "https://maps.google.com/?cid=3001549224129542231"
+  },
+  {
+    "slug": "madikeri",
+    "name": "Madikeri",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12649035659811602854"
+  },
+  {
+    "slug": "abbey-falls",
+    "name": "Abbey Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12481967497890031120"
+  },
+  {
+    "slug": "rajas-seat",
+    "name": "Raja's Seat",
+    "website": "https://coorgtourism.co.in/raja-s-seat-coorg",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4966457375673908786"
+  },
+  {
+    "slug": "talacauvery",
+    "name": "Talacauvery",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7078440596537440386"
+  },
+  {
+    "slug": "bhagamandala",
+    "name": "Bhagamandala (Triveni Sangama)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7108283917106617447"
+  },
+  {
+    "slug": "dubare-elephant-camp",
+    "name": "Dubare Elephant Camp",
+    "website": "https://www.dubareelephantcamp.com/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3803697932142878491"
+  },
+  {
+    "slug": "namdroling-monastery-bylakuppe",
+    "name": "Namdroling Monastery (Golden Temple), Bylakuppe",
+    "website": "https://www.namdroling.net/Portal/Home",
+    "editorialSummary": "Prominent Tibetan Buddhist monastery with large statues, frequent ceremonies & 5,000 monks & nuns.",
+    "mapsUrl": "https://maps.google.com/?cid=17878076905429028519"
+  },
+  {
+    "slug": "iruppu-falls",
+    "name": "Iruppu Falls",
+    "website": null,
+    "editorialSummary": "Scenic area featuring a waterfall with a natural pool & a walking path in a jungle-like locale.",
+    "mapsUrl": "https://maps.google.com/?cid=7227339232506097309"
+  },
+  {
+    "slug": "mandalpatti",
+    "name": "Mandalpatti",
+    "website": null,
+    "editorialSummary": "Visitors to this pastoral landmark can rent a Jeep to reach the top for panoramic valley views.",
+    "mapsUrl": "https://maps.google.com/?cid=10760633742588762226"
+  },
+  {
+    "slug": "nisargadhama",
+    "name": "Nisargadhama",
+    "website": null,
+    "editorialSummary": "Accessed via a rope bridge, this river island features bamboo, elephant rides, a playground & more.",
+    "mapsUrl": "https://maps.google.com/?cid=12175590518912346445"
+  },
+  {
+    "slug": "harangi-dam",
+    "name": "Harangi Dam",
+    "website": null,
+    "editorialSummary": "Tourist attraction with a huge masonry dam for views & photography, plus surrounding parkland.",
+    "mapsUrl": "https://maps.google.com/?cid=11427217347549404973"
+  },
+  {
+    "slug": "tadiandamol-peak",
+    "name": "Tadiandamol Peak",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9404187513946867767"
+  },
+  {
+    "slug": "nagarhole-national-park",
+    "name": "Nagarhole National Park (Rajiv Gandhi NP)",
+    "website": "https://www.nagaraholetigerreserve.com/",
+    "editorialSummary": "Forest reserve with possible sightings of elephants,  leopards & Bengal tigers on wildlife safaris.",
+    "mapsUrl": "https://maps.google.com/?cid=17047622423278588396"
+  },
+  {
+    "slug": "mullayanagiri",
+    "name": "Mullayanagiri",
+    "website": "http://en.wikipedia.org/wiki/Mullayanagiri",
+    "editorialSummary": "1,925-m. peak, the highest in Karnataka, accessible by foot for views & a summit temple.",
+    "mapsUrl": "https://maps.google.com/?cid=7630006507742169118"
+  },
+  {
+    "slug": "baba-budangiri",
+    "name": "Baba Budangiri",
+    "website": null,
+    "editorialSummary": "Prominent peak with a cave shrine to Baba Budan, a 1500s Sufi saint worshiped by Hindus & Muslims.",
+    "mapsUrl": "https://maps.google.com/?cid=5491869144149797719"
+  },
+  {
+    "slug": "kemmangundi",
+    "name": "Kemmangundi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17303395693534969788"
+  },
+  {
+    "slug": "kudremukh",
+    "name": "Kudremukh",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11484065855606235178"
+  },
+  {
+    "slug": "hebbe-falls",
+    "name": "Hebbe Falls",
+    "website": null,
+    "editorialSummary": "168m cascading waterfalls on the grounds of a coffee estate, reachable by hike or 4-wheeler.",
+    "mapsUrl": "https://maps.google.com/?cid=15288084189398248273"
+  },
+  {
+    "slug": "kalhatti-falls",
+    "name": "Kalhatti Falls",
+    "website": null,
+    "editorialSummary": "Bucolic natural attraction featuring cascading waterfalls & a Hindu temple with a yearly festival.",
+    "mapsUrl": "https://maps.google.com/?cid=1644014417842367688"
+  },
+  {
+    "slug": "bhadra-wildlife-sanctuary",
+    "name": "Bhadra Wildlife Sanctuary",
+    "website": "http://bhadratigerreserve.in/",
+    "editorialSummary": "Lush tropical forests & meadows hosting a diverse range of wildlife, such as tigers & peacocks.",
+    "mapsUrl": "https://maps.google.com/?cid=12442184574944192285"
+  },
+  {
+    "slug": "sringeri-sharada-peetham",
+    "name": "Sringeri Sharada Peetham",
+    "website": "https://sringeri.net/",
+    "editorialSummary": "8th-century Hindu temple near the river, with an ornately carved facade & a tall, colorful tower.",
+    "mapsUrl": "https://maps.google.com/?cid=17083721105863191754"
+  },
+  {
+    "slug": "horanadu-annapoorneshwari",
+    "name": "Horanadu Annapoorneshwari Temple",
+    "website": "https://srikshetrahoranadu.com/",
+    "editorialSummary": "Ornate Hindu temple on a riverbank, surrounded by green vegetation & lush forest.",
+    "mapsUrl": "https://maps.google.com/?cid=8359558513551392970"
+  },
+  {
+    "slug": "belavadi-veeranarayana-temple",
+    "name": "Belavadi Veeranarayana Temple",
+    "website": null,
+    "editorialSummary": "Hindu temple dating from the 12th century, with 3 shrines, ornate stone pillars & elephant statues.",
+    "mapsUrl": "https://maps.google.com/?cid=809649761177255096"
+  },
+  {
+    "slug": "amruthapura-amruteshwara-temple",
+    "name": "Amruthapura Amruteshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12477162879498925695"
+  },
+  {
+    "slug": "hirekolale-lake",
+    "name": "Hirekolale Lake",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4738275729448285500"
+  },
+  {
+    "slug": "ayyanakere-lake",
+    "name": "Ayyanakere Lake",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16898094335061379854"
+  },
+  {
+    "slug": "kodandarama-temple-hiremagalur",
+    "name": "Kodandarama Temple, Hiremagalur",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8933422829777776627"
+  },
+  {
+    "slug": "manikyadhara-falls",
+    "name": "Manikyadhara Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4699372440240826888"
+  },
+  {
+    "slug": "mullayanagiri-coffee-estates",
+    "name": "Chikkamagaluru Coffee Estates",
+    "website": "http://www.springwaters.in/",
+    "editorialSummary": "Straightforward rooms in a down-to-earth resort offering complimentary meals & parking.",
+    "mapsUrl": "https://maps.google.com/?cid=14027908142829772099"
+  },
+  {
+    "slug": "z-point-kemmangundi",
+    "name": "Z Point",
+    "website": null,
+    "editorialSummary": "Lush green-sided valleys unfold along this trekking path famous for its sunrises & sunsets.",
+    "mapsUrl": "https://maps.google.com/?cid=5836820481278202460"
+  },
+  {
+    "slug": "jog-falls",
+    "name": "Jog Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12400533657586254492"
+  },
+  {
+    "slug": "kodachadri",
+    "name": "Kodachadri",
+    "website": null,
+    "editorialSummary": "4,406-ft. peak featuring trekking trails through dense forests, waterfalls & elevated views.",
+    "mapsUrl": "https://maps.google.com/?cid=15729279945758280843"
+  },
+  {
+    "slug": "agumbe",
+    "name": "Agumbe",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16251819995919369948"
+  },
+  {
+    "slug": "linganamakki-dam",
+    "name": "Linganamakki Dam",
+    "website": null,
+    "editorialSummary": "Built in 1964, this 2.74-kilometer dam spanning the Sharavathi River features a scenic reservoir.",
+    "mapsUrl": "https://maps.google.com/?cid=12436216526876856024"
+  },
+  {
+    "slug": "sigandur-chowdeshwari-temple",
+    "name": "Sigandur Chowdeshwari Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15768042652816466035"
+  },
+  {
+    "slug": "honnemaradu",
+    "name": "Honnemaradu",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18124432558125585570"
+  },
+  {
+    "slug": "tyavarekoppa-lion-safari",
+    "name": "Tyavarekoppa Lion & Tiger Safari",
+    "website": "http://www.shivamoggazoo.com/",
+    "editorialSummary": "Wildlife park/zoo featuring lions, tigers & other big cats as well as rare birds & primates.",
+    "mapsUrl": "https://maps.google.com/?cid=3501885023111621149"
+  },
+  {
+    "slug": "keladi-rameshwara-temple",
+    "name": "Keladi Rameshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2944550610013974409"
+  },
+  {
+    "slug": "ikkeri-aghoreshwara-temple",
+    "name": "Ikkeri Aghoreshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4115325269575170788"
+  },
+  {
+    "slug": "tunga-river-shivamogga",
+    "name": "Tunga River Front, Shivamogga",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4870830396103324868"
+  },
+  {
+    "slug": "kunchikal-falls",
+    "name": "Kunchikal Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5309766372386878770"
+  },
+  {
+    "slug": "dabbe-falls",
+    "name": "Dabbe Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16219913240165424558"
+  },
+  {
+    "slug": "sharavathi-valley-wildlife-sanctuary",
+    "name": "Sharavathi Valley Wildlife Sanctuary",
+    "website": null,
+    "editorialSummary": "Dense forest preserve home to tigers, leopards & lion-tailed macaques, with cascades like Jog Falls.",
+    "mapsUrl": "https://maps.google.com/?cid=4246214049687292160"
+  },
+  {
+    "slug": "kavaledurga-fort",
+    "name": "Kavaledurga Fort",
+    "website": null,
+    "editorialSummary": "Hilltop granite fortress ruins with remains of palace quarters, temples & a pond.",
+    "mapsUrl": "https://maps.google.com/?cid=18338774744004720487"
+  },
+  {
+    "slug": "kuppalli-kuvempu-house",
+    "name": "Kuppalli (Kuvempu House)",
+    "website": "https://hoimalnad.com/kuppalli-kavi-mane-kuvempu-thirthahalli-shivamogga/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7179227096698344167"
+  },
+  {
+    "slug": "gudavi-bird-sanctuary",
+    "name": "Gudavi Bird Sanctuary",
+    "website": null,
+    "editorialSummary": "Bird sanctuary with a lake & forested area sheltering species like herons, sandpipers & kingfishers.",
+    "mapsUrl": "https://maps.google.com/?cid=14518460484477478566"
+  },
+  {
+    "slug": "harihareshwara-temple-harihar",
+    "name": "Harihareshwara Temple, Harihar",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13951720117078883215"
+  },
+  {
+    "slug": "kundavada-lake",
+    "name": "Kundavada Lake",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13930621862751798852"
+  },
+  {
+    "slug": "bathi-gudda",
+    "name": "Bathi Gudda (Anjaneya Hill)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11955269021888338050"
+  },
+  {
+    "slug": "santhebennur-pushkarni",
+    "name": "Santhebennur Pushkarni",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17281143188028302500"
+  },
+  {
+    "slug": "anaji-shanthi-sagara",
+    "name": "Shanthi Sagara (Sulekere)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9259574992845928381"
+  },
+  {
+    "slug": "kondajji-betta",
+    "name": "Kondajji",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2996160374113197356"
+  },
+  {
+    "slug": "chitradurga-fort",
+    "name": "Chitradurga Fort (Kallina Kote)",
+    "website": null,
+    "editorialSummary": "Large historical fort on the base of rocky hills with many doors & carvings at the main entrance.",
+    "mapsUrl": "https://maps.google.com/?cid=14559704447727930396"
+  },
+  {
+    "slug": "chandravalli-caves",
+    "name": "Chandravalli Caves",
+    "website": null,
+    "editorialSummary": "Visitors can wander among structural ruins of ancient dynasties, including cave dwellings.",
+    "mapsUrl": "https://maps.google.com/?cid=3027841867997391610"
+  },
+  {
+    "slug": "vani-vilas-sagar-dam",
+    "name": "Vani Vilas Sagar Dam (Marikanive)",
+    "website": null,
+    "editorialSummary": "Irrigation facility constructed between 1897 & 1907, surrounded by a park with paths & a temple.",
+    "mapsUrl": "https://maps.google.com/?cid=5680589041494954703"
+  },
+  {
+    "slug": "jogimatti",
+    "name": "Jogimatti",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5661872218381578904"
+  },
+  {
+    "slug": "adumalleshwara",
+    "name": "Adumalleshwara Nature Camp",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3942311939274132318"
+  },
+  {
+    "slug": "ankali-math",
+    "name": "Ankali Mutt",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7398744473998164943"
+  },
+  {
+    "slug": "gayatri-reservoir",
+    "name": "Gayatri Reservoir",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17673517951352953025"
+  },
+  {
+    "slug": "panambur-beach",
+    "name": "Panambur Beach",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10138285092435387565"
+  },
+  {
+    "slug": "tannirbhavi-beach",
+    "name": "Tannirbhavi Beach",
+    "website": null,
+    "editorialSummary": "This sizable sandy beach accessed by bridge or ferry offers a tranquil environment & lifeguards.",
+    "mapsUrl": "https://maps.google.com/?cid=7656700182328659603"
+  },
+  {
+    "slug": "someshwara-beach",
+    "name": "Someshwara Beach (Ullal)",
+    "website": null,
+    "editorialSummary": "Long, tranquil beach popular for walking, sunbathing & sunset views, plus a historic temple.",
+    "mapsUrl": "https://maps.google.com/?cid=3220310666847259190"
+  },
+  {
+    "slug": "sasihithlu-beach",
+    "name": "Sasihithlu Beach",
+    "website": null,
+    "editorialSummary": "Natural, sandy stretch backed by mangrove trees, known for strong waves & annual surf festivals.",
+    "mapsUrl": "https://maps.google.com/?cid=2681319960425933016"
+  },
+  {
+    "slug": "kadri-manjunatha-temple",
+    "name": "Kadri Manjunatha Temple",
+    "website": null,
+    "editorialSummary": "Hindu temple, founded in the 10th or 11th century, with bronze statues & annual festivals.",
+    "mapsUrl": "https://maps.google.com/?cid=16383257267966808840"
+  },
+  {
+    "slug": "mangaladevi-temple",
+    "name": "Mangaladevi Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6547035977950197711"
+  },
+  {
+    "slug": "kudroli-gokarnatha-temple",
+    "name": "Kudroli Gokarnatha Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1501663441235504310"
+  },
+  {
+    "slug": "st-aloysius-chapel",
+    "name": "St Aloysius Chapel",
+    "website": null,
+    "editorialSummary": "Completed in 1885, this grand Christian chapel features many notable frescos by an Italian artist.",
+    "mapsUrl": "https://maps.google.com/?cid=4132963834055346082"
+  },
+  {
+    "slug": "sultan-battery",
+    "name": "Sultan Battery",
+    "website": null,
+    "editorialSummary": "Sunset viewing is popular at these remains of an 18th-century watchtower on the water.",
+    "mapsUrl": "https://maps.google.com/?cid=2033439409926550955"
+  },
+  {
+    "slug": "pilikula-nisargadhama",
+    "name": "Pilikula Nisargadhama",
+    "website": null,
+    "editorialSummary": "Scenic tourist locale offering an artisan's village, a lake, zoo, water park & botanical gardens.",
+    "mapsUrl": "https://maps.google.com/?cid=9848396696806063288"
+  },
+  {
+    "slug": "dharmasthala-manjunatha",
+    "name": "Dharmasthala Manjunatha Temple",
+    "website": "http://www.shridharmasthala.org/",
+    "editorialSummary": "Religious pilgrims travel to this serene, 800-year-old temple honoring several Hindu deities.",
+    "mapsUrl": "https://maps.google.com/?cid=11261537530521798998"
+  },
+  {
+    "slug": "kukke-subramanya",
+    "name": "Kukke Subramanya Temple",
+    "website": "https://itms.kar.nic.in/hrcehome/index_temple.php?tid=21",
+    "editorialSummary": "Backdropped by mountains, this famous Hindu temple & pilgrimage site honours the lord of serpents.",
+    "mapsUrl": "https://maps.google.com/?cid=13907213415736070416"
+  },
+  {
+    "slug": "kumara-parvatha-trek",
+    "name": "Kumara Parvatha Trek",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14773546804530600203"
+  },
+  {
+    "slug": "kateel-durgaparameshwari-temple",
+    "name": "Kateel Durgaparameshwari Temple",
+    "website": "http://www.kateeldevi.in/",
+    "editorialSummary": "Sacred temple situated by the Nandin River, devoted to the goddess Durga Parameshwari.",
+    "mapsUrl": "https://maps.google.com/?cid=15040550566387254221"
+  },
+  {
+    "slug": "bantwal-town",
+    "name": "Bantwal",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18025559910481558975"
+  },
+  {
+    "slug": "mangaluru-surathkal-beach",
+    "name": "Surathkal Beach & Lighthouse",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8190577181219816698"
+  },
+  {
+    "slug": "udupi-sri-krishna-matha",
+    "name": "Sri Krishna Matha, Udupi",
+    "website": "http://seva.sriputhige.org/",
+    "editorialSummary": "Ancient Hindu temple complex with elaborate, ornate structures, shrines & a massive statue.",
+    "mapsUrl": "https://maps.google.com/?cid=17777355380985323822"
+  },
+  {
+    "slug": "malpe-beach",
+    "name": "Malpe Beach",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8961526923656935874"
+  },
+  {
+    "slug": "st-marys-island",
+    "name": "St Mary's Island",
+    "website": "http://stmarysisland.in/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13216583717392187678"
+  },
+  {
+    "slug": "kaup-beach-lighthouse",
+    "name": "Kaup Beach & Lighthouse",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17718841988038467272"
+  },
+  {
+    "slug": "kollur-mookambika",
+    "name": "Kollur Mookambika Temple",
+    "website": "https://kollurmookambikatemple.org/",
+    "editorialSummary": "Riverside temple complex dating back around 1,200 years, with statues of Hindu gods and goddesses.",
+    "mapsUrl": "https://maps.google.com/?cid=13092435092500589923"
+  },
+  {
+    "slug": "kodachadri-trek",
+    "name": "Kodachadri Peak Trek",
+    "website": null,
+    "editorialSummary": "4,406-ft. peak featuring trekking trails through dense forests, waterfalls & elevated views.",
+    "mapsUrl": "https://maps.google.com/?cid=15729279945758280843"
+  },
+  {
+    "slug": "maravanthe-beach",
+    "name": "Maravanthe Beach",
+    "website": null,
+    "editorialSummary": "Flanked by the national highways, this beach is known for swimming, diving & scenic sunsets.",
+    "mapsUrl": "https://maps.google.com/?cid=11866774647765920338"
+  },
+  {
+    "slug": "manipal-end-point",
+    "name": "Manipal End Point",
+    "website": null,
+    "editorialSummary": "This serene, scenic park with open, grassy areas is a popular place for leisure activities.",
+    "mapsUrl": "https://maps.google.com/?cid=15671502899855623318"
+  },
+  {
+    "slug": "kundapura-koteshwara",
+    "name": "Koteshwara Temple, Kundapura",
+    "website": null,
+    "editorialSummary": "Pilgrimage site featuring a temple with religious relics & icons discovered in the surrounding lake.",
+    "mapsUrl": "https://maps.google.com/?cid=12034722740232830412"
+  },
+  {
+    "slug": "anegudde-vinayaka-temple",
+    "name": "Anegudde Vinayaka Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14885657591556098245"
+  },
+  {
+    "slug": "kemmannu-hanging-bridge",
+    "name": "Kemmannu Hanging Bridge",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12037497971454988515"
+  },
+  {
+    "slug": "kudlu-theertha-falls",
+    "name": "Kudlu Theertha Falls",
+    "website": "http://www.karnataka.com/agumbe/koodlu-theertha-falls/",
+    "editorialSummary": "Isolated waterfall featuring a stream of water that drops 300 ft. into a shallow pool.",
+    "mapsUrl": "https://maps.google.com/?cid=5467502757991256869"
+  },
+  {
+    "slug": "murudeshwara",
+    "name": "Murudeshwara",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9783250768253677537"
+  },
+  {
+    "slug": "netrani-island",
+    "name": "Netrani Island",
+    "website": null,
+    "editorialSummary": "Home to pigeons & wild goats, this quaint island with a coral reef offers scuba diving & snorkeling.",
+    "mapsUrl": "https://maps.google.com/?cid=10987303150946329629"
+  },
+  {
+    "slug": "idagunji-ganapathi-temple",
+    "name": "Idagunji Mahaganapathi Temple",
+    "website": "http://www.idagunjidevaru.com/",
+    "editorialSummary": "Enduring Hindu temple set in the forest, dedicated to Ganesha & featuring a colourful facade.",
+    "mapsUrl": "https://maps.google.com/?cid=8019844806675046110"
+  },
+  {
+    "slug": "yana-rocks",
+    "name": "Yana Rocks",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7619879206026071539"
+  },
+  {
+    "slug": "apsarakonda-falls",
+    "name": "Apsarakonda Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8443947997001008863"
+  },
+  {
+    "slug": "magod-falls",
+    "name": "Magod Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5798547615564840838"
+  },
+  {
+    "slug": "unchalli-falls",
+    "name": "Unchalli (Lushington) Falls",
+    "website": null,
+    "editorialSummary": "116-m. spreading waterfall on a stepped cliffside, accessed by a moderately difficult 5-km. hike.",
+    "mapsUrl": "https://maps.google.com/?cid=770210713035563647"
+  },
+  {
+    "slug": "sathodi-falls",
+    "name": "Sathodi Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10682170978109887484"
+  },
+  {
+    "slug": "sirsi-marikamba-temple",
+    "name": "Sirsi Marikamba Temple",
+    "website": "http://marikambatemple.com/",
+    "editorialSummary": "Huge, elaborately painted temple dating back centuries, known for its traditional Kaavi murals.",
+    "mapsUrl": "https://maps.google.com/?cid=6301467318701300902"
+  },
+  {
+    "slug": "sahasralinga",
+    "name": "Sahasralinga",
+    "website": null,
+    "editorialSummary": "Riverside pilgrimage site dedicated to Shiva, with hundreds of carved rocks & Nandi bull sculptures.",
+    "mapsUrl": "https://maps.google.com/?cid=3272554263983939973"
+  },
+  {
+    "slug": "banavasi-madhukeshwara",
+    "name": "Banavasi Madhukeshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=254657794907594609"
+  },
+  {
+    "slug": "karwar-rabindranath-tagore-beach",
+    "name": "Rabindranath Tagore Beach, Karwar",
+    "website": null,
+    "editorialSummary": "Long beach open for swimming & water sports, with nearby amenities like a museum, park & eateries.",
+    "mapsUrl": "https://maps.google.com/?cid=10601757100778532857"
+  },
+  {
+    "slug": "devbagh-beach",
+    "name": "Devbagh Beach",
+    "website": "http://www.junglelodges.com/devbagh-beach-resort/",
+    "editorialSummary": "Rustic resort offering a private beach, an Ayurvedic spa & water sports, plus complimentary meals.",
+    "mapsUrl": "https://maps.google.com/?cid=10702947157422331156"
+  },
+  {
+    "slug": "kurumgad-island",
+    "name": "Kurumgad Island",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7895167876544329049"
+  },
+  {
+    "slug": "dandeli-wildlife",
+    "name": "Dandeli",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4947186509144152559"
+  },
+  {
+    "slug": "kali-tiger-reserve",
+    "name": "Kali Tiger Reserve (Dandeli-Anshi)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10963997453669499039"
+  },
+  {
+    "slug": "syntheri-rocks",
+    "name": "Syntheri Rocks",
+    "website": null,
+    "editorialSummary": "Park area featuring a river with small rapids & rock formations shaped & hollowed out over time.",
+    "mapsUrl": "https://maps.google.com/?cid=952532149611230200"
+  },
+  {
+    "slug": "om-beach",
+    "name": "Om Beach, Gokarna",
+    "website": null,
+    "editorialSummary": "Sand-&-rock beach with road access amid forested hills draws both party people & religious pilgrims.",
+    "mapsUrl": "https://maps.google.com/?cid=2976685267142006899"
+  },
+  {
+    "slug": "kudle-beach",
+    "name": "Kudle Beach, Gokarna",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11286553964196592856"
+  },
+  {
+    "slug": "half-moon-beach-gokarna",
+    "name": "Half Moon Beach, Gokarna",
+    "website": null,
+    "editorialSummary": "Accessed by boat or hiking, this tranquil, sandy beach lined with palm trees offers scenic views.",
+    "mapsUrl": "https://maps.google.com/?cid=10538361646011272541"
+  },
+  {
+    "slug": "gokarna-mahabaleshwara",
+    "name": "Gokarna Mahabaleshwara Temple",
+    "website": null,
+    "editorialSummary": "Monumental, centuries-old Hindu temple complex featuring multiple shrines & a central tower.",
+    "mapsUrl": "https://maps.google.com/?cid=10694510235057710550"
+  },
+  {
+    "slug": "gokarna-main-beach",
+    "name": "Gokarna Beach",
+    "website": null,
+    "editorialSummary": "Popular with locals & pilgrims, this long sandy beach near a prominent temple has sunset views.",
+    "mapsUrl": "https://maps.google.com/?cid=10418255072641029977"
+  },
+  {
+    "slug": "mirjan-fort",
+    "name": "Mirjan Fort",
+    "website": null,
+    "editorialSummary": "Centuries-old stone ruins with many water wells, covered in bright-green moss in monsoon season.",
+    "mapsUrl": "https://maps.google.com/?cid=11730475394730943432"
+  },
+  {
+    "slug": "sadashivgad-fort",
+    "name": "Sadashivgad Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16658700457393861444"
+  },
+  {
+    "slug": "kali-river-dandeli",
+    "name": "Kali River",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12847726963646062372"
+  },
+  {
+    "slug": "tadri-beach-kumta",
+    "name": "Kumta Beaches (Nirvana / Vibhooti)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2767407341545402221"
+  },
+  {
+    "slug": "gulbarga-fort",
+    "name": "Gulbarga Fort",
+    "website": null,
+    "editorialSummary": "Extensive stone ruins of a monumental Islamic fortress & mosque from the 14th century.",
+    "mapsUrl": "https://maps.google.com/?cid=7948002146886454838"
+  },
+  {
+    "slug": "khwaja-bande-nawaz-dargah",
+    "name": "Khwaja Bande Nawaz Dargah",
+    "website": null,
+    "editorialSummary": "Cavernous Sufi temple with a soaring dome, a white exterior & an elaborately patterned interior.",
+    "mapsUrl": "https://maps.google.com/?cid=8696333676671829696"
+  },
+  {
+    "slug": "sharana-basaveshwara-temple",
+    "name": "Sharana Basaveshwara Temple",
+    "website": null,
+    "editorialSummary": "This Hindu place of worship is dedicated to its namesake religious figure from the 18th century.",
+    "mapsUrl": "https://maps.google.com/?cid=4668016246506398304"
+  },
+  {
+    "slug": "buddha-vihar-kalaburagi",
+    "name": "Buddha Vihar Kalaburagi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6719798033048455160"
+  },
+  {
+    "slug": "sannati-kanaganahalli",
+    "name": "Sannati & Kanaganahalli",
+    "website": "https://www.google.co.in/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&ved=0CCsQFjAA&url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FKanaganahalli&ei=aExdUvynO4i4rgfT3oGYCw&usg=AFQjCNGTinckEJ43WHcpYYndKsFIpOHutQ&sig2=EeCbNE5JQBTvc_E3xbs83Q",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9908280913901407539"
+  },
+  {
+    "slug": "haft-gumbaz-kalaburagi",
+    "name": "Haft Gumbaz",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2644189797696101762"
+  },
+  {
+    "slug": "bidar-fort",
+    "name": "Bidar Fort",
+    "website": "http://www.karnatakatourism.org/Contact/en",
+    "editorialSummary": "Historic fortress, built in the 15th century, known for its Islamic monuments & water-supply system.",
+    "mapsUrl": "https://maps.google.com/?cid=3941983156686804864"
+  },
+  {
+    "slug": "mahmud-gawan-madrasa",
+    "name": "Mahmud Gawan Madrasa",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16549499831565304113"
+  },
+  {
+    "slug": "bahmani-tombs-ashtur",
+    "name": "Bahmani Tombs at Ashtur",
+    "website": null,
+    "editorialSummary": "Group of several large, elaborately decorated domed mausoleums of Bahmani Sultanate kings.",
+    "mapsUrl": "https://maps.google.com/?cid=13470568463653905684"
+  },
+  {
+    "slug": "guru-nanak-jhira-sahib",
+    "name": "Guru Nanak Jhira Sahib",
+    "website": null,
+    "editorialSummary": "Majestic Sikh holy site known for its airy sanctuary, lavish gardens & expansive pools.",
+    "mapsUrl": "https://maps.google.com/?cid=15775044933003050060"
+  },
+  {
+    "slug": "narasimha-jharni-bidar",
+    "name": "Narasimha Jharni",
+    "website": null,
+    "editorialSummary": "This Hindu temple is accessed by wading through a cave with water around four to five feet deep.",
+    "mapsUrl": "https://maps.google.com/?cid=13731553011938191921"
+  },
+  {
+    "slug": "papnash-shiva-temple-bidar",
+    "name": "Papnash Shiva Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10718693137403182212"
+  },
+  {
+    "slug": "chaukhandi-bidar",
+    "name": "Chaukhandi of Hazrat Khalil Ullah",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10905853995601277944"
+  },
+  {
+    "slug": "basavakalyan-fort",
+    "name": "Basavakalyan Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15172806576683835590"
+  },
+  {
+    "slug": "yadgir-fort",
+    "name": "Yadgir Fort",
+    "website": "https://yadgir.nic.in/en/tourist-places/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8324889305090985992"
+  },
+  {
+    "slug": "surapura-fort-palace",
+    "name": "Surapura (Surpur)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16355218442331518133"
+  },
+  {
+    "slug": "tintini-bheemanna-temple",
+    "name": "Tintini Moni Bheemanna Shrine",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5367575059652924076"
+  },
+  {
+    "slug": "buddha-vihara-yadgir",
+    "name": "Kanaganahalli Buddha Vihara Yadgir",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5017914873740799034"
+  },
+  {
+    "slug": "raichur-fort",
+    "name": "Raichur Fort",
+    "website": null,
+    "editorialSummary": "Perched on a scenic hilltop, this ancient fortress offers sweeping views of the surrounding valley.",
+    "mapsUrl": "https://maps.google.com/?cid=6001537974698437462"
+  },
+  {
+    "slug": "mallikarjuna-temple-raichur",
+    "name": "Mallikarjuna Temple Raichur",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17961312925599543633"
+  },
+  {
+    "slug": "maliabad-fort-raichur",
+    "name": "Maliabad Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15422825257770124880"
+  },
+  {
+    "slug": "jaladurga-fort-falls",
+    "name": "Jaladurga Fort & Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=772680333006566178"
+  },
+  {
+    "slug": "mudgal-fort",
+    "name": "Mudgal Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1808757500759128287"
+  },
+  {
+    "slug": "ek-minar-ki-masjid-raichur",
+    "name": "Ek Minar Ki Masjid",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15750927992885832148"
+  },
+  {
+    "slug": "koppal-fort",
+    "name": "Koppal Fort",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15854347089036606177"
+  },
+  {
+    "slug": "anegundi",
+    "name": "Anegundi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8283039817196278118"
+  },
+  {
+    "slug": "pampa-sarovar-koppal",
+    "name": "Pampa Sarovar",
+    "website": null,
+    "editorialSummary": "A sacred place for Hindus, this lake with seasonal floating lotus blossoms houses a vintage shrine.",
+    "mapsUrl": "https://maps.google.com/?cid=8960261832194018569"
+  },
+  {
+    "slug": "huligemma-temple-koppal",
+    "name": "Huligemma Temple Huligi",
+    "website": "https://koppal.nic.in/en/tourist-place/huligemma-temple-huligi/",
+    "editorialSummary": "Hindu temple dedicated to Renuka featuring a courtyard, a pond & a colourful tower.",
+    "mapsUrl": "https://maps.google.com/?cid=13191679957216163151"
+  },
+  {
+    "slug": "gavi-math-koppal",
+    "name": "Gavi Math Koppal",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1816671864453826697"
+  },
+  {
+    "slug": "kanakagiri-koppal",
+    "name": "Kanakagiri",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17064775870290789532"
+  },
+  {
+    "slug": "kinnal-koppal",
+    "name": "Kinnal (Kinhal)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10332605896912718609"
+  },
+  {
+    "slug": "anjanadri-hill-koppal",
+    "name": "Anjanadri Hill",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3638668695384527877"
+  },
+  {
+    "slug": "bellary-fort-gudda",
+    "name": "Bellary Fort (Ballari Gudda)",
+    "website": null,
+    "editorialSummary": "Hilltop remains of a stone military fortress, founded in the 16th century and renovated in the 18th.",
+    "mapsUrl": "https://maps.google.com/?cid=7792111711850988065"
+  },
+  {
+    "slug": "kumaraswamy-temple-sandur",
+    "name": "Kumaraswamy Temple Sandur",
+    "website": "https://www.visionxad.com/listing/kumaraswamy-temple-sandur/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5638003786759914988"
+  },
+  {
+    "slug": "daroji-sloth-bear-sanctuary",
+    "name": "Daroji Sloth Bear Sanctuary",
+    "website": null,
+    "editorialSummary": "Set atop a forest, this sprawling sanctuary provides public tours & up-close views of sloth bears.",
+    "mapsUrl": "https://maps.google.com/?cid=16158538512699484805"
+  },
+  {
+    "slug": "sandur-hills",
+    "name": "Sandur Hills",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5567972065502261579"
+  },
+  {
+    "slug": "kudligi-fort-ballari",
+    "name": "Kudligi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14867447344671877443"
+  },
+  {
+    "slug": "tungabhadra-dam",
+    "name": "Tungabhadra Dam",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13445609702172183129"
+  },
+  {
+    "slug": "virupaksha-temple-hampi",
+    "name": "Virupaksha Temple Hampi",
+    "website": "https://vijayanagara.nic.in/tourist-place/virupaksha-temple/",
+    "editorialSummary": "A UNESCO Heritage Site, this 7th-century Hindu temple has a gateway tower, courtyards & dining hall.",
+    "mapsUrl": "https://maps.google.com/?cid=4727749493327849997"
+  },
+  {
+    "slug": "vittala-temple-hampi",
+    "name": "Vittala Temple Hampi",
+    "website": null,
+    "editorialSummary": "Ruins of a temple known for creative architecture such as a moving stone chariot & musical pillars.",
+    "mapsUrl": "https://maps.google.com/?cid=11703949993497433197"
+  },
+  {
+    "slug": "hampi-royal-enclosure",
+    "name": "Hampi Royal Enclosure",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12066738869151996611"
+  },
+  {
+    "slug": "lotus-mahal-zenana-hampi",
+    "name": "Lotus Mahal & Zenana Enclosure",
+    "website": "http://www.karnatakatourism.org/",
+    "editorialSummary": "Ancient stone palace structure with tranquil gardens, arches & elaborate carvings.",
+    "mapsUrl": "https://maps.google.com/?cid=2764866153203647745"
+  },
+  {
+    "slug": "hampi-hemakuta-hill",
+    "name": "Hemakuta Hill Temples",
+    "website": null,
+    "editorialSummary": "Numerous ancient temple structures sit atop this hillside known for its ruins & striking panoramas.",
+    "mapsUrl": "https://maps.google.com/?cid=16518542748161161520"
+  },
+  {
+    "slug": "matanga-hill-hampi",
+    "name": "Matanga Hill",
+    "website": null,
+    "editorialSummary": "Peak with hiking trails leading to a popular lookout for watching sunrises & sunsets.",
+    "mapsUrl": "https://maps.google.com/?cid=16726972542964973804"
+  },
+  {
+    "slug": "hospet-town",
+    "name": "Hospet (Hosapete)",
+    "website": "http://www.hospetcity.gov.in/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11100827747404398978"
+  },
+  {
+    "slug": "kamalapur-museum-hampi",
+    "name": "Hampi Archaeological Museum, Kamalapur",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17817151674238356670"
+  },
+  {
+    "slug": "gol-gumbaz",
+    "name": "Gol Gumbaz",
+    "website": null,
+    "editorialSummary": "Striking, 17th-century tomb of Mohammed Adil Shah with a huge dome and a notable whispering gallery.",
+    "mapsUrl": "https://maps.google.com/?cid=15664829629228524966"
+  },
+  {
+    "slug": "ibrahim-rauza",
+    "name": "Ibrahim Rauza",
+    "website": null,
+    "editorialSummary": "Ornate 1600s tomb containing the remains of Ibrahim Adil Shah II of the Adil Shah dynasty.",
+    "mapsUrl": "https://maps.google.com/?cid=765027159616443248"
+  },
+  {
+    "slug": "bara-kaman",
+    "name": "Bara Kaman",
+    "website": "http://www.karnatakatourism.org/",
+    "editorialSummary": "Built for Ali Adil Shah II, this unfinished 1600s burial mausoleum features 12 horizontal arches.",
+    "mapsUrl": "https://maps.google.com/?cid=13295270055725452310"
+  },
+  {
+    "slug": "jama-masjid-vijayapura",
+    "name": "Jama Masjid, Vijayapura",
+    "website": null,
+    "editorialSummary": "Large 1500s domed mosque, with an arched interior & inscribed mihrab, plus an arcaded courtyard.",
+    "mapsUrl": "https://maps.google.com/?cid=900822936253438462"
+  },
+  {
+    "slug": "malik-e-maidan",
+    "name": "Malik-e-Maidan",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6911908158231237176"
+  },
+  {
+    "slug": "upli-buruj",
+    "name": "Upli Buruj",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3157921248691712903"
+  },
+  {
+    "slug": "asar-mahal",
+    "name": "Asar Mahal",
+    "website": null,
+    "editorialSummary": "This centuries-old former court building is now a mosque with a reflective pool & garden.",
+    "mapsUrl": "https://maps.google.com/?cid=14589317028016554808"
+  },
+  {
+    "slug": "gagan-mahal-vijayapura",
+    "name": "Gagan Mahal, Vijayapura",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9232932934453282168"
+  },
+  {
+    "slug": "sangameshwara-temple-vijayapura",
+    "name": "Sangameshwara Temple, Vijayapura",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2335462737185495084"
+  },
+  {
+    "slug": "badami-cave-temples",
+    "name": "Badami Cave Temples",
+    "website": "http://www.karnatakatourism.org/",
+    "editorialSummary": "Begun in the 6th century A.D., these Hindu cave temples contain statues hewn from the rock itself.",
+    "mapsUrl": "https://maps.google.com/?cid=17996104617246983140"
+  },
+  {
+    "slug": "agastya-lake-badami",
+    "name": "Agastya Lake",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18066373487385897276"
+  },
+  {
+    "slug": "aihole",
+    "name": "Aihole",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10813953956022980346"
+  },
+  {
+    "slug": "pattadakal",
+    "name": "Pattadakal",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7566235926819611223"
+  },
+  {
+    "slug": "banashankari-temple-badami",
+    "name": "Banashankari Temple",
+    "website": "http://youtube.com/@sbdtcshakambhari",
+    "editorialSummary": "Functioning Hindu temple & shrine from 603 AD with regular prayers & 3 annual festivals.",
+    "mapsUrl": "https://maps.google.com/?cid=4340448044984324296"
+  },
+  {
+    "slug": "mahakuta-temple",
+    "name": "Mahakuta Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13804348796272835216"
+  },
+  {
+    "slug": "kudala-sangama",
+    "name": "Kudala Sangama",
+    "website": null,
+    "editorialSummary": "Hindu temple in a scenic location at the confluence of the Krishna & Malaprabha rivers.",
+    "mapsUrl": "https://maps.google.com/?cid=2428889136328166487"
+  },
+  {
+    "slug": "almatti-dam",
+    "name": "Almatti Dam",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14652385991563625072"
+  },
+  {
+    "slug": "bagalkot-town",
+    "name": "Bagalkot",
+    "website": "http://www.bagalkotecity.gov.in/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2959378407809188036"
+  },
+  {
+    "slug": "trikuteshwara-temple-gadag",
+    "name": "Trikuteshwara Temple",
+    "website": null,
+    "editorialSummary": "Circa 11th to 12th century Hindu temple featuring ornately carved stone pillars.",
+    "mapsUrl": "https://maps.google.com/?cid=14249070769489276481"
+  },
+  {
+    "slug": "veeranarayana-temple-gadag",
+    "name": "Veeranarayana Temple, Gadag",
+    "website": null,
+    "editorialSummary": "1100s Hindu temple dedicated to Vishnu, with a monumental, ornately sculpted gopuram tower.",
+    "mapsUrl": "https://maps.google.com/?cid=9195460286125693241"
+  },
+  {
+    "slug": "lakkundi-monuments",
+    "name": "Lakkundi Monuments",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10988102862605343310"
+  },
+  {
+    "slug": "doddabasappa-temple-dambal",
+    "name": "Doddabasappa Temple, Dambal",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16327227578020804447"
+  },
+  {
+    "slug": "kappattagudda",
+    "name": "Kappattagudda Hills",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13267121748730827674"
+  },
+  {
+    "slug": "sudi-temples",
+    "name": "Sudi Temples",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9654448254097559691"
+  },
+  {
+    "slug": "magadi-bird-sanctuary",
+    "name": "Magadi Bird Sanctuary",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5002741152646379547"
+  },
+  {
+    "slug": "bankapura-peacock-sanctuary",
+    "name": "Bankapura Peacock Sanctuary",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5428704222073944159"
+  },
+  {
+    "slug": "ranebennur-blackbuck-sanctuary",
+    "name": "Ranebennur Blackbuck Sanctuary",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18149350766846798464"
+  },
+  {
+    "slug": "tarakeshwara-temple-hangal",
+    "name": "Tarakeshwara Temple, Hangal",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12330332208566698305"
+  },
+  {
+    "slug": "galageshwara-temple-galaganatha",
+    "name": "Galageshwara Temple, Galaganatha",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3435095809005726920"
+  },
+  {
+    "slug": "siddheshwara-temple-haveri",
+    "name": "Siddheshwara Temple, Haveri",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9899537105602104446"
+  },
+  {
+    "slug": "utsav-rock-garden",
+    "name": "Utsav Rock Garden",
+    "website": "http://www.utsavrock.com/",
+    "editorialSummary": "Landscaped park with an art gallery, marriage museum, ornate fountains & film & animal sculptures.",
+    "mapsUrl": "https://maps.google.com/?cid=2319598721232853843"
+  },
+  {
+    "slug": "kaginele",
+    "name": "Kaginele",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6484260948521401197"
+  },
+  {
+    "slug": "nrupatunga-betta",
+    "name": "Nrupatunga Betta",
+    "website": null,
+    "editorialSummary": "Leafy hill offering scenic views, a children's playgorund & a casual counter-serve restaurant.",
+    "mapsUrl": "https://maps.google.com/?cid=3270101027547840498"
+  },
+  {
+    "slug": "unkal-lake",
+    "name": "Unkal Lake",
+    "website": null,
+    "editorialSummary": "Large lake for boating & sunset viewing, featuring a waterfront park & a nearby temple.",
+    "mapsUrl": "https://maps.google.com/?cid=17668980147247700497"
+  },
+  {
+    "slug": "chandramouleshwara-temple-hubballi",
+    "name": "Chandramouleshwara Temple, Hubballi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12483158503683603074"
+  },
+  {
+    "slug": "sadhanakeri",
+    "name": "Sadhanakeri",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16521314161593308984"
+  },
+  {
+    "slug": "navagraha-teertha-hubballi",
+    "name": "Navagraha Teertha, Hubballi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=778674845739844951"
+  },
+  {
+    "slug": "nuggikeri-hanuman-temple-dharwad",
+    "name": "Nuggikeri Hanuman Temple, Dharwad",
+    "website": "https://www.facebook.com/nuggikerihanuman",
+    "editorialSummary": "Small temple beside a lake, with the current structure dating to at least the 1500s.",
+    "mapsUrl": "https://maps.google.com/?cid=8870912727724487813"
+  },
+  {
+    "slug": "belgaum-fort",
+    "name": "Belgaum Fort",
+    "website": null,
+    "editorialSummary": "Remains of a walled medieval fortress complex, encircled by a moat, with temples & mosques inside.",
+    "mapsUrl": "https://maps.google.com/?cid=150350606007646624"
+  },
+  {
+    "slug": "kamala-basadi",
+    "name": "Kamala Basadi",
+    "website": null,
+    "editorialSummary": "10th-century Jain temple featuring a ceiling carved in the design of a lotus flower, plus statues.",
+    "mapsUrl": "https://maps.google.com/?cid=9750107173503793277"
+  },
+  {
+    "slug": "saundatti-yellamma",
+    "name": "Saundatti Yellamma Temple",
+    "website": null,
+    "editorialSummary": "Hindu site dedicated to the goddess Yellamma, with an annual procession drawing crowds of followers.",
+    "mapsUrl": "https://maps.google.com/?cid=671926858075357837"
+  },
+  {
+    "slug": "gokak-falls",
+    "name": "Gokak Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11017248103659906560"
+  },
+  {
+    "slug": "godachinmalki-falls",
+    "name": "Godachinmalki Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15818936837379222429"
+  },
+  {
+    "slug": "vajrapoha-falls",
+    "name": "Vajrapoha Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9296502982252120726"
+  },
+  {
+    "slug": "sogal-someshwara",
+    "name": "Sogal Someshwara Temple",
+    "website": "https://sogalsomeshwara.org/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5938445792913109758"
+  },
+  {
+    "slug": "kittur-fort",
+    "name": "Kittur Fort",
+    "website": null,
+    "editorialSummary": "Archaeological site featuring remains of an old fortress, with garden areas & a small museum.",
+    "mapsUrl": "https://maps.google.com/?cid=6983432573710988324"
+  },
+  {
+    "slug": "hidkal-dam",
+    "name": "Hidkal Dam",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11984496976574022086"
+  },
+  {
+    "slug": "rakaskop-dam",
+    "name": "Rakaskop Dam",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13694989394476628390"
+  },
+  {
+    "slug": "military-mahadeva-temple-belagavi",
+    "name": "Military Mahadeva Temple, Belagavi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18220637794203228444"
+  },
+  {
+    "slug": "devanahalli-fort",
+    "name": "Devanahalli Fort",
+    "website": null,
+    "editorialSummary": "Built in 1501, this mud, lime & brick fortress with semi-circular bastions spreads over 20 acres.",
+    "mapsUrl": "https://maps.google.com/?cid=5615745860558318189"
+  },
+  {
+    "slug": "manjarabad-fort",
+    "name": "Manjarabad Fort",
+    "website": null,
+    "editorialSummary": "Remains of a unique star-shaped fort built on a mountain in 1792 by Tipu Sultan.",
+    "mapsUrl": "https://maps.google.com/?cid=8249685528585369380"
+  },
+  {
+    "slug": "hutridurga-fort-trek",
+    "name": "Hutridurga",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9382314006701160255"
+  },
+  {
+    "slug": "huliyurdurga-hill",
+    "name": "Huliyurdurga",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8188017644267583690"
+  },
+  {
+    "slug": "channarayana-durga-fort",
+    "name": "Channarayana Durga",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13942630012375604029"
+  },
+  {
+    "slug": "nagara-bidanur-fort",
+    "name": "Nagara Fort (Bidanur)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7864078247528952428"
+  },
+  {
+    "slug": "doddagaddavalli-lakshmi-temple",
+    "name": "Doddagaddavalli Lakshmi Devi Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6257419661413590458"
+  },
+  {
+    "slug": "koravangala-bucheshwara-temple",
+    "name": "Koravangala Bucheshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5170970692092473648"
+  },
+  {
+    "slug": "nuggehalli-lakshminarasimha-temple",
+    "name": "Nuggehalli Lakshminarasimha Temple",
+    "website": "http://www.nuggehalli.org/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16940063966683440759"
+  },
+  {
+    "slug": "aralaguppe-chennakeshava-temple",
+    "name": "Aralaguppe Chennakeshava Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13431575670825999972"
+  },
+  {
+    "slug": "govindanahalli-panchalingeshwara-temple",
+    "name": "Govindanahalli Panchalingeshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1633720316119719939"
+  },
+  {
+    "slug": "basaralu-mallikarjuna-temple",
+    "name": "Basaralu Mallikarjuna Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16611453600756120332"
+  },
+  {
+    "slug": "turuvekere-chennakeshava-temple",
+    "name": "Turuvekere Chennakeshava Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9170513450539906076"
+  },
+  {
+    "slug": "hulikere-kalyani-halebidu",
+    "name": "Hulikere Kalyani",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5441660622546403258"
+  },
+  {
+    "slug": "arasikere-ishwara-temple",
+    "name": "Arasikere Ishwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15137784383764833707"
+  },
+  {
+    "slug": "javagal-lakshminarasimha-temple",
+    "name": "Javagal Lakshminarasimha Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14550991479416986886"
+  },
+  {
+    "slug": "kambadahalli-panchakuta-basadi",
+    "name": "Kambadahalli Panchakuta Basadi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11126549502764231159"
+  },
+  {
+    "slug": "hosaholalu-lakshminarayana-temple",
+    "name": "Hosaholalu Lakshminarayana Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17311399228724762510"
+  },
+  {
+    "slug": "mosale-temples-hassan",
+    "name": "Mosale Temples",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=966761323630748276"
+  },
+  {
+    "slug": "marehalli-lakshminarasimha-temple",
+    "name": "Marehalli Lakshminarasimha Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3229208129151371677"
+  },
+  {
+    "slug": "ittagi-mahadeva-temple",
+    "name": "Ittagi Mahadeva Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15152892340721061568"
+  },
+  {
+    "slug": "kukkanoor-navalinga-temples",
+    "name": "Kukkanoor Navalinga Temples",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7401889194328204348"
+  },
+  {
+    "slug": "annigeri-amruteshwara-temple",
+    "name": "Annigeri Amruteshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14803744441675423786"
+  },
+  {
+    "slug": "nanjangud-srikanteshwara-temple",
+    "name": "Nanjangud Srikanteshwara Temple",
+    "website": "https://itms.kar.nic.in/hrcehome/index_temple.php?tid=7",
+    "editorialSummary": "Centuries-old temple complex with a tall Dravidian entrance tower & a striking blue Shiva statue.",
+    "mapsUrl": "https://maps.google.com/?cid=6847105345828235608"
+  },
+  {
+    "slug": "gunja-narasimhaswamy-temple",
+    "name": "Gunja Narasimhaswamy Temple, T. Narasipura",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2114633715550088781"
+  },
+  {
+    "slug": "adichunchanagiri-kalabhairaveshwara",
+    "name": "Adichunchanagiri",
+    "website": "http://acmbgs.org/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15325854442419041311"
+  },
+  {
+    "slug": "karighatta-temple-viewpoint",
+    "name": "Karighatta Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12029876111628673478"
+  },
+  {
+    "slug": "bilikal-rangaswamy-betta",
+    "name": "Bilikal Rangaswamy Betta",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18204221553608793189"
+  },
+  {
+    "slug": "magadi-someshwara-temple",
+    "name": "Magadi Someshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3558980516003960347"
+  },
+  {
+    "slug": "kigga-rishyashringeshwara-temple",
+    "name": "Kigga Rishyashringeshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12485072714707532892"
+  },
+  {
+    "slug": "basavana-bagewadi-temple",
+    "name": "Basavana Bagewadi Basaveshwara Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18233490325906104041"
+  },
+  {
+    "slug": "chandragutti-renukamba-temple",
+    "name": "Chandragutti Renukamba Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17450878088046538852"
+  },
+  {
+    "slug": "humcha-padmavati-jain-temple",
+    "name": "Humcha Padmavati Jain Temple",
+    "website": "https://www.facebook.com/srihombujapadmavati",
+    "editorialSummary": "Venerable Jain temple dedicated to the Goddess Padmavati & adorned with elaborate stone carvings.",
+    "mapsUrl": "https://maps.google.com/?cid=14688875061328587545"
+  },
+  {
+    "slug": "polali-rajarajeshwari-temple",
+    "name": "Polali Rajarajeshwari Temple",
+    "website": null,
+    "editorialSummary": "Buddhist temple constructed in the 8th-century featuring a vibrantly adorned clay goddess statue.",
+    "mapsUrl": "https://maps.google.com/?cid=15497561931805881987"
+  },
+  {
+    "slug": "southadka-ganapathi-temple",
+    "name": "Southadka Ganapathi Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17374833634200385653"
+  },
+  {
+    "slug": "chikka-tirupati-temple",
+    "name": "Chikka Tirupati",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3201636339832549287"
+  },
+  {
+    "slug": "honnamana-kere",
+    "name": "Honnamana Kere",
+    "website": null,
+    "editorialSummary": "Serene lake with a wooded shoreline, a waterfront temple & a hilltop viewpoint popular at sunset.",
+    "mapsUrl": "https://maps.google.com/?cid=14111681096243320776"
+  },
+  {
+    "slug": "karkala-gomateshwara-statue",
+    "name": "Karkala Gomateshwara Statue",
+    "website": null,
+    "editorialSummary": "Built in the 15th century, this soaring Jain statue stands 40 ft. tall on its hilltop perch.",
+    "mapsUrl": "https://maps.google.com/?cid=391337422482250496"
+  },
+  {
+    "slug": "mudabidri-saavira-kambada-basadi",
+    "name": "Mudabidri Saavira Kambada Basadi",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7566723724863641810"
+  },
+  {
+    "slug": "venur-gomateshwara-statue",
+    "name": "Venur Gomateshwara",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8469980953381782937"
+  },
+  {
+    "slug": "barkur-heritage-town",
+    "name": "Barkur Heritage Town",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4778431824550211804"
+  },
+  {
+    "slug": "halasi-bhuvaraha-narasimha-temple",
+    "name": "Halasi Bhuvaraha Narasimha Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12899506710908686060"
+  },
+  {
+    "slug": "sonda-vadiraja-matha",
+    "name": "Sonda Vadiraja Matha",
+    "website": "http://www.sodematha.in/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3266368897608384856"
+  },
+  {
+    "slug": "bhatkal-khetapai-narayana-temple",
+    "name": "Bhatkal Khetapai Narayana Temple",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11781328069062374248"
+  },
+  {
+    "slug": "attur-st-lawrence-basilica",
+    "name": "Attur St. Lawrence Basilica",
+    "website": "http://www.stlawrenceattur.org/",
+    "editorialSummary": "Monumental basilica featuring ornate interiors, an expansive garden & a circa-1930 hilltop cross.",
+    "mapsUrl": "https://maps.google.com/?cid=600441483487645805"
+  },
+  {
+    "slug": "muthyala-maduvu-pearl-valley",
+    "name": "Muthyala Maduvu (Pearl Valley)",
+    "website": "https://muthyalamaduvuwaterfall.com/",
+    "editorialSummary": "Serene locale noted for a small waterfall & pond during rainy season, plus a restaurant.",
+    "mapsUrl": "https://maps.google.com/?cid=3210778326852889798"
+  },
+  {
+    "slug": "thottikallu-falls-tk-falls",
+    "name": "Thottikallu Falls",
+    "website": null,
+    "editorialSummary": "Secluded waterfall with powerful cascades during monsoon accessed via a hiking & cycling trail.",
+    "mapsUrl": "https://maps.google.com/?cid=8503536833725954575"
+  },
+  {
+    "slug": "chunchanakatte-falls",
+    "name": "Chunchanakatte Falls",
+    "website": null,
+    "editorialSummary": "This waterfall along the Kaveri river tumbles down over a rocky cliff near a Hindu temple.",
+    "mapsUrl": "https://maps.google.com/?cid=18180155684821741712"
+  },
+  {
+    "slug": "balmuri-edmuri-falls",
+    "name": "Balmuri and Edmuri Falls",
+    "website": null,
+    "editorialSummary": "Short, scenic waterfall stretching along a small dam, popular for wading & outdoor picnics.",
+    "mapsUrl": "https://maps.google.com/?cid=8248092726067340138"
+  },
+  {
+    "slug": "hanumanagundi-falls",
+    "name": "Hanumanagundi Falls",
+    "website": null,
+    "editorialSummary": "Tiered waterfall in rainforest with stairs leading to its base & a path behind the cascade.",
+    "mapsUrl": "https://maps.google.com/?cid=18169634941852149882"
+  },
+  {
+    "slug": "sirimane-falls",
+    "name": "Sirimane Falls",
+    "website": null,
+    "editorialSummary": "Bucolic natural area featuring cascading waterfalls & pools in dense forest surrounds.",
+    "mapsUrl": "https://maps.google.com/?cid=3299091668978520208"
+  },
+  {
+    "slug": "jomlu-theertha-falls",
+    "name": "Jomlu Theertha Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17634426672395708473"
+  },
+  {
+    "slug": "onake-abbi-falls",
+    "name": "Onake Abbi Falls",
+    "website": null,
+    "editorialSummary": "Towering waterfall tumbling over a high rock cliff, reachable by a lush jungle path.",
+    "mapsUrl": "https://maps.google.com/?cid=16928045093856668016"
+  },
+  {
+    "slug": "barkana-falls",
+    "name": "Barkana Falls",
+    "website": null,
+    "editorialSummary": "During rainy season, this waterfall along the Seetha River plunges over 250 m. into a pool below.",
+    "mapsUrl": "https://maps.google.com/?cid=14636258109260307932"
+  },
+  {
+    "slug": "achakanya-falls",
+    "name": "Achakanya Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14595987367939496720"
+  },
+  {
+    "slug": "chelavara-falls",
+    "name": "Chelavara Falls",
+    "website": null,
+    "editorialSummary": "Dramatic waterfalls cascading into deep pools surrounded by rocks & lush greenery.",
+    "mapsUrl": "https://maps.google.com/?cid=15446347206413111185"
+  },
+  {
+    "slug": "hidlumane-falls",
+    "name": "Hidlumane Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3505109932475156105"
+  },
+  {
+    "slug": "koosalli-falls",
+    "name": "Koosalli Falls",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3351679559218220512"
+  },
+  {
+    "slug": "bandaje-arbi-falls",
+    "name": "Bandaje Falls",
+    "website": "https://www.valambrahouse.com/",
+    "editorialSummary": "Spectacular 200 foot waterfalls plunging into remote forests in the Western Ghats.",
+    "mapsUrl": "https://maps.google.com/?cid=7781417174947819867"
+  },
+  {
+    "slug": "yagachi-dam",
+    "name": "Yagachi Dam",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16635281050017632471"
+  },
+  {
+    "slug": "gorur-dam-hemavathi",
+    "name": "Gorur Dam (Hemavathi Reservoir)",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17516551601238664604"
+  },
+  {
+    "slug": "kunigal-lake",
+    "name": "Kunigal Lake",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2741107934261800849"
+  },
+  {
+    "slug": "thippagondanahalli-reservoir",
+    "name": "Thippagondanahalli Reservoir",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12415274773954590911"
+  },
+  {
+    "slug": "kabini-backwaters",
+    "name": "Kabini Backwaters",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13263685275880827739"
+  },
+  {
+    "slug": "bheemeshwari-nature-camp",
+    "name": "Bheemeshwari",
+    "website": "https://www.junglelodges.com/resort/bheemeshwari-adventure-and-nature-camp/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7950316471410062759"
+  },
+  {
+    "slug": "galibore-nature-camp",
+    "name": "Galibore",
+    "website": "https://www.junglelodges.com/galibore-nature-camp/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11816771765966661329"
+  },
+  {
+    "slug": "cauvery-wildlife-sanctuary",
+    "name": "Cauvery Wildlife Sanctuary",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9746890045020722615"
+  },
+  {
+    "slug": "attiveri-bird-sanctuary",
+    "name": "Attiveri Bird Sanctuary",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17733651995179506101"
+  },
+  {
+    "slug": "kokkarebellur-pelican-sanctuary",
+    "name": "Kokkarebellur Pelican Sanctuary",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13911025778405566192"
+  },
+  {
+    "slug": "arabithittu-wildlife-sanctuary",
+    "name": "Arabithittu Wildlife Sanctuary",
+    "website": null,
+    "editorialSummary": "Sanctuary for birds & other animals on 6 islets of the Kaveri River, offering guided boat tours.",
+    "mapsUrl": "https://maps.google.com/?cid=16128088101496208451"
+  },
+  {
+    "slug": "someshwara-wildlife-sanctuary",
+    "name": "Someshwara Wildlife Sanctuary",
+    "website": "https://aranya.gov.in/aranyacms/(S(djoyph0t1l4bcwaj42ikivfu))/Kannada/WildLifeSanctuaryKannada.aspx#explore",
+    "editorialSummary": "Established in 1974, this 314-sq-km nature reserve features evergreen forests & native wildlife.",
+    "mapsUrl": "https://maps.google.com/?cid=17174049317239467830"
+  },
+  {
+    "slug": "bhimgad-wildlife-sanctuary",
+    "name": "Bhimgad Wildlife Sanctuary",
+    "website": null,
+    "editorialSummary": "Tigers, leopards & bears in a protected park with an endangered bat colony & a 17th-century fort.",
+    "mapsUrl": "https://maps.google.com/?cid=17046019357325245018"
+  },
+  {
+    "slug": "pushpagiri-wildlife-sanctuary",
+    "name": "Pushpagiri Wildlife Sanctuary",
+    "website": "https://www.karnataka.com/",
+    "editorialSummary": "Protected landscape of forested mountainside that is home to many rare & endangered bird species.",
+    "mapsUrl": "https://maps.google.com/?cid=15871399204845688816"
+  },
+  {
+    "slug": "charmadi-ghat",
+    "name": "Charmadi Ghat",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16750721344707139105"
+  },
+  {
+    "slug": "bisle-ghat-viewpoint",
+    "name": "Bisle Ghat Viewpoint",
+    "website": null,
+    "editorialSummary": "Double-decker lookout with a pavilion, offering panoramic views of forested mountains.",
+    "mapsUrl": "https://maps.google.com/?cid=17978001312612062052"
+  },
+  {
+    "slug": "ballalarayana-durga-trek",
+    "name": "Ballalarayana Durga",
+    "website": "https://www.karnatakaecotourism.com/availability/LND4-TRK140",
+    "editorialSummary": "Remains of a centuries-old fortress, with panoramic views of peaks in Kudremukh National Park.",
+    "mapsUrl": "https://maps.google.com/?cid=7720865104522271734"
+  },
+  {
+    "slug": "ombattu-gudda-trek",
+    "name": "Ombattu Gudda",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18439053478308995996"
+  },
+  {
+    "slug": "ettina-bhuja-trek",
+    "name": "Ettina Bhuja",
+    "website": null,
+    "editorialSummary": "High-altitude hill with a knob-shaped summit, offering moderate hikes & picturesque views.",
+    "mapsUrl": "https://maps.google.com/?cid=15086813076892267227"
+  },
+  {
+    "slug": "devaramane-hills",
+    "name": "Devaramane",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11622451301384377677"
+  },
+  {
+    "slug": "avala-betta",
+    "name": "Avala Betta",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9653778167873922998"
+  },
+  {
+    "slug": "kavala-caves-dandeli",
+    "name": "Kavala Caves",
+    "website": null,
+    "editorialSummary": "Limestone caves with a large rock formation resembling a representation of the Hindu deity Shiva.",
+    "mapsUrl": "https://maps.google.com/?cid=895547191844036257"
+  },
+  {
+    "slug": "padubidri-beach",
+    "name": "Padubidri Beach",
+    "website": "http://padubidribeach.com/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4347360418864197957"
+  },
+  {
+    "slug": "mattu-beach-udupi",
+    "name": "Mattu Beach",
+    "website": null,
+    "editorialSummary": "Relaxed, secluded beach for swimming, also popular for walks, picnics & sunset views.",
+    "mapsUrl": "https://maps.google.com/?cid=13611897156392848098"
+  },
+  {
+    "slug": "kodi-bengre-beach",
+    "name": "Kodi Bengre Beach",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6779140508352302492"
+  },
+  {
+    "slug": "byndoor-ottinene-viewpoint",
+    "name": "Byndoor Ottinene Viewpoint",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=8400625213804044188"
+  },
+  {
+    "slug": "gangolli-beach-estuary",
+    "name": "Gangolli Beach",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12655146019378003211"
+  },
+  {
+    "slug": "visvesvaraya-industrial-technological-museum",
+    "name": "Visvesvaraya Industrial and Technological Museum",
+    "website": "https://www.vismuseum.gov.in/",
+    "editorialSummary": "Family-friendly technology & science museum with exhibits on engines, space, biotechnology & more.",
+    "mapsUrl": "https://maps.google.com/?cid=9211338527529957543"
+  },
+  {
+    "slug": "regional-natural-history-museum-mysuru",
+    "name": "Regional Natural History Museum, Mysuru",
+    "website": null,
+    "editorialSummary": "Natural history museum featuring animal, insect & fossil displays suited for children.",
+    "mapsUrl": "https://maps.google.com/?cid=17900884978972727507"
+  }
+]
