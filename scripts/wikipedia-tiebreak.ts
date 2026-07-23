@@ -24,6 +24,13 @@ const FILES: Record<string, string> = {
   karnatakaKalyanaRegion: "src/lib/db/karnataka/group-e.ts",
   karnatakaKitturRegion: "src/lib/db/karnataka/group-f.ts",
   karnatakaExtraDestinations: "src/lib/db/india/karnataka-extra.ts",
+  centralIndiaDestinations: "src/lib/db/india/central.ts",
+  eastIndiaDestinations: "src/lib/db/india/east.ts",
+  northIndiaDestinations: "src/lib/db/india/north.ts",
+  northeastIndiaDestinations: "src/lib/db/india/northeast.ts",
+  northwestIndiaDestinations: "src/lib/db/india/northwest.ts",
+  southIndiaDestinations: "src/lib/db/india/south.ts",
+  westIndiaDestinations: "src/lib/db/india/west.ts",
 };
 
 function haversineM(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {

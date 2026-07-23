@@ -59,6 +59,13 @@ const FILES: Record<string, { file: string; exportName: string }> = {
   "group-e": { file: "src/lib/db/karnataka/group-e.ts", exportName: "karnatakaKalyanaRegion" },
   "group-f": { file: "src/lib/db/karnataka/group-f.ts", exportName: "karnatakaKitturRegion" },
   extra: { file: "src/lib/db/india/karnataka-extra.ts", exportName: "karnatakaExtraDestinations" },
+  central: { file: "src/lib/db/india/central.ts", exportName: "centralIndiaDestinations" },
+  east: { file: "src/lib/db/india/east.ts", exportName: "eastIndiaDestinations" },
+  north: { file: "src/lib/db/india/north.ts", exportName: "northIndiaDestinations" },
+  northeast: { file: "src/lib/db/india/northeast.ts", exportName: "northeastIndiaDestinations" },
+  northwest: { file: "src/lib/db/india/northwest.ts", exportName: "northwestIndiaDestinations" },
+  south: { file: "src/lib/db/india/south.ts", exportName: "southIndiaDestinations" },
+  west: { file: "src/lib/db/india/west.ts", exportName: "westIndiaDestinations" },
 };
 
 function haversineM(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
@@ -95,11 +102,17 @@ async function placeDetails(placeId: string): Promise<any | null> {
   return data.result;
 }
 
-// Simplify weekday_text into a single "H:MM AM - H:MM PM" string IF every day
-// matches; otherwise return null (ambiguous, needs a human).
+// Simplify Google's `periods` (which can hold MULTIPLE open/close pairs per
+// day — e.g. a temple with a morning and evening darshan session) into the
+// same "H:MM AM - H:MM PM[, H:MM AM - H:MM PM]" string style already used in
+// the catalogue. Only collapses to one string when every day of the week has
+// the identical session pattern; otherwise returns null (needs a human) since
+// silently picking one day's schedule would misrepresent the others.
 function simplifyHours(opening: any): string | null {
   const periods = opening?.periods;
-  if (!Array.isArray(periods) || periods.length !== 7) return null;
+  if (!Array.isArray(periods) || periods.length === 0) return null;
+  if (periods.length === 1 && !periods[0].close) return "Open 24 hours";
+
   const fmt = (t: string) => {
     const h = parseInt(t.slice(0, 2), 10);
     const m = t.slice(2);
@@ -107,11 +120,23 @@ function simplifyHours(opening: any): string | null {
     const h12 = h % 12 === 0 ? 12 : h % 12;
     return `${h12}:${m} ${ampm}`;
   };
-  const strs = periods.map((p: any) => {
-    if (!p.open || !p.close) return "24 Hours";
-    return `${fmt(p.open.time)} - ${fmt(p.close.time)}`;
+
+  const byDay: Record<number, any[]> = {};
+  for (const p of periods) {
+    if (!p.open) continue;
+    (byDay[p.open.day] ??= []).push(p);
+  }
+  const days = Object.keys(byDay).map(Number);
+  if (days.length !== 7) return null; // not open every day, or irregular — don't guess
+
+  const dayStrings = days.sort((a, b) => a - b).map((d) => {
+    const sessions = byDay[d].slice().sort((a, b) => a.open.time.localeCompare(b.open.time));
+    return sessions
+      .map((p) => (!p.close ? "24 Hours" : `${fmt(p.open.time)} - ${fmt(p.close.time)}`))
+      .join(", ");
   });
-  return strs.every((s: string) => s === strs[0]) ? strs[0] : null;
+
+  return dayStrings.every((s) => s === dayStrings[0]) ? dayStrings[0] : null;
 }
 
 function replaceFieldInBlock(text: string, slug: string, field: string, newValue: string): string {
@@ -130,7 +155,11 @@ function replaceFieldInBlock(text: string, slug: string, field: string, newValue
 
 async function run() {
   const key = process.argv[2];
-  const targets = key && FILES[key] ? [FILES[key]] : Object.values(FILES);
+  const requestedKeys = key ? key.split(",").map((k) => k.trim()) : [];
+  const targets =
+    requestedKeys.length > 0 && requestedKeys.every((k) => FILES[k])
+      ? requestedKeys.map((k) => FILES[k])
+      : Object.values(FILES);
 
   const report: any[] = [];
   const research: any[] = [];

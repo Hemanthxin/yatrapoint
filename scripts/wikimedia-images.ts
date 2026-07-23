@@ -24,6 +24,13 @@ const FILES: Record<string, { file: string; exportName: string }> = {
   "group-e": { file: "src/lib/db/karnataka/group-e.ts", exportName: "karnatakaKalyanaRegion" },
   "group-f": { file: "src/lib/db/karnataka/group-f.ts", exportName: "karnatakaKitturRegion" },
   extra: { file: "src/lib/db/india/karnataka-extra.ts", exportName: "karnatakaExtraDestinations" },
+  central: { file: "src/lib/db/india/central.ts", exportName: "centralIndiaDestinations" },
+  east: { file: "src/lib/db/india/east.ts", exportName: "eastIndiaDestinations" },
+  north: { file: "src/lib/db/india/north.ts", exportName: "northIndiaDestinations" },
+  northeast: { file: "src/lib/db/india/northeast.ts", exportName: "northeastIndiaDestinations" },
+  northwest: { file: "src/lib/db/india/northwest.ts", exportName: "northwestIndiaDestinations" },
+  south: { file: "src/lib/db/india/south.ts", exportName: "southIndiaDestinations" },
+  west: { file: "src/lib/db/india/west.ts", exportName: "westIndiaDestinations" },
 };
 
 type Place = {
