@@ -36,6 +36,7 @@ const FILES: Record<string, { file: string; exportName: string }> = {
 type Place = {
   slug: string;
   name: string;
+  state: string;
   district: string | null;
   imageUrl: string | null;
   latitude: string | null;
@@ -56,6 +57,29 @@ function haversineM(a: { lat: number; lng: number }, b: { lat: number; lng: numb
 // title — catches the "matched a totally unrelated/broader article" case when
 // there's no coordinate to check against.
 const STOPWORDS = new Set(["the", "of", "and", "temple", "falls", "hill", "hills", "fort", "lake", "dam"]);
+// Rejects a match that's really just the surrounding city/district/state
+// article rather than the specific attraction — e.g. "Puri Beach" in Puri
+// district searched as "Puri Beach Puri Odisha" ranks the generic "Puri
+// (city)" article first because the district word doubles up with the name.
+// A generic area page's lead image (often a famous landmark, a flag, or a
+// map) is almost never a correct photo for the specific place.
+function isGenericAreaTitle(title: string, place: { name: string; district: string | null; state: string }): boolean {
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/\s*\([^)]*\)\s*/g, " ")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  const t = norm(title);
+  const bareAreaNames = [place.district, place.state, `${place.district} district`, `${place.district} city`]
+    .filter((s): s is string => !!s)
+    .map(norm);
+  if (!bareAreaNames.includes(t)) return false;
+  // Not generic if the place itself basically IS that area (rare, but valid).
+  return norm(place.name) !== t;
+}
+
 function nameOverlaps(placeName: string, title: string): boolean {
   const words = (s: string) =>
     s
@@ -108,6 +132,12 @@ async function pageImage(title: string): Promise<string | null> {
   // Only accept files actually hosted under Commons — local enwiki uploads
   // (upload.wikimedia.org/wikipedia/en/...) are usually non-free fair-use.
   if (!src.includes("upload.wikimedia.org/wikipedia/commons/")) return null;
+  // A page's "lead image" is sometimes a flag, coat of arms, logo, map or a
+  // generic multi-photo montage rather than an actual photo of the place —
+  // none of those are useful as a destination card's hero image.
+  if (/flag_of|_flag\.|logo|map_of|_map\.|montage|coat_of_arms|seal_of|emblem|\.svg/i.test(src)) {
+    return null;
+  }
   return src;
 }
 
@@ -152,7 +182,7 @@ async function run() {
       }
 
       try {
-        const candidate = await searchCandidate(`${p.name} ${p.district ?? ""} Karnataka`);
+        const candidate = await searchCandidate(`${p.name} ${p.district ?? ""} ${p.state}`);
         await sleep(120);
         if (!candidate) {
           console.log(`  [${i + 1}/${places.length}] ✗ no wiki page: ${p.name}`);
@@ -165,7 +195,9 @@ async function run() {
         const existing = p.latitude && p.longitude ? { lat: Number(p.latitude), lng: Number(p.longitude) } : null;
         let verified = false;
         let reason = "";
-        if (candidate.coord && existing) {
+        if (isGenericAreaTitle(candidate.title, p)) {
+          reason = `generic area page, not the specific place: "${candidate.title}"`;
+        } else if (candidate.coord && existing) {
           const d = haversineM(existing, candidate.coord);
           verified = d <= 3000;
           reason = `coord check: ${Math.round(d)}m`;

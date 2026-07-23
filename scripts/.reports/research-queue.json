@@ -2,9 +2,9 @@
   {
     "slug": "sanchi-stupa",
     "name": "Sanchi Stupa",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17855514662952042535"
+    "website": "https://whc.unesco.org/en/list/524/",
+    "editorialSummary": "This 2nd-century BCE Buddhist stupa is part of the Sanchi complex & features decorative reliefs.",
+    "mapsUrl": "https://maps.google.com/?cid=15218680707131750159"
   },
   {
     "slug": "khajuraho-western-group-temples",
@@ -121,9 +121,9 @@
   {
     "slug": "bandhavgarh-national-park",
     "name": "Bandhavgarh National Park",
-    "website": "https://synatigerresort.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=6917970907981557572"
+    "mapsUrl": "https://maps.google.com/?cid=2776407936788515798"
   },
   {
     "slug": "pench-national-park-mp",
@@ -193,7 +193,7 @@
     "name": "Amarkantak (Narmada Source)",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=4561360478116001634"
+    "mapsUrl": "https://maps.google.com/?cid=11348074958987533315"
   },
   {
     "slug": "datia-palace",
@@ -207,7 +207,7 @@
     "name": "Chanderi",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13062357045535615766"
+    "mapsUrl": "https://maps.google.com/?cid=7698457968250829307"
   },
   {
     "slug": "chitrakoot-mp",
@@ -325,15 +325,15 @@
     "slug": "rajgir-vishwa-shanti-stupa",
     "name": "Rajgir (Vishwa Shanti Stupa & Ropeway)",
     "website": null,
-    "editorialSummary": "Modern white stupa on a hilltop, dedicated to world peace & with 4 gilded Buddha statues.",
-    "mapsUrl": "https://maps.google.com/?cid=562110475552464462"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?q=Vishwa+Shanti+Stupa+Rd+%26+Rope+Way,+Bihar+803116,+India&ftid=0x39f2facbad013ca9:0xaba9a9ea2abea95f"
   },
   {
     "slug": "nalanda-glory-of-hindu-university",
     "name": "Nalanda Multimedia Museum & Hiuen Tsang Memorial",
-    "website": null,
+    "website": "https://tourism.bihar.gov.in/hi/destinations/nalanda/nalanda-museum",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11361898407174393521"
+    "mapsUrl": "https://maps.google.com/?cid=15759069081978158337"
   },
   {
     "slug": "vaishali-ashokan-pillar",
@@ -380,9 +380,9 @@
   {
     "slug": "madhubani-mithila-art",
     "name": "Madhubani (Mithila Painting Villages)",
-    "website": "https://mithilarekha.com/",
+    "website": "https://madhubani-paintings.com/",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12528451327266672333"
+    "mapsUrl": "https://maps.google.com/?cid=5624824766148498926"
   },
   {
     "slug": "great-buddha-statue-bodhgaya",
@@ -521,8 +521,8 @@
     "slug": "parasnath-hill-shikharji",
     "name": "Parasnath Hill (Shikharji)",
     "website": null,
-    "editorialSummary": "Expansive hilltop pilgrimage site featuring trails, mountain views & over 30 Jain temples.",
-    "mapsUrl": "https://maps.google.com/?cid=4883353856908408697"
+    "editorialSummary": "Prominent peak best known for the important Jain pilgrimage temple, Shikharji, at the summit.",
+    "mapsUrl": "https://maps.google.com/?cid=5199162446284496723"
   },
   {
     "slug": "hazaribagh-wildlife-sanctuary",
@@ -543,7 +543,7 @@
     "name": "Jubilee Park, Jamshedpur",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7166063278187451842"
+    "mapsUrl": "https://maps.google.com/?cid=10782376289258333418"
   },
   {
     "slug": "dalma-wildlife-sanctuary",
@@ -556,8 +556,8 @@
     "slug": "patratu-valley",
     "name": "Patratu Valley",
     "website": null,
-    "editorialSummary": "Famously twisting route with dramatic views & street food stalls, leading to boat rides at a dam.",
-    "mapsUrl": "https://maps.google.com/?cid=13229494361001240053"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3228979914999518837"
   },
   {
     "slug": "maithon-dam",
@@ -590,9 +590,9 @@
   {
     "slug": "howrah-bridge-kolkata",
     "name": "Howrah Bridge",
-    "website": "https://howrah.gov.in/bn/tourist-place/%E0%A6%B9%E0%A6%BE%E0%A6%93%E0%A6%A1%E0%A6%BC%E0%A6%BE-%E0%A6%AC%E0%A7%8D%E0%A6%B0%E0%A6%BF%E0%A6%9C/",
-    "editorialSummary": "Bustling cantilever road bridge opened since 1943 and spanning the Hooghly River.",
-    "mapsUrl": "https://maps.google.com/?cid=14520742826163114393"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11469411044302958992"
   },
   {
     "slug": "dakshineswar-kali-temple",
@@ -633,8 +633,8 @@
     "slug": "marble-palace-kolkata",
     "name": "Marble Palace",
     "website": null,
-    "editorialSummary": "Neoclassical estate built in 1835 & exhibiting varied art, open with permit gotten in advance.",
-    "mapsUrl": "https://maps.google.com/?cid=3547500393970491255"
+    "editorialSummary": "Stately, 19th-century private residence with unique art & landscaped grounds, plus guided tours.",
+    "mapsUrl": "https://maps.google.com/?cid=15586271360148657821"
   },
   {
     "slug": "jorasanko-thakur-bari",
@@ -653,9 +653,9 @@
   {
     "slug": "science-city-kolkata",
     "name": "Science City",
-    "website": "http://sciencecitykolkata.org.in/",
-    "editorialSummary": "Interactive garden with a maze & children's play equipment at a landmark science & tech museum.",
-    "mapsUrl": "https://maps.google.com/?cid=7452260164658484456"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13290350482628663079"
   },
   {
     "slug": "botanical-garden-shibpur-howrah",
@@ -682,29 +682,29 @@
     "slug": "digha-beach",
     "name": "Digha Beach",
     "website": null,
-    "editorialSummary": "Basic beach for walking, swimming & relaxing, with nearby seafood for sale & food stalls.",
-    "mapsUrl": "https://maps.google.com/?cid=413046777120771382"
+    "editorialSummary": "Beach of a seaside resort popular with tourists featuring a shallow sand beach & a nearby aquarium.",
+    "mapsUrl": "https://maps.google.com/?cid=5115247141942684724"
   },
   {
     "slug": "mandarmani-beach",
     "name": "Mandarmani Beach",
-    "website": null,
+    "website": "http://www.mandarmani.com/index.html",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16140831529296681335"
+    "mapsUrl": "https://maps.google.com/?cid=8506598369077307735"
   },
   {
     "slug": "bakkhali-beach",
     "name": "Bakkhali Beach",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17641079330053432139"
+    "editorialSummary": "Expansive sandy beach known for its red crabs, with seafood vendors & a nearby mangrove forest.",
+    "mapsUrl": "https://maps.google.com/?cid=15968886764071920198"
   },
   {
     "slug": "shantiniketan-birbhum",
     "name": "Shantiniketan",
-    "website": "https://er.indianrailways.gov.in/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=8895721647681727595"
+    "mapsUrl": "https://maps.google.com/?cid=5864340243644116081"
   },
   {
     "slug": "bishnupur-terracotta-temples",
@@ -730,9 +730,9 @@
   {
     "slug": "tarapith-temple-birbhum",
     "name": "Tarapith Temple",
-    "website": "http://www.sebaitsouvik.com/",
-    "editorialSummary": "Striking red temple with representations of the goddess Tara & a sacred pool of water.",
-    "mapsUrl": "https://maps.google.com/?cid=940629094622469616"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9891396479797234907"
   },
   {
     "slug": "bandel-church-hooghly",
@@ -751,16 +751,16 @@
   {
     "slug": "cooch-behar-rajbari",
     "name": "Cooch Behar Palace",
-    "website": "http://coochbehar.gov.in/Htmfiles/rajbari_exclusive.html",
-    "editorialSummary": "Modeled after Buckingham Palace in 1887, this Renaissance-style landmark houses a history museum.",
-    "mapsUrl": "https://maps.google.com/?cid=784906249369545317"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1577597267690610919"
   },
   {
     "slug": "kalimpong-hill-town",
     "name": "Kalimpong",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16822704636692233896"
+    "mapsUrl": "https://maps.google.com/?cid=1944248328289917999"
   },
   {
     "slug": "kurseong-hill-town",
@@ -774,7 +774,7 @@
     "name": "Mirik",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=4396512980827011457"
+    "mapsUrl": "https://maps.google.com/?cid=10787576716486466040"
   },
   {
     "slug": "tiger-hill-darjeeling",
@@ -795,14 +795,14 @@
     "name": "Lava and Lolegaon",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=1903755620086260211"
+    "mapsUrl": "https://maps.google.com/?cid=9293064313381141073"
   },
   {
     "slug": "sandakphu-trek",
     "name": "Sandakphu",
     "website": null,
-    "editorialSummary": "A small village sits atop this 12,024 ft. mountain with views over 4 of the world's 5 highest peaks.",
-    "mapsUrl": "https://maps.google.com/?cid=560239411710685815"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4314864199866938570"
   },
   {
     "slug": "jaldapara-national-park",
@@ -864,8 +864,8 @@
     "slug": "rajarani-temple-bhubaneswar",
     "name": "Rajarani Temple",
     "website": null,
-    "editorialSummary": "A large lawn abuts this 11th-century stone Hindu temple known for its intricate sculptures.",
-    "mapsUrl": "https://maps.google.com/?cid=13030313652347258945"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=12891023524780001222"
   },
   {
     "slug": "udayagiri-khandagiri-caves",
@@ -898,23 +898,23 @@
   {
     "slug": "puri-beach",
     "name": "Puri Beach",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=6588637845347684229"
+    "website": "http://odishatourism.nic.in/",
+    "editorialSummary": "A Hindu sacred place, this busy beach is the site of the annual Puri Beach Festival & sand displays.",
+    "mapsUrl": "https://maps.google.com/?cid=5395665187998254174"
   },
   {
     "slug": "chandrabhaga-beach-konark",
     "name": "Chandrabhaga Beach",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=8693334367411373732"
+    "editorialSummary": "Popular ocean retreat with clean sand, swimming, surfing, sailing, ATV rentals & vendors.",
+    "mapsUrl": "https://maps.google.com/?cid=13790940435261488523"
   },
   {
     "slug": "gopalpur-on-sea",
     "name": "Gopalpur-on-Sea",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3427535941400542914"
+    "mapsUrl": "https://maps.google.com/?cid=17737734434951750553"
   },
   {
     "slug": "chandipur-beach-balasore",
@@ -947,23 +947,23 @@
   {
     "slug": "ratnagiri-buddhist-site",
     "name": "Ratnagiri",
-    "website": null,
-    "editorialSummary": "Vast archaeological site with preserved monastery ruins dating from the 5th-13th centuries.",
-    "mapsUrl": "https://maps.google.com/?cid=7019819520093794817"
+    "website": "http://www.orissatourism.gov.in/new/ratnagiri.html",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=10214896192521763945"
   },
   {
     "slug": "lalitgiri-buddhist-site",
     "name": "Lalitgiri",
     "website": null,
-    "editorialSummary": "Spiritual destination with archaeological findings, monuments & relics of Buddhism.",
-    "mapsUrl": "https://maps.google.com/?cid=16196350784401969510"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=5156787157995847109"
   },
   {
     "slug": "raghurajpur-heritage-village",
     "name": "Raghurajpur",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5729422582978719314"
+    "mapsUrl": "https://maps.google.com/?cid=17815191998858238518"
   },
   {
     "slug": "barabati-fort-cuttack",
@@ -990,22 +990,22 @@
     "slug": "hirakud-dam-sambalpur",
     "name": "Hirakud Dam",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=10865200756264710920"
+    "editorialSummary": "Submerged temples & an island populated by cattle are among the attractions at this dam & reservoir.",
+    "mapsUrl": "https://maps.google.com/?cid=11763339428698473531"
   },
   {
     "slug": "daringbadi-hill-station",
     "name": "Daringbadi",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7102305444001566026"
+    "mapsUrl": "https://maps.google.com/?cid=2086630513712822821"
   },
   {
     "slug": "deomali-peak-koraput",
     "name": "Deomali",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=1093478169098630822"
+    "editorialSummary": "Reached by a narrow road, this remote mountain peak offers exquisite views & rural surroundings.",
+    "mapsUrl": "https://maps.google.com/?cid=5144523240309055313"
   },
   {
     "slug": "gangtok-sikkim",
@@ -1018,15 +1018,15 @@
     "slug": "tsomgo-changu-lake",
     "name": "Tsomgo Lake",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12871724608283815300"
+    "editorialSummary": "A gondola takes visitors to this scenic natural area featuring a lake surrounded by snowy mountains.",
+    "mapsUrl": "https://maps.google.com/?cid=17678406483492864890"
   },
   {
     "slug": "nathula-pass",
     "name": "Nathula Pass",
-    "website": "https://sikkimtourism.gov.in/Public/index",
-    "editorialSummary": "Mountain passage & border-crossing station between India & Tibet, open only to Indian citizens.",
-    "mapsUrl": "https://maps.google.com/?cid=3498121046220032436"
+    "website": null,
+    "editorialSummary": "Scenic mountain pass once traveled by lines of mules carrying valuables over the ancient Silk Road.",
+    "mapsUrl": "https://maps.google.com/?cid=647830985392494599"
   },
   {
     "slug": "baba-harbhajan-singh-mandir",
@@ -1040,14 +1040,14 @@
     "name": "Yumthang Valley",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=18404069244731056290"
+    "mapsUrl": "https://maps.google.com/?cid=2210054238492844974"
   },
   {
     "slug": "zero-point-yumesamdong",
     "name": "Zero Point",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7234473627211885885"
+    "website": "http://www.sikkimtourism.gov.in/",
+    "editorialSummary": "This final civilian destination before China's border offers scenic mountain views from 15,300 feet.",
+    "mapsUrl": "https://maps.google.com/?cid=14452601613250553195"
   },
   {
     "slug": "gurudongmar-lake",
@@ -1057,11 +1057,25 @@
     "mapsUrl": "https://maps.google.com/?cid=15801935191666229553"
   },
   {
+    "slug": "lachung-village",
+    "name": "Lachung",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17530837779374114233"
+  },
+  {
+    "slug": "lachen-village",
+    "name": "Lachen",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11450625892190492234"
+  },
+  {
     "slug": "pelling-sikkim",
     "name": "Pelling",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=14938774288971781588"
+    "mapsUrl": "https://maps.google.com/?cid=3526307229536451233"
   },
   {
     "slug": "pemayangtse-monastery",
@@ -1130,8 +1144,8 @@
     "slug": "tashi-viewpoint-gangtok",
     "name": "Tashi Viewpoint",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=2954964554026875845"
+    "editorialSummary": "Binoculars are recommended at this viewing platform for observing Kanchenjunga & surrounding hills.",
+    "mapsUrl": "https://maps.google.com/?cid=10125487565899194844"
   },
   {
     "slug": "banjhakri-falls-gangtok",
@@ -1164,9 +1178,9 @@
   {
     "slug": "corbyns-cove-beach",
     "name": "Corbyn's Cove Beach",
-    "website": "https://www.andamanworldtravels.com/corbyn-cove-beach-andaman.php",
-    "editorialSummary": "Sandy, palm-fringed beach with jet-ski rentals, lounge chairs & several casual eateries.",
-    "mapsUrl": "https://maps.google.com/?cid=6977733299764260197"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14250550010224906475"
   },
   {
     "slug": "north-bay-island-andaman",
@@ -1215,7 +1229,7 @@
     "name": "Natural Bridge, Neil Island",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=10228414145110698511"
+    "mapsUrl": "https://maps.google.com/?cid=15966940186842539472"
   },
   {
     "slug": "baratang-limestone-caves",
@@ -1228,8 +1242,8 @@
     "slug": "baratang-mud-volcano",
     "name": "Baratang Mud Volcano",
     "website": null,
-    "editorialSummary": "1 of the Andaman Islands, Baratang offers mangrove creeks, beaches, limestone caves & a mud volcano.",
-    "mapsUrl": "https://maps.google.com/?cid=14723327843130349690"
+    "editorialSummary": "Small walk out to a modest geological feature consisting of a pit erupting mud & gases.",
+    "mapsUrl": "https://maps.google.com/?cid=2598093318671900419"
   },
   {
     "slug": "mahatma-gandhi-marine-national-park",
@@ -1256,8 +1270,8 @@
     "slug": "anthropological-museum-port-blair",
     "name": "Anthropological Museum",
     "website": null,
-    "editorialSummary": "Modest museum with displays tracing the history & culture of the islands' tribal communities.",
-    "mapsUrl": "https://maps.google.com/?cid=9020238021598058127"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17540056713774761167"
   },
   {
     "slug": "mount-harriet-national-park",
@@ -1361,8 +1375,8 @@
     "slug": "tughlaqabad-fort-delhi",
     "name": "Tughlaqabad Fort",
     "website": null,
-    "editorialSummary": "Remains of a 14th-century Tughlaq period stone fort with ramparts & battlements intact.",
-    "mapsUrl": "https://maps.google.com/?cid=17212057429674082771"
+    "editorialSummary": "Remains of a 14th century leader's fortified city including his domed red sandstone mausoleum.",
+    "mapsUrl": "https://maps.google.com/?cid=6725961261577535248"
   },
   {
     "slug": "raj-ghat-delhi",
@@ -1395,9 +1409,9 @@
   {
     "slug": "chandni-chowk-delhi",
     "name": "Chandni Chowk",
-    "website": "https://chandnichowkmarket.org/",
-    "editorialSummary": "Busy, historic bazaar with clothing, housewares & hardware shops, plus restaurants & snack stalls.",
-    "mapsUrl": "https://maps.google.com/?cid=8865144361679525414"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=166532288977157713"
   },
   {
     "slug": "hauz-khas-village-delhi",
@@ -1423,9 +1437,9 @@
   {
     "slug": "national-zoological-park-delhi",
     "name": "National Zoological Park",
-    "website": "http://nzpnewdelhi.gov.in/",
-    "editorialSummary": "This zoo houses some 130 species, including white tigers, elephants & rhinos (closed on Fridays).",
-    "mapsUrl": "https://maps.google.com/?cid=17377733359548499016"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15787580108911863815"
   },
   {
     "slug": "birla-mandir-delhi",
@@ -1465,9 +1479,9 @@
   {
     "slug": "connaught-place-delhi",
     "name": "Connaught Place",
-    "website": "http://www.delhikarnatakasangha.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=18186680770784811168"
+    "mapsUrl": "https://maps.google.com/?cid=14838948337005347825"
   },
   {
     "slug": "waste-to-wonder-park-delhi",
@@ -1486,16 +1500,16 @@
   {
     "slug": "agra-fort",
     "name": "Agra Fort",
-    "website": "https://www.tajmahal.gov.in/agrafort.aspx",
-    "editorialSummary": "Richly decorated semi-circular red sandstone fort complex with double ramparts & monuments.",
-    "mapsUrl": "https://maps.google.com/?cid=7208676187286181238"
+    "website": null,
+    "editorialSummary": "The historic red sandstone fort dates back to the Mughal Dynasty & holds palaces & mosques.",
+    "mapsUrl": "https://maps.google.com/?cid=13236418482937943965"
   },
   {
     "slug": "fatehpur-sikri",
     "name": "Fatehpur Sikri",
     "website": null,
-    "editorialSummary": "Landmark fortress & former capital of the Mughal Empire, offering red palaces & elaborate monuments.",
-    "mapsUrl": "https://maps.google.com/?cid=8479990347323652876"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=618071115155241792"
   },
   {
     "slug": "itmad-ud-daulah-agra",
@@ -1606,8 +1620,8 @@
     "slug": "barsana-mathura",
     "name": "Barsana",
     "website": null,
-    "editorialSummary": "Palatial 17th-century temple on top of a hill, accessible by stairs & dedicated to Goddess Radha.",
-    "mapsUrl": "https://maps.google.com/?cid=5204576589599163422"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14646509942695352125"
   },
   {
     "slug": "ram-mandir-ayodhya",
@@ -1633,9 +1647,9 @@
   {
     "slug": "triveni-sangam-prayagraj",
     "name": "Triveni Sangam",
-    "website": "https://www.trivenisangamprayagraj.com/",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=779609809987538392"
+    "website": null,
+    "editorialSummary": "Confluence of rivers known for distinctive water colors & its presence as a sacred Hindu site.",
+    "mapsUrl": "https://maps.google.com/?cid=15440211422587417340"
   },
   {
     "slug": "anand-bhavan-prayagraj",
@@ -1669,8 +1683,8 @@
     "slug": "sarnath",
     "name": "Sarnath",
     "website": null,
-    "editorialSummary": "Expansive Buddhist temple complex with a museum, multiple shrines & an archaeological excavation.",
-    "mapsUrl": "https://maps.google.com/?cid=12432342543569157891"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11656307264043592052"
   },
   {
     "slug": "ramnagar-fort-varanasi",
@@ -1682,9 +1696,16 @@
   {
     "slug": "kushinagar",
     "name": "Kushinagar",
-    "website": "https://www.aai.aero/",
+    "website": "http://kushinagar.nic.in/",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11383016518276261719"
+    "mapsUrl": "https://maps.google.com/?cid=8829599459547972928"
+  },
+  {
+    "slug": "shravasti",
+    "name": "Shravasti",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=7776201721034263641"
   },
   {
     "slug": "jhansi-fort",
@@ -1696,9 +1717,9 @@
   {
     "slug": "chitrakoot-uttar-pradesh",
     "name": "Chitrakoot",
-    "website": "https://chithrakoota.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=2011191472677066398"
+    "mapsUrl": "https://maps.google.com/?cid=17832046950611389863"
   },
   {
     "slug": "dudhwa-national-park",
@@ -1732,8 +1753,8 @@
     "slug": "naimisharanya-sitapur",
     "name": "Naimisharanya",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11850463282898817610"
+    "editorialSummary": "Brightly colored temple linked to Hindu legends, where pilgrims bathe in a circular pool.",
+    "mapsUrl": "https://maps.google.com/?cid=6560383800920341951"
   },
   {
     "slug": "bithoor-kanpur",
@@ -1774,8 +1795,8 @@
     "slug": "nainital-lake",
     "name": "Naini Lake, Nainital",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7736244703377607825"
+    "editorialSummary": "Lake surrounded by hills, offering boating facilities, street-food vendors & mountain views.",
+    "mapsUrl": "https://maps.google.com/?cid=17611198547967676802"
   },
   {
     "slug": "naina-devi-temple-nainital",
@@ -1803,7 +1824,7 @@
     "name": "Sattal",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9768733184389886123"
+    "mapsUrl": "https://maps.google.com/?cid=11654006733917497274"
   },
   {
     "slug": "ranikhet",
@@ -1824,14 +1845,14 @@
     "name": "Almora",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16050688533005002934"
+    "mapsUrl": "https://maps.google.com/?cid=10957770668875026133"
   },
   {
     "slug": "jageshwar-temples",
     "name": "Jageshwar Dham",
-    "website": "https://jageshwar-jyotirlinga.uk.gov.in/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15164700073469314578"
+    "mapsUrl": "https://maps.google.com/?cid=915905107379132550"
   },
   {
     "slug": "binsar-wildlife-sanctuary",
@@ -1866,7 +1887,7 @@
     "name": "Har Ki Pauri, Haridwar",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15244685708574257192"
+    "mapsUrl": "https://maps.google.com/?cid=9746789011900184291"
   },
   {
     "slug": "mansa-devi-temple-haridwar",
@@ -1971,7 +1992,7 @@
     "name": "Deoria Tal",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11558683145783805856"
+    "mapsUrl": "https://maps.google.com/?cid=11446804300934920668"
   },
   {
     "slug": "robbers-cave-dehradun",
@@ -1983,9 +2004,9 @@
   {
     "slug": "sahastradhara-dehradun",
     "name": "Sahastradhara",
-    "website": "https://sahastradhararopeway.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=1886980844691792240"
+    "mapsUrl": "https://maps.google.com/?cid=17664559426864842950"
   },
   {
     "slug": "forest-research-institute-dehradun",
@@ -2033,8 +2054,8 @@
     "slug": "lansdowne",
     "name": "Lansdowne",
     "website": null,
-    "editorialSummary": "Set amid hilly lawns & trees, this tranquil artificial lake has waterside paths & boat rentals.",
-    "mapsUrl": "https://maps.google.com/?cid=12034040184798196094"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2853121815265809665"
   },
   {
     "slug": "dhanaulti",
@@ -2047,8 +2068,8 @@
     "slug": "tehri-lake",
     "name": "Tehri Lake",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3809838762057793427"
+    "editorialSummary": "Manmade lake in the mountains with a boating & water sports rental facility & floating huts.",
+    "mapsUrl": "https://maps.google.com/?cid=13457316643456454899"
   },
   {
     "slug": "rajaji-national-park",
@@ -2062,14 +2083,14 @@
     "name": "Munsyari",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7494171916628186706"
+    "mapsUrl": "https://maps.google.com/?cid=393091760754353972"
   },
   {
     "slug": "patal-bhuvaneshwar",
     "name": "Patal Bhuvaneshwar",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=195940565613592786"
+    "mapsUrl": "https://maps.google.com/?cid=14171580565776224660"
   },
   {
     "slug": "baijnath-temple-uttarakhand",
@@ -2090,14 +2111,14 @@
     "name": "Joshimath",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9643635760332433126"
+    "mapsUrl": "https://maps.google.com/?cid=10995440791828001140"
   },
   {
     "slug": "har-ki-dun-valley",
     "name": "Har Ki Dun Valley",
-    "website": "https://www.trekmunk.com/treks/har-ki-dun",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5290836968467087650"
+    "mapsUrl": "https://maps.google.com/?cid=4608555010260757419"
   },
   {
     "slug": "pithoragarh",
@@ -2116,9 +2137,9 @@
   {
     "slug": "harsil-valley",
     "name": "Harsil",
-    "website": "https://www.greatadventure.in/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16889569025008390485"
+    "mapsUrl": "https://maps.google.com/?cid=2882979965810472107"
   },
   {
     "slug": "kartik-swami-temple",
@@ -2194,8 +2215,8 @@
     "slug": "deepor-beel",
     "name": "Deepor Beel",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9901497671014035851"
+    "editorialSummary": "Protected freshwater lake wetland site for sea & shore birds, reptiles, amphibians & insects.",
+    "mapsUrl": "https://maps.google.com/?cid=17369132181295692743"
   },
   {
     "slug": "pobitora-wildlife-sanctuary",
@@ -2314,21 +2335,21 @@
     "name": "Kamalabari Satra",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=6259097469321323391"
+    "mapsUrl": "https://maps.google.com/?cid=7472251656798273535"
   },
   {
     "slug": "auniati-satra-majuli",
     "name": "Auniati Satra",
-    "website": "http://www.auniati.org/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=4795296663344522536"
+    "mapsUrl": "https://maps.google.com/?cid=7472251656798273535"
   },
   {
     "slug": "haflong-hill-station",
     "name": "Haflong",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=8636744490990216971"
+    "mapsUrl": "https://maps.google.com/?cid=16356926950362739400"
   },
   {
     "slug": "jatinga",
@@ -2341,8 +2362,8 @@
     "slug": "chandubi-lake",
     "name": "Chandubi Lake",
     "website": null,
-    "editorialSummary": "Secluded lake ringed by tea plantations, jungle & remote villages & sheltering migratory birds.",
-    "mapsUrl": "https://maps.google.com/?cid=10011143564059829922"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1409559608537771864"
   },
   {
     "slug": "digboi-oil-heritage",
@@ -2453,15 +2474,15 @@
     "slug": "dawki-umngot-river",
     "name": "Dawki (Umngot River)",
     "website": null,
-    "editorialSummary": "This river of crystal clear water in a lush environment is a popular place for boating & kayaking.",
-    "mapsUrl": "https://maps.google.com/?cid=5178650350073712789"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11294407979585255396"
   },
   {
     "slug": "mawsynram",
     "name": "Mawsynram",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=8314673757281602676"
+    "mapsUrl": "https://maps.google.com/?cid=11363228091038097271"
   },
   {
     "slug": "laitlum-canyons",
@@ -2482,7 +2503,7 @@
     "name": "Nartiang Monoliths & Durga Temple",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5150786363757525172"
+    "mapsUrl": "https://maps.google.com/?cid=16256514878965402522"
   },
   {
     "slug": "krang-suri-falls",
@@ -2537,8 +2558,8 @@
     "slug": "bum-la-pass",
     "name": "Bum La Pass",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7083744723195308529"
+    "editorialSummary": "Historic 15,200 ft. trade route, with views & a pile of stones representing Sino-Indian relations.",
+    "mapsUrl": "https://maps.google.com/?cid=16731175162087323526"
   },
   {
     "slug": "jaswant-garh-war-memorial",
@@ -2559,14 +2580,14 @@
     "name": "Dirang",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3708411034376145708"
+    "mapsUrl": "https://maps.google.com/?cid=927637277075198461"
   },
   {
     "slug": "ziro-valley",
     "name": "Ziro Valley",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5007695970955157990"
+    "mapsUrl": "https://maps.google.com/?cid=13395823198008558826"
   },
   {
     "slug": "namdapha-national-park",
@@ -2586,29 +2607,29 @@
     "slug": "ganga-lake-itanagar",
     "name": "Ganga Lake (Gyakar Sinyi)",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5755831979734280856"
+    "editorialSummary": "Lake favored by boaters, known for its verdant banks, mountain panoramas & distinctive green color.",
+    "mapsUrl": "https://maps.google.com/?cid=12225199443832983531"
   },
   {
     "slug": "parashuram-kund",
     "name": "Parashuram Kund",
     "website": null,
-    "editorialSummary": "Remote pilgrimage site along Lohit River near a buried Hindu temple dedicated to the sage Parshuram.",
-    "mapsUrl": "https://maps.google.com/?cid=14629865461825989254"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=2458004983780465628"
   },
   {
     "slug": "mechuka-valley",
     "name": "Mechuka (Menchukha) Valley",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16848476559139368678"
+    "mapsUrl": "https://maps.google.com/?cid=16954758224640088191"
   },
   {
     "slug": "pasighat",
     "name": "Pasighat",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=4290388237714411775"
+    "mapsUrl": "https://maps.google.com/?cid=3056682207547306604"
   },
   {
     "slug": "mayodia-pass",
@@ -2628,8 +2649,8 @@
     "slug": "kohima-war-cemetery",
     "name": "Kohima War Cemetery",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=6038244376741435186"
+    "editorialSummary": "World War II cemetery & memorial overlooking the town, located on a 1944 battlefield site.",
+    "mapsUrl": "https://maps.google.com/?cid=17318813128714651904"
   },
   {
     "slug": "dzukou-valley",
@@ -2643,7 +2664,7 @@
     "name": "Khonoma",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3381346182271791136"
+    "mapsUrl": "https://maps.google.com/?cid=12227826591831914589"
   },
   {
     "slug": "kisama-heritage-village",
@@ -2670,8 +2691,8 @@
     "slug": "dimapur-kachari-ruins",
     "name": "Kachari Ruins, Dimapur",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11961803276121553862"
+    "editorialSummary": "Landmark ruins consisting of rows of ornate, mushroom-shaped columns from the 10th century.",
+    "mapsUrl": "https://maps.google.com/?cid=3168847250186770352"
   },
   {
     "slug": "shilloi-lake",
@@ -2685,7 +2706,7 @@
     "name": "Longwa Village",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=14701702234682078079"
+    "mapsUrl": "https://maps.google.com/?cid=18320153375844945938"
   },
   {
     "slug": "loktak-lake",
@@ -2737,6 +2758,13 @@
     "mapsUrl": "https://maps.google.com/?cid=548912594548578742"
   },
   {
+    "slug": "sendra-island-loktak",
+    "name": "Sendra Island",
+    "website": "https://www.classicgroupofhotels.com/sendra-resort/",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=18004730736173913663"
+  },
+  {
     "slug": "shirui-hills-ukhrul",
     "name": "Shirui Hills",
     "website": null,
@@ -2782,15 +2810,15 @@
     "slug": "phawngpui-blue-mountain",
     "name": "Phawngpui (Blue Mountain)",
     "website": null,
-    "editorialSummary": "Revered mountain peak of 7,077 ft. in a protected area of the Phawngpui National Park.",
-    "mapsUrl": "https://maps.google.com/?cid=11660592860760536588"
+    "editorialSummary": "Rare birds, tigers & other exotic species are among the highlights at this mountainside park.",
+    "mapsUrl": "https://maps.google.com/?cid=11018864684377045783"
   },
   {
     "slug": "champhai-valley",
     "name": "Champhai",
-    "website": null,
+    "website": "http://champhai.nic.in/",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13891858153449836258"
+    "mapsUrl": "https://maps.google.com/?cid=1877753038291459456"
   },
   {
     "slug": "tam-dil-lake",
@@ -2824,15 +2852,15 @@
     "slug": "unakoti-rock-carvings",
     "name": "Unakoti",
     "website": null,
-    "editorialSummary": "Ancient worship site known for its carved-rock sculptures in a picturesque natural setting.",
-    "mapsUrl": "https://maps.google.com/?cid=5065954807371721324"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14544708569288066832"
   },
   {
     "slug": "tripura-sundari-temple",
     "name": "Tripura Sundari Temple",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16390435901492961545"
+    "website": "https://tripurasundari.tripura.gov.in/contact-us",
+    "editorialSummary": "Domed 1501 Hindu temple in a Buddhist style, with a square sanctum & pond with turtles & large fish.",
+    "mapsUrl": "https://maps.google.com/?cid=6879138549772426736"
   },
   {
     "slug": "sepahijala-wildlife-sanctuary",
@@ -2846,7 +2874,7 @@
     "name": "Jampui Hills",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3738046730175279178"
+    "mapsUrl": "https://maps.google.com/?cid=15792791010755286604"
   },
   {
     "slug": "chabimura-rock-carvings",
@@ -2971,8 +2999,8 @@
     "slug": "mandore-gardens",
     "name": "Mandore Gardens",
     "website": null,
-    "editorialSummary": "Scenic, landscaped grounds featuring tomblike monuments, a temple, statues & the ruins of Mandore.",
-    "mapsUrl": "https://maps.google.com/?cid=10210877688403915432"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13715599140929194321"
   },
   {
     "slug": "jaisalmer-fort",
@@ -2998,9 +3026,9 @@
   {
     "slug": "gadisar-lake",
     "name": "Gadisar Lake",
-    "website": "https://sites.google.com/view/gadiser-lake-jaisalmer/home?authuser=0",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17317694241901247628"
+    "website": null,
+    "editorialSummary": "Created in the 14th century, this lake is now known for its temples, shrines & migratory birds.",
+    "mapsUrl": "https://maps.google.com/?cid=11908643667255992773"
   },
   {
     "slug": "kuldhara-abandoned-village",
@@ -3125,8 +3153,8 @@
     "slug": "deeg-palace",
     "name": "Deeg Palace",
     "website": null,
-    "editorialSummary": "Historic 18th-century palace complex known for its lavish interior, vibrant gardens, pools & museum.",
-    "mapsUrl": "https://maps.google.com/?cid=14551608496266881003"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17437726693309003104"
   },
   {
     "slug": "osian-temples",
@@ -3152,16 +3180,16 @@
   {
     "slug": "mandawa-shekhawati",
     "name": "Mandawa (Shekhawati)",
-    "website": "http://www.hotelmandawahaveli.com/",
-    "editorialSummary": "Warm rooms & suites in a sophisticated heritage hotel offering breakfast & a pool.",
-    "mapsUrl": "https://maps.google.com/?cid=2762327871490899739"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=4237533370785091616"
   },
   {
     "slug": "fatehsagar-lake-udaipur",
     "name": "Fateh Sagar Lake",
-    "website": "http://www.tourism.rajasthan.gov.in/fateh-sagar-lake.html",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=539918520442947894"
+    "website": null,
+    "editorialSummary": "This artificial lake created in 1678 has 3 islands in the middle, 2 of which are public parks.",
+    "mapsUrl": "https://maps.google.com/?cid=8754412202283979704"
   },
   {
     "slug": "sajjangarh-monsoon-palace",
@@ -3173,16 +3201,16 @@
   {
     "slug": "shimla-mall-road",
     "name": "Shimla Mall Road",
-    "website": "http://www.hpshimla.gov.in/",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=2269391961068623031"
+    "website": null,
+    "editorialSummary": "Scenic main road allowing pedestrian traffic only to visit its plentiful shops, eateries & hotels.",
+    "mapsUrl": "https://maps.google.com/?cid=16727563686937037517"
   },
   {
     "slug": "shimla-ridge",
     "name": "The Ridge Shimla",
-    "website": "http://www.shimlaindia.net/attractions/ridge.html",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17292051010177465265"
+    "website": null,
+    "editorialSummary": "Bustling paved promenade with a no-cars policy lined with shops, cafes & historic architecture.",
+    "mapsUrl": "https://maps.google.com/?cid=4783176836327679748"
   },
   {
     "slug": "jakhoo-temple-shimla",
@@ -3194,23 +3222,23 @@
   {
     "slug": "kufri",
     "name": "Kufri",
-    "website": "http://facebook.com/kufrifunworld",
-    "editorialSummary": "Large, year-round theme park offering rides, adventure sports & snow activities in winter.",
-    "mapsUrl": "https://maps.google.com/?cid=17820240397830966702"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6160607027057774805"
   },
   {
     "slug": "chail",
     "name": "Chail",
-    "website": "http://hptdc.in/index.php/chail-the-palace/",
-    "editorialSummary": "Genteel hotel in a 19th-century palace featuring a restaurant & a bar, plus tennis courts.",
-    "mapsUrl": "https://maps.google.com/?cid=4462640066877094285"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3855103390848714470"
   },
   {
     "slug": "kullu-valley",
     "name": "Kullu Valley",
-    "website": "http://www.hotelkulluvalley.com/",
-    "editorialSummary": "Bright rooms, some with balconies, in a laid-back hotel featuring a restaurant & a rooftop terrace.",
-    "mapsUrl": "https://maps.google.com/?cid=16111663718267124826"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13600140144750943308"
   },
   {
     "slug": "manikaran-sahib",
@@ -3224,14 +3252,14 @@
     "name": "Kasol",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7308386087434857420"
+    "mapsUrl": "https://maps.google.com/?cid=17371178585846944925"
   },
   {
     "slug": "tosh-village",
     "name": "Tosh",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3207848536143632743"
+    "mapsUrl": "https://maps.google.com/?cid=14157637408260347330"
   },
   {
     "slug": "malana-village",
@@ -3259,7 +3287,7 @@
     "name": "Bhagsu Waterfall",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11198202138049974744"
+    "mapsUrl": "https://maps.google.com/?cid=15379867162763440053"
   },
   {
     "slug": "triund-trek",
@@ -3271,16 +3299,16 @@
   {
     "slug": "dalhousie",
     "name": "Dalhousie",
-    "website": "https://dharamshalaguide.com/dainkund-peak-trek-a-majestic-journey-through-himachals-beauty/",
-    "editorialSummary": "Picturesque mountain peak with a temple at the top & scenic views along the uphill trek.",
-    "mapsUrl": "https://maps.google.com/?cid=2356136492800810975"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=13459273109925891104"
   },
   {
     "slug": "khajjiar",
     "name": "Khajjiar",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11314424108362138330"
+    "mapsUrl": "https://maps.google.com/?cid=12862800495096091612"
   },
   {
     "slug": "chamba-town",
@@ -3292,16 +3320,16 @@
   {
     "slug": "kasauli",
     "name": "Kasauli",
-    "website": "https://www.kasauliclub.in/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12437767090506045468"
+    "mapsUrl": "https://maps.google.com/?cid=3238570734400819585"
   },
   {
     "slug": "bir-billing",
     "name": "Bir Billing",
-    "website": "https://birbillingindia.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15631694745056530600"
+    "mapsUrl": "https://maps.google.com/?cid=1440055691157269210"
   },
   {
     "slug": "kalpa-kinnaur",
@@ -3315,21 +3343,28 @@
     "name": "Chitkul",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12434086709012249663"
+    "mapsUrl": "https://maps.google.com/?cid=10669444046241992072"
   },
   {
     "slug": "sangla-valley",
     "name": "Sangla Valley",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15541649815591503721"
+    "mapsUrl": "https://maps.google.com/?cid=6062921293007737318"
   },
   {
     "slug": "naldehra",
     "name": "Naldehra",
-    "website": "https://www.naldehragolfclub.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7529906707248801769"
+    "mapsUrl": "https://maps.google.com/?cid=14211863127721775177"
+  },
+  {
+    "slug": "tattapani",
+    "name": "Tattapani",
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6403231392511169751"
   },
   {
     "slug": "rewalsar-lake",
@@ -3343,7 +3378,7 @@
     "name": "Bilaspur (Gobind Sagar Lake)",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9196885856236095336"
+    "mapsUrl": "https://maps.google.com/?cid=6625202901726442797"
   },
   {
     "slug": "great-himalayan-national-park",
@@ -3419,8 +3454,8 @@
     "slug": "betaab-valley",
     "name": "Betaab Valley",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15213993780890369525"
+    "editorialSummary": "Many movies were filmed in this serene valley with a river & green meadows surrounded by mountains.",
+    "mapsUrl": "https://maps.google.com/?cid=17656046704085735814"
   },
   {
     "slug": "aru-valley",
@@ -3476,7 +3511,7 @@
     "name": "Nubra Valley (Hunder)",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12909335815535334850"
+    "mapsUrl": "https://maps.google.com/?cid=16762101070331125345"
   },
   {
     "slug": "diskit-monastery",
@@ -3525,7 +3560,7 @@
     "name": "Zanskar Valley",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17643265976831527530"
+    "mapsUrl": "https://maps.google.com/?q=Zanskar+Valley+Rd&ftid=0x38fd992c94a88b91:0x7e13cd8344f9170d"
   },
   {
     "slug": "lamayuru-monastery",
@@ -3538,8 +3573,8 @@
     "slug": "khardung-la",
     "name": "Khardung La",
     "website": null,
-    "editorialSummary": "This mountain pass, one of the world's highest, reaches a height of 17,852 ft. & passes a glacier.",
-    "mapsUrl": "https://maps.google.com/?cid=4029698937466575345"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?q=Khardung+La+Rd,+Leh&ftid=0x38fdc3fc8953f637:0x98bd866d4752e206"
   },
   {
     "slug": "leh-palace",
@@ -3587,15 +3622,15 @@
     "slug": "anandpur-sahib",
     "name": "Anandpur Sahib",
     "website": null,
-    "editorialSummary": "Sikh place of worship in a grand space & a popular pilgrimage spot with facilities for visitors.",
-    "mapsUrl": "https://maps.google.com/?cid=7404914617745016603"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=1095918416594992350"
   },
   {
     "slug": "ranjit-sagar-dam",
     "name": "Ranjit Sagar Dam",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13681861899757207509"
+    "editorialSummary": "Vast dam forming a reservoir with verdant shores, popular for picnicking & photography.",
+    "mapsUrl": "https://maps.google.com/?cid=15063741421154287917"
   },
   {
     "slug": "qila-mubarak-patiala",
@@ -3642,16 +3677,16 @@
   {
     "slug": "rock-garden-chandigarh",
     "name": "Rock Garden of Chandigarh",
-    "website": "https://nekchandsrockgarden.com/",
-    "editorialSummary": "Mosaic courtyards, sculptures & paths made from old crockery in a lush garden created by Nek Chand.",
-    "mapsUrl": "https://maps.google.com/?cid=13951167540911549874"
+    "website": null,
+    "editorialSummary": "Mosaic courtyards, sculptures & paths made from old crockery in 24-acre garden created by Nek Chand.",
+    "mapsUrl": "https://maps.google.com/?cid=7175297260613876389"
   },
   {
     "slug": "sukhna-lake-chandigarh",
     "name": "Sukhna Lake",
-    "website": "https://chandigarhtourism.gov.in/pages/page/lake",
-    "editorialSummary": "Lively spot for boating on the lake, plus jogging, bird-watching & other waterside activities.",
-    "mapsUrl": "https://maps.google.com/?cid=9760149470107123734"
+    "website": null,
+    "editorialSummary": "Sizable reservoir featuring pedal boats & areas for jogging, plus migratory birds.",
+    "mapsUrl": "https://maps.google.com/?cid=9978303007312369058"
   },
   {
     "slug": "rose-garden-chandigarh",
@@ -3670,9 +3705,9 @@
   {
     "slug": "mahabalipuram-shore-temple",
     "name": "Mahabalipuram (Mamallapuram)",
-    "website": "https://www.mahabalipuram.org/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15385012571327520274"
+    "mapsUrl": "https://maps.google.com/?cid=11313211166171894591"
   },
   {
     "slug": "brihadeeswara-temple-thanjavur",
@@ -3700,21 +3735,21 @@
     "name": "Dhanushkodi",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=10092995614273577606"
+    "mapsUrl": "https://maps.google.com/?cid=4693390746617752250"
   },
   {
     "slug": "kodaikanal",
     "name": "Kodaikanal",
     "website": null,
-    "editorialSummary": "Cypresses, eucalyptus & meadows surround this high-altitude village with views over a lake & hills.",
-    "mapsUrl": "https://maps.google.com/?cid=10184104797438968460"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11527782619569242428"
   },
   {
     "slug": "marina-beach-chennai",
     "name": "Marina Beach, Chennai",
     "website": null,
-    "editorialSummary": "This large sandy beach is a popular escape for locals & visitors to Chennai.",
-    "mapsUrl": "https://maps.google.com/?cid=11765186568882202891"
+    "editorialSummary": "Bustling urban beach featuring a long shoreline for basking & a variety of food stalls & shops.",
+    "mapsUrl": "https://maps.google.com/?cid=381063856029611530"
   },
   {
     "slug": "kapaleeshwarar-temple",
@@ -3727,8 +3762,8 @@
     "slug": "fort-st-george-chennai",
     "name": "Fort St. George",
     "website": null,
-    "editorialSummary": "The first British fortress built in India, established in 1644, with a museum & 17th-century church.",
-    "mapsUrl": "https://maps.google.com/?cid=5548234867178509053"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=818982172841012494"
   },
   {
     "slug": "government-museum-egmore-chennai",
@@ -3748,8 +3783,8 @@
     "slug": "elliots-beach-chennai",
     "name": "Elliot's Beach (Besant Nagar)",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11405572662356807980"
+    "editorialSummary": "Popular beach offering a sandy shoreline & swimming spots, plus the Karl Schmidt Memorial.",
+    "mapsUrl": "https://maps.google.com/?cid=9533429003285492113"
   },
   {
     "slug": "kanchipuram-kailasanathar",
@@ -3784,7 +3819,7 @@
     "name": "Hogenakkal Falls",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=6115052448670192113"
+    "mapsUrl": "https://maps.google.com/?q=Madheswara+Betta+-+Hogenakkal+Falls+Rd,+Karnataka+571490,+India&ftid=0x3baeb8f477031db1:0x54dd07cd99de91f1"
   },
   {
     "slug": "chidambaram-nataraja-temple",
@@ -3810,9 +3845,9 @@
   {
     "slug": "courtallam-falls",
     "name": "Courtallam Falls (Kutralam)",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9385196015332905890"
+    "website": "http://www.courtallam.com/",
+    "editorialSummary": "Series of 5 small cascades above a shallow pond, with separate bathing areas for men & women.",
+    "mapsUrl": "https://maps.google.com/?cid=16581911403193478551"
   },
   {
     "slug": "palani-murugan-temple",
@@ -3840,7 +3875,7 @@
     "name": "Tranquebar (Tharangambadi)",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=8239661030067365824"
+    "mapsUrl": "https://maps.google.com/?cid=2989993612940503370"
   },
   {
     "slug": "pichavaram-mangrove-forest",
@@ -3852,9 +3887,9 @@
   {
     "slug": "mudumalai-national-park",
     "name": "Mudumalai National Park",
-    "website": "https://www.mudumalaitigerreserve.com/",
-    "editorialSummary": "Expansive wildlife sanctuary & national park open since 1940 & known for its tiger reserve.",
-    "mapsUrl": "https://maps.google.com/?cid=673035149721443427"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=15697758879454812924"
   },
   {
     "slug": "coonoor-nilgiris",
@@ -3867,8 +3902,8 @@
     "slug": "doddabetta-peak",
     "name": "Doddabetta Peak",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=135040225482542640"
+    "editorialSummary": "8,650-ft. mountain with road access, a forest preserve at the peak & telescope observatory.",
+    "mapsUrl": "https://maps.google.com/?cid=12464487913492439417"
   },
   {
     "slug": "valparai",
@@ -3880,9 +3915,9 @@
   {
     "slug": "isha-adiyogi-coimbatore",
     "name": "Adiyogi Shiva Statue, Isha Yoga Center",
-    "website": "https://isha.sadhguru.org/in/en",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12794164674776028618"
+    "website": "https://isha.sadhguru.org/in/en/center/consecrated-spaces/112-feet-adiyogi",
+    "editorialSummary": "Massive, 112-ft-high steel sculpture representing the likeness of the Hindu deity Shiva.",
+    "mapsUrl": "https://maps.google.com/?cid=9144487742688486990"
   },
   {
     "slug": "vellore-fort",
@@ -3943,9 +3978,9 @@
   {
     "slug": "kolli-hills",
     "name": "Kolli Hills",
-    "website": "http://kollihills.org/",
-    "editorialSummary": "Viewing platforms at a waterfall accessed via steep hillside stairs through forest.",
-    "mapsUrl": "https://maps.google.com/?cid=9383616936162925862"
+    "website": null,
+    "editorialSummary": "Lush mountain range featuring hikes to dramatic waterfalls, ancient temples & sacred caves.",
+    "mapsUrl": "https://maps.google.com/?cid=1791381152183204346"
   },
   {
     "slug": "alleppey-backwaters",
@@ -3959,7 +3994,7 @@
     "name": "Fort Kochi",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=608844724758257469"
+    "mapsUrl": "https://maps.google.com/?cid=14214806553311949883"
   },
   {
     "slug": "mattancherry-palace-kochi",
@@ -3978,16 +4013,16 @@
   {
     "slug": "kumarakom",
     "name": "Kumarakom",
-    "website": "https://kumarakomrestaurant.com/",
-    "editorialSummary": "No nonsense dining room for a menu of classic Keralan dishes from a chain originating in the south.",
-    "mapsUrl": "https://maps.google.com/?cid=944951252737466597"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=874550845250332961"
   },
   {
     "slug": "wayanad",
     "name": "Wayanad",
-    "website": "https://wayanadtripplanner.com/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5161172727049935012"
+    "mapsUrl": "https://maps.google.com/?cid=9293622555212651017"
   },
   {
     "slug": "edakkal-caves-wayanad",
@@ -4000,8 +4035,8 @@
     "slug": "banasura-sagar-dam",
     "name": "Banasura Sagar Dam",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=905611982081897405"
+    "editorialSummary": "Enormous dam & scenic lake area offering walking trails & popular speed boat rides.",
+    "mapsUrl": "https://maps.google.com/?cid=3710170945367423860"
   },
   {
     "slug": "periyar-thekkady",
@@ -4014,15 +4049,15 @@
     "slug": "kovalam-beach",
     "name": "Kovalam Beach",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7044734163940277948"
+    "editorialSummary": "This sandy beach features unusual rock formations at its edge & large waves suitable for surfing.",
+    "mapsUrl": "https://maps.google.com/?cid=5581752376844058712"
   },
   {
     "slug": "varkala-beach",
     "name": "Varkala Beach",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11217343901936601536"
+    "editorialSummary": "Set amid large cliffs with natural springs, this scenic beach's waters are said to wash away sins.",
+    "mapsUrl": "https://maps.google.com/?cid=5952106106515175065"
   },
   {
     "slug": "athirappilly-falls",
@@ -4041,9 +4076,9 @@
   {
     "slug": "sabarimala-ayyappa-temple",
     "name": "Sabarimala Ayyappa Temple",
-    "website": "https://sabarimala.kerala.gov.in/",
+    "website": "http://sabarimala.kerala.gov.in/",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=7253104735775075141"
+    "mapsUrl": "https://maps.google.com/?cid=10750153712738697326"
   },
   {
     "slug": "bekal-fort",
@@ -4062,16 +4097,16 @@
   {
     "slug": "poovar-island",
     "name": "Poovar Island",
-    "website": "http://poovarislandresorts.com/",
-    "editorialSummary": "Stylish cottages in an upscale venue offering 2 restaurants, a spa, 2 pools & a sunken bar.",
-    "mapsUrl": "https://maps.google.com/?cid=2274292432573545181"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=6155297533561502359"
   },
   {
     "slug": "vagamon",
     "name": "Vagamon",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13502915147420259005"
+    "mapsUrl": "https://maps.google.com/?cid=16683454855185869753"
   },
   {
     "slug": "eravikulam-national-park",
@@ -4105,8 +4140,8 @@
     "slug": "kozhikode-beach",
     "name": "Kozhikode Beach (Calicut)",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=16500535710507074274"
+    "editorialSummary": "Extensive, sandy city beach featuring seafood shacks, a children's playground & an aquarium.",
+    "mapsUrl": "https://maps.google.com/?cid=17366967525388947726"
   },
   {
     "slug": "cherai-beach",
@@ -4147,36 +4182,36 @@
     "slug": "ponmudi-hills",
     "name": "Ponmudi",
     "website": null,
-    "editorialSummary": "Hilltop locale offering hiking trails with forests, a river, waterfalls & sweeping views.",
-    "mapsUrl": "https://maps.google.com/?cid=13348680453932512829"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11719869848768003580"
   },
   {
     "slug": "araku-valley",
     "name": "Araku Valley",
     "website": null,
-    "editorialSummary": "Known for its scenic beauty, this hill station is surrounded by mountains & dense forests.",
-    "mapsUrl": "https://maps.google.com/?cid=1765131070365378"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3138416273792563606"
   },
   {
     "slug": "rk-beach-visakhapatnam",
     "name": "RK Beach, Visakhapatnam",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17668084263802421533"
+    "website": "http://www.papikondalu.org.in/",
+    "editorialSummary": "Popular with walkers & sunbathers, this stretch of sand is known for rough waves & rock formations.",
+    "mapsUrl": "https://maps.google.com/?cid=15522251922841927462"
   },
   {
     "slug": "kailasagiri-visakhapatnam",
     "name": "Kailasagiri, Visakhapatnam",
-    "website": "http://vmrda.gov.in/kailashgiri.aspx",
-    "editorialSummary": "Hilltop park & gardens known for huge Shiva statue & picturesque views of forest & sea.",
-    "mapsUrl": "https://maps.google.com/?cid=14938162944048716897"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11048578004061849659"
   },
   {
     "slug": "rishikonda-beach",
     "name": "Rishikonda Beach",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=4519870663339860182"
+    "editorialSummary": "Bustling, curved beach with clear water, food vendors & water sports like diving & jet skiing.",
+    "mapsUrl": "https://maps.google.com/?cid=13868652692978921965"
   },
   {
     "slug": "borra-caves",
@@ -4216,9 +4251,9 @@
   {
     "slug": "gandikota",
     "name": "Gandikota",
-    "website": "https://kadapa.ap.gov.in/gandikota/",
+    "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13788138690908609115"
+    "mapsUrl": "https://maps.google.com/?cid=10393560237352738989"
   },
   {
     "slug": "belum-caves",
@@ -4239,7 +4274,7 @@
     "name": "Undavalli Caves",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=11534723923661302887"
+    "mapsUrl": "https://maps.google.com/?cid=10250537309108685453"
   },
   {
     "slug": "kanaka-durga-temple-vijayawada",
@@ -4308,8 +4343,8 @@
     "slug": "hussain-sagar-lake-hyderabad",
     "name": "Hussain Sagar Lake",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=3254146520835767939"
+    "editorialSummary": "A large Buddha monument rises atop a giant rock in the midst of this heart-shaped, urban lake.",
+    "mapsUrl": "https://maps.google.com/?cid=2697747864893017757"
   },
   {
     "slug": "qutb-shahi-tombs-hyderabad",
@@ -4356,9 +4391,9 @@
   {
     "slug": "nagarjuna-sagar-dam",
     "name": "Nagarjuna Sagar Dam",
-    "website": "https://krmb.gov.in/krmb/home",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13766383381239178565"
+    "website": null,
+    "editorialSummary": "Massive irrigation & power-generating dam popular for viewing during monsoon season.",
+    "mapsUrl": "https://maps.google.com/?cid=3286777429022461250"
   },
   {
     "slug": "yadagirigutta-temple",
@@ -4385,15 +4420,15 @@
     "slug": "promenade-beach-puducherry",
     "name": "Promenade Beach (Rock Beach)",
     "website": null,
-    "editorialSummary": "Strip of rocky shoreline in a populous urban area with a promenade, a war memorial & a park.",
-    "mapsUrl": "https://maps.google.com/?cid=18133717170555515889"
+    "editorialSummary": "Coastal stretch with a seawall & a palm tree-lined promenade, popular for watching the sunrise.",
+    "mapsUrl": "https://maps.google.com/?cid=12599657740789543457"
   },
   {
     "slug": "auroville",
     "name": "Auroville & Matrimandir",
-    "website": "https://auroville.org/",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15374487023652450344"
+    "website": null,
+    "editorialSummary": "Geodesic dome cloaked in shimmering gold discs &  featuring a tranquil, airy meditation sanctuary.",
+    "mapsUrl": "https://maps.google.com/?cid=5841769991454241242"
   },
   {
     "slug": "paradise-beach-puducherry",
@@ -4405,9 +4440,9 @@
   {
     "slug": "sri-aurobindo-ashram-puducherry",
     "name": "Sri Aurobindo Ashram",
-    "website": "http://www.sriaurobindoashram.org/",
-    "editorialSummary": "Large residential spiritual community with meditation & yoga practice, open to day visitors.",
-    "mapsUrl": "https://maps.google.com/?cid=3343957827755861519"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=11874825267871982648"
   },
   {
     "slug": "french-quarter-puducherry",
@@ -4426,23 +4461,23 @@
   {
     "slug": "agatti-island",
     "name": "Agatti Island",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5205764679184824967"
+    "website": "http://lakshadweep.nic.in/ISLAND_web/agatti/index.htm",
+    "editorialSummary": "3.7-mi.-long island with a lagoon rich in coral & marine life, known for its fishing industry.",
+    "mapsUrl": "https://maps.google.com/?cid=9763903184028686446"
   },
   {
     "slug": "bangaram-island",
     "name": "Bangaram Island",
-    "website": "https://www.seleqtionshotels.com/en-in/hotels/bangaram-island-lakshadweep?utm_source=google&utm_medium=local&utm_campaign=bangaram-island-lakshadweep-cla&utm_content=bangaram-island-lakshadweep-cla-gmb",
-    "editorialSummary": "Casual beachfront resort offering pared-back rooms in thatched huts, plus water sports & dining.",
-    "mapsUrl": "https://maps.google.com/?cid=12579385289390401718"
+    "website": null,
+    "editorialSummary": "Only accessible by ferry, this peaceful, secluded island features sandy beaches & turquoise waters.",
+    "mapsUrl": "https://maps.google.com/?cid=16464466213553479164"
   },
   {
     "slug": "kavaratti-island",
     "name": "Kavaratti Island",
-    "website": "https://lakshadweepidentity.com/Kavarati_Island_Beach_Resorts.php",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=1946823302694200834"
+    "website": null,
+    "editorialSummary": "Tiny coral islet offering secluded white-sand beaches, clear-water lagoons & a diving center.",
+    "mapsUrl": "https://maps.google.com/?cid=15378664531735557348"
   },
   {
     "slug": "minicoy-island",
@@ -4489,9 +4524,9 @@
   {
     "slug": "bet-dwarka",
     "name": "Bet Dwarka",
-    "website": "http://www.beytdwarka.com/",
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=10890128452043264192"
+    "website": null,
+    "editorialSummary": "Peaceful, sandy island considered part of a historic sacred city, featuring temples & shrines.",
+    "mapsUrl": "https://maps.google.com/?cid=5656989254115391611"
   },
   {
     "slug": "nageshwar-jyotirlinga",
@@ -4518,8 +4553,8 @@
     "slug": "kalo-dungar-black-hill",
     "name": "Kalo Dungar (Black Hill)",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15387579382923550518"
+    "editorialSummary": "462-meter peak, Kutch's highest point, featuring an old Hindu temple & views of a huge salt marsh.",
+    "mapsUrl": "https://maps.google.com/?cid=3944038680038956591"
   },
   {
     "slug": "bhuj-city",
@@ -4532,15 +4567,15 @@
     "slug": "mandvi-beach-kutch",
     "name": "Mandvi Beach",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=6774812298941536378"
+    "editorialSummary": "Picturesque beach area known for its water sports, sunset views & solar-powered wind turbines.",
+    "mapsUrl": "https://maps.google.com/?cid=4290077745153010739"
   },
   {
     "slug": "wild-ass-sanctuary-little-rann",
     "name": "Wild Ass Sanctuary, Little Rann of Kutch",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=13516737326750458510"
+    "mapsUrl": "https://maps.google.com/?cid=12199618799711085614"
   },
   {
     "slug": "ahmedabad-heritage-city",
@@ -4608,9 +4643,9 @@
   {
     "slug": "saputara-hill-station",
     "name": "Saputara",
-    "website": "http://www.gujarattourism.com/",
-    "editorialSummary": "Hill resort popular for hiking, paragliding & lake boating, with a ropeway & several gardens.",
-    "mapsUrl": "https://maps.google.com/?cid=6144842641538586669"
+    "website": "http://en.wikipedia.org/wiki/Saputara",
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=3564528453424262259"
   },
   {
     "slug": "laxmi-vilas-palace-vadodara",
@@ -4666,7 +4701,7 @@
     "name": "Marine Drive",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15014479262771887712"
+    "mapsUrl": "https://maps.google.com/?q=Marine+Dr,+Mumbai,+Maharashtra,+India&ftid=0x3be7d1e25ee8439d:0x5acd924f2726ad2b"
   },
   {
     "slug": "chhatrapati-shivaji-terminus",
@@ -4680,7 +4715,7 @@
     "name": "Juhu Beach",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=15233250799684907383"
+    "mapsUrl": "https://maps.google.com/?cid=3820315394291715745"
   },
   {
     "slug": "haji-ali-dargah",
@@ -4706,9 +4741,9 @@
   {
     "slug": "ajanta-caves",
     "name": "Ajanta Caves",
-    "website": "https://asi.nic.in/pages/WorldHeritageAjantaCaves",
-    "editorialSummary": "Richly decorated caves dating from 2nd & 1st centuries BC, home to masterpieces of religious art.",
-    "mapsUrl": "https://maps.google.com/?cid=8982666699882457375"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14879447781928250377"
   },
   {
     "slug": "ellora-caves",
@@ -4736,7 +4771,7 @@
     "name": "Lonavala",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=12868777734651933530"
+    "mapsUrl": "https://maps.google.com/?cid=7596246975450875480"
   },
   {
     "slug": "khandala",
@@ -4806,7 +4841,7 @@
     "name": "Panchgani",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=4698269836674855247"
+    "mapsUrl": "https://maps.google.com/?cid=8878364610173955068"
   },
   {
     "slug": "bhandardara",
@@ -4888,9 +4923,9 @@
   {
     "slug": "shirdi-note-different",
     "name": "Shani Shingnapur",
-    "website": "https://www.shanidev.com/",
+    "website": "https://www.maharashtratourism.gov.in/treasures/temple/shani-shinganapur",
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9696964636684993874"
+    "mapsUrl": "https://maps.google.com/?cid=10351283319165149939"
   },
   {
     "slug": "karla-caves",
@@ -4902,16 +4937,16 @@
   {
     "slug": "goa-north-beaches-belt",
     "name": "Baga Beach",
-    "website": "http://thebagabeach.com/",
-    "editorialSummary": "Scenic stretch of ocean & sand with lifeguards, water sports & beachfront eateries.",
-    "mapsUrl": "https://maps.google.com/?cid=5585614823562793154"
+    "website": null,
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=14307082092765165083"
   },
   {
     "slug": "calangute-beach",
     "name": "Calangute Beach",
     "website": null,
-    "editorialSummary": "Extensive sandy strip backed by souvenir stalls & shack cafes, popular for parasailing & jet skiing.",
-    "mapsUrl": "https://maps.google.com/?cid=12968548001749912177"
+    "editorialSummary": "Big, popular beach with water sports, such as boating, water skiing & parasailing, plus food stalls.",
+    "mapsUrl": "https://maps.google.com/?cid=14652795284265205015"
   },
   {
     "slug": "anjuna-beach",
@@ -4924,8 +4959,8 @@
     "slug": "vagator-beach",
     "name": "Vagator Beach",
     "website": null,
-    "editorialSummary": "This popular beach is surrounded by red cliffs & is known for its raves & sunset views.",
-    "mapsUrl": "https://maps.google.com/?cid=2299015755817294595"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=16758197038765020370"
   },
   {
     "slug": "chapora-fort",
@@ -4960,7 +4995,7 @@
     "name": "Fontainhas, Panaji",
     "website": null,
     "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=9897792142643605863"
+    "mapsUrl": "https://maps.google.com/?cid=12530857843543633530"
   },
   {
     "slug": "dudhsagar-falls",
@@ -4972,9 +5007,9 @@
   {
     "slug": "palolem-beach",
     "name": "Palolem Beach",
-    "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=17443542817295446350"
+    "website": "http://www.palolem-beach.com/",
+    "editorialSummary": "Uncrowded stretch of white sand with calm waters, a restaurant and silent disco music parties.",
+    "mapsUrl": "https://maps.google.com/?cid=2169545886941559797"
   },
   {
     "slug": "colva-beach",
@@ -4987,15 +5022,15 @@
     "slug": "agonda-beach",
     "name": "Agonda Beach",
     "website": null,
-    "editorialSummary": "Calm, sandy beach that serves as a nesting ground for olive ridley sea turtles each September.",
-    "mapsUrl": "https://maps.google.com/?cid=9557625163123759215"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=17248071730477374789"
   },
   {
     "slug": "benaulim-beach",
     "name": "Benaulim Beach",
     "website": null,
-    "editorialSummary": "Expansive, laid-back sand beach offering shacks with food & drink & outfitters for water sports.",
-    "mapsUrl": "https://maps.google.com/?cid=8775402186146729863"
+    "editorialSummary": "Spacious, low-key sand beach dotted with shacks, offering sunbeds & casual dining.",
+    "mapsUrl": "https://maps.google.com/?cid=3835902720509201177"
   },
   {
     "slug": "cabo-de-rama-fort",
@@ -5015,8 +5050,8 @@
     "slug": "arambol-beach",
     "name": "Arambol Beach",
     "website": null,
-    "editorialSummary": "Laid-back public beach for sunbathing & swimming, with convenient access to nearby restaurants.",
-    "mapsUrl": "https://maps.google.com/?cid=4146964631100675228"
+    "editorialSummary": null,
+    "mapsUrl": "https://maps.google.com/?cid=9901758885432190949"
   },
   {
     "slug": "diu-fort",
@@ -5050,8 +5085,8 @@
     "slug": "jampore-beach-daman",
     "name": "Jampore Beach, Daman",
     "website": null,
-    "editorialSummary": null,
-    "mapsUrl": "https://maps.google.com/?cid=5344087549638022767"
+    "editorialSummary": "Coastal hangout with a sand beach, casual restaurants & activities such as parasailing & boat rides.",
+    "mapsUrl": "https://maps.google.com/?cid=2522867695664357465"
   },
   {
     "slug": "moti-daman-fort",

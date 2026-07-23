@@ -13,7 +13,7 @@ export const karnatakaMysuruRegion: Omit<NewDestination, "id" | "createdAt">[] =
     shortDescription:
       "The opulent Indo-Saracenic seat of the Wadiyar dynasty, dazzling when lit with ~97,000 bulbs.",
     description: "Mysore Palace (Amba Vilas) is among India's most visited monuments, seat of the Wadiyar dynasty; the present Indo-Saracenic structure was rebuilt after an 1897 fire destroyed the earlier wooden palace. Its ornate Durbar Hall, Kalyana Mantapa and jewelled Golden Howdah are highlights. The palace is illuminated with roughly 97,000 bulbs on Sunday evenings, public holidays and nightly through the ten-day Dasara festival, when it also hosts the royal procession. A separate evening sound-and-light show ticket covers the palace's 400-year history.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/56/Mysuru_Montage.jpg",
+    imageUrl: null,
     openingTimings: "10:00 AM - 5:30 PM",
     entryFees: 100,
     budgetPerDay: 1500,
@@ -275,7 +275,7 @@ export const karnatakaMysuruRegion: Omit<NewDestination, "id" | "createdAt">[] =
       "Island fortress of Tipu Sultan where the decisive 1799 Anglo-Mysore battle was fought.",
     description:
       "Srirangapatna Fort, encircled by the Cauvery, was the island capital of Hyder Ali and Tipu Sultan. The site of Tipu's last stand against the British in 1799, it preserves ramparts, dungeons, the Water Gate and the spot where Tipu fell.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Gopuram_of_the_Ranganathaswamy_Temple%2C_Srirangapatna_Karnataka_India.jpg/1280px-Gopuram_of_the_Ranganathaswamy_Temple%2C_Srirangapatna_Karnataka_India.jpg",
     openingTimings: "8:30 AM - 5:30 PM",
     entryFees: 0,
     budgetPerDay: 900,
@@ -680,7 +680,7 @@ export const karnatakaMysuruRegion: Omit<NewDestination, "id" | "createdAt">[] =
       "Sacred source of the Cauvery on Brahmagiri Hill, with a kundike tank and panoramic Western Ghats views.",
     description:
       "Talacauvery, on the Brahmagiri Hills near Bhagamandala, is the revered origin of the Cauvery river. Pilgrims bathe in the Triveni and visit the small temple tank (kundike) where the goddess Cauvery is believed to well up, especially during the Tula Sankramana festival.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Thalakkaveri_Temple%2C_Karnataka.jpg/1280px-Thalakkaveri_Temple%2C_Karnataka.jpg",
     openingTimings: "6:00 AM - 8:30 PM",
     entryFees: 0,
     budgetPerDay: 1700,

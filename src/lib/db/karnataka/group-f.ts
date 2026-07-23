@@ -57,7 +57,7 @@ export const karnatakaKitturRegion: Omit<NewDestination, "id" | "createdAt">[] =
       "Unfinished mausoleum of Ali Adil Shah II, a striking row of soaring arches left incomplete.",
     description:
       "Bara Kaman is the unfinished tomb of Ali Adil Shah II, planned as a grand mausoleum of twelve arches but abandoned after his death. Today its surviving arches rise dramatically against the sky over the graves below, lending the ruin an evocative, melancholy beauty. Legend holds that the monument was deliberately left incomplete so it would not overshadow Gol Gumbaz.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c6/Bijapur_Montage.jpg",
+    imageUrl: null,
     openingTimings: "8:00 AM - 5:00 PM",
     entryFees: 0,
     budgetPerDay: 900,

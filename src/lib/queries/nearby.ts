@@ -6,6 +6,7 @@ export interface NearbyFilters {
   baseCity?: string;
   category?: string;
   maxDistanceKm?: number;
+  limit?: number;
 }
 
 export async function listNearby(
@@ -15,11 +16,13 @@ export async function listNearby(
   if (filters.baseCity) where.push(eq(nearbyDestinations.baseCity, filters.baseCity));
   if (filters.category) where.push(eq(nearbyDestinations.category, filters.category));
 
-  return db
+  const query = db
     .select()
     .from(nearbyDestinations)
     .where(where.length ? and(...where) : undefined)
     .orderBy(desc(nearbyDestinations.popularity));
+
+  return filters.limit ? query.limit(filters.limit) : query;
 }
 
 export async function getNearbyBySlug(slug: string) {

@@ -45,6 +45,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 type Place = {
   slug: string;
   name: string;
+  state: string;
   district: string | null;
   latitude: string | null;
   longitude: string | null;
@@ -175,8 +176,8 @@ async function run() {
 
     for (let i = 0; i < places.length; i++) {
       const p = places[i];
-      const query = `${p.name}, ${p.district ?? ""}, Karnataka, India`;
-      let entry: any = { slug: p.slug, name: p.name, district: p.district };
+      const query = `${p.name}, ${p.district ?? ""}, ${p.state}, India`;
+      let entry: any = { slug: p.slug, name: p.name, state: p.state, district: p.district };
 
       try {
         const hit = await textSearch(query);

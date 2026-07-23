@@ -6,9 +6,9 @@
     "existingLatLng": "24.9333,80.0167",
     "googleLatLng": "24.8748466,80.0512626",
     "deltaM": 7375,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Raneh Falls",
+    "wikiLatLng": "24.884,80.044",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=18361180972780276754"
   },
   {
@@ -18,8 +18,8 @@
     "existingLatLng": "23.256,77.369",
     "googleLatLng": "23.2532367,77.3381855",
     "deltaM": 3163,
-    "wikiTitle": "Bhopal district",
-    "wikiLatLng": "23.2667,77.4",
+    "wikiTitle": "Bhopal",
+    "wikiLatLng": "23.2589,77.4125",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=17009716571010225726"
   },
@@ -30,9 +30,9 @@
     "existingLatLng": "23.2,75.766",
     "googleLatLng": "23.2181977,75.768832",
     "deltaM": 2044,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Ujjain",
+    "wikiLatLng": "23.17,75.79",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=12118199043963983826"
   },
   {
@@ -42,9 +42,9 @@
     "existingLatLng": "22.3441,75.376",
     "googleLatLng": "22.3104032,75.4101227",
     "deltaM": 5134,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Mandu, Madhya Pradesh",
+    "wikiLatLng": "22.33527778,75.41583333",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=7596499833735789438"
   },
   {
@@ -60,14 +60,26 @@
     "mapsUrl": "https://maps.google.com/?cid=6418503219015805516"
   },
   {
+    "slug": "bandhavgarh-national-park",
+    "name": "Bandhavgarh National Park",
+    "district": "Umaria",
+    "existingLatLng": "23.7135,81.0326",
+    "googleLatLng": "23.6993878,80.9754712",
+    "deltaM": 6024,
+    "wikiTitle": "Bandhavgarh National Park",
+    "wikiLatLng": "23.69944444,80.96194444",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=2776407936788515798"
+  },
+  {
     "slug": "pench-national-park-mp",
     "name": "Pench National Park (Madhya Pradesh)",
     "district": "Seoni",
     "existingLatLng": "21.75,79.296",
     "googleLatLng": "21.7495644,79.33528989999999",
     "deltaM": 4058,
-    "wikiTitle": "Pench National Park",
-    "wikiLatLng": "21.6716,79.3033",
+    "wikiTitle": "Seoni, Madhya Pradesh",
+    "wikiLatLng": "22.08,79.53",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=1125790442188710623"
   },
@@ -90,10 +102,22 @@
     "existingLatLng": "22.52,78.27",
     "googleLatLng": "22.4838736,78.3842227",
     "deltaM": 12403,
-    "wikiTitle": "Satpura Tiger Reserve",
-    "wikiLatLng": "22.495,78.231",
+    "wikiTitle": "Satpura Range",
+    "wikiLatLng": "21.98333333,74.86666667",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=7287173221623898904"
+  },
+  {
+    "slug": "amarkantak-narmada-source",
+    "name": "Amarkantak (Narmada Source)",
+    "district": "Anuppur",
+    "existingLatLng": "22.672,81.755",
+    "googleLatLng": "22.6822292,81.7532219",
+    "deltaM": 1152,
+    "wikiTitle": "Amarkantak",
+    "wikiLatLng": "22.822,81.7532",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=11348074958987533315"
   },
   {
     "slug": "chitrakoot-mp",
@@ -114,9 +138,9 @@
     "existingLatLng": "22.933,80.783",
     "googleLatLng": "23.1102664,80.61432839999999",
     "deltaM": 26201,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Ghughua Fossil Park",
+    "wikiLatLng": "23.11055556,80.61416667",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=17117181108066890796"
   },
   {
@@ -126,9 +150,9 @@
     "existingLatLng": "18.833,81.916",
     "googleLatLng": "18.9139499,81.8651088",
     "deltaM": 10473,
-    "wikiTitle": "Kanger Valley National Park",
-    "wikiLatLng": "18.76666667,81.98333333",
-    "verdict": "ambiguous",
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
     "mapsUrl": "https://maps.google.com/?cid=15479179902818984105"
   },
   {
@@ -162,9 +186,9 @@
     "existingLatLng": "22.045,81.183",
     "googleLatLng": "22.1154142,81.1480291",
     "deltaM": 8619,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Bhoramdeo Temple",
+    "wikiLatLng": "22.116,81.148",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=6932089657219411584"
   },
   {
@@ -174,9 +198,9 @@
     "existingLatLng": "22.95,83.366",
     "googleLatLng": "22.8225722,83.2888284",
     "deltaM": 16226,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Mainpat",
+    "wikiLatLng": "22.837,83.315",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=8825264912261549484"
   },
   {
@@ -186,8 +210,8 @@
     "existingLatLng": "22.45,81.75",
     "googleLatLng": "22.505154,81.77870209999999",
     "deltaM": 6805,
-    "wikiTitle": "Achanakmar Wildlife Sanctuary",
-    "wikiLatLng": "22.55,81.73",
+    "wikiTitle": "Mungeli district",
+    "wikiLatLng": "22.067,81.67",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=7368849856607995418"
   },
@@ -196,12 +220,12 @@
     "name": "Rajgir (Vishwa Shanti Stupa & Ropeway)",
     "district": "Nalanda",
     "existingLatLng": "25.027,85.42",
-    "googleLatLng": "25.00444,85.4445215",
-    "deltaM": 3521,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=562110475552464462"
+    "googleLatLng": "24.9977693,85.4410233",
+    "deltaM": 3880,
+    "wikiTitle": "Vishwa Shanti Stupa, Rajgir",
+    "wikiLatLng": "25.01222222,85.74583333",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?q=Vishwa+Shanti+Stupa+Rd+%26+Rope+Way,+Bihar+803116,+India&ftid=0x39f2facbad013ca9:0xaba9a9ea2abea95f"
   },
   {
     "slug": "vaishali-ashokan-pillar",
@@ -210,9 +234,9 @@
     "existingLatLng": "25.991,85.128",
     "googleLatLng": "26.0141354,85.1089878",
     "deltaM": 3198,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Vaishali (ancient city)",
+    "wikiLatLng": "26.0137,85.109",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=6970070791881965930"
   },
   {
@@ -220,12 +244,12 @@
     "name": "Madhubani (Mithila Painting Villages)",
     "district": "Madhubani",
     "existingLatLng": "26.354,86.071",
-    "googleLatLng": "13.0421194,77.5787596",
-    "deltaM": 1725201,
+    "googleLatLng": "26.0938268,86.3181658",
+    "deltaM": 38011,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=12528451327266672333"
+    "mapsUrl": "https://maps.google.com/?cid=5624824766148498926"
   },
   {
     "slug": "sher-shah-suri-tomb-sasaram",
@@ -234,9 +258,9 @@
     "existingLatLng": "24.949,84.03",
     "googleLatLng": "24.9479557,84.0092241",
     "deltaM": 2098,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Tomb of Sher Shah Suri",
+    "wikiLatLng": "24.9481,84.0092",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=6209158676276469078"
   },
   {
@@ -246,9 +270,9 @@
     "existingLatLng": "25.165,85.503",
     "googleLatLng": "25.0914304,85.5389788",
     "deltaM": 8947,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Jal Mandir",
+    "wikiLatLng": "25.09111111,85.53861111",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=13069717034074616751"
   },
   {
@@ -270,9 +294,9 @@
     "existingLatLng": "25.077,83.547",
     "googleLatLng": "24.9835359,83.56467549999999",
     "deltaM": 10544,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Mundeshwari Temple",
+    "wikiLatLng": "24.9833958,83.5646939",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=17492977007567352663"
   },
   {
@@ -282,9 +306,9 @@
     "existingLatLng": "24.533,86.833",
     "googleLatLng": "24.4973757,86.83626389999999",
     "deltaM": 3975,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Deoghar district",
+    "wikiLatLng": "24.48333333,86.7",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=14367750411732441149"
   },
   {
@@ -294,10 +318,22 @@
     "existingLatLng": "24.03,85.416",
     "googleLatLng": "24.142977,85.3822027",
     "deltaM": 13023,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Hazaribagh district",
+    "wikiLatLng": "24,85.25",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3257619293647164656"
+  },
+  {
+    "slug": "jubilee-park-jamshedpur",
+    "name": "Jubilee Park, Jamshedpur",
+    "district": "East Singhbhum",
+    "existingLatLng": "22.8,86.183",
+    "googleLatLng": "22.8115492,86.19678789999999",
+    "deltaM": 1910,
+    "wikiTitle": "East Singhbhum district",
+    "wikiLatLng": "22.8,86.1834",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=10782376289258333418"
   },
   {
     "slug": "dalma-wildlife-sanctuary",
@@ -306,9 +342,9 @@
     "existingLatLng": "22.866,86.216",
     "googleLatLng": "22.8965883,86.2061027",
     "deltaM": 3549,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Dalma Wildlife Sanctuary",
+    "wikiLatLng": "22.90416667,86.21638889",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=3313098005014698558"
   },
   {
@@ -316,12 +352,12 @@
     "name": "Patratu Valley",
     "district": "Ramgarh",
     "existingLatLng": "23.633,85.283",
-    "googleLatLng": "23.5748529,85.27403149999999",
-    "deltaM": 6530,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=13229494361001240053"
+    "googleLatLng": "23.6599802,85.30608649999999",
+    "deltaM": 3812,
+    "wikiTitle": "Ramgarh district",
+    "wikiLatLng": "23.62,85.52",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=3228979914999518837"
   },
   {
     "slug": "lodh-falls",
@@ -330,9 +366,9 @@
     "existingLatLng": "23.483,84.066",
     "googleLatLng": "23.4809104,84.01947109999999",
     "deltaM": 4751,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Lodh Falls",
+    "wikiLatLng": "23.48055556,84.01944444",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=3432713848689658886"
   },
   {
@@ -342,10 +378,34 @@
     "existingLatLng": "23.616,84.966",
     "googleLatLng": "23.6498584,84.9440346",
     "deltaM": 4380,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "McCluskieganj",
+    "wikiLatLng": "23.64,84.94",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=17252056380931772087"
+  },
+  {
+    "slug": "howrah-bridge-kolkata",
+    "name": "Howrah Bridge",
+    "district": "Howrah",
+    "existingLatLng": "22.5851,88.3468",
+    "googleLatLng": "22.5886929,88.3419704",
+    "deltaM": 637,
+    "wikiTitle": "Howrah Bridge",
+    "wikiLatLng": "22.5851,88.3469",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=11469411044302958992"
+  },
+  {
+    "slug": "marble-palace-kolkata",
+    "name": "Marble Palace",
+    "district": "Kolkata",
+    "existingLatLng": "22.585,88.362",
+    "googleLatLng": "22.5821869,88.3601869",
+    "deltaM": 364,
+    "wikiTitle": "Marble Palace (Kolkata)",
+    "wikiLatLng": "22.582378,88.360143",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=15586271360148657821"
   },
   {
     "slug": "sundarbans-national-park",
@@ -360,28 +420,16 @@
     "mapsUrl": "https://maps.google.com/?cid=16833534368967605880"
   },
   {
-    "slug": "digha-beach",
-    "name": "Digha Beach",
-    "district": "Purba Medinipur",
-    "existingLatLng": "21.627,87.509",
-    "googleLatLng": "21.627425,87.5368038",
-    "deltaM": 2874,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=413046777120771382"
-  },
-  {
     "slug": "shantiniketan-birbhum",
     "name": "Shantiniketan",
     "district": "Birbhum",
     "existingLatLng": "23.68,87.683",
-    "googleLatLng": "23.6582091,87.6985069",
-    "deltaM": 2892,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=8895721647681727595"
+    "googleLatLng": "23.6776471,87.6852323",
+    "deltaM": 347,
+    "wikiTitle": "Shantiniketan",
+    "wikiLatLng": "23.68,87.68",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=5864340243644116081"
   },
   {
     "slug": "bishnupur-terracotta-temples",
@@ -390,9 +438,9 @@
     "existingLatLng": "23.07,87.32",
     "googleLatLng": "23.067179,87.32146809999999",
     "deltaM": 348,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Bishnupur (West Bengal)",
+    "wikiLatLng": "23.075,87.317",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=15763408106754863846"
   },
   {
@@ -402,22 +450,34 @@
     "existingLatLng": "22.86,88.38",
     "googleLatLng": "22.867114,88.3674381",
     "deltaM": 1511,
-    "wikiTitle": "Battle of Plassey",
-    "wikiLatLng": "23.8,88.25",
+    "wikiTitle": "Hooghly district",
+    "wikiLatLng": "22.9,88.39",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=5867169024545316468"
   },
   {
-    "slug": "kalimpong-hill-town",
-    "name": "Kalimpong",
-    "district": "Kalimpong",
-    "existingLatLng": "27.06,88.47",
-    "googleLatLng": "12.8479159,77.67254419999999",
-    "deltaM": 1939438,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=16822704636692233896"
+    "slug": "cooch-behar-rajbari",
+    "name": "Cooch Behar Palace",
+    "district": "Cooch Behar",
+    "existingLatLng": "26.32,89.45",
+    "googleLatLng": "26.3270017,89.438553",
+    "deltaM": 1381,
+    "wikiTitle": "Cooch Behar Lok Sabha constituency",
+    "wikiLatLng": "26.32419,89.45103",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=1577597267690610919"
+  },
+  {
+    "slug": "mirik-hill-town",
+    "name": "Mirik",
+    "district": "Darjeeling",
+    "existingLatLng": "26.887,88.187",
+    "googleLatLng": "26.8852968,88.1827931",
+    "deltaM": 458,
+    "wikiTitle": "Mirik",
+    "wikiLatLng": "26.887,88.187",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=10787576716486466040"
   },
   {
     "slug": "tiger-hill-darjeeling",
@@ -426,9 +486,9 @@
     "existingLatLng": "27,88.266",
     "googleLatLng": "26.9966667,88.29444439999999",
     "deltaM": 2842,
-    "wikiTitle": "Gorkhaland Territorial Administration",
-    "wikiLatLng": "27.03333333,88.26666667",
-    "verdict": "ambiguous",
+    "wikiTitle": "Tiger Hill, Darjeeling",
+    "wikiLatLng": "26.99484,88.28542",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=11656067787167992920"
   },
   {
@@ -436,24 +496,12 @@
     "name": "Lava and Lolegaon",
     "district": "Kalimpong",
     "existingLatLng": "27.09,88.66",
-    "googleLatLng": "27.0189613,88.5655831",
-    "deltaM": 12240,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=1903755620086260211"
-  },
-  {
-    "slug": "sandakphu-trek",
-    "name": "Sandakphu",
-    "district": "Darjeeling",
-    "existingLatLng": "27.105,88",
-    "googleLatLng": "27.06,88",
-    "deltaM": 5004,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=560239411710685815"
+    "googleLatLng": "27.0863078,88.6615125",
+    "deltaM": 437,
+    "wikiTitle": "Loleygaon",
+    "wikiLatLng": "27.02071,88.565018",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=9293064313381141073"
   },
   {
     "slug": "jaldapara-national-park",
@@ -492,15 +540,27 @@
     "mapsUrl": "https://maps.google.com/?cid=16975985345026173829"
   },
   {
+    "slug": "rajarani-temple-bhubaneswar",
+    "name": "Rajarani Temple",
+    "district": "Khordha",
+    "existingLatLng": "20.247,85.842",
+    "googleLatLng": "20.2423639,85.842865",
+    "deltaM": 523,
+    "wikiTitle": "Bhubaneswar",
+    "wikiLatLng": "20.27,85.84",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=12891023524780001222"
+  },
+  {
     "slug": "chilika-lake-odisha",
     "name": "Chilika Lake",
     "district": "Puri",
     "existingLatLng": "19.716,85.32",
     "googleLatLng": "19.8449627,85.47880649999999",
     "deltaM": 21949,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Chilika Lake",
+    "wikiLatLng": "19.71666667,85.31666667",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=10121104340326131617"
   },
   {
@@ -510,10 +570,22 @@
     "existingLatLng": "19.68,85.45",
     "googleLatLng": "19.6680947,85.4420706",
     "deltaM": 1563,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Puri (city)",
+    "wikiLatLng": "19.81055556,85.83138889",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3658943119979178995"
+  },
+  {
+    "slug": "gopalpur-on-sea",
+    "name": "Gopalpur-on-Sea",
+    "district": "Ganjam",
+    "existingLatLng": "19.265,84.915",
+    "googleLatLng": "19.2647208,84.8620054",
+    "deltaM": 5563,
+    "wikiTitle": "Gopalpur, Odisha",
+    "wikiLatLng": "19.27,84.92",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=17737734434951750553"
   },
   {
     "slug": "chandipur-beach-balasore",
@@ -522,9 +594,9 @@
     "existingLatLng": "21.47,87.03",
     "googleLatLng": "21.4518786,87.0406081",
     "deltaM": 2295,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Chandipur, Odisha",
+    "wikiLatLng": "21.47,87.02",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=3686183437464637164"
   },
   {
@@ -552,16 +624,40 @@
     "mapsUrl": "https://maps.google.com/?cid=12234249939856103636"
   },
   {
+    "slug": "ratnagiri-buddhist-site",
+    "name": "Ratnagiri",
+    "district": "Jajpur",
+    "existingLatLng": "20.647,86.335",
+    "googleLatLng": "20.6557836,86.3427458",
+    "deltaM": 1266,
+    "wikiTitle": "Jajpur district",
+    "wikiLatLng": "20.85,86.333",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=10214896192521763945"
+  },
+  {
+    "slug": "lalitgiri-buddhist-site",
+    "name": "Lalitgiri",
+    "district": "Jajpur",
+    "existingLatLng": "20.59,86.25",
+    "googleLatLng": "20.5916304,86.2641076",
+    "deltaM": 1480,
+    "wikiTitle": "Udayagiri, Odisha",
+    "wikiLatLng": "20.6416,86.2692",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=5156787157995847109"
+  },
+  {
     "slug": "raghurajpur-heritage-village",
     "name": "Raghurajpur",
     "district": "Puri",
     "existingLatLng": "19.902,85.8",
-    "googleLatLng": "19.8855094,85.8258044",
-    "deltaM": 3262,
-    "wikiTitle": "Biju Patnaik Airport",
-    "wikiLatLng": "20.24444444,85.81777778",
+    "googleLatLng": "19.8855117,85.8257455",
+    "deltaM": 3257,
+    "wikiTitle": "Puri district",
+    "wikiLatLng": "19.816,85.833",
     "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=5729422582978719314"
+    "mapsUrl": "https://maps.google.com/?cid=17815191998858238518"
   },
   {
     "slug": "taratarini-temple-ganjam",
@@ -570,9 +666,9 @@
     "existingLatLng": "19.52,84.73",
     "googleLatLng": "19.4889741,84.8990919",
     "deltaM": 18056,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Ganjam district",
+    "wikiLatLng": "19.383,85.05",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11264064700794152210"
   },
   {
@@ -580,24 +676,36 @@
     "name": "Hirakud Dam",
     "district": "Sambalpur",
     "existingLatLng": "21.572,83.872",
-    "googleLatLng": "21.5185059,83.85408319999999",
-    "deltaM": 6230,
-    "wikiTitle": "Mahanadi",
-    "wikiLatLng": "20.29527778,86.71083333",
+    "googleLatLng": "21.5305898,83.8704949",
+    "deltaM": 4607,
+    "wikiTitle": "Hirakud Dam",
+    "wikiLatLng": "21.57,83.87",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=11763339428698473531"
+  },
+  {
+    "slug": "daringbadi-hill-station",
+    "name": "Daringbadi",
+    "district": "Kandhamal",
+    "existingLatLng": "19.908,84.13",
+    "googleLatLng": "19.9036957,84.1303207",
+    "deltaM": 480,
+    "wikiTitle": "Kandhamal district",
+    "wikiLatLng": "20.47,84.23",
     "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=10865200756264710920"
+    "mapsUrl": "https://maps.google.com/?cid=2086630513712822821"
   },
   {
     "slug": "deomali-peak-koraput",
     "name": "Deomali",
     "district": "Koraput",
     "existingLatLng": "18.67,82.85",
-    "googleLatLng": "18.6686028,82.98983080000001",
-    "deltaM": 14731,
-    "wikiTitle": "Koraput district",
-    "wikiLatLng": "18.8083,82.7083",
+    "googleLatLng": "18.6747727,82.9823595",
+    "deltaM": 13953,
+    "wikiTitle": "Koraput",
+    "wikiLatLng": "18.8561,82.7347",
     "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=1093478169098630822"
+    "mapsUrl": "https://maps.google.com/?cid=5144523240309055313"
   },
   {
     "slug": "gangtok-sikkim",
@@ -606,34 +714,70 @@
     "existingLatLng": "27.3389,88.6065",
     "googleLatLng": "27.3313512,88.6138113",
     "deltaM": 1107,
-    "wikiTitle": "Pakyong Airport",
-    "wikiLatLng": "27.2325,88.58833333",
-    "verdict": "ambiguous",
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
     "mapsUrl": "https://maps.google.com/?cid=8346880040421330720"
+  },
+  {
+    "slug": "yumthang-valley",
+    "name": "Yumthang Valley",
+    "district": "Mangan",
+    "existingLatLng": "27.822,88.701",
+    "googleLatLng": "27.8267952,88.6958087",
+    "deltaM": 738,
+    "wikiTitle": "Yumthang Valley of Flowers",
+    "wikiLatLng": "27.8268,88.6959",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=2210054238492844974"
   },
   {
     "slug": "zero-point-yumesamdong",
     "name": "Zero Point",
     "district": "Mangan",
     "existingLatLng": "27.89,88.71",
-    "googleLatLng": "27.8267952,88.6958087",
-    "deltaM": 7165,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=7234473627211885885"
+    "googleLatLng": "27.9305392,88.73455829999999",
+    "deltaM": 5113,
+    "wikiTitle": "Mangan district",
+    "wikiLatLng": "27.51666667,88.53333333",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=14452601613250553195"
+  },
+  {
+    "slug": "lachung-village",
+    "name": "Lachung",
+    "district": "Mangan",
+    "existingLatLng": "27.69,88.743",
+    "googleLatLng": "27.6882817,88.7395043",
+    "deltaM": 394,
+    "wikiTitle": "Mangan district",
+    "wikiLatLng": "27.51666667,88.53333333",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=17530837779374114233"
+  },
+  {
+    "slug": "lachen-village",
+    "name": "Lachen",
+    "district": "Mangan",
+    "existingLatLng": "27.716,88.556",
+    "googleLatLng": "27.731939,88.54900769999999",
+    "deltaM": 1901,
+    "wikiTitle": "Lachen, Sikkim",
+    "wikiLatLng": "27.71668,88.557755",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=11450625892190492234"
   },
   {
     "slug": "pelling-sikkim",
     "name": "Pelling",
     "district": "Gyalshing",
     "existingLatLng": "27.3,88.239",
-    "googleLatLng": "27.2925414,88.2537454",
-    "deltaM": 1677,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=14938774288971781588"
+    "googleLatLng": "27.3197716,88.2400333",
+    "deltaM": 2201,
+    "wikiTitle": "Pelling",
+    "wikiLatLng": "27.18,88.14",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=3526307229536451233"
   },
   {
     "slug": "tashiding-monastery",
@@ -642,9 +786,9 @@
     "existingLatLng": "27.33,88.28",
     "googleLatLng": "27.3089308,88.2978746",
     "deltaM": 2934,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Tashiding Monastery",
+    "wikiLatLng": "27.30833333,88.29805556",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=10526336605057038471"
   },
   {
@@ -654,9 +798,9 @@
     "existingLatLng": "27.366,88.22",
     "googleLatLng": "27.3724262,88.2229909",
     "deltaM": 773,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Yuksom",
+    "wikiLatLng": "27.37333333,88.22083333",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=667855608904164322"
   },
   {
@@ -666,22 +810,10 @@
     "existingLatLng": "27.19,88.35",
     "googleLatLng": "27.1799743,88.3796775",
     "deltaM": 3140,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Namchi",
+    "wikiLatLng": "27.17,88.35",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3095806827980694633"
-  },
-  {
-    "slug": "tashi-viewpoint-gangtok",
-    "name": "Tashi Viewpoint",
-    "district": "Gangtok",
-    "existingLatLng": "27.36,88.62",
-    "googleLatLng": "27.3313512,88.6138113",
-    "deltaM": 3244,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=2954964554026875845"
   },
   {
     "slug": "banjhakri-falls-gangtok",
@@ -690,9 +822,9 @@
     "existingLatLng": "27.31,88.6",
     "googleLatLng": "27.3507643,88.6032316",
     "deltaM": 4544,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Gangtok",
+    "wikiLatLng": "27.33,88.62",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=10502912187666512917"
   },
   {
@@ -702,9 +834,9 @@
     "existingLatLng": "12.02,92.96",
     "googleLatLng": "12.0081083,92.9416061",
     "deltaM": 2398,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Andaman and Nicobar Islands",
+    "wikiLatLng": "11.68,92.72",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=13733441359683061242"
   },
   {
@@ -714,9 +846,9 @@
     "existingLatLng": "11.96,93.01",
     "googleLatLng": "12.0006111,93.0070952",
     "deltaM": 4527,
-    "wikiTitle": "Mount Harriet National Park",
-    "wikiLatLng": "11.71638889,92.73388889",
-    "verdict": "ambiguous",
+    "wikiTitle": "Havelock Island",
+    "wikiLatLng": "11.96,93",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=11917268288844602045"
   },
   {
@@ -724,12 +856,12 @@
     "name": "Natural Bridge, Neil Island",
     "district": "South Andaman",
     "existingLatLng": "11.81,93.05",
-    "googleLatLng": "11.8320292,93.0139828",
-    "deltaM": 4622,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=10228414145110698511"
+    "googleLatLng": "11.8286886,93.0151416",
+    "deltaM": 4326,
+    "wikiTitle": "Neil Island",
+    "wikiLatLng": "11.83,93.04",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=15966940186842539472"
   },
   {
     "slug": "baratang-limestone-caves",
@@ -738,22 +870,22 @@
     "existingLatLng": "12.11,92.79",
     "googleLatLng": "12.0959029,92.7454867",
     "deltaM": 5087,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Andaman Islands",
+    "wikiLatLng": "12.5,92.75",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11665293875678866313"
   },
   {
-    "slug": "baratang-mud-volcano",
-    "name": "Baratang Mud Volcano",
-    "district": "North and Middle Andaman",
-    "existingLatLng": "12.12,92.78",
-    "googleLatLng": "12.2113936,92.81116449999999",
-    "deltaM": 10712,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=14723327843130349690"
+    "slug": "anthropological-museum-port-blair",
+    "name": "Anthropological Museum",
+    "district": "South Andaman",
+    "existingLatLng": "11.665,92.737",
+    "googleLatLng": "11.6645812,92.7401105",
+    "deltaM": 342,
+    "wikiTitle": "Andaman and Nicobar Islands",
+    "wikiLatLng": "11.68,92.72",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=17540056713774761167"
   },
   {
     "slug": "ross-and-smith-islands-diglipur",
@@ -762,22 +894,46 @@
     "existingLatLng": "13.35,93.04",
     "googleLatLng": "13.3044187,93.0720681",
     "deltaM": 6142,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Andaman and Nicobar Islands",
+    "wikiLatLng": "11.68,92.72",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=4316421182750452739"
   },
   {
-    "slug": "connaught-place-delhi",
-    "name": "Connaught Place",
-    "district": "New Delhi",
-    "existingLatLng": "28.6315,77.2167",
-    "googleLatLng": "28.5780259,77.1752786",
-    "deltaM": 7191,
-    "wikiTitle": "New Delhi railway station",
-    "wikiLatLng": "28.6428,77.21908",
+    "slug": "tughlaqabad-fort-delhi",
+    "name": "Tughlaqabad Fort",
+    "district": "South Delhi",
+    "existingLatLng": "28.5123,77.2596",
+    "googleLatLng": "28.5163996,77.2613488",
+    "deltaM": 487,
+    "wikiTitle": "Tughlaqabad Fort",
+    "wikiLatLng": "28.51194444,77.26083333",
     "verdict": "confirms-existing",
-    "mapsUrl": "https://maps.google.com/?cid=18186680770784811168"
+    "mapsUrl": "https://maps.google.com/?cid=6725961261577535248"
+  },
+  {
+    "slug": "national-zoological-park-delhi",
+    "name": "National Zoological Park",
+    "district": "South East Delhi",
+    "existingLatLng": "28.6045,77.2465",
+    "googleLatLng": "28.5990119,77.2476997",
+    "deltaM": 621,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=15787580108911863815"
+  },
+  {
+    "slug": "fatehpur-sikri",
+    "name": "Fatehpur Sikri",
+    "district": "Agra",
+    "existingLatLng": "27.094,77.661",
+    "googleLatLng": "27.0945291,77.6679292",
+    "deltaM": 688,
+    "wikiTitle": "Fatehpur Sikri",
+    "wikiLatLng": "27.091,77.661",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=618071115155241792"
   },
   {
     "slug": "ambedkar-memorial-park-lucknow",
@@ -786,9 +942,9 @@
     "existingLatLng": "26.8536,80.9997",
     "googleLatLng": "26.8493811,80.9767756",
     "deltaM": 2322,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Ambedkar Memorial Park",
+    "wikiLatLng": "26.848882,80.977893",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=7109179806645517341"
   },
   {
@@ -798,9 +954,9 @@
     "existingLatLng": "27.5772,77.6942",
     "googleLatLng": "27.5720564,77.671897",
     "deltaM": 2271,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Prem Mandir, Vrindavan",
+    "wikiLatLng": "27.5724569,77.6724919",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=6480054662645021171"
   },
   {
@@ -810,9 +966,9 @@
     "existingLatLng": "27.5,77.46",
     "googleLatLng": "27.473,77.444",
     "deltaM": 3392,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Govardhan Hill",
+    "wikiLatLng": "27.51053611,77.47610556",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=15186616397027661819"
   },
   {
@@ -822,34 +978,46 @@
     "existingLatLng": "26.792,82.183",
     "googleLatLng": "26.8097577,82.2053665",
     "deltaM": 2971,
-    "wikiTitle": "Awadh",
-    "wikiLatLng": "26.9,80.9",
+    "wikiTitle": "Ayodhya district",
+    "wikiLatLng": "26.78333333,82.13333333",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=7458333139449782907"
   },
   {
-    "slug": "kushinagar",
-    "name": "Kushinagar",
-    "district": "Kushinagar",
-    "existingLatLng": "26.7391658,83.890704",
-    "googleLatLng": "26.769341,83.8961429",
-    "deltaM": 3399,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=11383016518276261719"
+    "slug": "sarnath",
+    "name": "Sarnath",
+    "district": "Varanasi",
+    "existingLatLng": "25.3811,83.0244",
+    "googleLatLng": "25.3715564,83.0252136",
+    "deltaM": 1064,
+    "wikiTitle": "Sarnath",
+    "wikiLatLng": "25.378,83.0251",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=11656307264043592052"
+  },
+  {
+    "slug": "shravasti",
+    "name": "Shravasti",
+    "district": "Shravasti",
+    "existingLatLng": "27.515,82.04",
+    "googleLatLng": "27.5035427,82.036461",
+    "deltaM": 1321,
+    "wikiTitle": "Shravasti",
+    "wikiLatLng": "27.51708333,82.05061111",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=7776201721034263641"
   },
   {
     "slug": "chitrakoot-uttar-pradesh",
     "name": "Chitrakoot",
     "district": "Chitrakoot",
     "existingLatLng": "25.2,80.86",
-    "googleLatLng": "13.7357226,74.7468593",
-    "deltaM": 1426129,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=2011191472677066398"
+    "googleLatLng": "25.1788154,80.86545339999999",
+    "deltaM": 2419,
+    "wikiTitle": "Chitrakoot Dham",
+    "wikiLatLng": "25.2,80.9",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=17832046950611389863"
   },
   {
     "slug": "dudhwa-national-park",
@@ -858,9 +1026,9 @@
     "existingLatLng": "28.509,80.687",
     "googleLatLng": "28.4910625,80.6466875",
     "deltaM": 4415,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Lakhimpur, Uttar Pradesh",
+    "wikiLatLng": "27.95,80.77",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11126905588160383178"
   },
   {
@@ -874,18 +1042,6 @@
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
     "mapsUrl": "https://maps.google.com/?cid=8863394132039044256"
-  },
-  {
-    "slug": "naimisharanya-sitapur",
-    "name": "Naimisharanya",
-    "district": "Sitapur",
-    "existingLatLng": "27.351,80.49",
-    "googleLatLng": "12.7523367,77.4914678",
-    "deltaM": 1653012,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=11850463282898817610"
   },
   {
     "slug": "vindham-falls-mirzapur",
@@ -906,10 +1062,22 @@
     "existingLatLng": "28.78,78.1",
     "googleLatLng": "28.78922099999999,78.0823084",
     "deltaM": 2006,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Garhmukteshwar",
+    "wikiLatLng": "28.8,78.1",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=13236585855617798176"
+  },
+  {
+    "slug": "sattal-lake",
+    "name": "Sattal",
+    "district": "Nainital",
+    "existingLatLng": "29.341,79.529",
+    "googleLatLng": "29.344309,79.5294318",
+    "deltaM": 370,
+    "wikiTitle": "Nainital Lake",
+    "wikiLatLng": "29.3875,79.4575",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=11654006733917497274"
   },
   {
     "slug": "kausani",
@@ -918,9 +1086,9 @@
     "existingLatLng": "29.844,79.6",
     "googleLatLng": "29.8437148,79.6032974",
     "deltaM": 320,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Kausani",
+    "wikiLatLng": "29.84,79.6",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=1673742746932195151"
   },
   {
@@ -942,10 +1110,22 @@
     "existingLatLng": "29.473,79.649",
     "googleLatLng": "29.4604149,79.6558242",
     "deltaM": 1548,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Mukteshwar",
+    "wikiLatLng": "29.4722,79.6479",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=8265712645889388507"
+  },
+  {
+    "slug": "haridwar-har-ki-pauri",
+    "name": "Har Ki Pauri, Haridwar",
+    "district": "Haridwar",
+    "existingLatLng": "29.9557,78.1706",
+    "googleLatLng": "29.9573607,78.1749687",
+    "deltaM": 460,
+    "wikiTitle": "Har Ki Pauri",
+    "wikiLatLng": "29.95666667,78.17083333",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=9746789011900184291"
   },
   {
     "slug": "neelkanth-mahadev-temple",
@@ -954,9 +1134,9 @@
     "existingLatLng": "30.147,78.372",
     "googleLatLng": "30.0810736,78.34067499999999",
     "deltaM": 7926,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Nilkanth Mahadev",
+    "wikiLatLng": "30.0807,78.3409",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=2030926007771354519"
   },
   {
@@ -966,9 +1146,9 @@
     "existingLatLng": "30.49,79.16",
     "googleLatLng": "30.3461908,79.0485059",
     "deltaM": 19236,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Rudraprayag",
+    "wikiLatLng": "30.28,78.98",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=9184602862774474112"
   },
   {
@@ -976,12 +1156,12 @@
     "name": "Deoria Tal",
     "district": "Rudraprayag",
     "existingLatLng": "30.53,79.093",
-    "googleLatLng": "30.5197416,79.1292349",
-    "deltaM": 3653,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=11558683145783805856"
+    "googleLatLng": "30.5218818,79.1269817",
+    "deltaM": 3378,
+    "wikiTitle": "Deoria Tal",
+    "wikiLatLng": "30.52222222,79.12777778",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=11446804300934920668"
   },
   {
     "slug": "mindrolling-monastery-dehradun",
@@ -990,10 +1170,22 @@
     "existingLatLng": "30.266,78.04",
     "googleLatLng": "30.2615418,77.99771",
     "deltaM": 4092,
+    "wikiTitle": "Mindrolling Monastery",
+    "wikiLatLng": "29.18519,91.40598",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=7803052765774994758"
+  },
+  {
+    "slug": "lansdowne",
+    "name": "Lansdowne",
+    "district": "Pauri Garhwal",
+    "existingLatLng": "29.838,78.687",
+    "googleLatLng": "29.8390991,78.68281809999999",
+    "deltaM": 421,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=7803052765774994758"
+    "mapsUrl": "https://maps.google.com/?cid=2853121815265809665"
   },
   {
     "slug": "dhanaulti",
@@ -1002,22 +1194,10 @@
     "existingLatLng": "30.421,78.241",
     "googleLatLng": "30.4049903,78.2333743",
     "deltaM": 1925,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Garhwal division",
+    "wikiLatLng": "30.5,78.5",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=10195243075457527301"
-  },
-  {
-    "slug": "tehri-lake",
-    "name": "Tehri Lake",
-    "district": "Tehri Garhwal",
-    "existingLatLng": "30.377,78.48",
-    "googleLatLng": "30.4108032,78.4564698",
-    "deltaM": 4384,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=3809838762057793427"
   },
   {
     "slug": "rajaji-national-park",
@@ -1032,16 +1212,28 @@
     "mapsUrl": "https://maps.google.com/?cid=16110540817426653372"
   },
   {
+    "slug": "munsyari",
+    "name": "Munsyari",
+    "district": "Pithoragarh",
+    "existingLatLng": "30.068,80.238",
+    "googleLatLng": "30.0715174,80.2373401",
+    "deltaM": 396,
+    "wikiTitle": "Pithoragarh district",
+    "wikiLatLng": "30,80.33333333",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=393091760754353972"
+  },
+  {
     "slug": "patal-bhuvaneshwar",
     "name": "Patal Bhuvaneshwar",
     "district": "Pithoragarh",
     "existingLatLng": "29.828,80.256",
-    "googleLatLng": "29.6877883,80.0940603",
-    "deltaM": 22078,
-    "wikiTitle": "Madhyamaheshwar",
-    "wikiLatLng": "30.63694444,79.21611111",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=195940565613592786"
+    "googleLatLng": "29.688153,80.09190319999999",
+    "deltaM": 22198,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=14171580565776224660"
   },
   {
     "slug": "baijnath-temple-uttarakhand",
@@ -1050,9 +1242,9 @@
     "existingLatLng": "29.925,79.618",
     "googleLatLng": "29.9071843,79.6149845",
     "deltaM": 2002,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Baijnath, Uttarakhand",
+    "wikiLatLng": "29.92,79.62",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=16662729830946147249"
   },
   {
@@ -1062,9 +1254,9 @@
     "existingLatLng": "30.403,78.265",
     "googleLatLng": "30.4113861,78.2886101",
     "deltaM": 2449,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Surkanda Devi",
+    "wikiLatLng": "30.411383,78.2887",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=14359958401935762891"
   },
   {
@@ -1072,24 +1264,24 @@
     "name": "Joshimath",
     "district": "Chamoli",
     "existingLatLng": "30.555,79.565",
-    "googleLatLng": "30.7563785,79.6502105",
-    "deltaM": 23830,
+    "googleLatLng": "30.5561089,79.5616759",
+    "deltaM": 341,
     "wikiTitle": "Joshimath",
     "wikiLatLng": "30.555,79.565",
     "verdict": "confirms-existing",
-    "mapsUrl": "https://maps.google.com/?cid=9643635760332433126"
+    "mapsUrl": "https://maps.google.com/?cid=10995440791828001140"
   },
   {
     "slug": "har-ki-dun-valley",
     "name": "Har Ki Dun Valley",
     "district": "Uttarkashi",
     "existingLatLng": "31.117,78.42",
-    "googleLatLng": "31.1505598,78.4290807",
-    "deltaM": 3830,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=5290836968467087650"
+    "googleLatLng": "31.1409701,78.4155033",
+    "deltaM": 2700,
+    "wikiTitle": "Dehradun",
+    "wikiLatLng": "30.345,78.029",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=4608555010260757419"
   },
   {
     "slug": "chaukori",
@@ -1098,10 +1290,22 @@
     "existingLatLng": "29.877,80.021",
     "googleLatLng": "29.8384526,80.03323250000001",
     "deltaM": 4446,
+    "wikiTitle": "Chaukori",
+    "wikiLatLng": "29.84124,80.030594",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=16705464697440439199"
+  },
+  {
+    "slug": "harsil-valley",
+    "name": "Harsil",
+    "district": "Uttarkashi",
+    "existingLatLng": "31.035,78.744",
+    "googleLatLng": "31.0398238,78.7393694",
+    "deltaM": 695,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=16705464697440439199"
+    "mapsUrl": "https://maps.google.com/?cid=2882979965810472107"
   },
   {
     "slug": "kartik-swami-temple",
@@ -1110,9 +1314,9 @@
     "existingLatLng": "30.276,79.129",
     "googleLatLng": "30.3858031,79.0987143",
     "deltaM": 12551,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Rudraprayag",
+    "wikiLatLng": "30.28,78.98",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=9342759892562382"
   },
   {
@@ -1122,8 +1326,8 @@
     "existingLatLng": "30.925,79.077",
     "googleLatLng": "30.9603395,79.0443044",
     "deltaM": 5016,
-    "wikiTitle": "Gangotri National Park",
-    "wikiLatLng": "31.63333333,79.55",
+    "wikiTitle": "Gangotri Glacier",
+    "wikiLatLng": "30.83,79.17",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3887632495467409736"
   },
@@ -1146,8 +1350,8 @@
     "existingLatLng": "26.109,91.801",
     "googleLatLng": "26.0948184,91.7846443",
     "deltaM": 2270,
-    "wikiTitle": "COVID-19 pandemic in Assam",
-    "wikiLatLng": "24.859818,92.530882",
+    "wikiTitle": "Guwahati",
+    "wikiLatLng": "26.17222222,91.74583333",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=2578901863324006881"
   },
@@ -1170,9 +1374,9 @@
     "existingLatLng": "26.183,91.792",
     "googleLatLng": "26.1635987,91.7813888",
     "deltaM": 2403,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Dhaka",
+    "wikiLatLng": "23.76444444,90.38888889",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3112931958761795455"
   },
   {
@@ -1182,9 +1386,9 @@
     "existingLatLng": "26.23,92.08",
     "googleLatLng": "26.2307847,92.0550609",
     "deltaM": 2489,
-    "wikiTitle": "Morigaon district",
-    "wikiLatLng": "26.25,92.34",
-    "verdict": "ambiguous",
+    "wikiTitle": "Pobitora Wildlife Sanctuary",
+    "wikiLatLng": "26.24111111,92.05833333",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=15866389969765022263"
   },
   {
@@ -1242,9 +1446,9 @@
     "existingLatLng": "26.976,94.6",
     "googleLatLng": "26.9671228,94.619063",
     "deltaM": 2131,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Rang Ghar",
+    "wikiLatLng": "26.967,94.619",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=14773095231395429770"
   },
   {
@@ -1254,9 +1458,9 @@
     "existingLatLng": "26.95,94.59",
     "googleLatLng": "26.9661334,94.6245971",
     "deltaM": 3870,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Talatal Ghar",
+    "wikiLatLng": "26.9663056,94.6246917",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=18238831284163658215"
   },
   {
@@ -1266,9 +1470,9 @@
     "existingLatLng": "26.966,94.57",
     "googleLatLng": "26.9524069,94.6230841",
     "deltaM": 5474,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Joysagar Tank",
+    "wikiLatLng": "26.58,94.41",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11686554034209044350"
   },
   {
@@ -1290,34 +1494,34 @@
     "existingLatLng": "26.166,91.572",
     "googleLatLng": "26.1703301,91.570327",
     "deltaM": 510,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Sualkuchi",
+    "wikiLatLng": "26.17,91.57",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=4850941079656850423"
+  },
+  {
+    "slug": "kamalabari-satra-majuli",
+    "name": "Kamalabari Satra",
+    "district": "Majuli",
+    "existingLatLng": "26.95,94.17",
+    "googleLatLng": "26.9474676,94.19818289999999",
+    "deltaM": 2808,
+    "wikiTitle": "Majuli district",
+    "wikiLatLng": "26.95,94.16666667",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=7472251656798273535"
   },
   {
     "slug": "auniati-satra-majuli",
     "name": "Auniati Satra",
     "district": "Majuli",
     "existingLatLng": "26.993,94.135",
-    "googleLatLng": "26.9400042,94.12376309999999",
-    "deltaM": 5997,
+    "googleLatLng": "26.9474676,94.19818289999999",
+    "deltaM": 8052,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=4795296663344522536"
-  },
-  {
-    "slug": "haflong-hill-station",
-    "name": "Haflong",
-    "district": "Dima Hasao",
-    "existingLatLng": "25.167,93.017",
-    "googleLatLng": "25.1401832,93.0190683",
-    "deltaM": 2989,
-    "wikiTitle": "Dima Hasao district",
-    "wikiLatLng": "25.18,93.03",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=8636744490990216971"
+    "mapsUrl": "https://maps.google.com/?cid=7472251656798273535"
   },
   {
     "slug": "jatinga",
@@ -1336,12 +1540,12 @@
     "name": "Chandubi Lake",
     "district": "Kamrup",
     "existingLatLng": "25.9,91.4",
-    "googleLatLng": "25.8828184,91.4257124",
-    "deltaM": 3204,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=10011143564059829922"
+    "googleLatLng": "25.8814569,91.4235388",
+    "deltaM": 3130,
+    "wikiTitle": "Chandubi Lake",
+    "wikiLatLng": "25.87977,91.4196",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=1409559608537771864"
   },
   {
     "slug": "don-bosco-museum-shillong",
@@ -1350,9 +1554,9 @@
     "existingLatLng": "25.572,91.888",
     "googleLatLng": "25.5928384,91.88273199999999",
     "deltaM": 2377,
-    "wikiTitle": "Karbi Anglong district",
-    "wikiLatLng": "26.18333333,93.56666667",
-    "verdict": "ambiguous",
+    "wikiTitle": "Meghalaya",
+    "wikiLatLng": "25.57,91.88",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=3067257739993552237"
   },
   {
@@ -1362,9 +1566,9 @@
     "existingLatLng": "25.23,91.71",
     "googleLatLng": "25.2389734,91.7325458",
     "deltaM": 2478,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Nohsngithiang Falls",
+    "wikiLatLng": "25.243,91.743",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=8068877075214658100"
   },
   {
@@ -1408,12 +1612,12 @@
     "name": "Mawsynram",
     "district": "East Khasi Hills",
     "existingLatLng": "25.3,91.58",
-    "googleLatLng": "25.2931601,91.5803073",
-    "deltaM": 761,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=8314673757281602676"
+    "googleLatLng": "25.2973371,91.58265089999999",
+    "deltaM": 398,
+    "wikiTitle": "Mawsynram",
+    "wikiLatLng": "25.29888889,91.58138889",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=11363228091038097271"
   },
   {
     "slug": "laitlum-canyons",
@@ -1422,9 +1626,9 @@
     "existingLatLng": "25.5,91.95",
     "googleLatLng": "25.4506992,91.91185809999999",
     "deltaM": 6687,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Shillong",
+    "wikiLatLng": "25.58222222,91.89444444",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=524850964348759497"
   },
   {
@@ -1434,9 +1638,9 @@
     "existingLatLng": "25.4,92.2",
     "googleLatLng": "25.2878776,92.1251569",
     "deltaM": 14560,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "West Jaintia Hills district",
+    "wikiLatLng": "25.45,92.2",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=1751066608023762474"
   },
   {
@@ -1446,8 +1650,8 @@
     "existingLatLng": "25.2,90.85",
     "googleLatLng": "25.2626037,90.8644002",
     "deltaM": 7110,
-    "wikiTitle": "Balpakram National Park",
-    "wikiLatLng": "25.41666667,90.86666667",
+    "wikiTitle": "Garo Hills",
+    "wikiLatLng": "25.5,90.33333333",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=10454700866898531521"
   },
@@ -1458,8 +1662,8 @@
     "existingLatLng": "25.47,90.33",
     "googleLatLng": "25.447504,90.42859279999999",
     "deltaM": 10210,
-    "wikiTitle": "Nokrek National Park",
-    "wikiLatLng": "25.53333333,90.11666667",
+    "wikiTitle": "Garo Hills",
+    "wikiLatLng": "25.5,90.33333333",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=4778747720910822399"
   },
@@ -1470,9 +1674,9 @@
     "existingLatLng": "27.63,91.87",
     "googleLatLng": "27.7220605,91.82543369999999",
     "deltaM": 11138,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Tawang",
+    "wikiLatLng": "27.58833333,91.86527778",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=9489119248090001575"
   },
   {
@@ -1482,9 +1686,9 @@
     "existingLatLng": "27.5,92.15",
     "googleLatLng": "27.5894875,91.9832969",
     "deltaM": 19213,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Nuranang Falls",
+    "wikiLatLng": "27.5895355,91.9840622",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=2146616285720301262"
   },
   {
@@ -1492,12 +1696,12 @@
     "name": "Bum La Pass",
     "district": "Tawang",
     "existingLatLng": "27.72,91.7",
-    "googleLatLng": "27.7211625,91.89223439999999",
-    "deltaM": 18923,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=7083744723195308529"
+    "googleLatLng": "27.7211705,91.892227",
+    "deltaM": 18922,
+    "wikiTitle": "Tawang",
+    "wikiLatLng": "27.58833333,91.86527778",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=16731175162087323526"
   },
   {
     "slug": "jaswant-garh-war-memorial",
@@ -1512,16 +1716,28 @@
     "mapsUrl": "https://maps.google.com/?cid=16202478412528732503"
   },
   {
+    "slug": "dirang-valley",
+    "name": "Dirang",
+    "district": "West Kameng",
+    "existingLatLng": "27.358,92.241",
+    "googleLatLng": "27.349503,92.27821399999999",
+    "deltaM": 3795,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=927637277075198461"
+  },
+  {
     "slug": "ziro-valley",
     "name": "Ziro Valley",
     "district": "Lower Subansiri",
     "existingLatLng": "27.59,93.83",
-    "googleLatLng": "27.6164696,93.8205868",
-    "deltaM": 3086,
-    "wikiTitle": "Lower Subansiri district",
-    "wikiLatLng": "27.8,93.6",
+    "googleLatLng": "27.544912,93.8196686",
+    "deltaM": 5116,
+    "wikiTitle": "Ziro",
+    "wikiLatLng": "27.56638889,93.83138889",
     "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=5007695970955157990"
+    "mapsUrl": "https://maps.google.com/?cid=13395823198008558826"
   },
   {
     "slug": "namdapha-national-park",
@@ -1540,36 +1756,36 @@
     "name": "Ganga Lake (Gyakar Sinyi)",
     "district": "Papum Pare",
     "existingLatLng": "27.12,93.68",
-    "googleLatLng": "27.0756579,93.5676417",
-    "deltaM": 12166,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=5755831979734280856"
+    "googleLatLng": "27.0747786,93.5679837",
+    "deltaM": 12175,
+    "wikiTitle": "Itanagar",
+    "wikiLatLng": "27.1,93.62",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=12225199443832983531"
   },
   {
     "slug": "parashuram-kund",
     "name": "Parashuram Kund",
     "district": "Lohit",
     "existingLatLng": "27.87,96.33",
-    "googleLatLng": "27.8760781,96.3595711",
-    "deltaM": 2984,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=14629865461825989254"
+    "googleLatLng": "27.8865481,96.3742848",
+    "deltaM": 4726,
+    "wikiTitle": "Lohit district",
+    "wikiLatLng": "28,96.5",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=2458004983780465628"
   },
   {
     "slug": "pasighat",
     "name": "Pasighat",
     "district": "East Siang",
     "existingLatLng": "28.066,95.326",
-    "googleLatLng": "28.0550482,95.35208759999999",
-    "deltaM": 2835,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=4290388237714411775"
+    "googleLatLng": "28.0631741,95.32391969999999",
+    "deltaM": 375,
+    "wikiTitle": "Pasighat",
+    "wikiLatLng": "28.07,95.33",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=3056682207547306604"
   },
   {
     "slug": "mayodia-pass",
@@ -1578,9 +1794,9 @@
     "existingLatLng": "28.22,95.9",
     "googleLatLng": "28.2420417,95.9252894",
     "deltaM": 3485,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Mayodia Pass",
+    "wikiLatLng": "28.23361111,95.91",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=5848246151923498118"
   },
   {
@@ -1590,10 +1806,22 @@
     "existingLatLng": "27.55,93.9",
     "googleLatLng": "27.569588,93.9829201",
     "deltaM": 8459,
-    "wikiTitle": "Bidar district",
-    "wikiLatLng": "17.35,18.25",
+    "wikiTitle": "Subansiri Lower Dam",
+    "wikiLatLng": "27.55361111,94.25861111",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=13221114883777959876"
+  },
+  {
+    "slug": "kohima-war-cemetery",
+    "name": "Kohima War Cemetery",
+    "district": "Kohima",
+    "existingLatLng": "25.67,94.1",
+    "googleLatLng": "25.6676293,94.10295149999999",
+    "deltaM": 396,
+    "wikiTitle": "Kohima",
+    "wikiLatLng": "25.67,94.1",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=17318813128714651904"
   },
   {
     "slug": "dzukou-valley",
@@ -1602,10 +1830,22 @@
     "existingLatLng": "25.57,94.05",
     "googleLatLng": "25.5553627,94.0652787",
     "deltaM": 2236,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Dzukou Valley",
+    "wikiLatLng": "25.553329,94.067065",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=14983942101892364332"
+  },
+  {
+    "slug": "khonoma-green-village",
+    "name": "Khonoma",
+    "district": "Kohima",
+    "existingLatLng": "25.65,94.01",
+    "googleLatLng": "25.6523425,94.0229921",
+    "deltaM": 1328,
+    "wikiTitle": "Kohima district",
+    "wikiLatLng": "25.66666667,94.11666667",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=12227826591831914589"
   },
   {
     "slug": "japfu-peak",
@@ -1614,9 +1854,9 @@
     "existingLatLng": "25.58,94.08",
     "googleLatLng": "25.5975011,94.0666664",
     "deltaM": 2361,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Kohima",
+    "wikiLatLng": "25.67,94.1",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=1040901798589854153"
   },
   {
@@ -1624,12 +1864,12 @@
     "name": "Kachari Ruins, Dimapur",
     "district": "Dimapur",
     "existingLatLng": "25.91,93.72",
-    "googleLatLng": "25.9036572,93.73998639999999",
-    "deltaM": 2120,
-    "wikiTitle": "Cachar district",
-    "wikiLatLng": "25.08333333,92.91666667",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=11961803276121553862"
+    "googleLatLng": "25.9037617,93.7396526",
+    "deltaM": 2084,
+    "wikiTitle": "Dimapur",
+    "wikiLatLng": "25.909174,93.726602",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=3168847250186770352"
   },
   {
     "slug": "shilloi-lake",
@@ -1638,9 +1878,9 @@
     "existingLatLng": "25.5,94.5",
     "googleLatLng": "25.5956377,94.7931105",
     "deltaM": 31270,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Phek district",
+    "wikiLatLng": "25.66666667,94.46666667",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=10298429540907688751"
   },
   {
@@ -1648,12 +1888,12 @@
     "name": "Longwa Village",
     "district": "Mon",
     "existingLatLng": "27,95.1",
-    "googleLatLng": "26.733096,95.0615119",
-    "deltaM": 29923,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=14701702234682078079"
+    "googleLatLng": "26.662276,95.2198988",
+    "deltaM": 39393,
+    "wikiTitle": "Mon district",
+    "wikiLatLng": "26.71666667,95.03333333",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=18320153375844945938"
   },
   {
     "slug": "loktak-lake",
@@ -1662,9 +1902,9 @@
     "existingLatLng": "24.52,93.83",
     "googleLatLng": "24.5593375,93.8146526",
     "deltaM": 4641,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Loktak Lake",
+    "wikiLatLng": "24.55,93.78333333",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11283928502546398862"
   },
   {
@@ -1686,10 +1926,22 @@
     "existingLatLng": "24.806,93.948",
     "googleLatLng": "24.8043939,93.9216927",
     "deltaM": 2661,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Shree Govindajee Temple",
+    "wikiLatLng": "24.797798,93.948486",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=7924720490061583128"
+  },
+  {
+    "slug": "sendra-island-loktak",
+    "name": "Sendra Island",
+    "district": "Bishnupur",
+    "existingLatLng": "24.52,93.82",
+    "googleLatLng": "24.5152516,93.7951698",
+    "deltaM": 2567,
+    "wikiTitle": "Manipur",
+    "wikiLatLng": "24.81,93.94",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=18004730736173913663"
   },
   {
     "slug": "shirui-hills-ukhrul",
@@ -1698,9 +1950,9 @@
     "existingLatLng": "25.12,94.45",
     "googleLatLng": "25.1299438,94.41885189999999",
     "deltaM": 3325,
-    "wikiTitle": "Shirui National Park",
-    "wikiLatLng": "24.23083333,94.23083333",
-    "verdict": "ambiguous",
+    "wikiTitle": "Shirui Hills",
+    "wikiLatLng": "25.11444444,94.44777778",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=12216497869493838098"
   },
   {
@@ -1710,9 +1962,9 @@
     "existingLatLng": "24.77,94.07",
     "googleLatLng": "24.7479739,94.04196569999999",
     "deltaM": 3743,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Andro, Imphal East",
+    "wikiLatLng": "24.777273,94.06322",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=930319243436118249"
   },
   {
@@ -1722,9 +1974,9 @@
     "existingLatLng": "23.727,92.717",
     "googleLatLng": "23.7307175,92.71731059999999",
     "deltaM": 415,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Aizawl",
+    "wikiLatLng": "23.72722222,92.71777778",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=18022018507470855020"
   },
   {
@@ -1734,9 +1986,9 @@
     "existingLatLng": "23.69,92.72",
     "googleLatLng": "23.748018,92.6884415",
     "deltaM": 7207,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Solomon's Temple, Aizawl",
+    "wikiLatLng": "23.7479,92.6884",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=13608139731397549269"
   },
   {
@@ -1746,9 +1998,9 @@
     "existingLatLng": "23.36,92.86",
     "googleLatLng": "23.2343703,92.7511995",
     "deltaM": 17850,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Vantawng Falls",
+    "wikiLatLng": "23.25692,92.76246",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=6245002164010128355"
   },
   {
@@ -1756,24 +2008,24 @@
     "name": "Phawngpui (Blue Mountain)",
     "district": "Lawngtlai",
     "existingLatLng": "22.63,93.03",
-    "googleLatLng": "22.733333,93.133333",
-    "deltaM": 15634,
+    "googleLatLng": "22.6510013,93.0275802",
+    "deltaM": 2348,
     "wikiTitle": "Phawngpui",
     "wikiLatLng": "22.6315,93.0388",
     "verdict": "confirms-existing",
-    "mapsUrl": "https://maps.google.com/?cid=11660592860760536588"
+    "mapsUrl": "https://maps.google.com/?cid=11018864684377045783"
   },
   {
     "slug": "champhai-valley",
     "name": "Champhai",
     "district": "Champhai",
     "existingLatLng": "23.456,93.329",
-    "googleLatLng": "23.3001872,93.29861059999999",
-    "deltaM": 17601,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=13891858153449836258"
+    "googleLatLng": "23.4775158,93.3236697",
+    "deltaM": 2453,
+    "wikiTitle": "Champhai",
+    "wikiLatLng": "23.456,93.329",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=1877753038291459456"
   },
   {
     "slug": "murlen-national-park",
@@ -1792,36 +2044,36 @@
     "name": "Unakoti",
     "district": "Unakoti",
     "existingLatLng": "24.32,92.03",
-    "googleLatLng": "24.3171341,92.0666363",
-    "deltaM": 3726,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=5065954807371721324"
+    "googleLatLng": "24.1679629,92.0458955",
+    "deltaM": 16982,
+    "wikiTitle": "Unakoti",
+    "wikiLatLng": "24.31666667,92.06666667",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=14544708569288066832"
   },
   {
     "slug": "tripura-sundari-temple",
     "name": "Tripura Sundari Temple",
     "district": "Gomati",
     "existingLatLng": "23.527,91.483",
-    "googleLatLng": "12.1309881,76.94748349999999",
-    "deltaM": 1990413,
-    "wikiTitle": "Agartala",
-    "wikiLatLng": "23.83138889,91.28694444",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=16390435901492961545"
+    "googleLatLng": "23.5090719,91.4982823",
+    "deltaM": 2530,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=6879138549772426736"
   },
   {
     "slug": "jampui-hills",
     "name": "Jampui Hills",
     "district": "North Tripura",
     "existingLatLng": "24,92.25",
-    "googleLatLng": "24.0055094,92.28178869999999",
-    "deltaM": 3287,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=3738046730175279178"
+    "googleLatLng": "23.9664748,92.27632679999999",
+    "deltaM": 4588,
+    "wikiTitle": "North Tripura district",
+    "wikiLatLng": "24.33333333,92.01666667",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=15792791010755286604"
   },
   {
     "slug": "chabimura-rock-carvings",
@@ -1842,9 +2094,9 @@
     "existingLatLng": "23.5,91.8",
     "googleLatLng": "23.4756928,91.84402589999999",
     "deltaM": 5241,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Dhalai district",
+    "wikiLatLng": "23.91634,91.88782",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=7953830890202257532"
   },
   {
@@ -1854,8 +2106,8 @@
     "existingLatLng": "23.3,91.9",
     "googleLatLng": "23.20645,91.60385269999999",
     "deltaM": 31993,
-    "wikiTitle": "Hampi",
-    "wikiLatLng": "15.33444444,76.46222222",
+    "wikiTitle": "Tripura",
+    "wikiLatLng": "23.84,91.28",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=15498997515543431972"
   },
@@ -1866,10 +2118,22 @@
     "existingLatLng": "23.63,91.15",
     "googleLatLng": "23.7402474,91.15981",
     "deltaM": 12300,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Kasbeswari Kali Mata",
+    "wikiLatLng": "23.74016389,91.15981944",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=9824771548470003255"
+  },
+  {
+    "slug": "mandore-gardens",
+    "name": "Mandore Gardens",
+    "district": "Jodhpur",
+    "existingLatLng": "26.3421,73.0402",
+    "googleLatLng": "26.383538,73.0678091",
+    "deltaM": 5366,
+    "wikiTitle": "Mandore",
+    "wikiLatLng": "26.3535,73.0331",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=13715599140929194321"
   },
   {
     "slug": "sam-sand-dunes",
@@ -1878,8 +2142,8 @@
     "existingLatLng": "26.8319,70.5083",
     "googleLatLng": "26.8650634,70.5464172",
     "deltaM": 5282,
-    "wikiTitle": "Desert National Park",
-    "wikiLatLng": "26,70.5",
+    "wikiTitle": "Jaisalmer district",
+    "wikiLatLng": "26.91333333,70.91388889",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11946511741234297583"
   },
@@ -1890,9 +2154,9 @@
     "existingLatLng": "26.7789,70.71",
     "googleLatLng": "26.8700388,70.78616439999999",
     "deltaM": 12642,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Kuldhara",
+    "wikiLatLng": "26.87,70.785",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=7955381476891080767"
   },
   {
@@ -1902,9 +2166,9 @@
     "existingLatLng": "24.8887,74.6269",
     "googleLatLng": "24.8839686,74.6473548",
     "deltaM": 2129,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Chittorgarh",
+    "wikiLatLng": "24.88,74.63",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=5690618123799126914"
   },
   {
@@ -1926,22 +2190,58 @@
     "existingLatLng": "24.728,73.75",
     "googleLatLng": "24.7470822,73.72337399999999",
     "deltaM": 3425,
-    "wikiTitle": "Maharana Pratap Airport",
-    "wikiLatLng": "24.61755556,73.89444444",
-    "verdict": "ambiguous",
+    "wikiTitle": "Eklingji",
+    "wikiLatLng": "24.7459558,73.7222375",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=9286765326039086617"
+  },
+  {
+    "slug": "mandawa-shekhawati",
+    "name": "Mandawa (Shekhawati)",
+    "district": "Jhunjhunu",
+    "existingLatLng": "28.055,75.142",
+    "googleLatLng": "28.0487656,75.1508753",
+    "deltaM": 1113,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=4237533370785091616"
+  },
+  {
+    "slug": "chail",
+    "name": "Chail",
+    "district": "Solan",
+    "existingLatLng": "30.964,77.202",
+    "googleLatLng": "30.9676214,77.1916497",
+    "deltaM": 1066,
+    "wikiTitle": "Chail, Himachal Pradesh",
+    "wikiLatLng": "30.9697,77.1975",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=3855103390848714470"
+  },
+  {
+    "slug": "kullu-valley",
+    "name": "Kullu Valley",
+    "district": "Kullu",
+    "existingLatLng": "31.958,77.109",
+    "googleLatLng": "31.9264306,77.11416369999999",
+    "deltaM": 3544,
+    "wikiTitle": "Kullu",
+    "wikiLatLng": "31.95,77.11",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=13600140144750943308"
   },
   {
     "slug": "tosh-village",
     "name": "Tosh",
     "district": "Kullu",
     "existingLatLng": "32.04,77.38",
-    "googleLatLng": "32.0238544,77.4631623",
-    "deltaM": 8042,
+    "googleLatLng": "32.0154338,77.453704",
+    "deltaM": 7466,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=3207848536143632743"
+    "mapsUrl": "https://maps.google.com/?cid=14157637408260347330"
   },
   {
     "slug": "malana-village",
@@ -1950,22 +2250,46 @@
     "existingLatLng": "32.057,77.26",
     "googleLatLng": "32.0617196,77.2613488",
     "deltaM": 540,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Malana, Himachal Pradesh",
+    "wikiLatLng": "32.06277778,77.26055556",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=10633948561750071561"
   },
   {
-    "slug": "dalhousie",
-    "name": "Dalhousie",
-    "district": "Chamba",
-    "existingLatLng": "32.539,75.971",
-    "googleLatLng": "32.5196627,76.0353738",
-    "deltaM": 6407,
+    "slug": "bhagsu-waterfall",
+    "name": "Bhagsu Waterfall",
+    "district": "Kangra",
+    "existingLatLng": "32.241,76.337",
+    "googleLatLng": "32.2475188,76.3376691",
+    "deltaM": 728,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=2356136492800810975"
+    "mapsUrl": "https://maps.google.com/?cid=15379867162763440053"
+  },
+  {
+    "slug": "khajjiar",
+    "name": "Khajjiar",
+    "district": "Chamba",
+    "existingLatLng": "32.547,76.057",
+    "googleLatLng": "32.5532801,76.0615409",
+    "deltaM": 818,
+    "wikiTitle": "Chamba, Himachal Pradesh",
+    "wikiLatLng": "32.148244,76.418566",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=12862800495096091612"
+  },
+  {
+    "slug": "bir-billing",
+    "name": "Bir Billing",
+    "district": "Kangra",
+    "existingLatLng": "32.042,76.722",
+    "googleLatLng": "32.0456253,76.7235513",
+    "deltaM": 429,
+    "wikiTitle": "Bir, Himachal Pradesh",
+    "wikiLatLng": "32.05,76.7",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=1440055691157269210"
   },
   {
     "slug": "kalpa-kinnaur",
@@ -1974,9 +2298,9 @@
     "existingLatLng": "31.539,78.257",
     "googleLatLng": "31.5376578,78.2753776",
     "deltaM": 1748,
-    "wikiTitle": "Himachal Pradesh",
-    "wikiLatLng": "31.10333333,77.17222222",
-    "verdict": "ambiguous",
+    "wikiTitle": "Kalpa, Himachal Pradesh",
+    "wikiLatLng": "31.53,78.25",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=13716648111556553179"
   },
   {
@@ -1984,12 +2308,36 @@
     "name": "Naldehra",
     "district": "Shimla",
     "existingLatLng": "31.166,77.21",
-    "googleLatLng": "31.1841571,77.172839",
-    "deltaM": 4071,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=7529906707248801769"
+    "googleLatLng": "31.1811641,77.18589949999999",
+    "deltaM": 2846,
+    "wikiTitle": "Shimla",
+    "wikiLatLng": "31.10333333,77.17222222",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=14211863127721775177"
+  },
+  {
+    "slug": "tattapani",
+    "name": "Tattapani",
+    "district": "Mandi",
+    "existingLatLng": "31.244,77.029",
+    "googleLatLng": "31.2487896,77.0895421",
+    "deltaM": 5780,
+    "wikiTitle": "Tattapani (Himachal Pradesh)",
+    "wikiLatLng": "31.2487,77.0878",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=6403231392511169751"
+  },
+  {
+    "slug": "bilaspur-gobind-sagar",
+    "name": "Bilaspur (Gobind Sagar Lake)",
+    "district": "Bilaspur",
+    "existingLatLng": "31.334,76.757",
+    "googleLatLng": "31.404663,76.49679189999999",
+    "deltaM": 25924,
+    "wikiTitle": "Bilaspur, Himachal Pradesh",
+    "wikiLatLng": "31.33,76.75",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=6625202901726442797"
   },
   {
     "slug": "great-himalayan-national-park",
@@ -2008,12 +2356,12 @@
     "name": "Betaab Valley",
     "district": "Anantnag",
     "existingLatLng": "34.029,75.348",
-    "googleLatLng": "34.054685,75.36362629999999",
-    "deltaM": 3198,
-    "wikiTitle": "Pahalgam",
-    "wikiLatLng": "34.01,75.19",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=15213993780890369525"
+    "googleLatLng": "34.0545035,75.36379219999999",
+    "deltaM": 3187,
+    "wikiTitle": "Betaab Valley",
+    "wikiLatLng": "34.05041,75.36381",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=17656046704085735814"
   },
   {
     "slug": "doodhpathri",
@@ -2022,8 +2370,8 @@
     "existingLatLng": "33.83,74.85",
     "googleLatLng": "33.8770625,74.58031249999999",
     "deltaM": 25448,
-    "wikiTitle": "Budgam district",
-    "wikiLatLng": "34.02,74.78",
+    "wikiTitle": "Doodhpathri",
+    "wikiLatLng": "33.85,74.56",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=7471876456485025276"
   },
@@ -2044,12 +2392,12 @@
     "name": "Nubra Valley (Hunder)",
     "district": "Leh",
     "existingLatLng": "34.576,77.5",
-    "googleLatLng": "34.5507427,77.54623529999999",
-    "deltaM": 5081,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=12909335815535334850"
+    "googleLatLng": "34.5834813,77.472973",
+    "deltaM": 2610,
+    "wikiTitle": "Nubra",
+    "wikiLatLng": "34.6,77.7",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=16762101070331125345"
   },
   {
     "slug": "magnetic-hill-ladakh",
@@ -2058,9 +2406,9 @@
     "existingLatLng": "34.234,77.362",
     "googleLatLng": "34.1763828,77.35505409999999",
     "deltaM": 6439,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Magnetic Hill (India)",
+    "wikiLatLng": "34.171,77.3525",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=10637964314266078254"
   },
   {
@@ -2068,24 +2416,48 @@
     "name": "Zanskar Valley",
     "district": "Kargil",
     "existingLatLng": "33.5,76.9",
-    "googleLatLng": "33.5054375,76.8135625",
-    "deltaM": 8037,
-    "wikiTitle": "Leh district",
-    "wikiLatLng": "33.63333333,77.76666667",
+    "googleLatLng": "33.6527668,76.9836622",
+    "deltaM": 18672,
+    "wikiTitle": "Zanskar district",
+    "wikiLatLng": "33.46666667,76.88333333",
     "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=17643265976831527530"
+    "mapsUrl": "https://maps.google.com/?q=Zanskar+Valley+Rd&ftid=0x38fd992c94a88b91:0x7e13cd8344f9170d"
+  },
+  {
+    "slug": "khardung-la",
+    "name": "Khardung La",
+    "district": "Leh",
+    "existingLatLng": "34.279,77.604",
+    "googleLatLng": "34.1700339,77.5950435",
+    "deltaM": 12144,
+    "wikiTitle": "Khardung La",
+    "wikiLatLng": "34.27833333,77.60416667",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?q=Khardung+La+Rd,+Leh&ftid=0x38fdc3fc8953f637:0x98bd866d4752e206"
+  },
+  {
+    "slug": "anandpur-sahib",
+    "name": "Anandpur Sahib",
+    "district": "Rupnagar",
+    "existingLatLng": "31.239,76.503",
+    "googleLatLng": "31.2355318,76.5012734",
+    "deltaM": 419,
+    "wikiTitle": "Anandpur Sahib",
+    "wikiLatLng": "31.234961,76.498808",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=1095918416594992350"
   },
   {
     "slug": "ranjit-sagar-dam",
     "name": "Ranjit Sagar Dam",
     "district": "Pathankot",
     "existingLatLng": "32.416,75.625",
-    "googleLatLng": "32.4710761,75.754592",
-    "deltaM": 13616,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=13681861899757207509"
+    "googleLatLng": "32.4436566,75.7340239",
+    "deltaM": 10684,
+    "wikiTitle": "Ranjit Sagar Dam",
+    "wikiLatLng": "32.4425,75.72861111",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=15063741421154287917"
   },
   {
     "slug": "qila-mubarak-patiala",
@@ -2094,9 +2466,9 @@
     "existingLatLng": "30.339,76.391",
     "googleLatLng": "30.3248034,76.4039871",
     "deltaM": 2011,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Patiala",
+    "wikiLatLng": "30.34083333,76.40111111",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=561572988422116270"
   },
   {
@@ -2118,34 +2490,94 @@
     "existingLatLng": "28.456,77.286",
     "googleLatLng": "28.4842019,77.284176",
     "deltaM": 3141,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Faridabad",
+    "wikiLatLng": "28.4211,77.3078",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=16791972490510865102"
+  },
+  {
+    "slug": "mahabalipuram-shore-temple",
+    "name": "Mahabalipuram (Mamallapuram)",
+    "district": "Chengalpattu",
+    "existingLatLng": "12.6167,80.1994",
+    "googleLatLng": "12.6207821,80.1944915",
+    "deltaM": 700,
+    "wikiTitle": "Descent of the Ganges (Mahabalipuram)",
+    "wikiLatLng": "12.6175,80.19888889",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=11313211166171894591"
   },
   {
     "slug": "dhanushkodi",
     "name": "Dhanushkodi",
     "district": "Ramanathapuram",
     "existingLatLng": "9.1547,79.418",
-    "googleLatLng": "9.158856799999999,79.43899850000001",
-    "deltaM": 2351,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=10092995614273577606"
+    "googleLatLng": "9.178812299999999,79.4158349",
+    "deltaM": 2692,
+    "wikiTitle": "Ramanathapuram district",
+    "wikiLatLng": "9.38333333,78.75",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=4693390746617752250"
+  },
+  {
+    "slug": "kodaikanal",
+    "name": "Kodaikanal",
+    "district": "Dindigul",
+    "existingLatLng": "10.2381,77.4892",
+    "googleLatLng": "10.2391086,77.4977456",
+    "deltaM": 942,
+    "wikiTitle": "Dindigul district",
+    "wikiLatLng": "10.354,77.985",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=11527782619569242428"
   },
   {
     "slug": "hogenakkal-falls",
     "name": "Hogenakkal Falls",
     "district": "Dharmapuri",
     "existingLatLng": "12.117,77.777",
-    "googleLatLng": "12.0383362,77.6961229",
-    "deltaM": 12403,
+    "googleLatLng": "12.0577613,77.7110183",
+    "deltaM": 9739,
     "wikiTitle": "Hogenakkal Falls",
     "wikiLatLng": "12.1182,77.77385",
     "verdict": "confirms-existing",
-    "mapsUrl": "https://maps.google.com/?cid=6115052448670192113"
+    "mapsUrl": "https://maps.google.com/?q=Madheswara+Betta+-+Hogenakkal+Falls+Rd,+Karnataka+571490,+India&ftid=0x3baeb8f477031db1:0x54dd07cd99de91f1"
+  },
+  {
+    "slug": "courtallam-falls",
+    "name": "Courtallam Falls (Kutralam)",
+    "district": "Tenkasi",
+    "existingLatLng": "8.9333,77.2717",
+    "googleLatLng": "8.9311702,77.23805519999999",
+    "deltaM": 3703,
+    "wikiTitle": "Courtallam",
+    "wikiLatLng": "8.9342,77.2778",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=16581911403193478551"
+  },
+  {
+    "slug": "tranquebar-tharangambadi",
+    "name": "Tranquebar (Tharangambadi)",
+    "district": "Mayiladuthurai",
+    "existingLatLng": "11.029,79.851",
+    "googleLatLng": "11.0286007,79.8547524",
+    "deltaM": 412,
+    "wikiTitle": "Tharangambadi",
+    "wikiLatLng": "11.02916667,79.84944444",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=2989993612940503370"
+  },
+  {
+    "slug": "mudumalai-national-park",
+    "name": "Mudumalai National Park",
+    "district": "The Nilgiris",
+    "existingLatLng": "11.5704,76.5326",
+    "googleLatLng": "11.6375918,76.5257007",
+    "deltaM": 7509,
+    "wikiTitle": "Nilgiris district",
+    "wikiLatLng": "11.4,76.7",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=15697758879454812924"
   },
   {
     "slug": "coonoor-nilgiris",
@@ -2160,18 +2592,6 @@
     "mapsUrl": "https://maps.google.com/?cid=1814261836582017979"
   },
   {
-    "slug": "isha-adiyogi-coimbatore",
-    "name": "Adiyogi Shiva Statue, Isha Yoga Center",
-    "district": "Coimbatore",
-    "existingLatLng": "10.9763407,76.73682550000001",
-    "googleLatLng": "13.4864375,77.7069375",
-    "deltaM": 298353,
-    "wikiTitle": "Adiyogi Shiva bust",
-    "wikiLatLng": "10.972416,76.740602",
-    "verdict": "confirms-existing",
-    "mapsUrl": "https://maps.google.com/?cid=12794164674776028618"
-  },
-  {
     "slug": "kumbakonam-temple-town",
     "name": "Kumbakonam",
     "district": "Thanjavur",
@@ -2184,64 +2604,76 @@
     "mapsUrl": "https://maps.google.com/?cid=715146385599737141"
   },
   {
-    "slug": "kolli-hills",
-    "name": "Kolli Hills",
-    "district": "Namakkal",
-    "existingLatLng": "11.25,78.34",
-    "googleLatLng": "11.2791396,78.3326218",
-    "deltaM": 3339,
-    "wikiTitle": "Kolli Hills",
-    "wikiLatLng": "11.32972222,78.39333333",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=9383616936162925862"
-  },
-  {
     "slug": "alleppey-backwaters",
     "name": "Alleppey Backwaters",
     "district": "Alappuzha",
     "existingLatLng": "9.4981,76.3388",
     "googleLatLng": "9.523861199999999,76.3567633",
     "deltaM": 3477,
-    "wikiTitle": "Alappuzha",
-    "wikiLatLng": "9.49,76.33",
-    "verdict": "confirms-existing",
+    "wikiTitle": "Kerala backwaters",
+    "wikiLatLng": "9.86348,76.3594",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=8442120321334531086"
-  },
-  {
-    "slug": "kumarakom",
-    "name": "Kumarakom",
-    "district": "Kottayam",
-    "existingLatLng": "9.6175,76.43",
-    "googleLatLng": "12.9106564,77.644305",
-    "deltaM": 389384,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=944951252737466597"
   },
   {
     "slug": "wayanad",
     "name": "Wayanad",
     "district": "Wayanad",
     "existingLatLng": "11.6854,76.132",
-    "googleLatLng": "12.9345325,77.6292026",
-    "deltaM": 213886,
-    "wikiTitle": "Wayanad district",
-    "wikiLatLng": "11.6264,76.0889",
-    "verdict": "ambiguous",
-    "mapsUrl": "https://maps.google.com/?cid=5161172727049935012"
+    "googleLatLng": "11.703206,76.0833999",
+    "deltaM": 5650,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=9293622555212651017"
+  },
+  {
+    "slug": "banasura-sagar-dam",
+    "name": "Banasura Sagar Dam",
+    "district": "Wayanad",
+    "existingLatLng": "11.679,75.949",
+    "googleLatLng": "11.67,75.95777799999999",
+    "deltaM": 1384,
+    "wikiTitle": "Banasura Sagar Dam",
+    "wikiLatLng": "11.67,75.95777778",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=3710170945367423860"
+  },
+  {
+    "slug": "sabarimala-ayyappa-temple",
+    "name": "Sabarimala Ayyappa Temple",
+    "district": "Pathanamthitta",
+    "existingLatLng": "9.436,77.081",
+    "googleLatLng": "9.4320761,77.08200149999999",
+    "deltaM": 450,
+    "wikiTitle": "Sabarimala Temple",
+    "wikiLatLng": "9.43461111,77.08138889",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=10750153712738697326"
+  },
+  {
+    "slug": "poovar-island",
+    "name": "Poovar Island",
+    "district": "Thiruvananthapuram",
+    "existingLatLng": "8.317,77.079",
+    "googleLatLng": "8.3123976,77.0723654",
+    "deltaM": 891,
+    "wikiTitle": "Poovar",
+    "wikiLatLng": "8.3175,77.07138889",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=6155297533561502359"
   },
   {
     "slug": "vagamon",
     "name": "Vagamon",
     "district": "Idukki",
     "existingLatLng": "9.686,76.908",
-    "googleLatLng": "9.649823999999999,76.94756799999999",
-    "deltaM": 5916,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=13502915147420259005"
+    "googleLatLng": "9.686181399999999,76.9052294",
+    "deltaM": 304,
+    "wikiTitle": "Vagamon",
+    "wikiLatLng": "9.68777778,76.90694444",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=16683454855185869753"
   },
   {
     "slug": "eravikulam-national-park",
@@ -2274,9 +2706,9 @@
     "existingLatLng": "8.95,76.55",
     "googleLatLng": "8.9591853,76.5777203",
     "deltaM": 3212,
-    "wikiTitle": "Kollam district",
-    "wikiLatLng": "8.8,76.6",
-    "verdict": "ambiguous",
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
     "mapsUrl": "https://maps.google.com/?cid=11713365562836707659"
   },
   {
@@ -2286,10 +2718,22 @@
     "existingLatLng": "8.777,76.856",
     "googleLatLng": "8.8610043,76.8663736",
     "deltaM": 9410,
-    "wikiTitle": "Kollam district",
-    "wikiLatLng": "8.8,76.6",
-    "verdict": "ambiguous",
+    "wikiTitle": "Jatayu Earth's Center Nature Park",
+    "wikiLatLng": "8.865888,76.867306",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=8620537672624573552"
+  },
+  {
+    "slug": "araku-valley",
+    "name": "Araku Valley",
+    "district": "Alluri Sitharama Raju",
+    "existingLatLng": "18.327,82.876",
+    "googleLatLng": "18.3391345,82.8483081",
+    "deltaM": 3219,
+    "wikiTitle": "Alluri Sitharama Raju district",
+    "wikiLatLng": "18.08,82.67",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=3138416273792563606"
   },
   {
     "slug": "horsley-hills",
@@ -2298,9 +2742,9 @@
     "existingLatLng": "13.658,78.403",
     "googleLatLng": "13.6508151,78.3964045",
     "deltaM": 1071,
-    "wikiTitle": "Annamayya district",
-    "wikiLatLng": "13.55,78.5",
-    "verdict": "ambiguous",
+    "wikiTitle": "Horsley Hills",
+    "wikiLatLng": "13.66,78.4",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=8284993010853685760"
   },
   {
@@ -2334,9 +2778,9 @@
     "existingLatLng": "17.2543,78.6808",
     "googleLatLng": "17.3111861,78.68241669999999",
     "deltaM": 6328,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Abdullapurmet",
+    "wikiLatLng": "17.30971111,78.68305278",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=14070516735237711643"
   },
   {
@@ -2346,8 +2790,8 @@
     "existingLatLng": "18.009,79.556",
     "googleLatLng": "18.003737,79.57477089999999",
     "deltaM": 2069,
-    "wikiTitle": "Hanamkonda district",
-    "wikiLatLng": "17.95,79.5",
+    "wikiTitle": "Hanamkonda",
+    "wikiLatLng": "18.0167,79.6333",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3452945263102577333"
   },
@@ -2358,9 +2802,9 @@
     "existingLatLng": "19.323,78.472",
     "googleLatLng": "19.2846527,78.5032569",
     "deltaM": 5380,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Kuntala Waterfall",
+    "wikiLatLng": "19.285,78.503",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=3435126452169334525"
   },
   {
@@ -2382,9 +2826,9 @@
     "existingLatLng": "23.9822,69.133",
     "googleLatLng": "23.8412898,69.52255989999999",
     "deltaM": 42586,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Rann of Kutch",
+    "wikiLatLng": "24.08638889,70.63777778",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=2025453401622707479"
   },
   {
@@ -2392,24 +2836,36 @@
     "name": "Kalo Dungar (Black Hill)",
     "district": "Kutch",
     "existingLatLng": "23.956,69.533",
-    "googleLatLng": "23.9364502,69.81440839999999",
-    "deltaM": 28680,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=15387579382923550518"
+    "googleLatLng": "23.9344982,69.81448350000001",
+    "deltaM": 28705,
+    "wikiTitle": "Kalo Dungar",
+    "wikiLatLng": "23.93416667,69.81388889",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=3944038680038956591"
+  },
+  {
+    "slug": "mandvi-beach-kutch",
+    "name": "Mandvi Beach",
+    "district": "Kutch",
+    "existingLatLng": "22.828,69.348",
+    "googleLatLng": "22.8298441,69.32611969999999",
+    "deltaM": 2252,
+    "wikiTitle": "Mandvi",
+    "wikiLatLng": "22.83333333,69.35555556",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=4290077745153010739"
   },
   {
     "slug": "wild-ass-sanctuary-little-rann",
     "name": "Wild Ass Sanctuary, Little Rann of Kutch",
     "district": "Surendranagar",
     "existingLatLng": "23.3167,71.2333",
-    "googleLatLng": "23.1291541,71.7843068",
-    "deltaM": 60043,
+    "googleLatLng": "23.1443682,71.210117",
+    "deltaM": 19308,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=13516737326750458510"
+    "mapsUrl": "https://maps.google.com/?cid=12199618799711085614"
   },
   {
     "slug": "ahmedabad-heritage-city",
@@ -2418,9 +2874,9 @@
     "existingLatLng": "23.0225,72.5714",
     "googleLatLng": "23.0297776,72.591341",
     "deltaM": 2195,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Gujarat",
+    "wikiLatLng": "23.22,72.655",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3136157084033477473"
   },
   {
@@ -2430,9 +2886,9 @@
     "existingLatLng": "21.5,70.5",
     "googleLatLng": "21.5178869,70.5502916",
     "deltaM": 5570,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Girnar",
+    "wikiLatLng": "21.49472222,70.50555556",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=15849605928843739826"
   },
   {
@@ -2442,10 +2898,22 @@
     "existingLatLng": "21.4859,71.9047",
     "googleLatLng": "21.5053162,71.8143754",
     "deltaM": 9591,
-    "wikiTitle": "Talaja Caves",
-    "wikiLatLng": "21.355474,72.032298",
+    "wikiTitle": "Palitana temples",
+    "wikiLatLng": "21.483,71.794",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=17170512597753821527"
+  },
+  {
+    "slug": "saputara-hill-station",
+    "name": "Saputara",
+    "district": "Dang",
+    "existingLatLng": "20.576,73.75",
+    "googleLatLng": "20.5796869,73.7467691",
+    "deltaM": 530,
+    "wikiTitle": "Saputara",
+    "wikiLatLng": "20.57972222,73.74666667",
+    "verdict": "confirms-google",
+    "mapsUrl": "https://maps.google.com/?cid=3564528453424262259"
   },
   {
     "slug": "diu-island-note",
@@ -2466,10 +2934,46 @@
     "existingLatLng": "23.933,73.25",
     "googleLatLng": "24.0020953,73.2690789",
     "deltaM": 7924,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Polo Forest",
+    "wikiLatLng": "23.9850575,73.2687564",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=10656842101494020459"
+  },
+  {
+    "slug": "juhu-beach-mumbai",
+    "name": "Juhu Beach",
+    "district": "Mumbai",
+    "existingLatLng": "19.0968,72.8267",
+    "googleLatLng": "19.1048146,72.8267098",
+    "deltaM": 891,
+    "wikiTitle": "Juhu",
+    "wikiLatLng": "19.1,72.83",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=3820315394291715745"
+  },
+  {
+    "slug": "ajanta-caves",
+    "name": "Ajanta Caves",
+    "district": "Chhatrapati Sambhajinagar",
+    "existingLatLng": "20.5519,75.7033",
+    "googleLatLng": "20.5577157,75.7130986",
+    "deltaM": 1208,
+    "wikiTitle": "Aurangabad district, Maharashtra",
+    "wikiLatLng": "19.88878611,75.34343611",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=14879447781928250377"
+  },
+  {
+    "slug": "lonavala-hill-station",
+    "name": "Lonavala",
+    "district": "Pune",
+    "existingLatLng": "18.7546,73.4062",
+    "googleLatLng": "18.7557237,73.4090757",
+    "deltaM": 328,
+    "wikiTitle": "Lonavala",
+    "wikiLatLng": "18.74806,73.40722",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=7596246975450875480"
   },
   {
     "slug": "khandala",
@@ -2490,10 +2994,22 @@
     "existingLatLng": "20.027,73.71",
     "googleLatLng": "20.00532,73.68844659999999",
     "deltaM": 3299,
-    "wikiTitle": "Nashik district",
-    "wikiLatLng": "19.99416667,73.79722222",
-    "verdict": "ambiguous",
+    "wikiTitle": "Sula Vineyards",
+    "wikiLatLng": "20.00688889,73.68847222",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=12830137706962684573"
+  },
+  {
+    "slug": "panchgani-hill-station",
+    "name": "Panchgani",
+    "district": "Satara",
+    "existingLatLng": "17.9247,73.8003",
+    "googleLatLng": "17.9234131,73.7977464",
+    "deltaM": 306,
+    "wikiTitle": "Panchgani",
+    "wikiLatLng": "17.925,73.8",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=8878364610173955068"
   },
   {
     "slug": "bhandardara",
@@ -2526,9 +3042,9 @@
     "existingLatLng": "17.145,73.268",
     "googleLatLng": "17.1488663,73.2726946",
     "deltaM": 659,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Ganpatipule",
+    "wikiLatLng": "17.1448,73.2666",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=13854485483051991395"
   },
   {
@@ -2538,9 +3054,9 @@
     "existingLatLng": "18.6411,72.8722",
     "googleLatLng": "18.6438187,72.8737017",
     "deltaM": 341,
-    "wikiTitle": "Mahad",
-    "wikiLatLng": "18.083,73.417",
-    "verdict": "ambiguous",
+    "wikiTitle": "Alibag",
+    "wikiLatLng": "18.64,72.88",
+    "verdict": "confirms-google",
     "mapsUrl": "https://maps.google.com/?cid=12205685548541971329"
   },
   {
@@ -2562,9 +3078,9 @@
     "existingLatLng": "17.997,73.018",
     "googleLatLng": "18.0013464,73.0209857",
     "deltaM": 577,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Harihareshwar",
+    "wikiLatLng": "17.995,73.025",
+    "verdict": "confirms-existing",
     "mapsUrl": "https://maps.google.com/?cid=1340168382407915511"
   },
   {
@@ -2572,24 +3088,72 @@
     "name": "Shani Shingnapur",
     "district": "Ahmednagar",
     "existingLatLng": "19.356,74.925",
-    "googleLatLng": "19.3815701,74.85808980000002",
-    "deltaM": 7573,
+    "googleLatLng": "19.3809105,74.8581505",
+    "deltaM": 7540,
+    "wikiTitle": "Shani Shingnapur",
+    "wikiLatLng": "19.4,74.8167",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=10351283319165149939"
+  },
+  {
+    "slug": "goa-north-beaches-belt",
+    "name": "Baga Beach",
+    "district": "North Goa",
+    "existingLatLng": "15.5556,73.7517",
+    "googleLatLng": "15.5622086,73.74929399999999",
+    "deltaM": 779,
+    "wikiTitle": "Baga, Goa",
+    "wikiLatLng": "15.55888889,73.75333333",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=14307082092765165083"
+  },
+  {
+    "slug": "vagator-beach",
+    "name": "Vagator Beach",
+    "district": "North Goa",
+    "existingLatLng": "15.598,73.744",
+    "googleLatLng": "15.5952306,73.7515066",
+    "deltaM": 861,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=9696964636684993874"
+    "mapsUrl": "https://maps.google.com/?cid=16758197038765020370"
+  },
+  {
+    "slug": "panaji-fontainhas",
+    "name": "Fontainhas, Panaji",
+    "district": "North Goa",
+    "existingLatLng": "15.498,73.832",
+    "googleLatLng": "15.4941033,73.8300775",
+    "deltaM": 480,
+    "wikiTitle": "Panaji",
+    "wikiLatLng": "15.49888889,73.82777778",
+    "verdict": "confirms-existing",
+    "mapsUrl": "https://maps.google.com/?cid=12530857843543633530"
   },
   {
     "slug": "agonda-beach",
     "name": "Agonda Beach",
     "district": "South Goa",
     "existingLatLng": "15.045,74.023",
-    "googleLatLng": "15.0437626,73.9857577",
-    "deltaM": 4002,
+    "googleLatLng": "15.0455814,73.9888797",
+    "deltaM": 3665,
     "wikiTitle": null,
     "wikiLatLng": null,
     "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=9557625163123759215"
+    "mapsUrl": "https://maps.google.com/?cid=17248071730477374789"
+  },
+  {
+    "slug": "arambol-beach",
+    "name": "Arambol Beach",
+    "district": "North Goa",
+    "existingLatLng": "15.687,73.704",
+    "googleLatLng": "15.6900339,73.7046629",
+    "deltaM": 345,
+    "wikiTitle": null,
+    "wikiLatLng": null,
+    "verdict": "no-wiki-data",
+    "mapsUrl": "https://maps.google.com/?cid=9901758885432190949"
   },
   {
     "slug": "diu-fort",
@@ -2598,8 +3162,8 @@
     "existingLatLng": "20.713,70.942",
     "googleLatLng": "20.7146981,70.9961398",
     "deltaM": 5634,
-    "wikiTitle": "Fort Vasai",
-    "wikiLatLng": "19.33027778,72.815",
+    "wikiTitle": "Dadra and Nagar Haveli and Daman and Diu",
+    "wikiLatLng": "20.42,72.83",
     "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=11495904372393397424"
   },
@@ -2610,9 +3174,9 @@
     "existingLatLng": "20.725,70.964",
     "googleLatLng": "20.7384762,71.00873179999999",
     "deltaM": 4887,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Gogolá",
+    "wikiLatLng": "20.72694444,70.98833333",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=3288516973350878266"
   },
   {
@@ -2622,9 +3186,9 @@
     "existingLatLng": "20.715,70.933",
     "googleLatLng": "20.7148693,70.99062239999999",
     "deltaM": 5993,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
+    "wikiTitle": "Dadra and Nagar Haveli and Daman and Diu",
+    "wikiLatLng": "20.42,72.83",
+    "verdict": "ambiguous",
     "mapsUrl": "https://maps.google.com/?cid=10345700812181486202"
   },
   {
@@ -2632,12 +3196,12 @@
     "name": "Jampore Beach, Daman",
     "district": "Daman",
     "existingLatLng": "20.382,72.848",
-    "googleLatLng": "20.3781593,72.8235529",
-    "deltaM": 2584,
-    "wikiTitle": null,
-    "wikiLatLng": null,
-    "verdict": "no-wiki-data",
-    "mapsUrl": "https://maps.google.com/?cid=5344087549638022767"
+    "googleLatLng": "20.3809422,72.8238528",
+    "deltaM": 2520,
+    "wikiTitle": "Daman, India",
+    "wikiLatLng": "20.42,72.85",
+    "verdict": "ambiguous",
+    "mapsUrl": "https://maps.google.com/?cid=2522867695664357465"
   },
   {
     "slug": "vanganga-lake-silvassa",

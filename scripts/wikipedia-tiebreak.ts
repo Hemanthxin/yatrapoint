@@ -33,6 +33,28 @@ const FILES: Record<string, string> = {
   westIndiaDestinations: "src/lib/db/india/west.ts",
 };
 
+// Rejects a Wikipedia match that's really just the surrounding city/district/
+// state article rather than the specific place — its coordinate is a
+// centroid, not proof either candidate coordinate is right. Same failure mode
+// as the image script: a place name that repeats its own district (e.g.
+// "Puri Beach" in Puri district) makes the search over-rank the generic area
+// page.
+function isGenericAreaTitle(title: string, place: { name: string; district: string; state?: string }): boolean {
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/\s*\([^)]*\)\s*/g, " ")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  const t = norm(title);
+  const bareAreaNames = [place.district, place.state, `${place.district} district`, `${place.district} city`]
+    .filter((s): s is string => !!s)
+    .map(norm);
+  if (!bareAreaNames.includes(t)) return false;
+  return norm(place.name) !== t;
+}
+
 function haversineM(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 6371000;
   const toRad = (d: number) => (d * Math.PI) / 180;
@@ -117,10 +139,13 @@ async function run() {
     const existing = { lat: eLat, lng: eLng };
     const google = { lat: gLat, lng: gLng };
 
-    const wiki = await wikiCoord(`${f.name} ${f.district} Karnataka`);
+    const wiki = await wikiCoord(`${f.name} ${f.district} ${f.state ?? "Karnataka"}`);
     let verdict = "no-wiki-data";
 
-    if (wiki) {
+    if (wiki && isGenericAreaTitle(wiki.title, { name: f.name, district: f.district, state: f.state })) {
+      verdict = "generic-area-page-ignored";
+      stillAmbiguous++;
+    } else if (wiki) {
       const wikiPt = { lat: wiki.lat, lng: wiki.lng };
       const dExisting = haversineM(existing, wikiPt);
       const dGoogle = haversineM(google, wikiPt);

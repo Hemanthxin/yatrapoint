@@ -34,7 +34,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Aravalli-crest fort offering sweeping sunset views over the Pink City.",
     description:
       "Nahargarh Fort crowns the Aravalli hills above Jaipur and once formed a defensive ring with Amber and Jaigarh. The Madhavendra Bhawan with its identical suites for the king's queens is a highlight, and the terrace café is famous for panoramic sunset views over the city.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/47/Nahargarh_13.jpg",
     openingTimings: "10:00 AM - 5:30 PM",
     entryFees: 50,
     budgetPerDay: 1800,
@@ -55,7 +55,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Rugged hill fort housing Jaivana, once the world's largest wheeled cannon.",
     description:
       "Jaigarh Fort, the 'Fort of Victory', guarded Amber and its treasury. Its rugged ramparts, water reservoirs and armoury are well preserved, but the star attraction is Jaivana, historically the largest wheeled cannon ever cast. The fort connects to Amber by subterranean passages.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Rajasthan-Jaipur-Jaigarh-Fort-compound-Apr-2004-00.JPG/1280px-Rajasthan-Jaipur-Jaigarh-Fort-compound-Apr-2004-00.JPG",
     openingTimings: "9:00 AM - 6:30 PM",
     entryFees: 70,
     budgetPerDay: 1800,
@@ -76,7 +76,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Iconic five-storey pink 'Palace of Winds' with 953 latticed windows.",
     description:
       "Hawa Mahal, the 'Palace of Winds', was built in 1799 so royal ladies could watch street festivities unseen through its honeycomb of 953 jharokha windows. The pyramidal facade of pink sandstone is Jaipur's most photographed landmark, and a small museum sits within.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg/1280px-East_facade_Hawa_Mahal_Jaipur_from_ground_level_%28July_2022%29_-_img_01.jpg",
     openingTimings: "9:00 AM - 7:00 PM",
     entryFees: 50,
     budgetPerDay: 2000,
@@ -97,7 +97,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sprawling royal palace complex with courtyards, museums and the Chandra Mahal.",
     description:
       "The City Palace is a grand complex of courtyards, gardens and buildings blending Rajput and Mughal styles, still partly home to Jaipur's royal family. Highlights include the Mubarak Mahal museum, the peacock-themed Pritam Niwas Chowk gates and the seven-storey Chandra Mahal.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg/1280px-Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg",
     openingTimings: "9:30 AM - 7:30 PM",
     entryFees: 200,
     budgetPerDay: 2300,
@@ -118,7 +118,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "UNESCO-listed 18th-century observatory with the world's largest stone sundial.",
     description:
       "Built by Maharaja Sawai Jai Singh II, Jantar Mantar is a UNESCO World Heritage collection of nineteen monumental masonry astronomical instruments. The Samrat Yantra sundial stands 27 metres tall and tells time to two-second accuracy; guides explain each instrument's function.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Jantar_Mantar_at_Jaipur.jpg/1280px-Jantar_Mantar_at_Jaipur.jpg",
     openingTimings: "9:00 AM - 6:30 PM",
     entryFees: 50,
     budgetPerDay: 2000,
@@ -139,7 +139,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Indo-Saracenic state museum in Ram Niwas Garden, floodlit at night.",
     description:
       "The Albert Hall Museum is Rajasthan's oldest museum, housed in a striking Indo-Saracenic building in Ram Niwas Garden. Its galleries display miniature paintings, textiles, arms, an Egyptian mummy and metalware. The facade is beautifully illuminated after dark.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/AMRAPALI_MUSEUM%2C_JAIPUR.jpg/1280px-AMRAPALI_MUSEUM%2C_JAIPUR.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Albert_Hall_%28_Jaipur_%29.jpg/1280px-Albert_Hall_%28_Jaipur_%29.jpg",
     openingTimings: "9:00 AM - 8:00 PM",
     entryFees: 40,
     budgetPerDay: 1800,
@@ -160,7 +160,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Red-sandstone 'Water Palace' seemingly floating in Man Sagar Lake.",
     description:
       "Jal Mahal appears to float in the middle of Man Sagar Lake, with four of its five storeys submerged. The palace is admired from the lakefront promenade, a popular spot for photography and birdwatching as migratory birds gather on the water against the Aravalli backdrop.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Jaipur_03-2016_39_Jal_Mahal_-_Water_Palace.jpg/1280px-Jaipur_03-2016_39_Jal_Mahal_-_Water_Palace.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -202,7 +202,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Gleaming white-marble Lakshmi Narayan temple below Moti Dungri hill.",
     description:
       "The Birla Mandir is a modern white-marble temple dedicated to Lakshmi and Narayan, set below Moti Dungri fort. Its carved panels depict figures from Hindu scripture as well as historical thinkers, and it glows beautifully when floodlit in the evening.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Birla_Mandir_Jaipur_%282022-07%29.jpg/1280px-Birla_Mandir_Jaipur_%282022-07%29.jpg",
     openingTimings: "8:00 AM - 12:00 PM, 4:00 PM - 9:00 PM",
     entryFees: 0,
     budgetPerDay: 1500,
@@ -223,7 +223,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Towering hilltop fort above Jodhpur's blue city with palatial museum galleries.",
     description:
       "Mehrangarh is one of India's largest and best-preserved forts, rising 120 metres above Jodhpur's blue-painted old city. Its palaces — Moti Mahal, Phool Mahal and Sheesh Mahal — house a superb museum of palanquins, arms and paintings, and a zipline circuits the ramparts.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/99/Mehrangarh_Fort_sanhita.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 100,
     budgetPerDay: 2200,
@@ -244,7 +244,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Grand Art Deco royal palace, part heritage hotel and part museum.",
     description:
       "One of the world's largest private residences, Umaid Bhawan was built in golden-yellow sandstone in the 1930s in a striking Indo-Deco style. Part remains the Jodhpur royal residence, part is a luxury hotel, and a museum displays vintage cars, clocks and royal memorabilia.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/40/Jodhpur_Airport.png",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/1996_-218-20A_Jodhpur_Hotel_Umaid_Bhawan_Palace_%282233393509%29.jpg/1280px-1996_-218-20A_Jodhpur_Hotel_Umaid_Bhawan_Palace_%282233393509%29.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 30,
     budgetPerDay: 2400,
@@ -265,7 +265,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Milky-white marble royal cenotaph beside a lake near Mehrangarh.",
     description:
       "Jaswant Thada is an elegant white-marble cenotaph built in 1899 for Maharaja Jaswant Singh II, its thin polished sheets glowing warmly in sunlight. Set beside a small lake near Mehrangarh, its manicured gardens and portrait gallery of Marwar rulers make a tranquil stop.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Jaswant_Thada_Dawn.jpg/1280px-Jaswant_Thada_Dawn.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 30,
     budgetPerDay: 1800,
@@ -286,16 +286,16 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Historic gardens with royal cenotaphs and the Hall of Heroes near Jodhpur.",
     description:
       "Mandore was the old capital of Marwar before Jodhpur. Its shady gardens contain the towering, temple-like cenotaphs of Rathore rulers, the rock-cut Hall of Heroes with painted deities, and the ruins of an old fort, all frequented by resident langurs.",
-    imageUrl: null,
-    openingTimings: "6:00 AM - 10:00 AM, 4:00 PM - 7:30 PM",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Temples_at_Mandor_%284571805346%29.jpg/1280px-Temples_at_Mandor_%284571805346%29.jpg",
+    openingTimings: "8:00 AM - 8:00 PM",
     entryFees: 0,
     budgetPerDay: 1500,
     recommendedDays: 1,
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: false,
     popularity: 63,
-    latitude: "26.3525047",
-    longitude: "73.0353164",
+    latitude: "26.3421",
+    longitude: "73.0402",
   },
   {
     slug: "jaisalmer-fort",
@@ -307,7 +307,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Living golden-sandstone desert fort, a UNESCO 'Sonar Quila' still inhabited.",
     description:
       "Rising from the Thar Desert like a giant sandcastle, Jaisalmer Fort is one of the few 'living forts' where thousands still reside within its walls. Inside its honey-coloured ramparts are Jain temples, palaces, havelis, shops and guesthouses along winding lanes.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Jaisalmer_forteresse.jpg/1280px-Jaisalmer_forteresse.jpg",
     openingTimings: "9:00 AM - 6:00 PM",
     entryFees: 50,
     budgetPerDay: 2000,
@@ -349,7 +349,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Cluster of five ornate merchant mansions with intricate sandstone lattice work.",
     description:
       "Patwon ki Haveli is a set of five lavishly carved havelis built by a wealthy brocade-trading family in the early 19th century. Their yellow-sandstone facades, filigree jharokhas and painted interiors make them the grandest of Jaisalmer's mansions, part now a museum.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Patwon_ki_haveli_18.jpg/1280px-Patwon_ki_haveli_18.jpg",
     openingTimings: "9:00 AM - 6:30 PM",
     entryFees: 100,
     budgetPerDay: 1800,
@@ -370,7 +370,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Man-made desert reservoir ringed by shrines, ghats and the carved Tilon Gate.",
     description:
       "Gadisar Lake was once Jaisalmer's chief water source, built in the 14th century and surrounded by small temples, shrines and bathing ghats. Boating on its calm waters at sunrise, framed by the ornate Tilon Ki Pol gateway, is a peaceful highlight.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Main_entrance_of_Gadisar_Lake.jpg/1280px-Main_entrance_of_Gadisar_Lake.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -378,8 +378,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: false,
     popularity: 68,
-    latitude: "26.9090162",
-    longitude: "70.9210228",
+    latitude: "26.9085788",
+    longitude: "70.9231001",
   },
   {
     slug: "kuldhara-abandoned-village",
@@ -391,7 +391,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Eerie ruined desert village abandoned overnight by Paliwal Brahmins, steeped in legend.",
     description:
       "Kuldhara is a deserted village whose Paliwal Brahmin inhabitants are said to have vanished overnight around two centuries ago, cursing the land. Today its restored ruins, empty lanes and a small temple make an atmospheric stop amid the Thar, popular for its ghostly legends.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Kuldhara%2C_an_abandoned_village_%2830738705327%29.jpg/1280px-Kuldhara%2C_an_abandoned_village_%2830738705327%29.jpg",
     openingTimings: "8:00 AM - 6:00 PM",
     entryFees: 30,
     budgetPerDay: 1600,
@@ -399,8 +399,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: true,
     popularity: 62,
-    latitude: "26.7789",
-    longitude: "70.7100",
+    latitude: "26.8700388",
+    longitude: "70.78616439999999",
   },
   {
     slug: "junagarh-fort-bikaner",
@@ -412,7 +412,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Rare unconquered plains fort with opulent painted palaces in Bikaner.",
     description:
       "Junagarh Fort, built in 1594, is unusual for standing on flat ground rather than a hill, yet was never conquered. Within its walls are richly decorated palaces such as Anup Mahal, Phool Mahal and Chandra Mahal, plus a museum with royal armoury and a WWI-era biplane.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/India_Bikaner_Junagarh_Fort.jpg/1280px-India_Bikaner_Junagarh_Fort.jpg",
     openingTimings: "10:00 AM - 4:30 PM",
     entryFees: 50,
     budgetPerDay: 1800,
@@ -433,7 +433,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Famous 'Rat Temple' at Deshnoke where thousands of sacred rats are revered.",
     description:
       "The Karni Mata Temple in Deshnoke is renowned for the thousands of sacred black rats, called kabbas, that roam its marble halls and are considered holy. Devotees seek out the rare white rats for blessings, and the silver-and-marble facade is finely wrought.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/20191212_%C5%9Awi%C4%85tynia_Karni_Maty_w_De%C5%9Bnok_1031_8078_DxO.jpg/1280px-20191212_%C5%9Awi%C4%85tynia_Karni_Maty_w_De%C5%9Bnok_1031_8078_DxO.jpg",
     openingTimings: "4:00 AM - 10:00 PM",
     entryFees: 0,
     budgetPerDay: 1500,
@@ -454,7 +454,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sacred Hindu lake ringed by 52 ghats and 500 temples, host of the camel fair.",
     description:
       "Pushkar Lake is one of Hinduism's holiest water bodies, encircled by 52 bathing ghats and hundreds of temples, including the rare Brahma Temple. Pilgrims perform ritual baths, and each November the town hosts the famous Pushkar Camel Fair with trading, races and folk culture.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Evening_lights_by_the_Pushkar_Lake%2C_Pushkar.jpg/1280px-Evening_lights_by_the_Pushkar_Lake%2C_Pushkar.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -475,7 +475,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "One of the world's very few temples dedicated to the creator god Brahma.",
     description:
       "The Jagatpita Brahma Mandir at Pushkar is among the only prominent temples in the world dedicated to Lord Brahma. Marked by a red spire and a hamsa (goose) motif, its silver-coin-studded floor and central image draw pilgrims year-round, especially during Kartik Purnima.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/39/Brahma_Temple%2C_Pushkar.jpg",
     openingTimings: "5:30 AM - 1:29 PM, 3:01 PM - 10:00 PM",
     entryFees: 0,
     budgetPerDay: 1500,
@@ -496,7 +496,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Revered Sufi shrine of Khwaja Moinuddin Chishti drawing pilgrims of all faiths.",
     description:
       "The Ajmer Sharif Dargah enshrines the tomb of the 12th-century Sufi saint Khwaja Moinuddin Chishti and is one of South Asia's most important pilgrimage centres. Its marble courtyards, huge offering cauldrons and qawwali music draw millions, peaking during the annual Urs.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Dargah_of_Sufi_saint_Moinuddin_Chishti_Ajmer_India_%285%29.JPG",
+    imageUrl: null,
     openingTimings: "4:00 AM - 9:00 PM",
     entryFees: 0,
     budgetPerDay: 1600,
@@ -517,7 +517,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Vast hilltop UNESCO fort symbolising Rajput valour, with towers and palaces.",
     description:
       "Chittorgarh, one of India's largest forts, sprawls across a 180-metre hill and is a UNESCO World Heritage Site emblematic of Rajput sacrifice and jauhar. Its highlights are the nine-storey Vijay Stambha (Victory Tower), Kirti Stambha, Rana Kumbha Palace and Padmini's Palace.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Chittorgarh_fort.JPG/1280px-Chittorgarh_fort.JPG",
     openingTimings: "9:00 AM - 6:00 PM",
     entryFees: 40,
     budgetPerDay: 1700,
@@ -538,7 +538,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Mewar hill fort with the world's second-longest continuous wall, the 'Great Wall of India'.",
     description:
       "Kumbhalgarh, birthplace of Maharana Pratap, is a UNESCO-listed hill fort whose 36-km perimeter wall is often called the Great Wall of India. Within lie over 360 temples and the Badal Mahal palace on the ridge; the ramparts are stunning at sunset and during the evening light show.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kumbhalgarh_055.jpg/1280px-Kumbhalgarh_055.jpg",
     openingTimings: "9:00 AM - 6:00 PM",
     entryFees: 40,
     budgetPerDay: 1800,
@@ -559,7 +559,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sublime 15th-century marble Jain temple with 1,444 uniquely carved pillars.",
     description:
       "The Ranakpur Jain temple, dedicated to Adinath, is celebrated for its forest of 1,444 intricately carved marble pillars, no two alike. Built in the 15th century in the Aravalli valley, its domed halls, filigree ceilings and serene setting make it a masterpiece of Jain art.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Jain_Temple_Ranakpur.jpg/1280px-Jain_Temple_Ranakpur.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/86/Chaumukha_Jain_temple_at_Ranakpur_in_Aravalli_range_near_Udaipur_Rajasthan_India.jpg",
     openingTimings: "6:00 AM - 8:00 PM",
     entryFees: 0,
     budgetPerDay: 1700,
@@ -601,7 +601,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Exquisitely carved marble Jain temples at Mount Abu, famed worldwide for craftsmanship.",
     description:
       "The Dilwara Temples, built between the 11th and 13th centuries near Mount Abu, are among the finest examples of Jain marble carving. The Vimal Vasahi and Luna Vasahi shrines display astonishingly delicate ceilings, lotus pendants and pillars translucent with detail.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/81/Delwada.jpg",
     openingTimings: "11:00 AM - 5:00 PM",
     entryFees: 0,
     budgetPerDay: 1800,
@@ -622,7 +622,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Atmospheric hill fort and palace above stepwell-rich Bundi, famed for its murals.",
     description:
       "Overlooking the medieval town of Bundi, Taragarh Fort and the adjoining Garh Palace are prized for their romantic ruins and the exquisite Bundi-school miniature murals of the Chitrashala. Below, ornate stepwells such as Raniji ki Baori add to the town's old-world charm.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/The_Garh_Palace%2C_Bundi%2C_Rajasthan.jpg/1280px-The_Garh_Palace%2C_Bundi%2C_Rajasthan.jpg",
     openingTimings: "10:00 AM - 5:30 PM",
     entryFees: 100,
     budgetPerDay: 1600,
@@ -664,7 +664,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Ruined 17th-century fort town famed as India's most 'haunted' site.",
     description:
       "Bhangarh Fort is a sprawling ruined complex of temples, havelis and bazaars at the foot of the Aravallis, reputedly India's most haunted place with entry barred after dark by official notice. By day its atmospheric ruins and legends draw curious visitors and history buffs.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Bhangarh_Fort_-_Royal_Palace_Bhangarh_%28July_2022%29_-_img_16.jpg/1280px-Bhangarh_Fort_-_Royal_Palace_Bhangarh_%28July_2022%29_-_img_16.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 25,
     budgetPerDay: 1500,
@@ -748,7 +748,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Jat-era garden palace of pavilions, fountains and monsoon-themed halls.",
     description:
       "The Deeg Palace complex, built by the Jat rulers of Bharatpur, is famed for its symmetrical Mughal-style gardens, hundreds of fountains and elegant bhawans such as Gopal Bhawan overlooking a tank. The Keshav Bhawan's monsoon fountains once mimicked thunder and rain.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Deeg_drone_view.jpg",
     openingTimings: "9:30 AM - 5:00 PM",
     entryFees: 25,
     budgetPerDay: 1500,
@@ -756,8 +756,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: true,
     popularity: 52,
-    latitude: "27.4722345",
-    longitude: "77.32366499999999",
+    latitude: "27.4717819",
+    longitude: "77.3245453",
   },
   {
     slug: "osian-temples",
@@ -769,7 +769,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Ancient desert temple town with 8th-century Hindu and Jain shrines.",
     description:
       "Osian, on the fringe of the Thar, is an ancient temple town with clusters of intricately sculpted 8th- to 12th-century Hindu and Jain temples, notably the Sachiya Mata and Mahavira temples. It also serves as a base for camel safaris into the surrounding dunes.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Osiyan1_photo_wiki.jpg",
     openingTimings: "6:00 AM - 8:00 PM",
     entryFees: 0,
     budgetPerDay: 1600,
@@ -790,7 +790,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Major Vaishnavite pilgrimage town centred on the Shrinathji (Krishna) temple.",
     description:
       "Nathdwara is a leading centre of the Pushtimarg (Vallabh) sect, home to the revered Shrinathji temple where a black-marble image of the child Krishna is worshipped through elaborate daily darshan rituals. The town is also known for Pichwai devotional paintings.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Vishwas_Swaroopam_after_completion_of_work.jpg",
     openingTimings: "6:00 AM - 6:00 PM",
     entryFees: 0,
     budgetPerDay: 1600,
@@ -811,7 +811,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Ancient Shiva temple complex, the ruling deity of the Mewar dynasty.",
     description:
       "The Eklingji temple complex near Udaipur enshrines a four-faced black-marble Shiva lingam regarded as the ruling deity of Mewar. Built and rebuilt from the 8th century, its 108 shrines, pillared hall and silver doors make it a significant and atmospheric pilgrimage site.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/28/Meera_temple_Eklingji.jpg",
     openingTimings: "4:30 AM - 7:00 PM",
     entryFees: 0,
     budgetPerDay: 1600,
@@ -819,8 +819,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: true,
     popularity: 58,
-    latitude: "24.7280",
-    longitude: "73.7500",
+    latitude: "24.7470822",
+    longitude: "73.72337399999999",
   },
   {
     slug: "mandawa-shekhawati",
@@ -832,7 +832,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Open-air gallery town of frescoed havelis in the Shekhawati region.",
     description:
       "Mandawa is a highlight of the Shekhawati region, often called an open-air art gallery for its many merchant havelis covered in colourful, richly detailed frescoes. A hilltop fort-hotel and painted mansions such as the Murmuria and Goenka havelis reward wandering the lanes.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Front_Facade_View_of_Shahpura_House%2C_Shekhawati%2C_Rajputana.jpg/1280px-Front_Facade_View_of_Shahpura_House%2C_Shekhawati%2C_Rajputana.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1700,
@@ -840,8 +840,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: true,
     popularity: 60,
-    latitude: "28.0552478",
-    longitude: "75.1497725",
+    latitude: "28.0550",
+    longitude: "75.1420",
   },
   {
     slug: "fatehsagar-lake-udaipur",
@@ -853,7 +853,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Scenic Udaipur lake with island parks and a hilltop solar observatory.",
     description:
       "Fateh Sagar is one of Udaipur's beautiful interconnected lakes, ringed by hills and dotted with islands including Nehru Park and an amusement park. Boating, the lakeside drive and views of the Aravallis and the Moti Magri hill make it a favourite evening spot.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/50/Fatehsagar_nehrugarden.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1800,
@@ -861,8 +861,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Sep,Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: false,
     popularity: 72,
-    latitude: "24.6012962",
-    longitude: "73.67967949999999",
+    latitude: "24.6013999",
+    longitude: "73.6742232",
   },
   {
     slug: "sajjangarh-monsoon-palace",
@@ -874,7 +874,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Hilltop white palace above Udaipur with sweeping sunset lake views.",
     description:
       "The Sajjangarh or Monsoon Palace crowns a hill within a wildlife sanctuary above Udaipur, built to watch the monsoon clouds. Its white ramparts offer some of the finest panoramas of the city's lakes and the Aravalli ranges, especially at sunset.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/20/Monsoon_Palace.jpg",
     openingTimings: "8:00 AM - 6:00 PM",
     entryFees: 100,
     budgetPerDay: 1800,
@@ -897,7 +897,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Bustling colonial-era pedestrian promenade at the heart of Shimla.",
     description:
       "The Mall Road is the lively spine of Shimla, lined with colonial-era buildings, shops, cafés and the Gaiety Theatre. Traffic-free and running along the ridge, it is the town's social hub for evening strolls with views of the surrounding Himalayan foothills.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg/1280px-Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Landscape_of_Shimla_%2C_Himachal_Pradesh.jpg/1280px-Landscape_of_Shimla_%2C_Himachal_Pradesh.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2000,
@@ -905,8 +905,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov,Dec",
     isHidden: false,
     popularity: 84,
-    latitude: "31.1044032",
-    longitude: "77.174829",
+    latitude: "31.1040341",
+    longitude: "77.1755249",
   },
   {
     slug: "shimla-ridge",
@@ -939,7 +939,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Hanuman temple on Shimla's highest peak with a towering idol and city views.",
     description:
       "Jakhoo Temple sits atop Shimla's highest hill, dedicated to Lord Hanuman and marked by one of the world's tallest Hanuman statues at 33 metres. Reached by a forest path or ropeway, it offers commanding views over Shimla, with resident monkeys along the way.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Jakhoo_temple.jpg/1280px-Jakhoo_temple.jpg",
     openingTimings: "5:00 AM - 12:00 PM, 4:00 PM - 9:00 PM",
     entryFees: 0,
     budgetPerDay: 1800,
@@ -960,7 +960,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Small hill resort near Shimla popular for winter snow and Himalayan views.",
     description:
       "Kufri, about 16 km from Shimla, is a compact hill resort known for its winter snow, pony rides and the Himalayan Nature Park. In season visitors enjoy sledding and tobogganing, while the Mahasu Peak viewpoint gives sweeping vistas of the higher snow ranges.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Kufri_hills.jpg/1280px-Kufri_hills.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1900,
@@ -968,8 +968,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov,Dec,Jan",
     isHidden: false,
     popularity: 74,
-    latitude: "31.0941261",
-    longitude: "77.278049",
+    latitude: "31.0978583",
+    longitude: "77.26781369999999",
   },
   {
     slug: "chail",
@@ -981,7 +981,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Quiet forested hill town with the world's highest cricket ground and a palace.",
     description:
       "Chail is a tranquil, pine-clad hill town built by the Maharaja of Patiala, home to the Chail Palace heritage hotel and the world's highest cricket and polo ground at 2,444 metres. Its wildlife sanctuary and quiet trails make it a peaceful alternative to busier resorts.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Chailhill.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1900,
@@ -989,8 +989,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: true,
     popularity: 62,
-    latitude: "30.9736217",
-    longitude: "77.19904269999999",
+    latitude: "30.9676214",
+    longitude: "77.1916497",
   },
   {
     slug: "kullu-valley",
@@ -1002,7 +1002,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Verdant 'Valley of the Gods' along the Beas, famed for Dussehra and river sports.",
     description:
       "The Kullu Valley, the 'Valley of the Gods', stretches along the Beas River amid apple orchards, deodar forests and temples. It is famed for its grand week-long Dussehra festival, river rafting near Babeli, and as the gateway to the higher Himalayan resorts.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Beas_Valley_-_Palchan_-_Kullu_2014-05-10_2275.JPG/1280px-Beas_Valley_-_Palchan_-_Kullu_2014-05-10_2275.JPG",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2000,
@@ -1010,8 +1010,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: false,
     popularity: 78,
-    latitude: "31.9645485",
-    longitude: "77.1154578",
+    latitude: "31.9580",
+    longitude: "77.1090",
   },
   {
     slug: "manikaran-sahib",
@@ -1023,7 +1023,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Parvati Valley pilgrimage site with hot springs sacred to Sikhs and Hindus.",
     description:
       "Manikaran, in the Parvati Valley, is revered by both Sikhs and Hindus and is famed for its natural boiling hot springs, in which the gurudwara langar food is cooked. Pilgrims bathe in the sulphurous waters, and the riverside setting beneath steep peaks is dramatic.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Gurdwara_at_Manikarn.jpg/1280px-Gurdwara_at_Manikarn.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1700,
@@ -1052,8 +1052,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: false,
     popularity: 76,
-    latitude: "32.009968",
-    longitude: "77.3150577",
+    latitude: "32.0100",
+    longitude: "77.3150",
   },
   {
     slug: "tosh-village",
@@ -1065,7 +1065,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "High Parvati Valley hamlet with snow-peak views and a mellow trekking vibe.",
     description:
       "Tosh is the last motorable village in the upper Parvati Valley, perched above the river with terraced fields and dramatic views of snow peaks. Its cafés and guesthouses draw trekkers and travellers seeking quiet, and it is a springboard for the Kheerganga trail.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/The_village_of_Tosh_in_Himachal_Pradesh%2C_India_%28photo_by_Jim_Ankan_Deka%29.jpg/1280px-The_village_of_Tosh_in_Himachal_Pradesh%2C_India_%28photo_by_Jim_Ankan_Deka%29.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -1086,7 +1086,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Isolated ancient village with a unique culture and its own governance customs.",
     description:
       "Malana is an isolated Himalayan village reached by a trek over a ridge, known for its distinct language, ancient self-governing council and old customs that limit contact with outsiders. Surrounded by high peaks and the Malana Nala, it offers a glimpse of a singular culture.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Malana_Village_during_sunset.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -1094,8 +1094,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Apr,May,Jun,Sep,Oct",
     isHidden: true,
     popularity: 58,
-    latitude: "32.0570",
-    longitude: "77.2600",
+    latitude: "32.0617196",
+    longitude: "77.2613488",
   },
   {
     slug: "dharamshala",
@@ -1107,7 +1107,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Kangra Valley hill town backed by the Dhauladhar range, gateway to McLeodganj.",
     description:
       "Dharamshala spreads across the forested slopes of the Kangra Valley beneath the towering Dhauladhar range. Home to a scenic cricket stadium and the gateway to Tibetan McLeodganj above, it blends colonial-era churches, tea gardens and Himalayan views.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Dharamshala_stadium%2Chimachal_pradesh.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2000,
@@ -1149,7 +1149,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Popular cascade near McLeodganj beside the ancient Bhagsunag temple.",
     description:
       "Bhagsu Waterfall tumbles down the hillside a short walk from McLeodganj, beside the ancient Bhagsunag Shiva temple. The trail passes cafés and leads up to the falls, which swell impressively during the monsoon and are a favourite easy hike from town.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Bhagsu_view.jpg/1280px-Bhagsu_view.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1700,
@@ -1157,8 +1157,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: false,
     popularity: 68,
-    latitude: "32.2484815",
-    longitude: "76.3396356",
+    latitude: "32.2410",
+    longitude: "76.3370",
   },
   {
     slug: "triund-trek",
@@ -1170,7 +1170,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Popular short trek to a ridge camp under the Dhauladhar peaks.",
     description:
       "Triund is a hugely popular day or overnight trek from McLeodganj, climbing through oak and rhododendron forest to a grassy ridge at about 2,850 metres. The summit offers a magnificent close-up of the Dhauladhar snow wall on one side and the Kangra Valley on the other.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Triund_%2822356802630%29.jpg/1280px-Triund_%2822356802630%29.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1700,
@@ -1191,7 +1191,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Colonial hill station spread over five hills with pine forests and old churches.",
     description:
       "Dalhousie is a charming colonial-era hill station built across five hills, retaining Scottish and Victorian architecture, old churches and quiet mall roads. Set amid deodar and pine forests, it offers views of the Pir Panjal snows and easy access to Khajjiar and Chamba.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Dalhouise_1.jpg/1280px-Dalhouise_1.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1900,
@@ -1199,8 +1199,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: false,
     popularity: 78,
-    latitude: "32.5390",
-    longitude: "75.9710",
+    latitude: "32.5387385",
+    longitude: "75.97099779999999",
   },
   {
     slug: "khajjiar",
@@ -1220,8 +1220,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: false,
     popularity: 76,
-    latitude: "32.5454945",
-    longitude: "76.0559598",
+    latitude: "32.5470",
+    longitude: "76.0570",
   },
   {
     slug: "chamba-town",
@@ -1254,7 +1254,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Quaint cantonment hill town with colonial charm and forest walks.",
     description:
       "Kasauli is a small, tranquil cantonment hill town retaining Victorian-era buildings, cobbled lanes and pine and cedar forests. Sunset Point, Monkey Point and the Christ Church give gentle sightseeing, and its clean air and slow pace make it a relaxing getaway near Chandigarh.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Kasauli_hills.jpg/1280px-Kasauli_hills.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1900,
@@ -1262,8 +1262,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Sep,Oct,Nov",
     isHidden: false,
     popularity: 70,
-    latitude: "30.8975",
-    longitude: "76.9691667",
+    latitude: "30.90129",
+    longitude: "76.9648753",
   },
   {
     slug: "bir-billing",
@@ -1275,7 +1275,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "India's premier paragliding destination with a Tibetan colony at Bir.",
     description:
       "Bir Billing is regarded as one of the world's top paragliding sites, with take-off at Billing and landing at Bir amid the Kangra Valley. Bir also hosts a Tibetan colony with monasteries and cafés, and serves as a base for meditation retreats and mountain biking.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/An_aerial_view_of_Bir%2C_Kangra_valley_sights_nature_culture_Himachal_Pradesh_India_2015.jpg/1280px-An_aerial_view_of_Bir%2C_Kangra_valley_sights_nature_culture_Himachal_Pradesh_India_2015.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2100,
@@ -1283,8 +1283,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Mar,Apr,May,Jun,Oct,Nov",
     isHidden: false,
     popularity: 78,
-    latitude: "32.0405757",
-    longitude: "76.7112169",
+    latitude: "32.0420",
+    longitude: "76.7220",
   },
   {
     slug: "kalpa-kinnaur",
@@ -1296,7 +1296,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Kinnaur village facing the sacred Kinnaur Kailash peak amid apple orchards.",
     description:
       "Kalpa is a scenic village in Kinnaur set among apple orchards and pine forests, offering close-up views of the sacred Kinnaur Kailash range across the Sutlej valley. Old wooden temples, Suicide Point and the dramatic sunrise on the snow peaks are its highlights.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Kalpa_%288512894537%29.jpg/1280px-Kalpa_%288512894537%29.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1800,
@@ -1317,7 +1317,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Last inhabited village near the Indo-Tibet border in the Sangla Valley.",
     description:
       "Chitkul is the last inhabited village toward the Indo-Tibet border, set in the upper Baspa (Sangla) Valley at around 3,450 metres. Its wooden houses, the Baspa River, old temple and pristine snow-fed meadows make it one of Himachal's most photogenic frontier hamlets.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Temple_at_Chitkul.JPG/1280px-Temple_at_Chitkul.JPG",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1800,
@@ -1346,8 +1346,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Apr,May,Jun,Sep,Oct",
     isHidden: true,
     popularity: 62,
-    latitude: "31.4254859",
-    longitude: "78.26499559999999",
+    latitude: "31.4277648",
+    longitude: "78.2661792",
   },
   {
     slug: "naldehra",
@@ -1380,7 +1380,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sulphur hot springs on the Sutlej banks, popular for riverside camping.",
     description:
       "Tattapani lies on the banks of the Sutlej River and is known for its natural sulphur hot springs believed to have healing properties. It is a popular spot for riverside camping, river rafting and a short drive to the Shiva caves, set in a warm low-altitude valley.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Tattapani_Hot_Springs_next_to_Sutlej_River_Himachal_Pradesh_India.jpg/1280px-Tattapani_Hot_Springs_next_to_Sutlej_River_Himachal_Pradesh_India.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1700,
@@ -1388,8 +1388,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar,Apr",
     isHidden: true,
     popularity: 54,
-    latitude: "31.2440",
-    longitude: "77.0290",
+    latitude: "31.2487896",
+    longitude: "77.0895421",
   },
   {
     slug: "rewalsar-lake",
@@ -1422,7 +1422,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Large reservoir behind the Bhakra Dam, offering water sports and boating.",
     description:
       "Gobind Sagar is a vast reservoir formed by the Bhakra Dam on the Sutlej near Bilaspur, ringed by low hills. It supports boating, water sports and seasonal fishing, and the surrounding town of Bilaspur serves as a gateway to Mandi and the higher hills.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/70/BilaspurCityHimachal.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -1430,8 +1430,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar,Apr",
     isHidden: true,
     popularity: 50,
-    latitude: "31.342677",
-    longitude: "76.7524339",
+    latitude: "31.3340",
+    longitude: "76.7570",
   },
   {
     slug: "great-himalayan-national-park",
@@ -1466,7 +1466,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Srinagar's iconic lake of shikaras, houseboats and floating gardens.",
     description:
       "Dal Lake is the shimmering centrepiece of Srinagar, famous for its ornate houseboats, gliding shikara boats, floating vegetable markets and Char Chinar island. Backed by the Zabarwan hills and Mughal gardens, it is the quintessential Kashmir experience.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Dal_Lake_Hazratbal_Srinagar.jpg/1280px-Dal_Lake_Hazratbal_Srinagar.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2200,
@@ -1508,7 +1508,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Emperor Jahangir's romantic Mughal garden of terraces and chinar avenues.",
     description:
       "Shalimar Bagh was built by Emperor Jahangir for his wife Nur Jahan in 1619, and remains one of the finest Mughal gardens, with terraced lawns, a central water canal, pavilions and rows of chinar trees. Its evening light show recounts its royal romance.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Shalimar_Bagh_1.jpg/1280px-Shalimar_Bagh_1.jpg",
     openingTimings: "9:30 AM - 6:30 PM",
     entryFees: 24,
     budgetPerDay: 2000,
@@ -1529,7 +1529,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Smallest of Srinagar's Mughal gardens, built around a natural spring.",
     description:
       "Chashme Shahi, the 'Royal Spring', is the smallest and most intimate of Srinagar's Mughal gardens, laid out in 1632 around a fresh mineral spring reputed for its clear water. Its compact terraces and fountains offer lovely elevated views of Dal Lake.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Chashme_Shahi.jpg/1280px-Chashme_Shahi.jpg",
     openingTimings: "9:00 AM - 6:00 PM",
     entryFees: 24,
     budgetPerDay: 2000,
@@ -1550,7 +1550,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Ancient hilltop Shiva temple with panoramic views over Srinagar and Dal Lake.",
     description:
       "The Shankaracharya Temple crowns a hill overlooking Srinagar, an ancient stone Shiva shrine reached by a long stair or road. Believed to date back many centuries, it offers sweeping panoramas of the city, Dal Lake and the encircling mountains.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/The_Ancient_Shankaracharya_Temple_%28Srinagar%2C_Jammu_and_Kashmir%29_%28cropped%29.jpg/1280px-The_Ancient_Shankaracharya_Temple_%28Srinagar%2C_Jammu_and_Kashmir%29_%28cropped%29.jpg",
     openingTimings: "7:30 AM - 4:30 PM",
     entryFees: 0,
     budgetPerDay: 1900,
@@ -1592,7 +1592,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Alpine meadow resort famed for skiing and the high Gulmarg Gondola.",
     description:
       "Gulmarg, the 'Meadow of Flowers', is a premier Himalayan resort set at around 2,650 metres, blanketed in wildflowers in summer and snow in winter. Its gondola, one of the world's highest, rises toward Apharwat Peak, making it India's top skiing destination.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Ancient_Temple%2C_Gulmarg.jpg/1280px-Ancient_Temple%2C_Gulmarg.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2400,
@@ -1634,7 +1634,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "'Meadow of Gold' gateway to Ladakh, with glaciers and alpine lakes.",
     description:
       "Sonamarg, the 'Meadow of Gold', lies at around 2,800 metres on the road to Ladakh, surrounded by snow peaks and glaciers. Pony rides lead to the Thajiwas Glacier, and it is the trailhead for treks to high-altitude lakes such as Vishansar and Gangabal.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Sonmarg_rishav7336.jpg/1280px-Sonmarg_rishav7336.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2200,
@@ -1655,7 +1655,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Lush green valley near Pahalgam ringed by snow peaks and a mountain stream.",
     description:
       "Betaab Valley, named after a Bollywood film shot here, is a verdant meadow near Pahalgam framed by pine-clad slopes and snow peaks, with a clear stream running through. Its lawns and picnic spots make it a favourite short excursion from Pahalgam.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Betaab_Valley.jpg/1280px-Betaab_Valley.jpg",
     openingTimings: "8:00 AM - 6:00 PM",
     entryFees: 50,
     budgetPerDay: 2000,
@@ -1663,8 +1663,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Apr,May,Jun,Jul,Aug,Sep,Oct",
     isHidden: false,
     popularity: 72,
-    latitude: "34.0290",
-    longitude: "75.3480",
+    latitude: "34.0545035",
+    longitude: "75.36379219999999",
   },
   {
     slug: "aru-valley",
@@ -1676,7 +1676,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Quiet meadow village near Pahalgam and a base for high Himalayan treks.",
     description:
       "Aru Valley, about 12 km from Pahalgam, is a tranquil village set amid rolling meadows and the Aru River, far less crowded than the main town. It is a popular base for treks to Kolahoi Glacier and the Tarsar-Marsar lakes, with pony rides and camping.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Aruvillage.jpg/1280px-Aruvillage.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1900,
@@ -1739,7 +1739,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Revered cave shrine of the goddess in the Trikuta hills near Katra.",
     description:
       "The Vaishno Devi shrine is one of India's most visited Hindu pilgrimage sites, set in a cave high in the Trikuta hills. Devotees trek roughly 12 km uphill from Katra to worship the three natural pindis of the goddess, with helicopter and pony options also available.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Snowfall_in_Vaishno_Devi.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1900,
@@ -1846,7 +1846,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Oldest and largest Nubra Valley gompa, famed for its giant Maitreya Buddha statue.",
     description:
       "Diskit Monastery is the oldest and largest Buddhist gompa in the Nubra Valley, founded in the 14th century. Perched on a hill, it is crowned by a towering 32-metre statue of the Maitreya (Future) Buddha overlooking the Shyok River, with old prayer halls and murals within.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Diskit_Gompa_2.jpg/1280px-Diskit_Gompa_2.jpg",
     openingTimings: "7:00 AM - 6:00 PM",
     entryFees: 30,
     budgetPerDay: 2200,
@@ -1867,7 +1867,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Grand hilltop gompa resembling the Potala Palace, with a huge Maitreya Buddha.",
     description:
       "Thiksey Monastery is one of Ladakh's most impressive gompas, its whitewashed buildings rising in tiers up a hill in a form often compared to Lhasa's Potala Palace. It houses a two-storey seated Maitreya Buddha, and its dawn prayer rituals draw many visitors.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Thikse_Monastery_.jpg/1280px-Thikse_Monastery_.jpg",
     openingTimings: "7:00 AM - 7:00 PM",
     entryFees: 30,
     budgetPerDay: 2200,
@@ -1888,7 +1888,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Ladakh's largest and wealthiest gompa, famous for its vibrant masked festival.",
     description:
       "Hemis is the largest and richest monastery in Ladakh, tucked into a side valley south of Leh. Belonging to the Drukpa lineage, it is renowned for its June Hemis Festival with masked cham dances and for periodically unveiling one of the world's largest thangkas.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/17th_century_Hemis_Monastery_in_Ladakh.jpg/1280px-17th_century_Hemis_Monastery_in_Ladakh.jpg",
     openingTimings: "8:00 AM - 6:00 PM",
     entryFees: 100,
     budgetPerDay: 2200,
@@ -1909,7 +1909,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Former royal summer palace and gompa with a large gilded Buddha near Leh.",
     description:
       "Shey was the ancient capital and summer palace of the kings of Ladakh, its ruined palace and monastery crowning a rocky ridge. The gompa houses a large gilded copper statue of Shakyamuni Buddha, and the surrounding plain is dotted with chortens and mani stones.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/be/Spituk_Monastery-2008.jpg",
     openingTimings: "8:00 AM - 6:00 PM",
     entryFees: 20,
     budgetPerDay: 2100,
@@ -1930,7 +1930,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Optical-illusion 'gravity hill' where parked vehicles appear to roll uphill.",
     description:
       "Magnetic Hill on the Leh-Kargil road is a famous optical illusion where the surrounding slope makes vehicles left in neutral seem to roll uphill on their own. A marked spot lets visitors test the effect, set amid stark high-desert scenery near the Indus.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Magnetic_Hill%2C_Leh.jpg/1280px-Magnetic_Hill%2C_Leh.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2100,
@@ -1938,8 +1938,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "May,Jun,Jul,Aug,Sep",
     isHidden: false,
     popularity: 68,
-    latitude: "34.2340",
-    longitude: "77.3620",
+    latitude: "34.1763828",
+    longitude: "77.35505409999999",
   },
   {
     slug: "tso-moriri",
@@ -1951,7 +1951,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Remote high-altitude Changthang lake and wetland reserve rich in birdlife.",
     description:
       "Tso Moriri is a serene, remote high-altitude lake in the Changthang region at about 4,500 metres, protected as a wetland reserve. Less crowded than Pangong, its still blue waters attract migratory birds like bar-headed geese and are ringed by nomadic Changpa pastures.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Tso_Moriri%2C_Ladakh_%2834855616204%29.jpg/1280px-Tso_Moriri%2C_Ladakh_%2834855616204%29.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2600,
@@ -1993,7 +1993,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "One of Ladakh's oldest gompas set amid eroded 'moonland' landscapes.",
     description:
       "Lamayuru is among the oldest and most spectacularly sited monasteries in Ladakh, perched above a surreal eroded terrain nicknamed 'moonland'. Its ancient prayer halls, cave shrines and annual masked festival, set against the lunar hills, make it unforgettable.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Lamayuru_Monastery%2C_Ladakh%2C_India.jpg/1280px-Lamayuru_Monastery%2C_Ladakh%2C_India.jpg",
     openingTimings: "6:00 AM - 6:00 PM",
     entryFees: 50,
     budgetPerDay: 2200,
@@ -2022,8 +2022,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "May,Jun,Jul,Aug,Sep",
     isHidden: false,
     popularity: 82,
-    latitude: "34.2787271",
-    longitude: "77.6046756",
+    latitude: "34.2790",
+    longitude: "77.6040",
   },
   {
     slug: "leh-palace",
@@ -2035,7 +2035,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Nine-storey 17th-century royal palace towering over Leh's old town.",
     description:
       "Leh Palace is a nine-storey former royal residence built in the 17th century, echoing the design of Lhasa's Potala Palace. Its mud-brick tiers rise above the old town, and the upper terraces offer sweeping views of Leh, the Indus valley and the Stok range.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Leh_City_seen_from_Shanti_Stupa.JPG/1280px-Leh_City_seen_from_Shanti_Stupa.JPG",
     openingTimings: "7:00 AM - 7:00 PM",
     entryFees: 40,
     budgetPerDay: 2100,
@@ -2056,7 +2056,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "White-domed Japanese-built peace stupa with panoramic views over Leh.",
     description:
       "The Shanti Stupa is a gleaming white-domed Buddhist stupa built by Japanese monks in the 1980s to promote world peace, perched on a hill above Leh. Adorned with gilded reliefs of the Buddha, it offers superb sunrise and sunset views over the town and surrounding peaks.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Leh%2C_Shanti_Stupa%2C_Ladakh%2C_India.jpg/1280px-Leh%2C_Shanti_Stupa%2C_Ladakh%2C_India.jpg",
     openingTimings: "8:00 AM - 8:00 PM",
     entryFees: 0,
     budgetPerDay: 2000,
@@ -2079,7 +2079,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sikhism's holiest shrine, a gilded temple set in the sacred Amrit Sarovar.",
     description:
       "The Golden Temple, or Harmandir Sahib, is the holiest gurudwara of Sikhism, its gold-plated sanctum seeming to float in the sacred Amrit Sarovar tank. Pilgrims of all faiths are welcomed, join the world's largest free community kitchen (langar) and circle the marble parikrama.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/The_Golden_Temple_of_Amrithsar_7.jpg/1280px-The_Golden_Temple_of_Amrithsar_7.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1800,
@@ -2100,7 +2100,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Historic garden memorial to the victims of the 1919 massacre, near the Golden Temple.",
     description:
       "Jallianwala Bagh is a solemn memorial garden marking the site of the 1919 massacre, when British troops opened fire on a peaceful gathering. Preserved bullet marks on the walls, the martyrs' well and a flame-shaped memorial commemorate the tragedy, steps from the Golden Temple.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Jallianwala_Bagh%2C_Amritsar_01.jpg/1280px-Jallianwala_Bagh%2C_Amritsar_01.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 0,
     budgetPerDay: 1700,
@@ -2121,7 +2121,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Daily flag-lowering 'Beating Retreat' ceremony at the India-Pakistan border.",
     description:
       "The Wagah-Attari border, about 30 km from Amritsar, hosts a spirited daily 'Beating Retreat' ceremony in which Indian and Pakistani border forces perform synchronised, high-kicking drills before lowering their flags at sunset, drawing patriotic crowds on both sides.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/The_SAARC_Car_Rally_2007_being_welcomed_by_traditional_Drummers_at_the_Wagah_Border_on_March_28%2C_2007.jpg/1280px-The_SAARC_Car_Rally_2007_being_welcomed_by_traditional_Drummers_at_the_Wagah_Border_on_March_28%2C_2007.jpg",
     openingTimings: "Ceremony around 4:15 PM - 5:00 PM",
     entryFees: 0,
     budgetPerDay: 1700,
@@ -2142,7 +2142,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Hindu temple in Amritsar echoing the Golden Temple's design, set in a sacred tank.",
     description:
       "The Durgiana Temple, dedicated to Goddess Durga, mirrors the architecture of the Golden Temple with a gilded dome rising from the middle of a holy tank. A major Hindu shrine of Amritsar, it also honours Lakshmi and Narayan and glows attractively when lit at night.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Many_of_the_locals_we_had_spoken_to_were_delighted_that_the_Govt_has_sanctioned_funds_for_renovation_of_this_temple_%2838049489065%29.jpg/1280px-Many_of_the_locals_we_had_spoken_to_were_delighted_that_the_Govt_has_sanctioned_funds_for_renovation_of_this_temple_%2838049489065%29.jpg",
     openingTimings: "6:00 AM - 10:00 PM",
     entryFees: 0,
     budgetPerDay: 1600,
@@ -2163,7 +2163,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sacred Sikh town, birthplace of the Khalsa and host of the Hola Mohalla festival.",
     description:
       "Anandpur Sahib, the 'City of Bliss', is one of Sikhism's holiest towns, where Guru Gobind Singh founded the Khalsa in 1699. Its grand Takht Sri Kesgarh Sahib gurudwara, the Virasat-e-Khalsa museum and the vibrant Hola Mohalla martial festival draw many pilgrims.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/1_Sri_Kesgarh_Takhat_Anandpur_Sahib_Khalsa_birthplace_Punjab_India.jpg/1280px-1_Sri_Kesgarh_Takhat_Anandpur_Sahib_Khalsa_birthplace_Punjab_India.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -2171,8 +2171,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: false,
     popularity: 68,
-    latitude: "31.23508859999999",
-    longitude: "76.4989336",
+    latitude: "31.2355318",
+    longitude: "76.5012734",
   },
   {
     slug: "ranjit-sagar-dam",
@@ -2184,7 +2184,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Large hydroelectric reservoir on the Ravi with scenic hill-fringed waters.",
     description:
       "The Ranjit Sagar (Thein) Dam is a major hydroelectric project on the Ravi River near Pathankot, its expansive reservoir cradled by low hills at the Punjab-Himachal-J&K junction. The calm waters and surrounding scenery make it a pleasant picnic and viewpoint stop.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Ranjit_Sagar_Dam_1.jpg/1280px-Ranjit_Sagar_Dam_1.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 0,
     budgetPerDay: 1500,
@@ -2192,8 +2192,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar",
     isHidden: true,
     popularity: 48,
-    latitude: "32.4160",
-    longitude: "75.6250",
+    latitude: "32.4436566",
+    longitude: "75.7340239",
   },
   {
     slug: "qila-mubarak-patiala",
@@ -2205,7 +2205,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Grand 18th-century royal fort complex in the heart of old Patiala.",
     description:
       "Qila Mubarak is a sprawling 18th-century fortified palace complex at the centre of Patiala, built by the erstwhile Sikh royal house. Its ornate palaces, painted halls, guest house and old bazaar reflect Patiala's regal past, though parts await restoration.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Qila_Mubarak%2C_Patiala_%28Cropped%29.jpg/1280px-Qila_Mubarak%2C_Patiala_%28Cropped%29.jpg",
     openingTimings: "9:00 AM - 5:00 PM",
     entryFees: 0,
     budgetPerDay: 1500,
@@ -2291,7 +2291,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Terraced 17th-century Mughal garden of fountains, pavilions and lawns near Chandigarh.",
     description:
       "The Pinjore or Yadavindra Gardens are a beautifully preserved seven-terrace Mughal garden laid out in the 17th century, with water channels, fountains, fruit orchards and palace pavilions like Sheesh Mahal and Rang Mahal. Illuminated evenings and an annual festival add to its appeal.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Pinjore_Garden_Panchkula.jpg/1280px-Pinjore_Garden_Panchkula.jpg",
     openingTimings: "7:00 AM - 10:00 PM",
     entryFees: 30,
     budgetPerDay: 1600,
@@ -2312,7 +2312,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Ancient sun-shaped reservoir near Delhi, home to the famous crafts mela.",
     description:
       "Surajkund is a 10th-century amphitheatre-shaped reservoir built by the Tomar dynasty near Faridabad. It is best known today for hosting the vibrant Surajkund International Crafts Mela each February, a huge showcase of Indian handicrafts, folk arts and regional cuisines.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Suraj_Kund.jpg/1280px-Suraj_Kund.jpg",
+    imageUrl: null,
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,
@@ -2335,7 +2335,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Sprawling fantasy garden of sculptures made from recycled waste by Nek Chand.",
     description:
       "The Rock Garden is Nek Chand's extraordinary 40-acre creation, a labyrinth of courtyards, waterfalls and thousands of sculptures fashioned from industrial and household waste like broken tiles, bangles and ceramics. It is one of India's most imaginative public artworks.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Open_Hand_monument%2C_Chandigarh.jpg/1280px-Open_Hand_monument%2C_Chandigarh.jpg",
     openingTimings: "9:00 AM - 6:00 PM",
     entryFees: 30,
     budgetPerDay: 1700,
@@ -2343,8 +2343,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Feb,Mar,Sep,Oct,Nov",
     isHidden: false,
     popularity: 80,
-    latitude: "30.7529331",
-    longitude: "76.80505409999999",
+    latitude: "30.752535",
+    longitude: "76.8101038",
   },
   {
     slug: "sukhna-lake-chandigarh",
@@ -2356,7 +2356,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Scenic man-made lake at the Shivalik foothills, popular for boating and strolls.",
     description:
       "Sukhna Lake is a tranquil rainfed reservoir at the foot of the Shivalik hills, a favourite Chandigarh spot for morning walks, jogging, boating and birdwatching. Its long promenade, gardens and views of distant hills make it especially pleasant at sunrise and sunset.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Sukhna_Lake_Chandigarh_India.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1700,
@@ -2364,8 +2364,8 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     bestMonths: "Feb,Mar,Sep,Oct,Nov,Dec",
     isHidden: false,
     popularity: 74,
-    latitude: "30.7447621",
-    longitude: "76.8105866",
+    latitude: "30.7421379",
+    longitude: "76.8187557",
   },
   {
     slug: "rose-garden-chandigarh",
@@ -2377,7 +2377,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Asia's largest rose garden with thousands of rose varieties and medicinal plants.",
     description:
       "The Zakir Hussain Rose Garden is said to be Asia's largest rose garden, spread over 30 acres in Sector 16 with thousands of rose bushes across hundreds of varieties, plus medicinal and flowering trees. The annual Rose Festival in spring fills it with colour and crowds.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Rose_Garden_%2CChandigarh%2CIndia.jpg/1280px-Rose_Garden_%2CChandigarh%2CIndia.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1600,

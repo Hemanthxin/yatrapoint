@@ -12,8 +12,8 @@ import {
   listFavoriteIds,
   listStates,
 } from "@/lib/queries/destinations";
-import { searchCityPlaces } from "@/lib/queries/city-places";
-import { searchNearby } from "@/lib/queries/nearby";
+import { searchCityPlaces, listCityPlacesByCategory } from "@/lib/queries/city-places";
+import { searchNearby, listNearby } from "@/lib/queries/nearby";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 import { ResponsiveSwitch } from "@/components/app/ResponsiveSwitch";
 import { MobileDestinations } from "./MobileDestinations";
@@ -53,10 +53,21 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
   };
 
-  // A text search shouldn't be limited to the main destinations catalogue —
-  // Bengaluru city places and one-day-trip spots live in separate tables, so
-  // we search those too and show them as supplementary sections below.
+  // Neither a text search nor a category filter should be limited to the main
+  // destinations catalogue — Bengaluru city places and one-day-trip spots live
+  // in separate tables, so we pull matches from those too and show them as
+  // supplementary sections below. Text search wins when both are present.
   const q = sp.q?.trim();
+  const cityMatchesPromise = q
+    ? searchCityPlaces(q, 12)
+    : validCat
+      ? listCityPlacesByCategory(validCat, 12)
+      : Promise.resolve([]);
+  const nearbyMatchesPromise = q
+    ? searchNearby(q, 12)
+    : validCat
+      ? listNearby({ category: validCat, limit: 12 })
+      : Promise.resolve([]);
 
   const [items, total, states, districts, favIds, cityMatches, nearbyMatches] = await Promise.all([
     listDestinations({
@@ -68,8 +79,8 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
     listStates(),
     listDistricts(sp.state),
     listFavoriteIds(u.id ?? ""),
-    q ? searchCityPlaces(q, 12) : Promise.resolve([]),
-    q ? searchNearby(q, 12) : Promise.resolve([]),
+    cityMatchesPromise,
+    nearbyMatchesPromise,
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));

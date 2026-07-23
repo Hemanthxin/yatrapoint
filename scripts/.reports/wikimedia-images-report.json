@@ -1,614 +1,196 @@
 [
   {
-    "slug": "statue-of-unity",
-    "name": "Statue of Unity",
-    "wikiTitle": "Vallabhbhai Patel",
+    "slug": "amber-fort",
+    "name": "Amber Fort",
+    "wikiTitle": "Nahargarh Fort",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
+    "reason": "coord check: 6432m"
   },
   {
-    "slug": "somnath-temple",
-    "name": "Somnath Temple",
-    "wikiTitle": "Triveni Sangam",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "dwarka-dwarkadhish",
-    "name": "Dwarkadhish Temple, Dwarka",
-    "status": "no-title"
-  },
-  {
-    "slug": "bet-dwarka",
-    "name": "Bet Dwarka",
-    "wikiTitle": "List of megaprojects in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "nageshwar-jyotirlinga",
-    "name": "Nageshwar Jyotirlinga",
-    "status": "no-title"
-  },
-  {
-    "slug": "gir-national-park",
-    "name": "Gir National Park",
-    "wikiTitle": "Gir National Park",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/90/Gir_lion-Gir_forest%2Cjunagadh%2Cgujarat%2Cindia.jpeg",
+    "slug": "city-palace-jaipur",
+    "name": "City Palace Jaipur",
+    "wikiTitle": "City Palace, Jaipur",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg/1280px-Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg",
     "status": "set",
-    "reason": "coord check: 1265m"
+    "reason": "coord check: 15m"
   },
   {
-    "slug": "rann-of-kutch-white-desert",
-    "name": "Rann of Kutch (White Desert)",
-    "wikiTitle": "Geography of India",
+    "slug": "galta-ji-monkey-temple",
+    "name": "Galta Ji (Monkey Temple)",
+    "wikiTitle": "Tourism in Rajasthan",
     "status": "rejected-mismatch",
     "reason": "no coord + no name overlap"
   },
   {
-    "slug": "kalo-dungar-black-hill",
-    "name": "Kalo Dungar (Black Hill)",
-    "status": "no-title"
-  },
-  {
-    "slug": "bhuj-city",
-    "name": "Bhuj",
-    "wikiTitle": "Bhuj Airport",
+    "slug": "sam-sand-dunes",
+    "name": "Sam Sand Dunes",
+    "wikiTitle": "Jaisalmer district",
     "status": "rejected-mismatch",
-    "reason": "coord check: 5102m"
+    "reason": "generic area page, not the specific place: \"Jaisalmer district\""
   },
   {
-    "slug": "mandvi-beach-kutch",
-    "name": "Mandvi Beach",
-    "wikiTitle": "List of beaches in India",
+    "slug": "ajmer-sharif-dargah",
+    "name": "Ajmer Sharif Dargah",
+    "wikiTitle": "Ajmer Dargah bombing",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "mount-abu",
+    "name": "Mount Abu",
+    "wikiTitle": "Sirohi district",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
+    "reason": "generic area page, not the specific place: \"Sirohi district\""
   },
   {
-    "slug": "wild-ass-sanctuary-little-rann",
-    "name": "Wild Ass Sanctuary, Little Rann of Kutch",
-    "wikiTitle": "Biosphere reserves of India",
+    "slug": "bala-quila-alwar",
+    "name": "Bala Quila (Alwar Fort)",
+    "wikiTitle": "Alwar",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
+    "reason": "generic area page, not the specific place: \"Alwar\""
   },
   {
-    "slug": "ahmedabad-heritage-city",
-    "name": "Ahmedabad Old City (Heritage Walk)",
-    "wikiTitle": "List of shopping malls in India",
+    "slug": "keoladeo-national-park",
+    "name": "Keoladeo National Park",
+    "wikiTitle": "Keoladeo National Park",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "shimla-ridge",
+    "name": "The Ridge Shimla",
+    "wikiTitle": "Shimla",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
+    "reason": "generic area page, not the specific place: \"Shimla\""
   },
   {
-    "slug": "sabarmati-ashram",
-    "name": "Sabarmati Ashram",
-    "wikiTitle": "Gujarat",
+    "slug": "kasol",
+    "name": "Kasol",
+    "wikiTitle": "Kullu district",
     "status": "rejected-mismatch",
-    "reason": "coord check: 19293m"
+    "reason": "generic area page, not the specific place: \"Kullu district\""
   },
   {
-    "slug": "adalaj-stepwell",
-    "name": "Adalaj Stepwell",
-    "wikiTitle": "Stepwell",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Rani_ki_vav_02.jpg/1280px-Rani_ki_vav_02.jpg",
+    "slug": "mcleodganj",
+    "name": "McLeodganj",
+    "wikiTitle": "Kangra, Himachal Pradesh",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 16157m"
+  },
+  {
+    "slug": "khajjiar",
+    "name": "Khajjiar",
+    "wikiTitle": "Chamba, Himachal Pradesh",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 55854m"
+  },
+  {
+    "slug": "chamba-town",
+    "name": "Chamba",
+    "wikiTitle": "Chamba, Himachal Pradesh",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 52778m"
+  },
+  {
+    "slug": "sangla-valley",
+    "name": "Sangla Valley",
+    "wikiTitle": "Kamru, Himachal Pradesh",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 293899m"
+  },
+  {
+    "slug": "naldehra",
+    "name": "Naldehra",
+    "wikiTitle": "Shimla",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Shimla\""
+  },
+  {
+    "slug": "rewalsar-lake",
+    "name": "Rewalsar Lake",
+    "wikiTitle": "Mandi, Himachal Pradesh",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 12332m"
+  },
+  {
+    "slug": "nishat-bagh",
+    "name": "Nishat Bagh",
+    "wikiTitle": "Srinagar",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Srinagar\""
+  },
+  {
+    "slug": "pahalgam",
+    "name": "Pahalgam",
+    "wikiTitle": "Pahalgam",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 11539m"
+  },
+  {
+    "slug": "yusmarg",
+    "name": "Yusmarg",
+    "wikiTitle": "Budgam district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Budgam district\""
+  },
+  {
+    "slug": "doodhpathri",
+    "name": "Doodhpathri",
+    "wikiTitle": "Doodhpathri",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 26876m"
+  },
+  {
+    "slug": "patnitop",
+    "name": "Patnitop",
+    "wikiTitle": "Patnitop",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "pangong-tso",
+    "name": "Pangong Tso",
+    "wikiTitle": "Pangong Tso",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 21706m"
+  },
+  {
+    "slug": "nubra-valley-hunder",
+    "name": "Nubra Valley (Hunder)",
+    "wikiTitle": "Nubra",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 18502m"
+  },
+  {
+    "slug": "thiksey-monastery",
+    "name": "Thiksey Monastery",
+    "wikiTitle": "Thikse Monastery",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Thikse_Monastery_.jpg/1280px-Thikse_Monastery_.jpg",
     "status": "set",
-    "reason": "name overlap (no coords to check)"
+    "reason": "coord check: 119m"
   },
   {
-    "slug": "rani-ki-vav-patan",
-    "name": "Rani ki Vav, Patan",
-    "wikiTitle": "Stepwell",
+    "slug": "zanskar-valley",
+    "name": "Zanskar Valley",
+    "wikiTitle": "Zanskar district",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
+    "reason": "coord check: 4016m"
   },
   {
-    "slug": "modhera-sun-temple",
-    "name": "Modhera Sun Temple",
-    "wikiTitle": "Vadnagar",
+    "slug": "khardung-la",
+    "name": "Khardung La",
+    "wikiTitle": "Khardung La",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "brahma-sarovar-kurukshetra",
+    "name": "Brahma Sarovar (Kurukshetra)",
+    "wikiTitle": "Kurukshetra",
     "status": "rejected-mismatch",
-    "reason": "coord check: 56278m"
+    "reason": "generic area page, not the specific place: \"Kurukshetra\""
   },
   {
-    "slug": "champaner-pavagadh",
-    "name": "Champaner-Pavagadh Archaeological Park",
-    "wikiTitle": "Jama Mosque, Champaner",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Jama_Mosque%2CPMS.jpg/1280px-Jama_Mosque%2CPMS.jpg",
-    "status": "set",
-    "reason": "coord check: 17m"
-  },
-  {
-    "slug": "girnar-hill-junagadh",
-    "name": "Girnar Hill",
-    "wikiTitle": "List of hill stations in India",
+    "slug": "surajkund",
+    "name": "Surajkund",
+    "wikiTitle": "Faridabad",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "uparkot-fort-junagadh",
-    "name": "Uparkot Fort, Junagadh",
-    "wikiTitle": "Jumma Masjid, Uparkot",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Jama_Masjid%2C_Uperkot_11.jpg/1280px-Jama_Masjid%2C_Uperkot_11.jpg",
-    "status": "set",
-    "reason": "coord check: 131m"
-  },
-  {
-    "slug": "palitana-shatrunjaya",
-    "name": "Palitana Jain Temples (Shatrunjaya)",
-    "wikiTitle": "Talaja Caves",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 19616m"
-  },
-  {
-    "slug": "saputara-hill-station",
-    "name": "Saputara",
-    "wikiTitle": "List of hill stations in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "laxmi-vilas-palace-vadodara",
-    "name": "Laxmi Vilas Palace, Vadodara",
-    "wikiTitle": "Vadodara Airport",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 4867m"
-  },
-  {
-    "slug": "diu-island-note",
-    "name": "Marine National Park, Gulf of Kutch",
-    "wikiTitle": "Marine National Park, Gulf of Kutch",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/The_Vast_Expanse_of_Narara_Sea_Bed_during_Low_Tide_of_Narara_Marine_National_Park.jpg/1280px-The_Vast_Expanse_of_Narara_Sea_Bed_during_Low_Tide_of_Narara_Marine_National_Park.jpg",
-    "status": "set",
-    "reason": "name overlap (no coords to check)"
-  },
-  {
-    "slug": "polo-forest-vijaynagar",
-    "name": "Polo Forest (Vijaynagar)",
-    "status": "no-title"
-  },
-  {
-    "slug": "kankaria-lake-ahmedabad",
-    "name": "Kankaria Lake",
-    "wikiTitle": "History of the India national football team",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "velavadar-blackbuck-park",
-    "name": "Velavadar Blackbuck National Park",
-    "wikiTitle": "Blackbuck National Park, Velavadar",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 3265m"
-  },
-  {
-    "slug": "gateway-of-india",
-    "name": "Gateway of India",
-    "wikiTitle": "2008 Mumbai attacks",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/2008_Mumbai_terror_attacks_Taj_dome_burned_2.jpg/1280px-2008_Mumbai_terror_attacks_Taj_dome_burned_2.jpg",
-    "status": "set",
-    "reason": "coord check: 139m"
-  },
-  {
-    "slug": "elephanta-caves",
-    "name": "Elephanta Caves",
-    "wikiTitle": "Mandapeshwar Caves",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 32378m"
-  },
-  {
-    "slug": "marine-drive-mumbai",
-    "name": "Marine Drive",
-    "wikiTitle": "Housing in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "chhatrapati-shivaji-terminus",
-    "name": "Chhatrapati Shivaji Maharaj Terminus",
-    "wikiTitle": "Chhatrapati Shivaji Maharaj Vastu Sangrahalaya",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Chhatrapati_Shivaji_Maharaj_Vastu_Sangrahalaya.jpg/1280px-Chhatrapati_Shivaji_Maharaj_Vastu_Sangrahalaya.jpg",
-    "status": "set",
-    "reason": "name overlap (no coords to check)"
-  },
-  {
-    "slug": "juhu-beach-mumbai",
-    "name": "Juhu Beach",
-    "wikiTitle": "Juhu Aerodrome",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Juhu_Aerodrome.jpg/1280px-Juhu_Aerodrome.jpg",
-    "status": "set",
-    "reason": "coord check: 785m"
-  },
-  {
-    "slug": "haji-ali-dargah",
-    "name": "Haji Ali Dargah",
-    "wikiTitle": "Haji Ali Dargah",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Mumbai_03-2016_12_Haji_Ali_Dargah.jpg/1280px-Mumbai_03-2016_12_Haji_Ali_Dargah.jpg",
-    "status": "set",
-    "reason": "coord check: 267m"
-  },
-  {
-    "slug": "siddhivinayak-temple-mumbai",
-    "name": "Siddhivinayak Temple",
-    "wikiTitle": "2008 Mumbai attacks",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 10569m"
-  },
-  {
-    "slug": "sanjay-gandhi-national-park",
-    "name": "Sanjay Gandhi National Park",
-    "wikiTitle": "Sanjay Gandhi National Park",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 3310m"
-  },
-  {
-    "slug": "ajanta-caves",
-    "name": "Ajanta Caves",
-    "wikiTitle": "Aurangabad district, Maharashtra",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 82861m"
-  },
-  {
-    "slug": "ellora-caves",
-    "name": "Ellora Caves",
-    "wikiTitle": "Aurangabad district, Maharashtra",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 23189m"
-  },
-  {
-    "slug": "bibi-ka-maqbara",
-    "name": "Bibi Ka Maqbara",
-    "wikiTitle": "Aurangabad district, Maharashtra",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Ellora_caves_-_Kailasa_Temple_%28cave_16%29_vrvbajel0924_%28280%29.jpg/1280px-Ellora_caves_-_Kailasa_Temple_%28cave_16%29_vrvbajel0924_%28280%29.jpg",
-    "status": "set",
-    "reason": "coord check: 2799m"
-  },
-  {
-    "slug": "daulatabad-fort",
-    "name": "Daulatabad Fort",
-    "wikiTitle": "Aurangabad district, Maharashtra",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 14224m"
-  },
-  {
-    "slug": "lonavala-hill-station",
-    "name": "Lonavala",
-    "wikiTitle": "Mumbai–Pune Expressway",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "khandala",
-    "name": "Khandala",
-    "wikiTitle": "Mumbai–Pune Expressway",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "matheran-hill-station",
-    "name": "Matheran",
-    "wikiTitle": "Geography of Maharashtra",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "lavasa-city",
-    "name": "Lavasa",
-    "wikiTitle": "Pune",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 38803m"
-  },
-  {
-    "slug": "shaniwar-wada-pune",
-    "name": "Shaniwar Wada",
-    "wikiTitle": "Pune",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Pune_West_skyline_-_March_2017.jpg/1280px-Pune_West_skyline_-_March_2017.jpg",
-    "status": "set",
-    "reason": "coord check: 170m"
-  },
-  {
-    "slug": "aga-khan-palace-pune",
-    "name": "Aga Khan Palace",
-    "wikiTitle": "Pune Junction railway station",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 3897m"
-  },
-  {
-    "slug": "sinhagad-fort-pune",
-    "name": "Sinhagad Fort",
-    "wikiTitle": "Shahaji",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "raigad-fort",
-    "name": "Raigad Fort",
-    "wikiTitle": "Mahad",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 16917m"
-  },
-  {
-    "slug": "nashik-trimbakeshwar",
-    "name": "Trimbakeshwar Temple, Nashik",
-    "wikiTitle": "Nashik district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 28687m"
-  },
-  {
-    "slug": "sula-vineyards-nashik",
-    "name": "Sula Vineyards, Nashik",
-    "wikiTitle": "Nashik district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 9817m"
-  },
-  {
-    "slug": "panchgani-hill-station",
-    "name": "Panchgani",
-    "wikiTitle": "Mahabaleshwar",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 15089m"
-  },
-  {
-    "slug": "bhandardara",
-    "name": "Bhandardara",
-    "wikiTitle": "Ahmednagar district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 114210m"
-  },
-  {
-    "slug": "kolhapur-mahalaxmi",
-    "name": "Mahalaxmi Temple, Kolhapur",
-    "wikiTitle": "Kolhapur",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Mahalaxmi_Temple%2C_Kolhapur.jpg/1280px-Mahalaxmi_Temple%2C_Kolhapur.jpg",
-    "status": "set",
-    "reason": "coord check: 1172m"
-  },
-  {
-    "slug": "new-palace-kolhapur",
-    "name": "New Palace, Kolhapur",
-    "wikiTitle": "Kolhapur",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 3084m"
-  },
-  {
-    "slug": "tarkarli-beach",
-    "name": "Tarkarli Beach",
-    "wikiTitle": "Sindhudurg district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 25174m"
-  },
-  {
-    "slug": "sindhudurg-fort",
-    "name": "Sindhudurg Fort",
-    "wikiTitle": "Sindhudurg district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 25615m"
-  },
-  {
-    "slug": "ganpatipule-beach",
-    "name": "Ganpatipule",
-    "wikiTitle": "List of beaches in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "alibaug-beach",
-    "name": "Alibaug",
-    "wikiTitle": "Mahad",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 84598m"
-  },
-  {
-    "slug": "tadoba-andhari-tiger-reserve",
-    "name": "Tadoba-Andhari Tiger Reserve",
-    "wikiTitle": "Tadoba Andhari Tiger Reserve",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Panthera_tigris_tigris_Tidoba_20150306.jpg/1280px-Panthera_tigris_tigris_Tidoba_20150306.jpg",
-    "status": "set",
-    "reason": "coord check: 1416m"
-  },
-  {
-    "slug": "lonar-crater-lake",
-    "name": "Lonar Crater Lake",
-    "wikiTitle": "Buldhana district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 69169m"
-  },
-  {
-    "slug": "harihareshwar-beach",
-    "name": "Harihareshwar",
-    "wikiTitle": "List of beaches in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "pratapgad-fort",
-    "name": "Pratapgad Fort",
-    "wikiTitle": "Rajaram I",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "shirdi-note-different",
-    "name": "Shani Shingnapur",
-    "wikiTitle": "Shani",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Bennanje_Sri_Shaneeswara_23_feet_Statue_Udupi_%28cropped%29.JPG/1280px-Bennanje_Sri_Shaneeswara_23_feet_Statue_Udupi_%28cropped%29.JPG",
-    "status": "set",
-    "reason": "name overlap (no coords to check)"
-  },
-  {
-    "slug": "karla-caves",
-    "name": "Karla Caves",
-    "wikiTitle": "Bhaja Caves",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 6290m"
-  },
-  {
-    "slug": "goa-north-beaches-belt",
-    "name": "Baga Beach",
-    "wikiTitle": "Goa",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 10681m"
-  },
-  {
-    "slug": "calangute-beach",
-    "name": "Calangute Beach",
-    "wikiTitle": "Goa",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 9480m"
-  },
-  {
-    "slug": "anjuna-beach",
-    "name": "Anjuna Beach",
-    "wikiTitle": "North Goa district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 12582m"
-  },
-  {
-    "slug": "vagator-beach",
-    "name": "Vagator Beach",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "chapora-fort",
-    "name": "Chapora Fort",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "aguada-fort",
-    "name": "Fort Aguada",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "old-goa-basilica-bom-jesus",
-    "name": "Basilica of Bom Jesus, Old Goa",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "se-cathedral-old-goa",
-    "name": "Sé Cathedral, Old Goa",
-    "wikiTitle": "History of Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "panaji-fontainhas",
-    "name": "Fontainhas, Panaji",
-    "wikiTitle": "Goa",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/BeachFun.jpg/1280px-BeachFun.jpg",
-    "status": "set",
-    "reason": "coord check: 530m"
-  },
-  {
-    "slug": "dudhsagar-falls",
-    "name": "Dudhsagar Falls",
-    "wikiTitle": "Dudhsagar Falls",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Doodhsagar_Fall.jpg/1280px-Doodhsagar_Fall.jpg",
-    "status": "set",
-    "reason": "coord check: 186m"
-  },
-  {
-    "slug": "palolem-beach",
-    "name": "Palolem Beach",
-    "wikiTitle": "List of beaches in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "colva-beach",
-    "name": "Colva Beach",
-    "wikiTitle": "Goa",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 25939m"
-  },
-  {
-    "slug": "agonda-beach",
-    "name": "Agonda Beach",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "benaulim-beach",
-    "name": "Benaulim Beach",
-    "wikiTitle": "Benaulim",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/20191211_Benaulim_4885.jpg/1280px-20191211_Benaulim_4885.jpg",
-    "status": "set",
-    "reason": "coord check: 797m"
-  },
-  {
-    "slug": "cabo-de-rama-fort",
-    "name": "Cabo de Rama Fort",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "mangeshi-temple-goa",
-    "name": "Shri Mangeshi Temple",
-    "wikiTitle": "Tourism in Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "arambol-beach",
-    "name": "Arambol Beach",
-    "wikiTitle": "North Goa district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 25136m"
-  },
-  {
-    "slug": "diu-fort",
-    "name": "Diu Fort",
-    "wikiTitle": "Fort Vasai",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 248853m"
-  },
-  {
-    "slug": "nagoa-beach-diu",
-    "name": "Nagoa Beach, Diu",
-    "status": "no-title"
-  },
-  {
-    "slug": "ghoghla-beach-diu",
-    "name": "Ghoghla Beach, Diu",
-    "wikiTitle": "List of beaches in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "st-pauls-church-diu",
-    "name": "St Paul's Church, Diu",
-    "wikiTitle": "Indian annexation of Goa",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "jampore-beach-daman",
-    "name": "Jampore Beach, Daman",
-    "wikiTitle": "List of beaches in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "moti-daman-fort",
-    "name": "Moti Daman Fort",
-    "wikiTitle": "List of forts in India",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "vanganga-lake-silvassa",
-    "name": "Vanganga Lake & Garden, Silvassa",
-    "status": "no-title"
-  },
-  {
-    "slug": "dudhni-lake-silvassa",
-    "name": "Dudhni Lake",
-    "status": "no-title"
+    "reason": "generic area page, not the specific place: \"Faridabad\""
   }
 ]
