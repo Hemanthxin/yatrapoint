@@ -423,28 +423,7 @@ export const karnatakaMysuruRegion: Omit<NewDestination, "id" | "createdAt">[] =
     latitude: "12.2878258",
     longitude: "77.18366750000001",
   },
-  {
-    slug: "sangama-bluff-mekedatu",
-    name: "Sangama & Mekedatu",
-    state: "Karnataka",
-    district: "Mandya",
-    category: "adventure",
-    placeType: "River Confluence & Gorge",
-    shortDescription:
-      "Confluence of the Cauvery and Arkavathi at Sangama, near the narrow Mekedatu gorge where the river squeezes through rock.",
-    description:
-      "Sangama is the confluence of the Cauvery and Arkavathi rivers, a popular spot for coracle rides and picnics. A short distance away lies Mekedatu, a deep, narrow gorge where the Cauvery rushes through a rocky chasm said to be jumpable by a goat.",
-    imageUrl: null,
-    openingTimings: "6:00 AM - 6:00 PM",
-    entryFees: 0,
-    budgetPerDay: 1000,
-    recommendedDays: 1,
-    bestMonths: "Oct,Nov,Dec,Jan,Feb",
-    isHidden: true,
-    popularity: 60,
-    latitude: "12.3186",
-    longitude: "77.4392",
-  },
+  
 
   // ===================== CHAMARAJANAGARA =====================
   {

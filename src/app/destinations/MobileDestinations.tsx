@@ -2,8 +2,9 @@ import Link from "next/link";
 import { Compass, MapPin, SlidersHorizontal } from "lucide-react";
 
 import { DestinationCard } from "@/components/app/DestinationCard";
+import { SearchResultCard } from "@/components/app/SearchResultCard";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
-import type { Destination } from "@/lib/db/schema";
+import type { CityPlace, Destination, NearbyDestination } from "@/lib/db/schema";
 import { Filters } from "./Filters";
 import { Pagination } from "./Pagination";
 
@@ -25,6 +26,8 @@ interface Props {
   page: number;
   totalPages: number;
   pageHref: (page: number) => string;
+  cityMatches?: CityPlace[];
+  nearbyMatches?: NearbyDestination[];
 }
 
 // A bespoke, app-first mobile layout for the Destinations / State screen.
@@ -42,6 +45,8 @@ export function MobileDestinations({
   page,
   totalPages,
   pageHref,
+  cityMatches = [],
+  nearbyMatches = [],
 }: Props) {
   // Build a category-chip href that preserves the other active filters.
   function catHref(slug?: CategorySlug) {
@@ -122,7 +127,7 @@ export function MobileDestinations({
       </div>
 
       {/* Feed of place cards */}
-      {items.length === 0 ? (
+      {items.length === 0 && cityMatches.length === 0 && nearbyMatches.length === 0 ? (
         <div className="animate-fadeUp mt-4 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-emerald-100 text-3xl">
             🧭
@@ -140,12 +145,56 @@ export function MobileDestinations({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-3">
-            {items.map((d) => (
-              <DestinationCard key={d.id} destination={d} favored={favIds.has(d.id)} />
-            ))}
-          </div>
-          <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
+          {items.length > 0 && (
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                {items.map((d) => (
+                  <DestinationCard key={d.id} destination={d} favored={favIds.has(d.id)} />
+                ))}
+              </div>
+              <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
+            </>
+          )}
+
+          {cityMatches.length > 0 && (
+            <section className="mt-2">
+              <h2 className="mb-2 text-base font-bold text-slate-800">
+                In Bengaluru — restaurants, malls & more
+              </h2>
+              <div className="grid grid-cols-2 gap-3">
+                {cityMatches.map((c) => (
+                  <SearchResultCard
+                    key={c.id}
+                    href={`/explore-bangalore/${c.slug}`}
+                    name={c.name}
+                    subtitle={[c.area, c.city].filter(Boolean).join(", ")}
+                    shortDescription={c.shortDescription}
+                    imageUrl={c.imageUrl}
+                    badge={c.kind}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {nearbyMatches.length > 0 && (
+            <section className="mt-2">
+              <h2 className="mb-2 text-base font-bold text-slate-800">One-day trips</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {nearbyMatches.map((n) => (
+                  <SearchResultCard
+                    key={n.id}
+                    href={`/one-day-trips/${n.slug}`}
+                    name={n.name}
+                    subtitle={`from ${n.baseCity} · ${n.distanceKm} km`}
+                    shortDescription={n.shortDescription}
+                    imageUrl={n.imageUrl}
+                    badge="Nearby trip"
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
     </div>

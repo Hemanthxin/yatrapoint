@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { DestinationCard } from "@/components/app/DestinationCard";
+import { SearchResultCard } from "@/components/app/SearchResultCard";
 import { Filters } from "./Filters";
 import {
   countDestinations,
@@ -11,6 +12,8 @@ import {
   listFavoriteIds,
   listStates,
 } from "@/lib/queries/destinations";
+import { searchCityPlaces } from "@/lib/queries/city-places";
+import { searchNearby } from "@/lib/queries/nearby";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 import { ResponsiveSwitch } from "@/components/app/ResponsiveSwitch";
 import { MobileDestinations } from "./MobileDestinations";
@@ -50,7 +53,12 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
   };
 
-  const [items, total, states, districts, favIds] = await Promise.all([
+  // A text search shouldn't be limited to the main destinations catalogue —
+  // Bengaluru city places and one-day-trip spots live in separate tables, so
+  // we search those too and show them as supplementary sections below.
+  const q = sp.q?.trim();
+
+  const [items, total, states, districts, favIds, cityMatches, nearbyMatches] = await Promise.all([
     listDestinations({
       ...destinationFilters,
       limit: PAGE_SIZE,
@@ -60,6 +68,8 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
     listStates(),
     listDistricts(sp.state),
     listFavoriteIds(u.id ?? ""),
+    q ? searchCityPlaces(q, 12) : Promise.resolve([]),
+    q ? searchNearby(q, 12) : Promise.resolve([]),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -107,6 +117,8 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
             page={page}
             totalPages={totalPages}
             pageHref={pageHref}
+            cityMatches={cityMatches}
+            nearbyMatches={nearbyMatches}
           />
         }
         desktop={
@@ -164,7 +176,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         }}
       />
 
-      {items.length === 0 ? (
+      {items.length === 0 && cityMatches.length === 0 && nearbyMatches.length === 0 ? (
         <EmptyState
           className="mt-8"
           illustration={NoDataIllustration}
@@ -173,16 +185,62 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         />
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
-            {items.map((d) => (
-              <DestinationCard
-                key={d.id}
-                destination={d}
-                favored={favIds.has(d.id)}
-              />
-            ))}
-          </div>
-          <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
+          {items.length > 0 && (
+            <>
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+                {items.map((d) => (
+                  <DestinationCard
+                    key={d.id}
+                    destination={d}
+                    favored={favIds.has(d.id)}
+                  />
+                ))}
+              </div>
+              <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
+            </>
+          )}
+
+          {/* Matches from other catalogues — a text search shouldn't be
+              limited to the main destinations table. */}
+          {cityMatches.length > 0 && (
+            <section className="mt-8">
+              <h2 className="mb-3 text-lg font-bold text-slate-800">
+                In Bengaluru — restaurants, malls & more
+              </h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+                {cityMatches.map((c) => (
+                  <SearchResultCard
+                    key={c.id}
+                    href={`/explore-bangalore/${c.slug}`}
+                    name={c.name}
+                    subtitle={[c.area, c.city].filter(Boolean).join(", ")}
+                    shortDescription={c.shortDescription}
+                    imageUrl={c.imageUrl}
+                    badge={c.kind}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {nearbyMatches.length > 0 && (
+            <section className="mt-8">
+              <h2 className="mb-3 text-lg font-bold text-slate-800">One-day trips</h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+                {nearbyMatches.map((n) => (
+                  <SearchResultCard
+                    key={n.id}
+                    href={`/one-day-trips/${n.slug}`}
+                    name={n.name}
+                    subtitle={`from ${n.baseCity} · ${n.distanceKm} km`}
+                    shortDescription={n.shortDescription}
+                    imageUrl={n.imageUrl}
+                    badge="Nearby trip"
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
           </div>

@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, like, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { nearbyDestinations, type NearbyDestination } from "@/lib/db/schema";
 
@@ -29,4 +29,22 @@ export async function getNearbyBySlug(slug: string) {
     .where(eq(nearbyDestinations.slug, slug))
     .limit(1);
   return row ?? null;
+}
+
+// Text search over one-day-trip spots — used by the global search so results
+// aren't limited to the main `destinations` catalogue.
+export async function searchNearby(query: string, limit = 12): Promise<NearbyDestination[]> {
+  const q = `%${query.toLowerCase()}%`;
+  return db
+    .select()
+    .from(nearbyDestinations)
+    .where(
+      or(
+        like(sql`lower(${nearbyDestinations.name})`, q),
+        like(sql`lower(${nearbyDestinations.baseCity})`, q),
+        like(sql`lower(${nearbyDestinations.shortDescription})`, q)
+      )
+    )
+    .orderBy(desc(nearbyDestinations.popularity))
+    .limit(limit);
 }
