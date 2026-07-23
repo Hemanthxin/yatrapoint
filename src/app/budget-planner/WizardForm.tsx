@@ -88,6 +88,14 @@ const TRIP_TYPES = [
   { key: "Friends", icon: UsersRound },
 ];
 
+// Which trip types make sense for a given traveller count: 1 → Solo only (no
+// picker shown), 2 → Couple/Family/Friends, 3+ → Family/Friends.
+function availableTripTypes(travellersNum: number) {
+  if (travellersNum <= 1) return [];
+  if (travellersNum === 2) return TRIP_TYPES.filter((t) => t.key !== "Solo");
+  return TRIP_TYPES.filter((t) => t.key === "Family" || t.key === "Friends");
+}
+
 const TRANSPORT = [
   { key: "Any", icon: null },
   { key: "Bus", icon: Bus },
@@ -218,10 +226,19 @@ export function WizardForm({ initial }: WizardFormProps) {
     setGroups(new Set(TRIP_GROUPS[key] ?? TRIP_GROUPS.Family));
   }
 
-  // Choosing travellers; 1 traveller auto-selects the Solo trip type.
+  // Choosing travellers; 1 traveller auto-selects the Solo trip type, and any
+  // trip type that no longer fits the new count falls back to the first that does.
   function pickTravellers(t: string) {
     setTravellers(t);
-    if (t === "1") pickTripType("Solo");
+    const num = t === "5+" ? 5 : parseInt(t, 10) || 2;
+    if (num <= 1) {
+      pickTripType("Solo");
+      return;
+    }
+    const avail = availableTripTypes(num);
+    if (!avail.some((a) => a.key === tripType)) {
+      pickTripType(avail[0]?.key ?? "Family");
+    }
   }
 
   function toggleGroup(slug: string) {
@@ -500,18 +517,22 @@ export function WizardForm({ initial }: WizardFormProps) {
               </div>
             )}
 
-            <div>
-              <StepLabel icon="🏷️">Trip Type</StepLabel>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                {TRIP_TYPES.map(({ key, icon: Icon }) => {
-                  const active = tripType === key;
-                  return (
-                    <button key={key} type="button" onClick={() => pickTripType(key)} className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 ${active ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
-                      <Icon className="h-5 w-5" />{key}
-                    </button>
-                  );
-                })}
+            {availableTripTypes(travellersNum).length > 0 && (
+              <div>
+                <StepLabel icon="🏷️">Trip Type</StepLabel>
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                  {availableTripTypes(travellersNum).map(({ key, icon: Icon }) => {
+                    const active = tripType === key;
+                    return (
+                      <button key={key} type="button" onClick={() => pickTripType(key)} className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 ${active ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
+                        <Icon className="h-5 w-5" />{key}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+            )}
+            <div>
               <p className="mb-2 mt-4 text-xs text-slate-500">
                 Which types of places do you want to visit? Tap to add or remove — temples, mosques, churches and gurudwaras are each separate.
               </p>
