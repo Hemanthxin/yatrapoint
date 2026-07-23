@@ -16,11 +16,13 @@ import {
   HelpCircle,
   Lock,
   FileText,
+  AlertTriangle,
+  Trash2,
   type LucideIcon,
 } from "lucide-react";
 
 import { updateProfile } from "@/lib/actions/profile";
-import { signOutAction } from "@/lib/actions/auth";
+import { signOutAction, deleteAccountAction } from "@/lib/actions/auth";
 
 interface Initial {
   name: string;
@@ -37,6 +39,23 @@ export function SettingsClient({ initial }: { initial: Initial }) {
   const [pending, start] = useTransition();
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [deletePending, startDelete] = useTransition();
+  const [deleteErr, setDeleteErr] = useState<string | null>(null);
+  const confirmPhrase = initial.username || "delete my account";
+
+  function confirmDelete() {
+    setDeleteErr(null);
+    startDelete(async () => {
+      const res = await deleteAccountAction();
+      if (res && !res.ok) {
+        setDeleteErr(res.error ?? "Could not delete your account.");
+      }
+      // On success, deleteAccountAction redirects away — nothing left to do here.
+    });
+  }
 
   function save() {
     setErr(null);
@@ -195,6 +214,73 @@ export function SettingsClient({ initial }: { initial: Initial }) {
             </button>
           </form>
         </div>
+      </section>
+
+      {/* Danger Zone — GitHub-style account deletion, gated behind typing a
+          confirmation phrase so it can't be triggered by a stray click. */}
+      <section className="rounded-3xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm sm:p-6">
+        <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-rose-600">
+          <AlertTriangle className="h-4 w-4" /> Danger Zone
+        </h2>
+
+        {!deleteOpen ? (
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <p className="text-sm text-slate-600">
+              Permanently delete your account and all associated data — trips, favourites,
+              cart, and community posts.
+            </p>
+            <button
+              type="button"
+              onClick={() => setDeleteOpen(true)}
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-rose-300 bg-white px-4 py-2 text-sm font-bold text-rose-600 transition hover:bg-rose-100"
+            >
+              <Trash2 className="h-4 w-4" /> Delete account
+            </button>
+          </div>
+        ) : (
+          <div className="mt-3 space-y-3 rounded-2xl border border-rose-200 bg-white p-4">
+            <p className="text-sm font-semibold text-slate-800">This cannot be undone.</p>
+            <p className="text-sm text-slate-600">
+              This will permanently delete your profile, saved favourites, trip plans, cart,
+              and any community posts or comments you've made.
+            </p>
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Type <span className="font-mono text-rose-600">{confirmPhrase}</span> to confirm
+              </span>
+              <input
+                value={confirmText}
+                onChange={(e) => setConfirmText(e.target.value)}
+                autoCapitalize="none"
+                spellCheck={false}
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-rose-400 focus:shadow-[0_0_0_4px_rgba(244,63,94,0.15)]"
+              />
+            </label>
+            {deleteErr && <p className="text-sm font-medium text-rose-600">{deleteErr}</p>}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                disabled={confirmText !== confirmPhrase || deletePending}
+                onClick={confirmDelete}
+                className="inline-flex items-center gap-2 rounded-2xl bg-rose-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-rose-500/30 transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Trash2 className="h-4 w-4" />
+                {deletePending ? "Deleting…" : "Delete my account permanently"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDeleteOpen(false);
+                  setConfirmText("");
+                  setDeleteErr(null);
+                }}
+                className="text-sm font-semibold text-slate-500 hover:text-slate-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

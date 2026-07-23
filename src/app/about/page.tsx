@@ -95,6 +95,10 @@ export default async function AboutPage() {
             .
           </p>
         </InfoSection>
+
+        <p className="border-t border-slate-100 pt-4 text-xs text-slate-400">
+          Developed by: Subramani Reddy V
+        </p>
       </InfoPage>
     </AppShell>
   );
