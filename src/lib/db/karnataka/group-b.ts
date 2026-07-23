@@ -275,7 +275,7 @@ export const karnatakaMysuruRegion: Omit<NewDestination, "id" | "createdAt">[] =
       "Island fortress of Tipu Sultan where the decisive 1799 Anglo-Mysore battle was fought.",
     description:
       "Srirangapatna Fort, encircled by the Cauvery, was the island capital of Hyder Ali and Tipu Sultan. The site of Tipu's last stand against the British in 1799, it preserves ramparts, dungeons, the Water Gate and the spot where Tipu fell.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Gopuram_of_the_Ranganathaswamy_Temple%2C_Srirangapatna_Karnataka_India.jpg/1280px-Gopuram_of_the_Ranganathaswamy_Temple%2C_Srirangapatna_Karnataka_India.jpg",
+    imageUrl: null,
     openingTimings: "8:30 AM - 5:30 PM",
     entryFees: 0,
     budgetPerDay: 900,

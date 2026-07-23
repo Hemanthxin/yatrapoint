@@ -162,15 +162,25 @@ async function run() {
   let totalNoImage = 0;
   let totalAlreadySet = 0;
 
+  // A distinct real photo shouldn't repeat across different attractions —
+  // reuse is a signal we fell back to a generic city/district montage. Seed
+  // this from EVERY file's current images (not just this run's target files)
+  // so re-running the script in separate invocations can't reintroduce a
+  // duplicate that a previous invocation already claimed.
+  const usedImages = new Set<string>();
+  for (const { file, exportName } of Object.values(FILES)) {
+    const mod = await import(pathToFileURL(path.join(process.cwd(), file)).href);
+    for (const p of mod[exportName] as Place[]) {
+      if (p.imageUrl) usedImages.add(p.imageUrl);
+    }
+  }
+
   for (const { file, exportName } of targets) {
     const filePath = path.join(process.cwd(), file);
     const mod = await import(pathToFileURL(filePath).href);
     const places: Place[] = mod[exportName];
     let text = fs.readFileSync(filePath, "utf8");
     let setCount = 0;
-    // A distinct real photo shouldn't repeat across different attractions —
-    // reuse is a signal we fell back to a generic city/district montage.
-    const usedImages = new Set<string>();
 
     console.log(`\n=== ${file}: ${places.length} places ===`);
 
@@ -182,7 +192,14 @@ async function run() {
       }
 
       try {
-        const candidate = await searchCandidate(`${p.name} ${p.district ?? ""} ${p.state}`);
+        // Skip the district in the query when it's already part of the name
+        // (e.g. "Puri Beach" in Puri district) — repeating it just tips
+        // Wikipedia's search toward the generic district/city article instead
+        // of the specific place.
+        const districtIsRedundant =
+          p.district && p.name.toLowerCase().includes(p.district.toLowerCase());
+        const queryParts = [p.name, districtIsRedundant ? null : p.district, p.state].filter(Boolean);
+        const candidate = await searchCandidate(queryParts.join(" "));
         await sleep(120);
         if (!candidate) {
           console.log(`  [${i + 1}/${places.length}] ✗ no wiki page: ${p.name}`);

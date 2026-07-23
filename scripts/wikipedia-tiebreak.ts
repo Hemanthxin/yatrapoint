@@ -139,7 +139,12 @@ async function run() {
     const existing = { lat: eLat, lng: eLng };
     const google = { lat: gLat, lng: gLng };
 
-    const wiki = await wikiCoord(`${f.name} ${f.district} ${f.state ?? "Karnataka"}`);
+    // Skip the district when it's already part of the name (e.g. "Puri
+    // Beach" in Puri district) — repeating it tips Wikipedia's search toward
+    // the generic district/city article instead of the specific place.
+    const districtIsRedundant = f.district && f.name.toLowerCase().includes(String(f.district).toLowerCase());
+    const wikiQueryParts = [f.name, districtIsRedundant ? null : f.district, f.state ?? "Karnataka"].filter(Boolean);
+    const wiki = await wikiCoord(wikiQueryParts.join(" "));
     let verdict = "no-wiki-data";
 
     if (wiki && isGenericAreaTitle(wiki.title, { name: f.name, district: f.district, state: f.state })) {

@@ -918,7 +918,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Open ridge-top space with mountain views, Christ Church and colonial landmarks.",
     description:
       "The Ridge is a large open square along the top of Shimla, connecting to the Mall Road and offering sweeping views of snow-capped ranges on clear days. It is flanked by the neo-Gothic Christ Church and the Tudor-style library, and hosts fairs and festivals.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Mall_Road_Shimla_1.jpg/1280px-Mall_Road_Shimla_1.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 2000,
@@ -2228,7 +2228,7 @@ export const northwestIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     shortDescription: "Vast sacred water tank at Kurukshetra, focal point of Gita-linked pilgrimage.",
     description:
       "The Brahma Sarovar is a huge sacred tank at Kurukshetra, the land linked to the Mahabharata and the Bhagavad Gita. Pilgrims bathe here especially during solar eclipses and the Gita Mahotsav, when the ghats, temples and evening aarti draw large gatherings.",
-    imageUrl: null,
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Holy_pic_kkr.jpg/1280px-Holy_pic_kkr.jpg",
     openingTimings: null,
     entryFees: 0,
     budgetPerDay: 1500,

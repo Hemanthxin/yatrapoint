@@ -1,196 +1,234 @@
 [
   {
-    "slug": "amber-fort",
-    "name": "Amber Fort",
-    "wikiTitle": "Nahargarh Fort",
+    "slug": "dhanushkodi",
+    "name": "Dhanushkodi",
+    "wikiTitle": "Dhanushkodi",
     "status": "rejected-mismatch",
-    "reason": "coord check: 6432m"
+    "reason": "coord check: 3072m"
   },
   {
-    "slug": "city-palace-jaipur",
-    "name": "City Palace Jaipur",
-    "wikiTitle": "City Palace, Jaipur",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg/1280px-Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg",
-    "status": "set",
-    "reason": "coord check: 15m"
+    "slug": "kodaikanal",
+    "name": "Kodaikanal",
+    "wikiTitle": "Dindigul district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Dindigul district\""
   },
   {
-    "slug": "galta-ji-monkey-temple",
-    "name": "Galta Ji (Monkey Temple)",
-    "wikiTitle": "Tourism in Rajasthan",
+    "slug": "yercaud",
+    "name": "Yercaud",
+    "wikiTitle": "Salem, Tamil Nadu",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 15324m"
+  },
+  {
+    "slug": "gingee-fort",
+    "name": "Gingee Fort",
+    "wikiTitle": "Viluppuram district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Viluppuram district\""
+  },
+  {
+    "slug": "mudumalai-national-park",
+    "name": "Mudumalai National Park",
+    "wikiTitle": "Nilgiris district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 26301m"
+  },
+  {
+    "slug": "coonoor-nilgiris",
+    "name": "Coonoor",
+    "wikiTitle": "Nilgiris district",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 11688m"
+  },
+  {
+    "slug": "valparai",
+    "name": "Valparai",
+    "wikiTitle": "Coimbatore district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Coimbatore district\""
+  },
+  {
+    "slug": "kolli-hills",
+    "name": "Kolli Hills",
+    "wikiTitle": "Kolli Hills",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 10818m"
+  },
+  {
+    "slug": "alleppey-backwaters",
+    "name": "Alleppey Backwaters",
+    "wikiTitle": "Kerala backwaters",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 40691m"
+  },
+  {
+    "slug": "fort-kochi",
+    "name": "Fort Kochi",
+    "wikiTitle": "Ernakulam",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Ernakulam\""
+  },
+  {
+    "slug": "wayanad",
+    "name": "Wayanad",
+    "wikiTitle": "Wayanad district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Wayanad district\""
+  },
+  {
+    "slug": "periyar-thekkady",
+    "name": "Periyar Wildlife Sanctuary, Thekkady",
+    "wikiTitle": "Thekkady",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 8380m"
+  },
+  {
+    "slug": "kovalam-beach",
+    "name": "Kovalam Beach",
+    "wikiTitle": "Thiruvananthapuram Corporation",
     "status": "rejected-mismatch",
     "reason": "no coord + no name overlap"
   },
   {
-    "slug": "sam-sand-dunes",
-    "name": "Sam Sand Dunes",
-    "wikiTitle": "Jaisalmer district",
+    "slug": "bekal-fort",
+    "name": "Bekal Fort",
+    "wikiTitle": "Kasaragod district",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Jaisalmer district\""
+    "reason": "generic area page, not the specific place: \"Kasaragod district\""
   },
   {
-    "slug": "ajmer-sharif-dargah",
-    "name": "Ajmer Sharif Dargah",
-    "wikiTitle": "Ajmer Dargah bombing",
+    "slug": "eravikulam-national-park",
+    "name": "Eravikulam National Park",
+    "wikiTitle": "Eravikulam National Park",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 3779m"
+  },
+  {
+    "slug": "silent-valley-national-park",
+    "name": "Silent Valley National Park",
+    "wikiTitle": "Silent Valley National Park",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 5629m"
+  },
+  {
+    "slug": "marari-beach",
+    "name": "Marari Beach",
+    "wikiTitle": "Alappuzha Beach",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 12171m"
+  },
+  {
+    "slug": "araku-valley",
+    "name": "Araku Valley",
+    "wikiTitle": "Alluri Sitharama Raju district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Alluri Sitharama Raju district\""
+  },
+  {
+    "slug": "rk-beach-visakhapatnam",
+    "name": "RK Beach, Visakhapatnam",
+    "wikiTitle": "Greater Visakhapatnam Municipal Corporation",
     "status": "no-commons-image"
   },
   {
-    "slug": "mount-abu",
-    "name": "Mount Abu",
-    "wikiTitle": "Sirohi district",
+    "slug": "kailasagiri-visakhapatnam",
+    "name": "Kailasagiri, Visakhapatnam",
+    "wikiTitle": "North Andhra",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Sirohi district\""
+    "reason": "no coord + no name overlap"
   },
   {
-    "slug": "bala-quila-alwar",
-    "name": "Bala Quila (Alwar Fort)",
-    "wikiTitle": "Alwar",
+    "slug": "borra-caves",
+    "name": "Borra Caves",
+    "wikiTitle": "Alluri Sitharama Raju district",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Alwar\""
+    "reason": "generic area page, not the specific place: \"Alluri Sitharama Raju district\""
   },
   {
-    "slug": "keoladeo-national-park",
-    "name": "Keoladeo National Park",
-    "wikiTitle": "Keoladeo National Park",
+    "slug": "simhachalam-temple",
+    "name": "Simhachalam Temple",
+    "wikiTitle": "Visakhapatnam district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Visakhapatnam district\""
+  },
+  {
+    "slug": "horsley-hills",
+    "name": "Horsley Hills",
+    "wikiTitle": "Horsley Hills",
     "status": "no-commons-image"
   },
   {
-    "slug": "shimla-ridge",
-    "name": "The Ridge Shimla",
-    "wikiTitle": "Shimla",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Shimla\""
-  },
-  {
-    "slug": "kasol",
-    "name": "Kasol",
-    "wikiTitle": "Kullu district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Kullu district\""
-  },
-  {
-    "slug": "mcleodganj",
-    "name": "McLeodganj",
-    "wikiTitle": "Kangra, Himachal Pradesh",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 16157m"
-  },
-  {
-    "slug": "khajjiar",
-    "name": "Khajjiar",
-    "wikiTitle": "Chamba, Himachal Pradesh",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 55854m"
-  },
-  {
-    "slug": "chamba-town",
-    "name": "Chamba",
-    "wikiTitle": "Chamba, Himachal Pradesh",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 52778m"
-  },
-  {
-    "slug": "sangla-valley",
-    "name": "Sangla Valley",
-    "wikiTitle": "Kamru, Himachal Pradesh",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 293899m"
-  },
-  {
-    "slug": "naldehra",
-    "name": "Naldehra",
-    "wikiTitle": "Shimla",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Shimla\""
-  },
-  {
-    "slug": "rewalsar-lake",
-    "name": "Rewalsar Lake",
-    "wikiTitle": "Mandi, Himachal Pradesh",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 12332m"
-  },
-  {
-    "slug": "nishat-bagh",
-    "name": "Nishat Bagh",
-    "wikiTitle": "Srinagar",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Srinagar\""
-  },
-  {
-    "slug": "pahalgam",
-    "name": "Pahalgam",
-    "wikiTitle": "Pahalgam",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 11539m"
-  },
-  {
-    "slug": "yusmarg",
-    "name": "Yusmarg",
-    "wikiTitle": "Budgam district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Budgam district\""
-  },
-  {
-    "slug": "doodhpathri",
-    "name": "Doodhpathri",
-    "wikiTitle": "Doodhpathri",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 26876m"
-  },
-  {
-    "slug": "patnitop",
-    "name": "Patnitop",
-    "wikiTitle": "Patnitop",
+    "slug": "talakona-waterfalls",
+    "name": "Talakona Waterfalls",
+    "wikiTitle": "Talakona",
     "status": "no-commons-image"
   },
   {
-    "slug": "pangong-tso",
-    "name": "Pangong Tso",
-    "wikiTitle": "Pangong Tso",
+    "slug": "papikondalu",
+    "name": "Papikondalu",
+    "wikiTitle": "Godavari River",
     "status": "rejected-mismatch",
-    "reason": "coord check: 21706m"
+    "reason": "coord check: 50751m"
   },
   {
-    "slug": "nubra-valley-hunder",
-    "name": "Nubra Valley (Hunder)",
-    "wikiTitle": "Nubra",
+    "slug": "thousand-pillar-temple-warangal",
+    "name": "Thousand Pillar Temple, Hanamkonda",
+    "wikiTitle": "Hanamkonda",
     "status": "rejected-mismatch",
-    "reason": "coord check: 18502m"
+    "reason": "coord check: 8219m"
   },
   {
-    "slug": "thiksey-monastery",
-    "name": "Thiksey Monastery",
-    "wikiTitle": "Thikse Monastery",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Thikse_Monastery_.jpg/1280px-Thikse_Monastery_.jpg",
-    "status": "set",
-    "reason": "coord check: 119m"
+    "slug": "paradise-beach-puducherry",
+    "name": "Paradise Beach (Plage Paradiso)",
+    "status": "no-title"
   },
   {
-    "slug": "zanskar-valley",
-    "name": "Zanskar Valley",
-    "wikiTitle": "Zanskar district",
+    "slug": "french-quarter-puducherry",
+    "name": "French Quarter (White Town)",
+    "wikiTitle": "Pondicherry",
+    "status": "rejected-duplicate"
+  },
+  {
+    "slug": "serenity-beach-puducherry",
+    "name": "Serenity Beach",
+    "wikiTitle": "List of beaches in India",
     "status": "rejected-mismatch",
-    "reason": "coord check: 4016m"
+    "reason": "no coord + no name overlap"
   },
   {
-    "slug": "khardung-la",
-    "name": "Khardung La",
-    "wikiTitle": "Khardung La",
-    "status": "no-commons-image"
-  },
-  {
-    "slug": "brahma-sarovar-kurukshetra",
-    "name": "Brahma Sarovar (Kurukshetra)",
-    "wikiTitle": "Kurukshetra",
+    "slug": "agatti-island",
+    "name": "Agatti Island",
+    "wikiTitle": "Agatti Airport",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Kurukshetra\""
+    "reason": "coord check: 3646m"
   },
   {
-    "slug": "surajkund",
-    "name": "Surajkund",
-    "wikiTitle": "Faridabad",
+    "slug": "bangaram-island",
+    "name": "Bangaram Island",
+    "wikiTitle": "Lakshadweep",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Faridabad\""
+    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+  },
+  {
+    "slug": "minicoy-island",
+    "name": "Minicoy Island",
+    "wikiTitle": "Lakshadweep",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+  },
+  {
+    "slug": "kadmat-island",
+    "name": "Kadmat Island",
+    "wikiTitle": "Lakshadweep",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+  },
+  {
+    "slug": "kalpeni-island",
+    "name": "Kalpeni Island",
+    "wikiTitle": "Lakshadweep",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Lakshadweep\""
   }
 ]

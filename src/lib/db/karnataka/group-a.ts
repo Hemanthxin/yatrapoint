@@ -822,7 +822,7 @@ export const karnatakaBengaluruRegion: Omit<NewDestination, "id" | "createdAt">[
     placeType: "Temple",
     shortDescription: "Chola-era temple in Kolar town dedicated to goddess Kolaramma, the town's namesake deity.",
     description: "The Kolaramma Temple in Kolar is an 11th-century Chola-period shrine dedicated to Shakti as Kolaramma, after whom the town is named. Built in a distinctive L-shaped (Vimana) plan, it carries fine carvings and inscriptions. It remains an active and important temple for the local community.",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/20/View_from_the_rear_of_Someshwara_temple_at_Kolar.jpg",
+    imageUrl: null,
     openingTimings: "6:00 AM - 12:30 PM, 5:00 PM - 8:30 PM",
     entryFees: 0,
     budgetPerDay: 600,
