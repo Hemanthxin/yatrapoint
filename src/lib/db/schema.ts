@@ -271,6 +271,10 @@ export const nearbyDestinations = pgTable("nearby_destinations", {
   latitude: varchar("latitude", { length: 20 }).notNull(),
   longitude: varchar("longitude", { length: 20 }).notNull(),
   popularity: integer("popularity").default(50).notNull(),
+  // Only set for the rare nearby spot with a real official online booking
+  // system (e.g. a wildlife-safari permit portal) — most day-trip spots are
+  // free/open and have nothing to book.
+  bookingUrl: text("booking_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -301,6 +305,10 @@ export const cityPlaces = pgTable("city_places", {
   longitude: varchar("longitude", { length: 20 }).notNull(),
   googlePlaceId: text("google_place_id"),
   popularity: integer("popularity").default(50).notNull(),
+  // Only set for places with a real official online booking system (museums,
+  // amusement parks, etc.) — the overwhelming majority (restaurants, temples,
+  // parks, malls) have nothing to book and stay null.
+  bookingUrl: text("booking_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
   popularityIdx: index("city_places_popularity_idx").on(table.popularity),

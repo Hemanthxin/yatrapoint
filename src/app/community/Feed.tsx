@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Sparkles, Flame, User2, Plus } from "lucide-react";
+import { Sparkles, Flame, User2, Plus, Rows3, Grid3x3 } from "lucide-react";
 
 import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
 import { CommunityForm } from "./CommunityForm";
 import { PostCard } from "./PostCard";
+import { Stories } from "./Stories";
+import { ExploreGrid } from "./ExploreGrid";
 import { EmptyState } from "@/components/app/EmptyState";
 import { CommunityIllustration } from "@/components/illustrations";
 
@@ -40,6 +42,7 @@ export function Feed({
 }) {
   const [posts, setPosts] = useState(initialPosts);
   const [tab, setTab] = useState<Tab>("latest");
+  const [view, setView] = useState<"feed" | "grid">("feed");
   const [composerOpen, setComposerOpen] = useState(false);
 
   const initial = (userName?.trim()?.[0] ?? "?").toUpperCase();
@@ -71,6 +74,14 @@ export function Feed({
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
+      {/* Stories — recent posters, tap for a full-screen story viewer */}
+      <Stories
+        posts={posts}
+        social={social}
+        currentUserId={currentUserId}
+        onOpenComposer={() => setComposerOpen(true)}
+      />
+
       {/* Composer: compact trigger bar → expands into full form */}
       {composerOpen ? (
         <CommunityForm
@@ -106,36 +117,63 @@ export function Feed({
         </button>
       )}
 
-      {/* Pill tabs */}
-      <div className="sticky top-2 z-10 flex gap-1 rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur">
-        {TABS.map((t) => {
-          const active = tab === t.id;
-          const Icon = t.icon;
-          return (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              aria-pressed={active}
-              className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
-                active
-                  ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-              }`}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="truncate">{t.label}</span>
-              {t.id === "mine" && mineCount > 0 && (
-                <span
-                  className={`rounded-full px-1.5 text-xs ${
-                    active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
-                  }`}
-                >
-                  {mineCount}
-                </span>
-              )}
-            </button>
-          );
-        })}
+      {/* Pill tabs + feed/grid view toggle */}
+      <div className="sticky top-2 z-10 flex items-center gap-1.5">
+        <div className="flex flex-1 gap-1 rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur">
+          {TABS.map((t) => {
+            const active = tab === t.id;
+            const Icon = t.icon;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                aria-pressed={active}
+                className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
+                  active
+                    ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                }`}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{t.label}</span>
+                {t.id === "mine" && mineCount > 0 && (
+                  <span
+                    className={`rounded-full px-1.5 text-xs ${
+                      active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {mineCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex shrink-0 gap-0.5 rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur">
+          <button
+            type="button"
+            onClick={() => setView("feed")}
+            aria-label="Feed view"
+            aria-pressed={view === "feed"}
+            className={`grid h-9 w-9 place-items-center rounded-xl transition active:scale-95 ${
+              view === "feed" ? "bg-slate-900 text-white" : "text-slate-400 hover:bg-slate-50"
+            }`}
+          >
+            <Rows3 className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("grid")}
+            aria-label="Grid view"
+            aria-pressed={view === "grid"}
+            className={`grid h-9 w-9 place-items-center rounded-xl transition active:scale-95 ${
+              view === "grid" ? "bg-slate-900 text-white" : "text-slate-400 hover:bg-slate-50"
+            }`}
+          >
+            <Grid3x3 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {visible.length === 0 ? (
@@ -143,6 +181,15 @@ export function Feed({
           illustration={CommunityIllustration}
           title={emptyCopy[tab].title}
           description={emptyCopy[tab].text}
+        />
+      ) : view === "grid" ? (
+        <ExploreGrid
+          posts={visible}
+          social={social}
+          currentUserId={currentUserId}
+          userName={userName}
+          userImage={userImage}
+          onDeleted={handleDeleted}
         />
       ) : (
         visible.map((p, i) => (
