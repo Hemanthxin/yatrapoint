@@ -1,17 +1,23 @@
-import { MapPin, ShieldCheck, Wallet, Star } from "lucide-react";
+import Image from "next/image";
+import { MapPin, ShieldCheck, Wallet, Compass } from "lucide-react";
 
 export function Hero() {
   return (
     <div className="relative z-10 flex max-w-xl animate-fadeUp flex-col gap-8 text-white">
       <div>
         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold text-white/90 backdrop-blur-md">
-          <Star className="h-3.5 w-3.5 text-amber-300" fill="currentColor" />
-          Trusted by 10,000+ travellers
+          <Compass className="h-3.5 w-3.5 text-amber-300" />
+          Your journey starts here
         </span>
-        <h1 className="text-5xl font-bold leading-tight drop-shadow-2xl md:text-6xl">
-          <span className="font-script text-7xl text-white md:text-8xl">Saa</span>
-          <span className="font-script text-7xl text-brand-greenLight md:text-8xl">fera</span>
-        </h1>
+        <Image
+          src="/saafera-logo.jpg"
+          alt="Saafera"
+          width={280}
+          height={280}
+          priority
+          className="app-logo h-auto w-40 md:w-48"
+        />
+        <h1 className="sr-only">Saafera</h1>
         <p className="mt-3 text-2xl font-semibold text-white drop-shadow-lg">
           Explore More. Fulfill Soul.
         </p>

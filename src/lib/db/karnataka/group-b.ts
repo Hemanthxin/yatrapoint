@@ -487,6 +487,7 @@ export const karnatakaMysuruRegion: Omit<NewDestination, "id" | "createdAt">[] =
     openingTimings: "6:00 AM - 9:00 AM, 3:30 PM - 6:00 PM",
     entryFees: 250,
     entryFeesChild: 125,
+    visitorGuidelines: "Book jeep or bus safari slots online ahead of time, especially in peak season (Nov-Feb). Wear muted colours, stay quiet, and don't lean out of the vehicle — it's a working tiger reserve, not a zoo. Safaris run only in the early morning and late afternoon windows; arrive at the gate well before the slot time.",
     budgetPerDay: 2200,
     recommendedDays: 2,
     bestMonths: "Oct,Nov,Dec,Jan,Feb,Mar,Apr",

@@ -156,7 +156,7 @@ export function AdminLoginCard() {
       </form>
 
         <p className="mt-8 text-center text-xs text-slate-400">
-          © 2024 Travel App. All rights reserved.
+          © {new Date().getFullYear()} Saafera. All rights reserved.
         </p>
       </div>
     </div>

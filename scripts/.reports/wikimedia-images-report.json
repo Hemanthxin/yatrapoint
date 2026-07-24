@@ -1,234 +1,175 @@
 [
   {
-    "slug": "dhanushkodi",
-    "name": "Dhanushkodi",
-    "wikiTitle": "Dhanushkodi",
+    "slug": "gulbarga-fort",
+    "name": "Gulbarga Fort",
+    "wikiTitle": "Kalaburagi",
     "status": "rejected-mismatch",
-    "reason": "coord check: 3072m"
+    "reason": "generic area page, not the specific place: \"Kalaburagi\""
   },
   {
-    "slug": "kodaikanal",
-    "name": "Kodaikanal",
-    "wikiTitle": "Dindigul district",
+    "slug": "buddha-vihar-kalaburagi",
+    "name": "Buddha Vihar Kalaburagi",
+    "wikiTitle": "Buddha Vihar, Kalaburagi",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Dindigul district\""
+    "reason": "coord check: 9321m"
   },
   {
-    "slug": "yercaud",
-    "name": "Yercaud",
-    "wikiTitle": "Salem, Tamil Nadu",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 15324m"
-  },
-  {
-    "slug": "gingee-fort",
-    "name": "Gingee Fort",
-    "wikiTitle": "Viluppuram district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Viluppuram district\""
-  },
-  {
-    "slug": "mudumalai-national-park",
-    "name": "Mudumalai National Park",
-    "wikiTitle": "Nilgiris district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 26301m"
-  },
-  {
-    "slug": "coonoor-nilgiris",
-    "name": "Coonoor",
-    "wikiTitle": "Nilgiris district",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 11688m"
-  },
-  {
-    "slug": "valparai",
-    "name": "Valparai",
-    "wikiTitle": "Coimbatore district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Coimbatore district\""
-  },
-  {
-    "slug": "kolli-hills",
-    "name": "Kolli Hills",
-    "wikiTitle": "Kolli Hills",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 10818m"
-  },
-  {
-    "slug": "alleppey-backwaters",
-    "name": "Alleppey Backwaters",
-    "wikiTitle": "Kerala backwaters",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 40691m"
-  },
-  {
-    "slug": "fort-kochi",
-    "name": "Fort Kochi",
-    "wikiTitle": "Ernakulam",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Ernakulam\""
-  },
-  {
-    "slug": "wayanad",
-    "name": "Wayanad",
-    "wikiTitle": "Wayanad district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Wayanad district\""
-  },
-  {
-    "slug": "periyar-thekkady",
-    "name": "Periyar Wildlife Sanctuary, Thekkady",
-    "wikiTitle": "Thekkady",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 8380m"
-  },
-  {
-    "slug": "kovalam-beach",
-    "name": "Kovalam Beach",
-    "wikiTitle": "Thiruvananthapuram Corporation",
-    "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
-  },
-  {
-    "slug": "bekal-fort",
-    "name": "Bekal Fort",
-    "wikiTitle": "Kasaragod district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Kasaragod district\""
-  },
-  {
-    "slug": "eravikulam-national-park",
-    "name": "Eravikulam National Park",
-    "wikiTitle": "Eravikulam National Park",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 3779m"
-  },
-  {
-    "slug": "silent-valley-national-park",
-    "name": "Silent Valley National Park",
-    "wikiTitle": "Silent Valley National Park",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 5629m"
-  },
-  {
-    "slug": "marari-beach",
-    "name": "Marari Beach",
-    "wikiTitle": "Alappuzha Beach",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 12171m"
-  },
-  {
-    "slug": "araku-valley",
-    "name": "Araku Valley",
-    "wikiTitle": "Alluri Sitharama Raju district",
-    "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Alluri Sitharama Raju district\""
-  },
-  {
-    "slug": "rk-beach-visakhapatnam",
-    "name": "RK Beach, Visakhapatnam",
-    "wikiTitle": "Greater Visakhapatnam Municipal Corporation",
+    "slug": "sannati-kanaganahalli",
+    "name": "Sannati & Kanaganahalli",
+    "wikiTitle": "Kanaganahalli",
     "status": "no-commons-image"
   },
   {
-    "slug": "kailasagiri-visakhapatnam",
-    "name": "Kailasagiri, Visakhapatnam",
-    "wikiTitle": "North Andhra",
+    "slug": "haft-gumbaz-kalaburagi",
+    "name": "Haft Gumbaz",
+    "wikiTitle": "Kalaburagi",
     "status": "rejected-mismatch",
-    "reason": "no coord + no name overlap"
+    "reason": "generic area page, not the specific place: \"Kalaburagi\""
   },
   {
-    "slug": "borra-caves",
-    "name": "Borra Caves",
-    "wikiTitle": "Alluri Sitharama Raju district",
+    "slug": "bahmani-tombs-ashtur",
+    "name": "Bahmani Tombs at Ashtur",
+    "wikiTitle": "Bidar",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Alluri Sitharama Raju district\""
+    "reason": "generic area page, not the specific place: \"Bidar\""
   },
   {
-    "slug": "simhachalam-temple",
-    "name": "Simhachalam Temple",
-    "wikiTitle": "Visakhapatnam district",
+    "slug": "chaukhandi-bidar",
+    "name": "Chaukhandi of Hazrat Khalil Ullah",
+    "wikiTitle": "Bidar",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Visakhapatnam district\""
+    "reason": "generic area page, not the specific place: \"Bidar\""
   },
   {
-    "slug": "horsley-hills",
-    "name": "Horsley Hills",
-    "wikiTitle": "Horsley Hills",
-    "status": "no-commons-image"
-  },
-  {
-    "slug": "talakona-waterfalls",
-    "name": "Talakona Waterfalls",
-    "wikiTitle": "Talakona",
-    "status": "no-commons-image"
-  },
-  {
-    "slug": "papikondalu",
-    "name": "Papikondalu",
-    "wikiTitle": "Godavari River",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 50751m"
-  },
-  {
-    "slug": "thousand-pillar-temple-warangal",
-    "name": "Thousand Pillar Temple, Hanamkonda",
-    "wikiTitle": "Hanamkonda",
-    "status": "rejected-mismatch",
-    "reason": "coord check: 8219m"
-  },
-  {
-    "slug": "paradise-beach-puducherry",
-    "name": "Paradise Beach (Plage Paradiso)",
+    "slug": "tintini-bheemanna-temple",
+    "name": "Tintini Moni Bheemanna Shrine",
     "status": "no-title"
   },
   {
-    "slug": "french-quarter-puducherry",
-    "name": "French Quarter (White Town)",
-    "wikiTitle": "Pondicherry",
-    "status": "rejected-duplicate"
+    "slug": "buddha-vihara-yadgir",
+    "name": "Kanaganahalli Buddha Vihara Yadgir",
+    "status": "no-title"
   },
   {
-    "slug": "serenity-beach-puducherry",
-    "name": "Serenity Beach",
-    "wikiTitle": "List of beaches in India",
+    "slug": "mallikarjuna-temple-raichur",
+    "name": "Mallikarjuna Temple Raichur",
+    "wikiTitle": "North Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 146541m"
+  },
+  {
+    "slug": "maliabad-fort-raichur",
+    "name": "Maliabad Fort",
+    "status": "no-title"
+  },
+  {
+    "slug": "jaladurga-fort-falls",
+    "name": "Jaladurga Fort & Falls",
+    "wikiTitle": "Jaladurga",
+    "status": "no-commons-image"
+  },
+  {
+    "slug": "anegundi",
+    "name": "Anegundi",
+    "wikiTitle": "Gangavati, Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 10693m"
+  },
+  {
+    "slug": "huligemma-temple-koppal",
+    "name": "Huligemma Temple Huligi",
+    "wikiTitle": "Munirabad",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 13222m"
+  },
+  {
+    "slug": "gavi-math-koppal",
+    "name": "Gavi Math Koppal",
+    "wikiTitle": "Tourism in Karnataka",
     "status": "rejected-mismatch",
     "reason": "no coord + no name overlap"
   },
   {
-    "slug": "agatti-island",
-    "name": "Agatti Island",
-    "wikiTitle": "Agatti Airport",
+    "slug": "kanakagiri-koppal",
+    "name": "Kanakagiri",
+    "wikiTitle": "Gangavati, Karnataka",
     "status": "rejected-mismatch",
-    "reason": "coord check: 3646m"
+    "reason": "coord check: 12466m"
   },
   {
-    "slug": "bangaram-island",
-    "name": "Bangaram Island",
-    "wikiTitle": "Lakshadweep",
+    "slug": "kinnal-koppal",
+    "name": "Kinnal (Kinhal)",
+    "wikiTitle": "Koppal district",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+    "reason": "generic area page, not the specific place: \"Koppal district\""
   },
   {
-    "slug": "minicoy-island",
-    "name": "Minicoy Island",
-    "wikiTitle": "Lakshadweep",
+    "slug": "anjanadri-hill-koppal",
+    "name": "Anjanadri Hill",
+    "wikiTitle": "Koppal",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+    "reason": "generic area page, not the specific place: \"Koppal\""
   },
   {
-    "slug": "kadmat-island",
-    "name": "Kadmat Island",
-    "wikiTitle": "Lakshadweep",
+    "slug": "bellary-fort-gudda",
+    "name": "Bellary Fort (Ballari Gudda)",
+    "wikiTitle": "Ballari",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+    "reason": "generic area page, not the specific place: \"Ballari\""
   },
   {
-    "slug": "kalpeni-island",
-    "name": "Kalpeni Island",
-    "wikiTitle": "Lakshadweep",
+    "slug": "kumaraswamy-temple-sandur",
+    "name": "Kumaraswamy Temple Sandur",
+    "wikiTitle": "Ballari district",
     "status": "rejected-mismatch",
-    "reason": "generic area page, not the specific place: \"Lakshadweep\""
+    "reason": "generic area page, not the specific place: \"Ballari district\""
+  },
+  {
+    "slug": "daroji-sloth-bear-sanctuary",
+    "name": "Daroji Sloth Bear Sanctuary",
+    "wikiTitle": "Daroji Sloth Bear Sanctuary",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 8578m"
+  },
+  {
+    "slug": "sandur-hills",
+    "name": "Sandur Hills",
+    "wikiTitle": "Economy of Karnataka",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "kudligi-fort-ballari",
+    "name": "Kudligi",
+    "wikiTitle": "Ballari district",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Ballari district\""
+  },
+  {
+    "slug": "tungabhadra-dam",
+    "name": "Tungabhadra Dam",
+    "wikiTitle": "Tungabhadra Dam",
+    "status": "rejected-mismatch",
+    "reason": "coord check: 3712m"
+  },
+  {
+    "slug": "vittala-temple-hampi",
+    "name": "Vittala Temple Hampi",
+    "wikiTitle": "Vijayanagara",
+    "status": "rejected-mismatch",
+    "reason": "generic area page, not the specific place: \"Vijayanagara\""
+  },
+  {
+    "slug": "hampi-hemakuta-hill",
+    "name": "Hemakuta Hill Temples",
+    "wikiTitle": "Vijayanagara architecture",
+    "status": "rejected-mismatch",
+    "reason": "no coord + no name overlap"
+  },
+  {
+    "slug": "kamalapur-museum-hampi",
+    "name": "Hampi Archaeological Museum, Kamalapur",
+    "wikiTitle": "Kamalapura, Vijayanagara",
+    "status": "no-commons-image"
   }
 ]

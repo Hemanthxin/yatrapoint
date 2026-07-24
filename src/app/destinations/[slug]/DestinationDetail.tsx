@@ -86,6 +86,23 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
     !(lat === 0 && lng === 0);
   const destPoint = useMemo<LatLng>(() => ({ lat, lng }), [lat, lng]);
 
+  // Some places (a zoo with a safari combo, a park with a butterfly-park
+  // add-on) have genuinely separate ticket types rather than one flat entry
+  // fee — parsed from JSON when present, ignored (silently falls back to the
+  // single entryFees) if malformed or absent.
+  const ticketOptions = useMemo<{ label: string; price: number }[]>(() => {
+    if (!destination.ticketOptions) return [];
+    try {
+      const parsed = JSON.parse(destination.ticketOptions);
+      if (Array.isArray(parsed)) return parsed;
+      return [];
+    } catch {
+      return [];
+    }
+  }, [destination.ticketOptions]);
+  const [ticketIdx, setTicketIdx] = useState(0);
+  const entryFeePerPerson = ticketOptions.length > 0 ? ticketOptions[ticketIdx].price : destination.entryFees;
+
   // Budget inputs.
   const [vehicle, setVehicle] = useState<VehicleKind>(defaultBudgetParams.vehicle);
   const [people, setPeople] = useState(defaultBudgetParams.people);
@@ -170,12 +187,12 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
         distanceKm: drivingKm,
         vehicle,
         people,
-        entryFeePerPerson: destination.entryFees,
+        entryFeePerPerson,
         foodPerPerson,
         parkingFee: defaultBudgetParams.parkingFee,
         miscPerPerson: defaultBudgetParams.miscPerPerson,
       }),
-    [drivingKm, vehicle, people, destination.entryFees, foodPerPerson]
+    [drivingKm, vehicle, people, entryFeePerPerson, foodPerPerson]
   );
 
   // Budget-only aside (used when the place has no coordinates to route to).
@@ -209,6 +226,23 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
             ))}
           </div>
         </label>
+
+        {ticketOptions.length > 0 && (
+          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
+            Ticket type
+            <select
+              value={ticketIdx}
+              onChange={(e) => setTicketIdx(Number(e.target.value))}
+              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+            >
+              {ticketOptions.map((opt, i) => (
+                <option key={i} value={i}>
+                  {opt.label} — {formatINR(opt.price)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <NumberField label="People" min={1} max={20} value={people} onChange={setPeople} />

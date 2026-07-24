@@ -6,6 +6,9 @@ import {
   Sparkles,
   Wallet,
   Users,
+  Ticket,
+  ExternalLink,
+  Info,
 } from "lucide-react";
 
 import { auth } from "@/auth";
@@ -159,6 +162,29 @@ export default async function DestinationPage({ params }: PageProps) {
               {destination.entryFeesChild != null && (
                 <span>Child: {formatINR(destination.entryFeesChild)}</span>
               )}
+            </div>
+          )}
+
+          {destination.bookingUrl && (
+            <a
+              href={destination.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
+            >
+              <Ticket className="h-4 w-4" /> Book tickets
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+
+          {destination.visitorGuidelines && (
+            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+              <h3 className="flex items-center gap-1.5 text-sm font-extrabold text-amber-800">
+                <Info className="h-4 w-4" /> Know before you go
+              </h3>
+              <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-amber-900">
+                {destination.visitorGuidelines}
+              </p>
             </div>
           )}
         </div>

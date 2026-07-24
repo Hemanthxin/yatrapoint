@@ -107,6 +107,21 @@ export const destinations = pgTable("destinations", {
   // math — display only.
   entryFeesForeigner: integer("entry_fees_foreigner"),
   entryFeesChild: integer("entry_fees_child"),
+  // Places with genuinely separate ticket types (a zoo with a bus-safari combo,
+  // a park with a butterfly-park add-on) store them here as JSON:
+  // [{ label: "Zoo only", price: 80 }, ...]. Null for the vast majority of
+  // places that just have one entry fee. Never used for budget math directly —
+  // the detail page lets the visitor pick one, which then feeds entryFees-style
+  // per-person cost into the live budget calculator.
+  ticketOptions: text("ticket_options"),
+  // Official ticket/permit booking link, where one exists (ASI portal, forest
+  // department safari booking, temple darshan site, etc.). Null = no online
+  // booking, or not yet researched.
+  bookingUrl: text("booking_url"),
+  // Practical visitor guidance — dress code, photography rules, what to do at
+  // the place, etiquette — kept separate from the narrative `description` so
+  // it can be rendered as its own "Know before you go" section.
+  visitorGuidelines: text("visitor_guidelines"),
   budgetPerDay: integer("budget_per_day").notNull(),
   recommendedDays: integer("recommended_days").default(2).notNull(),
   bestMonths: text("best_months"),

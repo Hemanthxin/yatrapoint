@@ -19,6 +19,9 @@ import {
 
 import { signupAction } from "@/lib/actions/account";
 import { loginSchema, signupSchema } from "@/lib/validators";
+import { Modal } from "@/components/app/Modal";
+import { PrivacyPolicyContent } from "@/components/legal/PrivacyPolicyContent";
+import { TermsOfServiceContent } from "@/components/legal/TermsOfServiceContent";
 
 // Google Identity Services typing (shared with the desktop AuthCard).
 declare global {
@@ -66,6 +69,8 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agreed, setAgreed] = useState(false);
+  const [legalModal, setLegalModal] = useState<"privacy" | "terms" | null>(null);
 
   const [gisLoaded, setGisLoaded] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
@@ -81,6 +86,10 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
     setError(null);
 
     if (mode === "signup") {
+      if (!agreed) {
+        setError("Please accept the Privacy Policy and Terms of Service to continue.");
+        return;
+      }
       const parsed = signupSchema.safeParse({ name, phone, password, confirmPassword });
       if (!parsed.success) {
         setError(parsed.error.issues[0]?.message ?? "Check your details.");
@@ -178,24 +187,27 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
           aria-hidden
           className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--app-bg)] to-transparent"
         />
-        <Plane className="absolute right-6 top-6 h-5 w-5 -rotate-[18deg] text-white/85" />
-        <div className="absolute left-6 top-7">
-          <div className="text-3xl font-extrabold tracking-tight drop-shadow-md">
-            <span className="text-emerald-300">Saa</span>
-            <span className="text-white">fera</span>
-          </div>
-          <p className="mt-1 text-xs font-semibold tracking-wide text-white/90 drop-shadow">
-            Travel More, Worry Less.
-          </p>
+        <div className="absolute left-6 top-6">
+          <Image
+            src="/saafera-logo.jpg"
+            alt="Saafera"
+            width={280}
+            height={280}
+            priority
+            className="app-logo h-auto w-24 rounded-xl"
+          />
         </div>
       </div>
 
       {/* Heading on the cream canvas — clean, no overlap with the photo. */}
       <div className="px-6 pt-4">
-        <h1 className="text-[2rem] font-extrabold leading-[1.12] tracking-tight text-slate-900">
-          Your <span className="text-[#e14434]">Journey</span>,
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+          <Plane className="h-3.5 w-3.5 -rotate-[18deg]" /> Your journey starts here
+        </span>
+        <h1 className="mt-3 text-[2rem] font-extrabold leading-[1.12] tracking-tight text-slate-900">
+          Explore More.
           <br />
-          Our Priority
+          <span className="text-[#e14434]">Fulfill Soul.</span>
         </h1>
         <span className="mt-3 block h-1 w-9 rounded-full bg-emerald-600" />
         <p className="mt-2.5 max-w-[17rem] text-sm font-medium leading-relaxed text-slate-500">
@@ -301,6 +313,36 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
             </div>
           )}
 
+          {mode === "signup" && (
+            <label className="flex items-start gap-2.5 text-xs text-slate-500">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+              />
+              <span>
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={() => setLegalModal("privacy")}
+                  className="font-semibold text-emerald-700 underline underline-offset-2"
+                >
+                  Privacy Policy
+                </button>{" "}
+                and{" "}
+                <button
+                  type="button"
+                  onClick={() => setLegalModal("terms")}
+                  className="font-semibold text-emerald-700 underline underline-offset-2"
+                >
+                  Terms of Service
+                </button>
+                .
+              </span>
+            </label>
+          )}
+
           {error && (
             <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">
               {error}
@@ -309,7 +351,7 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
 
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || (mode === "signup" && !agreed)}
             className="group relative mt-1 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 py-4 text-sm font-bold text-white shadow-lg shadow-emerald-600/30 transition active:scale-[0.98] disabled:opacity-60"
           >
             <span className="relative">
@@ -341,6 +383,13 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
           <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> Your data is safe with us
         </p>
       </div>
+
+      <Modal open={legalModal === "privacy"} onClose={() => setLegalModal(null)} title="Privacy Policy">
+        <PrivacyPolicyContent />
+      </Modal>
+      <Modal open={legalModal === "terms"} onClose={() => setLegalModal(null)} title="Terms of Service">
+        <TermsOfServiceContent />
+      </Modal>
     </main>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -16,6 +17,9 @@ import {
 
 import { signupAction } from "@/lib/actions/account";
 import { loginSchema, signupSchema } from "@/lib/validators";
+import { Modal } from "@/components/app/Modal";
+import { PrivacyPolicyContent } from "@/components/legal/PrivacyPolicyContent";
+import { TermsOfServiceContent } from "@/components/legal/TermsOfServiceContent";
 
 declare global {
   interface Window {
@@ -62,6 +66,8 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agreed, setAgreed] = useState(false);
+  const [legalModal, setLegalModal] = useState<"privacy" | "terms" | null>(null);
 
   const [gisLoaded, setGisLoaded] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
@@ -77,6 +83,10 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
     setError(null);
 
     if (mode === "signup") {
+      if (!agreed) {
+        setError("Please accept the Privacy Policy and Terms of Service to continue.");
+        return;
+      }
       const parsed = signupSchema.safeParse({ name, phone, password, confirmPassword });
       if (!parsed.success) {
         setError(parsed.error.issues[0]?.message ?? "Check your details.");
@@ -177,8 +187,16 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
         <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 px-7 pb-8 pt-7 text-white">
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <div className="relative">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" /> Saafera
+            <Image
+              src="/saafera-logo.jpg"
+              alt="Saafera"
+              width={280}
+              height={280}
+              priority
+              className="app-logo h-auto w-16 rounded-xl"
+            />
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" /> Your journey starts here
             </span>
             <h2 className="mt-3 text-2xl font-extrabold tracking-tight">
               {mode === "login" ? "Welcome back 👋" : "Create your account"}
@@ -272,6 +290,36 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
               </Field>
             )}
 
+            {mode === "signup" && (
+              <label className="flex items-start gap-2.5 text-xs text-slate-500">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                />
+                <span>
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    onClick={() => setLegalModal("privacy")}
+                    className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                  >
+                    Privacy Policy
+                  </button>{" "}
+                  and{" "}
+                  <button
+                    type="button"
+                    onClick={() => setLegalModal("terms")}
+                    className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                  >
+                    Terms of Service
+                  </button>
+                  .
+                </span>
+              </label>
+            )}
+
             {error && (
               <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">
                 {error}
@@ -280,7 +328,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
 
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (mode === "signup" && !agreed)}
               className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {!submitting && <span aria-hidden className="sheen-overlay animate-sheen" />}
@@ -314,6 +362,13 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
           </p>
         </div>
       </div>
+
+      <Modal open={legalModal === "privacy"} onClose={() => setLegalModal(null)} title="Privacy Policy">
+        <PrivacyPolicyContent />
+      </Modal>
+      <Modal open={legalModal === "terms"} onClose={() => setLegalModal(null)} title="Terms of Service">
+        <TermsOfServiceContent />
+      </Modal>
     </div>
   );
 }
