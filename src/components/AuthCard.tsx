@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -72,6 +71,17 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   const [gisLoaded, setGisLoaded] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
   const googleBtnRef = useRef<HTMLDivElement>(null);
+
+  // If Google's script never loads (network block, ad blocker, offline) don't
+  // leave the user staring at "Loading Google…" forever — time out and show
+  // a message instead.
+  useEffect(() => {
+    if (!googleClientId || gisLoaded) return;
+    const timer = setTimeout(() => {
+      setGoogleError((prev) => prev ?? "Google sign-in isn't available right now — use your phone number instead.");
+    }, 7000);
+    return () => clearTimeout(timer);
+  }, [googleClientId, gisLoaded]);
 
   function switchMode(m: Mode) {
     setMode(m);
@@ -187,15 +197,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
         <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 px-7 pb-8 pt-7 text-white">
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <div className="relative">
-            <Image
-              src="/saafera-logo.jpg"
-              alt="Saafera"
-              width={280}
-              height={280}
-              priority
-              className="app-logo h-auto w-16 rounded-xl"
-            />
-            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" /> Your journey starts here
             </span>
             <h2 className="mt-3 text-2xl font-extrabold tracking-tight">
@@ -350,9 +352,10 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
                 src="https://accounts.google.com/gsi/client"
                 strategy="afterInteractive"
                 onLoad={() => setGisLoaded(true)}
+                onError={() => setGoogleError("Couldn't load Google sign-in — use your phone number instead.")}
               />
               <div ref={googleBtnRef} className="flex w-full justify-center" aria-label="Continue with Google" />
-              {!gisLoaded && <p className="mt-2 text-center text-xs text-slate-400">Loading Google…</p>}
+              {!gisLoaded && !googleError && <p className="mt-2 text-center text-xs text-slate-400">Loading Google…</p>}
               {googleError && <p className="mt-2 text-center text-xs text-rose-500">{googleError}</p>}
             </>
           )}

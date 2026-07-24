@@ -70,3 +70,41 @@ export const defaultBudgetParams = {
   miscPerPerson: 100,
   parkingFee: 50,
 };
+
+export interface LongTripBudgetBreakdown {
+  fuelTotal: number;
+  stayTotal: number;
+  foodTotal: number;
+  miscTotal: number;
+  total: number;
+  perPerson: number;
+}
+
+// Estimate for a multi-day curated road trip (distinct from calcBudget, which
+// is for a single round-trip day out). `distanceKm` is one-way from the base
+// city; when unknown we fall back to a flat per-day travel estimate instead
+// of fabricating a distance.
+export function estimateLongTripBudget(input: {
+  days: number;
+  distanceKm: number | null;
+  vehicle: VehicleKind;
+  people: number;
+}): LongTripBudgetBreakdown {
+  const v = VEHICLES[input.vehicle];
+  const fuelTotal = input.distanceKm
+    ? Math.round(input.distanceKm * 2 * v.costPerKm)
+    : Math.round(input.days * 120 * v.costPerKm); // ~120 km/day of local travel as a fallback
+  const nights = Math.max(0, input.days - 1);
+  const stayTotal = nights * 2200 * Math.ceil(input.people / 2); // ~₹2,200/night per room, mid-range, 2/room
+  const foodTotal = input.days * input.people * 600; // full board estimate
+  const miscTotal = input.days * input.people * 250; // entry fees, local transport, incidentals
+  const total = fuelTotal + stayTotal + foodTotal + miscTotal;
+  return {
+    fuelTotal,
+    stayTotal,
+    foodTotal,
+    miscTotal,
+    total,
+    perPerson: Math.round(total / Math.max(1, input.people)),
+  };
+}

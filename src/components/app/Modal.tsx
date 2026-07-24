@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -14,6 +15,16 @@ interface ModalProps {
 // previews on the login page (and reusable anywhere else a lightweight modal
 // is needed) so the visitor doesn't have to leave the page to read them.
 export function Modal({ open, onClose, title, children }: ModalProps) {
+  // Rendered through a portal to document.body so `fixed inset-0` positions
+  // against the real viewport — nesting inside any ancestor with a `transform`
+  // (e.g. the `animate-fadeUp` entrance animation) otherwise turns that
+  // ancestor into the fixed-position containing block and clips the modal.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -27,9 +38,9 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
@@ -54,6 +65,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         </div>
         <div className="space-y-6 px-5 py-5 text-sm leading-relaxed text-slate-600">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -141,6 +141,66 @@ export const destinations = pgTable("destinations", {
   isHiddenIdx: index("destinations_is_hidden_idx").on(table.isHidden),
 }));
 
+// Curated multi-day road-trip itineraries FROM a base city (currently
+// Bangalore) INTO a given state — a hand-authored alternative to the
+// computed multi-stop planner. `itinerary` is JSON:
+// [{ day: 1, items: ["Bangalore → Coorg", "Nisargadhama", ...] }, ...]
+export const longTripTemplates = pgTable("long_trip_templates", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  slug: varchar("slug", { length: 140 }).notNull().unique(),
+  baseCity: varchar("base_city", { length: 60 }).default("Bangalore").notNull(),
+  state: varchar("state", { length: 60 }).notNull(),
+  title: varchar("title", { length: 160 }).notNull(),
+  days: integer("days").notNull(),
+  distanceKm: integer("distance_km"),
+  destinationSummary: varchar("destination_summary", { length: 200 }).notNull(),
+  itinerary: text("itinerary").notNull(),
+  popularity: integer("popularity").default(50).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  stateIdx: index("long_trip_templates_state_idx").on(table.state),
+}));
+
+export type LongTripTemplate = typeof longTripTemplates.$inferSelect;
+export type NewLongTripTemplate = typeof longTripTemplates.$inferInsert;
+
+// Bookmarked long-trip templates, one row per user per trip.
+export const savedLongTrips = pgTable(
+  "saved_long_trips",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    longTripId: text("long_trip_id")
+      .notNull()
+      .references(() => longTripTemplates.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({ pk: primaryKey({ columns: [t.userId, t.longTripId] }) })
+);
+
+// Auto-logged every time a user opens/generates a plan (long-trip template or
+// a computed budget-planner run), so "Trip history" can list and reopen them.
+export const tripHistory = pgTable(
+  "trip_history",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: varchar("kind", { length: 20 }).notNull(), // "long-trip" | "budget-plan"
+    refSlug: varchar("ref_slug", { length: 140 }),
+    title: varchar("title", { length: 200 }).notNull(),
+    snapshot: text("snapshot"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    userCreatedIdx: index("trip_history_user_created_idx").on(table.userId, table.createdAt),
+  })
+);
+
+export type TripHistoryRow = typeof tripHistory.$inferSelect;
+
 export const tripPlans = pgTable("trip_plans", {
   id: text("id").primaryKey().$defaultFn(() => createId()),
   userId: text("user_id")

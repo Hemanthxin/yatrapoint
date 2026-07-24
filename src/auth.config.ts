@@ -9,6 +9,12 @@ import type { NextAuthConfig } from "next-auth";
 export const authConfig = {
   session: { strategy: "jwt" },
   pages: { signIn: "/" },
+  // Derive the redirect origin from the incoming request's Host header
+  // instead of the AUTH_URL env var — without this, a stale AUTH_URL (e.g.
+  // still pointing at the old yatrapoint.vercel.app deployment) sends
+  // sign-out/delete-account redirects to a dead domain regardless of which
+  // domain the user is actually on.
+  trustHost: true,
   // Providers are added by ./auth.ts in the Node runtime; leaving this empty
   // means the Edge runtime never tries to require provider modules.
   providers: [],

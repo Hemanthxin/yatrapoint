@@ -77,3 +77,51 @@ export function placeDirectionsUrl(
   );
   return `https://www.google.com/maps/dir/?${params.toString()}`;
 }
+
+// Words that show up in curated itinerary text but aren't a place Google Maps
+// can route to — filtered out before building a multi-stop route.
+const NON_PLACE_WORDS = new Set([
+  "return", "stay", "overnight stay", "check-in", "check in", "local market",
+  "shopping", "sunset", "sunrise", "local exploration", "local sightseeing",
+  "camping", "adventure activities", "nature walk", "beaches", "trek & temples",
+]);
+
+function looksLikePlace(item: string): boolean {
+  const normalized = item.toLowerCase().trim();
+  if (NON_PLACE_WORDS.has(normalized)) return false;
+  if (/^return(\s|$)/.test(normalized)) return false;
+  return item.trim().length > 0;
+}
+
+/**
+ * Multi-stop driving directions for a curated day-by-day itinerary. Extracts
+ * place-like stops from free-text items (skipping generic words like "Return"
+ * or "Stay"), always starting from `baseCity`, capped at Google's ~9-waypoint
+ * limit so very long itineraries still produce a valid link.
+ */
+export function multiStopDirectionsUrl(baseCity: string, dayItems: string[][]): string {
+  const stops = dayItems
+    .flat()
+    .map((s) => s.replace(/^.*?→\s*/, "").trim())
+    .filter(looksLikePlace);
+
+  const unique: string[] = [];
+  for (const s of stops) {
+    if (unique[unique.length - 1]?.toLowerCase() !== s.toLowerCase()) unique.push(s);
+  }
+
+  if (unique.length === 0) {
+    return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(baseCity)}`;
+  }
+
+  const destination = unique[unique.length - 1];
+  const waypoints = unique.slice(0, -1).slice(0, 9); // Google caps waypoints ~9-10
+  const params = new URLSearchParams({
+    api: "1",
+    travelmode: "driving",
+    origin: baseCity,
+    destination,
+  });
+  if (waypoints.length > 0) params.set("waypoints", waypoints.join("|"));
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
+}

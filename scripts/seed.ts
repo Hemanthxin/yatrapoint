@@ -3,7 +3,7 @@ loadEnvConfig(process.cwd());
 
 async function run() {
   const { db } = await import("../src/lib/db");
-  const { destinations, nearbyDestinations, cityPlaces } = await import(
+  const { destinations, nearbyDestinations, cityPlaces, longTripTemplates } = await import(
     "../src/lib/db/schema"
   );
   const { seedDestinations } = await import("../src/lib/db/seed-data");
@@ -14,6 +14,7 @@ async function run() {
   const { bangaloreCityPlaces } = await import("../src/lib/db/seed-city");
   const { bangaloreCityPlacesExtra } = await import("../src/lib/db/seed-city-extra");
   const { bangaloreCityPlacesExtra2 } = await import("../src/lib/db/seed-city-extra2");
+  const { longTripSeeds } = await import("../src/lib/db/seed-long-trips");
 
   // Dedupe helper — keep the first row per slug so overlapping batches can't
   // insert the same place twice.
@@ -136,13 +137,36 @@ async function run() {
   }
   console.log();
 
-  const [dRows, nRows, cRows] = await Promise.all([
+  console.log(`Seeding ${longTripSeeds.length} long trip templates...`);
+  for (const t of longTripSeeds) {
+    await db
+      .insert(longTripTemplates)
+      .values(t)
+      .onConflictDoUpdate({
+        target: longTripTemplates.slug,
+        set: {
+          baseCity: t.baseCity,
+          state: t.state,
+          title: t.title,
+          days: t.days,
+          distanceKm: t.distanceKm,
+          destinationSummary: t.destinationSummary,
+          itinerary: t.itinerary,
+          popularity: t.popularity,
+        },
+      });
+    process.stdout.write(".");
+  }
+  console.log();
+
+  const [dRows, nRows, cRows, ltRows] = await Promise.all([
     db.select({ id: destinations.id }).from(destinations),
     db.select({ id: nearbyDestinations.id }).from(nearbyDestinations),
     db.select({ id: cityPlaces.id }).from(cityPlaces),
+    db.select({ id: longTripTemplates.id }).from(longTripTemplates),
   ]);
   console.log(
-    `Done. destinations=${dRows.length}, nearby_destinations=${nRows.length}, city_places=${cRows.length}.`
+    `Done. destinations=${dRows.length}, nearby_destinations=${nRows.length}, city_places=${cRows.length}, long_trip_templates=${ltRows.length}.`
   );
 }
 

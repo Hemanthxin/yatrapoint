@@ -18,6 +18,7 @@ import {
   FileText,
   AlertTriangle,
   Trash2,
+  History,
   type LucideIcon,
 } from "lucide-react";
 
@@ -202,6 +203,15 @@ export function SettingsClient({ initial }: { initial: Initial }) {
           >
             <span className="flex items-center gap-2">
               <Bookmark className="h-4 w-4 text-slate-400" /> Your travel places
+            </span>
+            <ArrowRight className="h-4 w-4 text-slate-400" />
+          </Link>
+          <Link
+            href="/trip-history"
+            className="flex items-center justify-between py-3 text-sm font-semibold text-slate-800"
+          >
+            <span className="flex items-center gap-2">
+              <History className="h-4 w-4 text-slate-400" /> Trip history
             </span>
             <ArrowRight className="h-4 w-4 text-slate-400" />
           </Link>

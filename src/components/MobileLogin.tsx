@@ -76,6 +76,17 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
   const [googleError, setGoogleError] = useState<string | null>(null);
   const googleBtnRef = useRef<HTMLDivElement>(null);
 
+  // If Google's script never loads (network block, ad blocker, offline) don't
+  // leave the user staring at "Loading Google…" forever — time out and show
+  // a message instead.
+  useEffect(() => {
+    if (!googleClientId || gisLoaded) return;
+    const timer = setTimeout(() => {
+      setGoogleError((prev) => prev ?? "Google sign-in isn't available right now — use your phone number instead.");
+    }, 7000);
+    return () => clearTimeout(timer);
+  }, [googleClientId, gisLoaded]);
+
   function switchMode(m: Mode) {
     setMode(m);
     setError(null);
@@ -372,9 +383,10 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
               src="https://accounts.google.com/gsi/client"
               strategy="afterInteractive"
               onLoad={() => setGisLoaded(true)}
+              onError={() => setGoogleError("Couldn't load Google sign-in — use your phone number instead.")}
             />
             <div ref={googleBtnRef} className="flex w-full justify-center" aria-label="Continue with Google" />
-            {!gisLoaded && <p className="mt-2 text-center text-xs text-slate-400">Loading Google…</p>}
+            {!gisLoaded && !googleError && <p className="mt-2 text-center text-xs text-slate-400">Loading Google…</p>}
             {googleError && <p className="mt-2 text-center text-xs text-rose-500">{googleError}</p>}
           </>
         )}

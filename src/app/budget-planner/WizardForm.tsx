@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import {
   User,
@@ -16,7 +17,7 @@ import {
   ArrowRight,
   ArrowLeft,
   LocateFixed,
-  Map as MapIcon,
+  Route,
   Loader2,
   Wallet,
   Utensils,
@@ -25,7 +26,7 @@ import {
 import type { VehicleKind } from "@/lib/budget";
 import { PLACE_GROUPS, TRIP_GROUPS } from "@/lib/catalog/place-groups";
 import { geocodeArea } from "@/lib/actions/areas";
-import { AreaPicker, EMPTY_AREA, type AreaSelection } from "./AreaPicker";
+import { EMPTY_AREA, type AreaSelection } from "./AreaPicker";
 import { LivePlan, type LivePlanProps } from "./LivePlan";
 import { PersonalFinanceIllustration } from "@/components/illustrations";
 
@@ -428,13 +429,21 @@ export function WizardForm({ initial }: WizardFormProps) {
               </p>
               <div className="grid gap-2 sm:grid-cols-2">
                 <ModeCard active={planMode === "around"} onClick={() => setPlanMode("around")} icon={<LocateFixed className="h-4 w-4" />} title="Around me" desc="Use my live location and travel within a chosen distance." />
-                <ModeCard active={planMode === "area"} onClick={() => setPlanMode("area")} icon={<MapIcon className="h-4 w-4" />} title="Choose an area" desc="Pick a state, district or taluk anywhere in India." />
+                <Link
+                  href="/budget-planner/long-trips"
+                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50/40 active:scale-[0.99]"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white">
+                    <Route className="h-4 w-4" />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-bold text-slate-900">Long trips from Bangalore</span>
+                    <span className="block text-xs text-slate-500">
+                      Ready-made multi-day itineraries into Karnataka, Tamil Nadu, Kerala, Andhra Pradesh & Maharashtra.
+                    </span>
+                  </span>
+                </Link>
               </div>
-              {planMode === "area" && (
-                <div className="mt-4">
-                  <AreaPicker value={area} onChange={setArea} />
-                </div>
-              )}
             </div>
 
             <div>
