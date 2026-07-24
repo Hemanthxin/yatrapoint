@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { PlaceImage } from "./PlaceImage";
+import { Reveal } from "./Reveal";
 
 interface SearchResultCardProps {
   href: string;
@@ -28,7 +29,7 @@ export function SearchResultCard({
   badge,
 }: SearchResultCardProps) {
   return (
-    <article className="card card-hover animate-fadeIn group flex flex-col overflow-hidden">
+    <Reveal as="article" className="card card-hover group flex flex-col overflow-hidden">
       <Link href={href} className="relative block aspect-[4/3] w-full overflow-hidden">
         <PlaceImage
           name={name}
@@ -54,6 +55,6 @@ export function SearchResultCard({
       <div className="flex flex-1 flex-col gap-2.5 p-3">
         <p className="line-clamp-2 flex-1 text-sm text-slate-600">{shortDescription}</p>
       </div>
-    </article>
+    </Reveal>
   );
 }

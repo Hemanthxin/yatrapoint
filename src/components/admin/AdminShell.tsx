@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { signOutAction } from "@/lib/actions/auth";
+import { Reveal } from "@/components/app/Reveal";
 
 interface NavItem {
   href: string;
@@ -158,7 +159,7 @@ export function AdminShell({ adminName, adminEmail, children }: AdminShellProps)
           </span>
         </header>
 
-        <main className="mx-auto max-w-7xl animate-fadeUp px-4 py-6 pb-32 md:px-6 md:py-8 lg:pb-10">{children}</main>
+        <Reveal as="main" className="mx-auto max-w-7xl px-4 py-6 pb-32 md:px-6 md:py-8 lg:pb-10" amount={0}>{children}</Reveal>
       </div>
 
       {/* Floating mobile dock */}

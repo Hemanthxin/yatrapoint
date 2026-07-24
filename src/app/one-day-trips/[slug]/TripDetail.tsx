@@ -33,6 +33,7 @@ import {
 } from "@/lib/catalog/categories";
 import type { NearbyDestination } from "@/lib/db/schema";
 import { placeDirectionsUrl } from "@/lib/maps";
+import { Reveal } from "@/components/app/Reveal";
 
 // Leaflet uses window — must be client-only.
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -157,7 +158,7 @@ export function TripDetail({ trip }: TripDetailProps) {
   const highlights = trip.highlights?.split(",").filter(Boolean) ?? [];
 
   return (
-    <div className="mt-4 animate-fadeUp">
+    <Reveal className="mt-4">
       {/* Hero — full-bleed on mobile */}
       <section className="bleed overflow-hidden rounded-none shadow-lg shadow-emerald-500/10 md:rounded-3xl md:border md:border-slate-200">
         <div
@@ -367,7 +368,7 @@ export function TripDetail({ trip }: TripDetailProps) {
           </a>
         </aside>
       </div>
-    </div>
+    </Reveal>
   );
 }
 

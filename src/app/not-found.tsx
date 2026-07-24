@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Home } from "lucide-react";
 import { PageNotFoundIllustration } from "@/components/illustrations";
+import { Reveal } from "@/components/app/Reveal";
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[color:var(--surface)] p-6">
-      <div className="animate-fadeUp mx-auto max-w-md text-center">
+      <Reveal className="mx-auto max-w-md text-center">
         <PageNotFoundIllustration className="mx-auto h-64 w-64" />
         <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900">
           Page not found
@@ -19,7 +20,7 @@ export default function NotFound() {
         >
           <Home className="h-4 w-4" /> Back to dashboard
         </Link>
-      </div>
+      </Reveal>
     </div>
   );
 }

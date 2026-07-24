@@ -29,6 +29,7 @@ import { geocodeArea } from "@/lib/actions/areas";
 import { EMPTY_AREA, type AreaSelection } from "./AreaPicker";
 import { LivePlan, type LivePlanProps } from "./LivePlan";
 import { PersonalFinanceIllustration } from "@/components/illustrations";
+import { Reveal } from "@/components/app/Reveal";
 
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
@@ -364,7 +365,7 @@ export function WizardForm({ initial }: WizardFormProps) {
 
   return (
     <>
-    <form onSubmit={onSubmit} className="animate-fadeUp mx-auto max-w-3xl space-y-5">
+    <Reveal as="form" onSubmit={onSubmit} className="mx-auto max-w-3xl space-y-5">
       {/* Compact header — desktop only; mobile uses the page hero above. */}
       <div className="hidden items-center gap-3 lg:flex">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-500/30">
@@ -707,7 +708,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           </button>
         )}
       </div>
-    </form>
+    </Reveal>
 
     {snapshot && <LivePlan key={planKey} {...snapshot} />}
     </>

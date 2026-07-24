@@ -12,6 +12,7 @@ import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { EmptyState } from "@/components/app/EmptyState";
 import { EmptyCartIllustration } from "@/components/illustrations";
+import { Reveal } from "@/components/app/Reveal";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -109,7 +110,7 @@ export function CartPlanner() {
       {!loading && stops && stops.length > 0 && (
         <>
           {/* Mobile (< lg): order-summary strip */}
-          <div className="animate-fadeUp flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:hidden">
+          <Reveal className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:hidden">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
               <ShoppingBag className="h-5 w-5" />
             </span>
@@ -122,10 +123,10 @@ export function CartPlanner() {
             <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
               Ready
             </span>
-          </div>
+          </Reveal>
 
           {/* Route map */}
-          <section className="animate-fadeUp">
+          <Reveal as="section">
             {/* Desktop (≥ lg): header row with inline CTA — unchanged */}
             <div className="mb-3 hidden flex-wrap items-center justify-between gap-2 lg:flex">
               <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Your trip route</h2>
@@ -151,7 +152,7 @@ export function CartPlanner() {
             <p className="mt-2 px-1 text-xs text-slate-500 lg:px-0">
               Dotted arcs connect your saved festivals & places in order. The green pin is your location.
             </p>
-          </section>
+          </Reveal>
 
           {/* Stop list */}
           <section className="space-y-2">
@@ -159,9 +160,10 @@ export function CartPlanner() {
               Saved stops
             </h3>
             {stops.map((s, i) => (
-              <div
+              <Reveal
                 key={s.id}
-                className="card-hover animate-fadeUp flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm"
+                delay={Math.min(i, 10) * 0.05}
+                className="card-hover flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm"
               >
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                   {i + 1}
@@ -188,7 +190,7 @@ export function CartPlanner() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
-              </div>
+              </Reveal>
             ))}
           </section>
         </>
@@ -202,7 +204,7 @@ export function CartPlanner() {
 
       {/* Estimated budget for the selected places */}
       {!loading && budgetStops.length > 0 && (
-        <section className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <Reveal as="section" className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
               <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
@@ -277,7 +279,7 @@ export function CartPlanner() {
               ? ` (festivals & unpriced stops not included)`
               : ""}. Excludes intercity travel between places — get an exact multi-stop cost with routes below.
           </p>
-        </section>
+        </Reveal>
       )}
 
       {/* Also plan the budget for these */}

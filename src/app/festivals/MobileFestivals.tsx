@@ -2,6 +2,7 @@ import { CalendarClock, MapPin, Sparkles, Clock } from "lucide-react";
 
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { formatFestivalDate, daysUntil, type FestivalOccurrence } from "@/lib/festivals";
+import { Reveal } from "@/components/app/Reveal";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -45,7 +46,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
   return (
     <div className="space-y-6 pb-4">
       {/* Bold header */}
-      <header className="animate-fadeUp">
+      <Reveal as="header">
         <div className="flex items-center gap-3">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
             <CalendarClock className="h-6 w-6" />
@@ -57,11 +58,11 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
             </h1>
           </div>
         </div>
-      </header>
+      </Reveal>
 
       {/* This month rail */}
       {thisMonth.length > 0 && (
-        <section className="animate-fadeUp">
+        <Reveal as="section">
           <div className="mb-3 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4 text-emerald-600" />
             <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Coming up next</h2>
@@ -100,11 +101,11 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
               );
             })}
           </div>
-        </section>
+        </Reveal>
       )}
 
       {/* Full festival list — large cards */}
-      <section className="animate-fadeUp">
+      <Reveal as="section">
         <h2 className="mb-3 text-lg font-extrabold tracking-tight text-slate-900">All festivals</h2>
         <div className="space-y-4">
           {festivals.map((f, i) => {
@@ -112,10 +113,10 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
             const cd = countdown(f.nextISO);
             const isNext = nextUpcomingName === f.name;
             return (
-              <div
+              <Reveal
                 key={f.name}
-                style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}
-                className={`animate-fadeUp overflow-hidden rounded-3xl border bg-white shadow-sm ${
+                delay={Math.min(i, 10) * 0.05}
+                className={`overflow-hidden rounded-3xl border bg-white shadow-sm ${
                   isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
                 }`}
               >
@@ -178,11 +179,11 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
                     />
                   </div>
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>
-      </section>
+      </Reveal>
     </div>
   );
 }

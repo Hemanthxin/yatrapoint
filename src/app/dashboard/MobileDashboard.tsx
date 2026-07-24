@@ -14,6 +14,7 @@ import { PlaceImage } from "@/components/app/PlaceImage";
 import { WeatherCard } from "@/components/app/dashboard/WeatherCard";
 import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { CityPlace, Destination } from "@/lib/db/schema";
+import { Reveal } from "@/components/app/Reveal";
 
 interface Props {
   firstName: string;
@@ -32,22 +33,22 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
   return (
     <div className="space-y-6 pb-4">
       {/* Greeting (search lives in the top bar) */}
-      <div className="animate-fadeUp">
+      <Reveal amount={0}>
         <p className="flex items-center gap-1.5 text-[13px] font-bold text-[color:var(--highlight)]">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--highlight)]" />
           Namaste 🙏
         </p>
         <h1 className="text-3xl font-black tracking-tight text-slate-900">Hey {firstName}</h1>
         <p className="mt-0.5 text-[13px] font-medium text-slate-500">Where are we headed today?</p>
-      </div>
+      </Reveal>
 
       {/* Live weather for the traveller's location */}
-      <div className="animate-fadeUp">
+      <Reveal amount={0}>
         <WeatherCard />
-      </div>
+      </Reveal>
 
       {/* Category quick-access circles */}
-      <div className="animate-fadeUp">
+      <Reveal amount={0}>
         <div className="no-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4">
           {CATEGORIES.map((c) => (
             <Link
@@ -66,7 +67,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
             </Link>
           ))}
         </div>
-      </div>
+      </Reveal>
 
       {/* Featured hero card */}
       {featured && (
@@ -200,7 +201,7 @@ function StatPill({ value, label }: { value: string; label: string }) {
 
 function Section({ title, href, children }: { title: string; href: string; children: React.ReactNode }) {
   return (
-    <section className="animate-fadeUp">
+    <Reveal as="section">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-black tracking-tight text-slate-900">
           <span aria-hidden className="h-4 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
@@ -211,6 +212,6 @@ function Section({ title, href, children }: { title: string; href: string; child
         </Link>
       </div>
       {children}
-    </section>
+    </Reveal>
   );
 }

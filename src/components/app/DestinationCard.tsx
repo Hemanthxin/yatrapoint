@@ -10,6 +10,7 @@ import {
 import { FavoriteButton } from "./FavoriteButton";
 import { AddToCartButton } from "./AddToCartButton";
 import { PlaceImage } from "./PlaceImage";
+import { Reveal } from "./Reveal";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -26,7 +27,7 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
     "bg-slate-100 text-slate-800";
 
   return (
-    <article className="card card-hover animate-fadeIn group flex flex-col overflow-hidden">
+    <Reveal as="article" className="card card-hover group flex flex-col overflow-hidden">
       <Link
         href={`/destinations/${destination.slug}`}
         className="relative block aspect-[4/3] w-full overflow-hidden"
@@ -95,6 +96,6 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
           }}
         />
       </div>
-    </article>
+    </Reveal>
   );
 }

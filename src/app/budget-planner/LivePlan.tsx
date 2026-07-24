@@ -32,6 +32,7 @@ import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
 import { groupsToOverpass } from "@/lib/catalog/place-groups";
+import { Reveal } from "@/components/app/Reveal";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -547,7 +548,7 @@ export function LivePlan({
   }
 
   return (
-    <div id="live-plan" className="mt-8 animate-fadeUp space-y-5 scroll-mt-20">
+    <Reveal id="live-plan" className="mt-8 space-y-5 scroll-mt-20" amount={0}>
       {/* Live location banner + regenerate */}
       <section className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
         <span className="flex items-center gap-2 text-sm font-medium text-emerald-900">
@@ -669,7 +670,7 @@ export function LivePlan({
 
           {/* Train guidance — board / alight stations */}
           {plan.trainInfo && (plan.trainInfo.board || plan.trainInfo.dest) && (
-            <section className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <Reveal as="section" className="card-hover overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
                 <span className="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-500/30">
                   <TrainFront className="h-4 w-4" />
@@ -683,7 +684,7 @@ export function LivePlan({
               <p className="mt-3 text-xs text-slate-500">
                 Head to your boarding station, then reach the destination station and continue to the stops below.
               </p>
-            </section>
+            </Reveal>
           )}
 
           {/* Primary CTA — navigate the whole trip in Google Maps */}
@@ -1022,7 +1023,7 @@ export function LivePlan({
           </section>
         </>
       )}
-    </div>
+    </Reveal>
   );
 }
 

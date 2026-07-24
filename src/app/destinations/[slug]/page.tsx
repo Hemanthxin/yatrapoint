@@ -18,6 +18,7 @@ import { FavoriteButton } from "@/components/app/FavoriteButton";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { DestinationDetail } from "./DestinationDetail";
+import { Reveal } from "@/components/app/Reveal";
 import {
   getDestinationBySlug,
   listDestinations,
@@ -65,7 +66,7 @@ export default async function DestinationPage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp">
+      <Reveal>
       <BackButton fallback="/destinations" label="All destinations" />
 
       <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
@@ -212,7 +213,7 @@ export default async function DestinationPage({ params }: PageProps) {
           </div>
         </section>
       )}
-      </div>
+      </Reveal>
     </AppShell>
   );
 }

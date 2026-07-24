@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { BackButton } from "@/components/app/BackButton";
 import { ResearchingIllustration } from "@/components/illustrations";
+import { Reveal } from "@/components/app/Reveal";
 
 // Shared layout for the static info pages (About / FAQ / Privacy / Terms) so
 // they all read as one system: a gradient icon header + a clean white card.
@@ -18,7 +19,7 @@ export function InfoPage({
   children: React.ReactNode;
 }) {
   return (
-    <div className="animate-fadeUp mx-auto max-w-3xl space-y-5">
+    <Reveal className="mx-auto max-w-3xl space-y-5">
       <BackButton fallback="/settings" />
       <header className="flex items-center gap-3">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
@@ -41,7 +42,7 @@ export function InfoPage({
           </p>
         )}
       </article>
-    </div>
+    </Reveal>
   );
 }
 

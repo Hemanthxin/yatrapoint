@@ -7,6 +7,7 @@ import { TripsTabs } from "@/components/app/TripsTabs";
 import { listNearby } from "@/lib/queries/nearby";
 import { TripsList } from "./TripsList";
 import { MobileTrips } from "./MobileTrips";
+import { Reveal } from "@/components/app/Reveal";
 
 export default async function OneDayTripsPage() {
   const session = await auth();
@@ -24,7 +25,7 @@ export default async function OneDayTripsPage() {
 
       {/* ── Desktop (≥ lg): the original list, unchanged ── */}
       <div className="hidden lg:block">
-      <div className="animate-fadeUp">
+      <Reveal>
       <TripsTabs />
       <header className="mb-4 flex items-start gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
@@ -42,7 +43,7 @@ export default async function OneDayTripsPage() {
 
       <LocationBanner />
       <TripsList trips={trips} />
-      </div>
+      </Reveal>
       </div>
     </AppShell>
   );

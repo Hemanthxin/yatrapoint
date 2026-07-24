@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { festivalsByNextOccurrence, formatFestivalDate, daysUntil } from "@/lib/festivals";
 import { MobileFestivals } from "./MobileFestivals";
+import { Reveal } from "@/components/app/Reveal";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -29,7 +30,7 @@ export default async function FestivalsPage() {
 
       {/* ── Desktop (≥ lg): the original festivals page, unchanged ── */}
       <div className="hidden lg:block">
-      <div className="animate-fadeUp">
+      <Reveal>
       <header className="mb-6 flex items-center gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <CalendarClock className="h-6 w-6" />
@@ -49,10 +50,10 @@ export default async function FestivalsPage() {
           const d = daysUntil(f.nextISO);
           const isNext = nextUpcoming?.name === f.name;
           return (
-            <div
+            <Reveal
               key={f.name}
-              style={{ animationDelay: `${Math.min(i, 10) * 60}ms` }}
-              className={`card-hover animate-fadeUp flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm ${
+              delay={Math.min(i, 10) * 0.06}
+              className={`card-hover flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm ${
                 isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
               }`}
             >
@@ -92,11 +93,11 @@ export default async function FestivalsPage() {
                   />
                 </div>
               </div>
-            </div>
+            </Reveal>
           );
         })}
       </div>
-      </div>
+      </Reveal>
       </div>
     </AppShell>
   );

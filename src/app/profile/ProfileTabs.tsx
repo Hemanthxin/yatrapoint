@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { Grid3x3, Briefcase, Heart } from "lucide-react";
+import { Reveal } from "@/components/app/Reveal";
 
 type TabKey = "posts" | "trips" | "saved";
 
@@ -55,11 +56,11 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
         })}
       </div>
 
-      <div className="animate-fadeUp">
+      <Reveal>
         {tab === "posts" && posts}
         {tab === "trips" && trips}
         {tab === "saved" && saved}
-      </div>
+      </Reveal>
     </section>
   );
 }

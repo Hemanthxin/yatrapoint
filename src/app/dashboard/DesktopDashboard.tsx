@@ -21,6 +21,7 @@ import { TrustStrip } from "@/components/app/dashboard/TrustStrip";
 import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import type { CityPlace } from "@/lib/db/schema";
+import { Reveal } from "@/components/app/Reveal";
 
 interface Props {
   stats: DashboardStats;
@@ -49,7 +50,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
       {/* MAIN COLUMN */}
       <div className="min-w-0 flex-1 space-y-6">
         {/* Featured hero */}
-        <section className="animate-fadeUp relative h-72 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-80">
+        <Reveal as="section" className="relative h-72 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-80" amount={0}>
           <Image
             src="/66242.jpg"
             alt="Scenic Karnataka temple and waterfalls"
@@ -81,7 +82,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
             </div>
           </div>
           <LeafSprig className="pointer-events-none absolute bottom-3 right-4 h-24 w-24 rotate-12 text-emerald-500/40" />
-        </section>
+        </Reveal>
 
         {/* Feature tiles */}
         <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -126,7 +127,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
 
       {/* WIDGETS — a right rail on xl; a full-width row below on lg/tablet so
           the weather + trips + budget are visible on every screen size. */}
-      <aside className="w-full animate-fadeUp xl:w-80 xl:shrink-0">
+      <Reveal as="aside" className="w-full xl:w-80 xl:shrink-0" amount={0}>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-1">
           <WeatherCard />
           <UpcomingTrips trips={upcoming} />
@@ -134,7 +135,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
             <BudgetOverview total={stats.totalBudget} />
           </div>
         </div>
-      </aside>
+      </Reveal>
     </div>
 
     {/* Trust strip — full width. */}

@@ -7,6 +7,7 @@ import type { Destination } from "@/lib/db/schema";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { formatINR } from "@/lib/format";
 import { saveTripPlan } from "@/lib/actions/trip-plans";
+import { Reveal } from "@/components/app/Reveal";
 
 interface PlannerResultsProps {
   matches: Destination[];
@@ -58,7 +59,7 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
   }
 
   return (
-    <section className="mt-8 animate-fadeUp">
+    <Reveal as="section" className="mt-8" amount={0}>
       <div className="mb-4 animate-pop overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         <div className="relative overflow-hidden bg-emerald-600 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.3),transparent_55%)]" />
@@ -172,7 +173,7 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
           )}
         </>
       )}
-    </section>
+    </Reveal>
   );
 }
 

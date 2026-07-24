@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 import { CATEGORIES } from "@/lib/catalog/categories";
+import { Reveal } from "@/components/app/Reveal";
 
 interface PlannerFormProps {
   initial: {
@@ -40,9 +41,10 @@ export function PlannerForm({ initial }: PlannerFormProps) {
   }
 
   return (
-    <form
+    <Reveal
+      as="form"
       onSubmit={onSubmit}
-      className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
     >
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Field label="Total budget (₹)" hint="Whole trip, all travellers">
@@ -110,7 +112,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
           Budgets are mid-range estimates (stay + food + local transport + sightseeing).
         </p>
       </div>
-    </form>
+    </Reveal>
   );
 }
 

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { MapPin } from "lucide-react";
 import { ProfileForm } from "./ProfileForm";
 import { ProfileTabs } from "./ProfileTabs";
+import { Reveal } from "@/components/app/Reveal";
 
 interface MobileProfileProps {
   form: {
@@ -36,7 +37,7 @@ export function MobileProfile({
   saved,
 }: MobileProfileProps) {
   return (
-    <div className="animate-fadeUp space-y-6">
+    <Reveal className="space-y-6">
       {/* Screen heading */}
       <div className="flex items-center gap-2 px-1">
         <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-emerald-700">
@@ -62,6 +63,6 @@ export function MobileProfile({
 
       {/* Posts / Trips / Saved tabbed content (reused ProfileTabs) */}
       <ProfileTabs counts={counts} posts={posts} trips={trips} saved={saved} />
-    </div>
+    </Reveal>
   );
 }

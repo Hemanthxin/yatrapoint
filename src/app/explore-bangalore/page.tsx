@@ -8,6 +8,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { TripsTabs } from "@/components/app/TripsTabs";
 import { ExploreClient } from "./ExploreClient";
+import { Reveal } from "@/components/app/Reveal";
 
 export default async function ExploreBangalorePage() {
   const session = await auth();
@@ -29,7 +30,7 @@ export default async function ExploreBangalorePage() {
       <TripsTabs />
 
       {/* Mobile (< lg): app-style hero header */}
-      <header className="lg:hidden mb-4 animate-fadeUp">
+      <Reveal as="header" className="lg:hidden mb-4">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
           <Sparkles className="h-3 w-3" /> Near you
         </span>
@@ -39,7 +40,7 @@ export default async function ExploreBangalorePage() {
         <p className="mt-0.5 text-xs font-medium text-slate-500">
           Places near you, sorted by distance.
         </p>
-      </header>
+      </Reveal>
 
       {/* Desktop (≥ lg): original header, unchanged */}
       <header className="mb-4 hidden items-start gap-3 lg:flex">

@@ -10,6 +10,7 @@ import { estimateLongTripBudget, defaultBudgetParams } from "@/lib/budget";
 import { formatINR } from "@/lib/format";
 import { multiStopDirectionsUrl } from "@/lib/maps";
 import { TripActions } from "./TripActions";
+import { Reveal } from "@/components/app/Reveal";
 
 interface PageProps {
   params: Promise<{ state: string; slug: string }>;
@@ -48,7 +49,7 @@ export default async function LongTripDetailPage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp mx-auto max-w-3xl">
+      <Reveal className="mx-auto max-w-3xl">
         <BackButton fallback={`/budget-planner/long-trips/${encodeURIComponent(state)}`} />
 
         <header className="mt-3">
@@ -133,7 +134,7 @@ export default async function LongTripDetailPage({ params }: PageProps) {
         <p className="mt-3 text-center text-xs text-slate-400">
           Distances, costs and timings are indicative — always reconfirm details before you travel.
         </p>
-      </div>
+      </Reveal>
     </AppShell>
   );
 }

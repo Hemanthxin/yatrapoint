@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { BackButton } from "@/components/app/BackButton";
 import { listTripHistory } from "@/lib/queries/trip-history";
 import { HistoryList } from "./HistoryList";
+import { Reveal } from "@/components/app/Reveal";
 
 export default async function TripHistoryPage() {
   const session = await auth();
@@ -15,7 +16,7 @@ export default async function TripHistoryPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp mx-auto max-w-2xl">
+      <Reveal className="mx-auto max-w-2xl">
         <BackButton fallback="/dashboard" />
         <header className="mt-3 flex items-center gap-3">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
@@ -32,7 +33,7 @@ export default async function TripHistoryPage() {
         </header>
 
         <HistoryList items={items} />
-      </div>
+      </Reveal>
     </AppShell>
   );
 }

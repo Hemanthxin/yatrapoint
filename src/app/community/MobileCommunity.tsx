@@ -3,6 +3,7 @@ import { Users, Sparkles } from "lucide-react";
 import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
 import { Feed } from "./Feed";
+import { Reveal } from "@/components/app/Reveal";
 
 interface Props {
   posts: CommunityPost[];
@@ -21,7 +22,7 @@ export function MobileCommunity({ posts, social, currentUserId, userName, userIm
   return (
     <div className="space-y-5 pb-4">
       {/* Welcoming hero header */}
-      <header className="animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <Reveal as="header" className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         <div className="relative bg-gradient-to-br from-emerald-500 to-green-600 p-5 text-white">
           <span aria-hidden className="pointer-events-none absolute -right-6 -top-8 h-28 w-28 rounded-full bg-white/10" />
           <span aria-hidden className="pointer-events-none absolute -bottom-10 -left-4 h-24 w-24 rounded-full bg-white/10" />
@@ -47,7 +48,7 @@ export function MobileCommunity({ posts, social, currentUserId, userName, userIm
             <span className="font-medium text-slate-400">— tap the composer below</span>
           </p>
         </div>
-      </header>
+      </Reveal>
 
       {/* Reused feed: composer trigger + tabs + post cards, logic untouched */}
       <Feed

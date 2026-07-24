@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { listPublishedPosts, getFeedSocial } from "@/lib/queries/community";
 import { Feed } from "./Feed";
 import { MobileCommunity } from "./MobileCommunity";
+import { Reveal } from "@/components/app/Reveal";
 
 export default async function CommunityPage() {
   const session = await auth();
@@ -30,7 +31,7 @@ export default async function CommunityPage() {
 
       {/* ── Desktop (≥ lg): the original community feed, unchanged ── */}
       <div className="hidden lg:block">
-      <header className="mb-6 flex items-start gap-3 animate-fadeUp">
+      <Reveal as="header" className="mb-6 flex items-start gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Users className="h-6 w-6" />
         </div>
@@ -42,7 +43,7 @@ export default async function CommunityPage() {
             Double-tap to love, save spots for later, and mark 🎒 Want to go / ✅ Been there — comment &amp; share too.
           </p>
         </div>
-      </header>
+      </Reveal>
 
       {/* Centered single-column feed with tabs */}
       <Feed

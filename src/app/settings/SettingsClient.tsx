@@ -24,6 +24,7 @@ import {
 
 import { updateProfile } from "@/lib/actions/profile";
 import { signOutAction, deleteAccountAction } from "@/lib/actions/auth";
+import { Reveal } from "@/components/app/Reveal";
 
 interface Initial {
   name: string;
@@ -73,7 +74,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
   }
 
   return (
-    <div className="animate-fadeUp mx-auto max-w-2xl space-y-6">
+    <Reveal className="mx-auto max-w-2xl space-y-6">
       <header className="flex items-center gap-3">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Cog className="h-6 w-6" />
@@ -292,7 +293,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
           </div>
         )}
       </section>
-    </div>
+    </Reveal>
   );
 }
 

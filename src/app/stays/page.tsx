@@ -8,6 +8,7 @@ import { listHotels, hotelCities } from "@/lib/queries/hotels";
 import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { Filters } from "./Filters";
+import { Reveal } from "@/components/app/Reveal";
 
 interface PageProps {
   searchParams: Promise<{
@@ -84,7 +85,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp">
+      <Reveal>
         <header className="mb-6 flex items-center gap-3">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
             <BedDouble className="h-6 w-6" />
@@ -130,10 +131,10 @@ export default async function StaysPage({ searchParams }: PageProps) {
               const chip = h.brand || h.propertyType;
 
               return (
-                <div
+                <Reveal
                   key={h.id}
-                  style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
-                  className="card-hover animate-fadeUp flex min-w-0 flex-col rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
+                  delay={Math.min(i, 12) * 0.04}
+                  className="card-hover flex min-w-0 flex-col rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-base font-extrabold tracking-tight text-slate-900">{h.name}</p>
@@ -222,7 +223,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                       </a>
                     )}
                   </div>
-                </div>
+                </Reveal>
               );
             })}
           </div>
@@ -250,7 +251,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
             })}
           </div>
         )}
-      </div>
+      </Reveal>
     </AppShell>
   );
 }

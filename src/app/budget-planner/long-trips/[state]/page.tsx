@@ -7,6 +7,7 @@ import { BackButton } from "@/components/app/BackButton";
 import { listLongTripsByState } from "@/lib/queries/long-trips";
 import { estimateLongTripBudget, defaultBudgetParams } from "@/lib/budget";
 import { formatINR } from "@/lib/format";
+import { Reveal } from "@/components/app/Reveal";
 
 interface PageProps {
   params: Promise<{ state: string }>;
@@ -24,7 +25,7 @@ export default async function LongTripsByStatePage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp mx-auto max-w-3xl">
+      <Reveal className="mx-auto max-w-3xl">
         <BackButton fallback="/budget-planner/long-trips" />
         <header className="mt-3">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
@@ -74,7 +75,7 @@ export default async function LongTripsByStatePage({ params }: PageProps) {
             );
           })}
         </div>
-      </div>
+      </Reveal>
     </AppShell>
   );
 }

@@ -7,6 +7,7 @@ import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 import type { CityPlace, Destination, NearbyDestination } from "@/lib/db/schema";
 import { Filters } from "./Filters";
 import { Pagination } from "./Pagination";
+import { Reveal } from "@/components/app/Reveal";
 
 interface Props {
   items: Destination[];
@@ -63,7 +64,7 @@ export function MobileDestinations({
   return (
     <div className="space-y-5 pb-4">
       {/* Bold header */}
-      <header className="animate-fadeUp">
+      <Reveal as="header">
         <p className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-500">
           <Compass className="h-4 w-4 text-emerald-600" /> Explore India
         </p>
@@ -74,10 +75,10 @@ export function MobileDestinations({
           <MapPin className="h-3.5 w-3.5 text-emerald-600" />
           {total} {total === 1 ? "place" : "places"} matching your filters
         </p>
-      </header>
+      </Reveal>
 
       {/* Category chip rail */}
-      <div className="animate-fadeUp no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
+      <Reveal className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
         <Link
           href={catHref(undefined)}
           className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
@@ -105,10 +106,10 @@ export function MobileDestinations({
             </Link>
           );
         })}
-      </div>
+      </Reveal>
 
       {/* Reused Filters — labelled for the mobile context */}
-      <div className="animate-fadeUp">
+      <Reveal>
         <p className="mb-2 flex items-center gap-1.5 text-[13px] font-bold text-slate-700">
           <SlidersHorizontal className="h-4 w-4 text-emerald-600" /> Refine
         </p>
@@ -124,11 +125,11 @@ export function MobileDestinations({
             maxBudget: maxBudget,
           }}
         />
-      </div>
+      </Reveal>
 
       {/* Feed of place cards */}
       {items.length === 0 && cityMatches.length === 0 && nearbyMatches.length === 0 ? (
-        <div className="animate-fadeUp mt-4 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
+        <Reveal className="mt-4 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-emerald-100 text-3xl">
             🧭
           </div>
@@ -142,7 +143,7 @@ export function MobileDestinations({
           >
             Reset filters
           </Link>
-        </div>
+        </Reveal>
       ) : (
         <>
           {items.length > 0 && (

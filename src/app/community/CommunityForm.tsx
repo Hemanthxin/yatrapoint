@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Camera, MapPin, Loader2, Star, X, Send } from "lucide-react";
 
 import { submitCommunityPost } from "@/lib/actions/community";
+import { Reveal } from "@/components/app/Reveal";
 
 export function CommunityForm({
   onPosted,
@@ -103,7 +104,7 @@ export function CommunityForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="animate-fadeUp rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <Reveal as="form" onSubmit={onSubmit} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
@@ -240,6 +241,6 @@ export function CommunityForm({
           Post
         </button>
       </div>
-    </form>
+    </Reveal>
   );
 }

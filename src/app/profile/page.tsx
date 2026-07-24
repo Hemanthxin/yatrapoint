@@ -14,6 +14,7 @@ import { listUserTripPlans } from "@/lib/queries/trip-plans";
 import { listFavoritedDestinations } from "@/lib/queries/destinations";
 import { listMyPosts, getFeedSocial } from "@/lib/queries/community";
 import { DestinationCard } from "@/components/app/DestinationCard";
+import { Reveal } from "@/components/app/Reveal";
 import { formatINR, formatDays } from "@/lib/format";
 import { categoryLabel } from "@/lib/catalog/categories";
 import { Calendar, MapPin, Users, Wallet } from "lucide-react";
@@ -163,7 +164,7 @@ export default async function ProfilePage() {
 
       {/* Desktop layout — unchanged. */}
       <div className="hidden lg:block">
-        <div className="animate-fadeUp">
+        <Reveal>
           <ProfileForm
             initial={{
               name: row.name ?? "",
@@ -183,7 +184,7 @@ export default async function ProfilePage() {
             trips={<SavedTrips dbPlans={dbPlansNode} hasDbPlans={plans.length > 0} />}
             saved={savedContent}
           />
-        </div>
+        </Reveal>
       </div>
     </AppShell>
   );

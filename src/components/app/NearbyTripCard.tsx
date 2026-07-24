@@ -10,6 +10,7 @@ import {
 } from "@/lib/catalog/categories";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
+import { Reveal } from "./Reveal";
 
 interface NearbyTripCardProps {
   destination: NearbyDestination;
@@ -29,7 +30,7 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
     60; // food / breaks
 
   return (
-    <article className="card-hover animate-fadeUp group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5">
+    <Reveal as="article" className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5">
       <Link href={`/one-day-trips/${destination.slug}`} className="relative block">
         <div
           className={`relative grid h-44 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient}`}
@@ -83,6 +84,6 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
           </span>
         </div>
       </div>
-    </article>
+    </Reveal>
   );
 }

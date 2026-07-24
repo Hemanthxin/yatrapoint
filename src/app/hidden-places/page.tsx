@@ -6,6 +6,7 @@ import { DestinationCard } from "@/components/app/DestinationCard";
 import { listDestinations, listFavoriteIds } from "@/lib/queries/destinations";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
+import { Reveal } from "@/components/app/Reveal";
 
 export default async function HiddenPlacesPage() {
   const session = await auth();
@@ -19,7 +20,7 @@ export default async function HiddenPlacesPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp">
+      <Reveal>
       <header className="mb-6 flex items-start gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Sparkles className="h-6 w-6" />
@@ -51,7 +52,7 @@ export default async function HiddenPlacesPage() {
           ))}
         </div>
       )}
-      </div>
+      </Reveal>
     </AppShell>
   );
 }

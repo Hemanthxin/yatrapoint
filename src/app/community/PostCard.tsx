@@ -19,6 +19,7 @@ import {
 
 import type { CommunityPost, CommunityComment } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
+import { Reveal } from "@/components/app/Reveal";
 import {
   setReaction,
   addComment,
@@ -313,9 +314,10 @@ export function PostCard({
   const initial = (post.authorName ?? "T").charAt(0).toUpperCase();
 
   return (
-    <article
-      style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-      className="card-hover animate-fadeUp overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+    <Reveal
+      as="article"
+      delay={Math.min(index, 8) * 0.06}
+      className="card-hover overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
@@ -615,6 +617,6 @@ export function PostCard({
           </div>
         </>
       )}
-    </article>
+    </Reveal>
   );
 }

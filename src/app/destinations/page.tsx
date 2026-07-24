@@ -20,6 +20,7 @@ import { MobileDestinations } from "./MobileDestinations";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
 import { Pagination } from "./Pagination";
+import { Reveal } from "@/components/app/Reveal";
 
 const PAGE_SIZE = 48;
 
@@ -133,7 +134,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           />
         }
         desktop={
-          <div className="animate-fadeUp">
+          <Reveal>
       <header className="mb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
           <span className="text-gradient">Tourist Places</span>
@@ -254,7 +255,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           )}
         </>
       )}
-          </div>
+          </Reveal>
         }
       />
     </AppShell>

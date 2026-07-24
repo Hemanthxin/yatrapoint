@@ -9,6 +9,7 @@ import { NearbyTripCard } from "@/components/app/NearbyTripCard";
 import { CATEGORIES } from "@/lib/catalog/categories";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
+import { Reveal } from "@/components/app/Reveal";
 
 interface MobileTripsProps {
   trips: NearbyDestination[];
@@ -46,7 +47,7 @@ export function MobileTrips({ trips }: MobileTripsProps) {
   return (
     <div className="space-y-5 pb-4">
       {/* Bold header */}
-      <div className="animate-fadeUp flex items-start gap-3">
+      <Reveal className="flex items-start gap-3" amount={0}>
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Compass className="h-6 w-6" />
         </span>
@@ -58,10 +59,10 @@ export function MobileTrips({ trips }: MobileTripsProps) {
             {filtered.length} picks near <span className="font-bold text-emerald-600">Bangalore</span>
           </p>
         </div>
-      </div>
+      </Reveal>
 
       {/* Distance quick-filter chip rail */}
-      <div className="animate-fadeUp">
+      <Reveal amount={0}>
         <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
           <SlidersHorizontal className="h-3.5 w-3.5" /> Distance
         </p>
@@ -76,10 +77,10 @@ export function MobileTrips({ trips }: MobileTripsProps) {
             </Chip>
           ))}
         </div>
-      </div>
+      </Reveal>
 
       {/* Category quick-filter chip rail */}
-      <div className="animate-fadeUp">
+      <Reveal amount={0}>
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
           Category
         </p>
@@ -97,7 +98,7 @@ export function MobileTrips({ trips }: MobileTripsProps) {
             </Chip>
           ))}
         </div>
-      </div>
+      </Reveal>
 
       {/* Single-column list of rich trip cards */}
       {filtered.length === 0 ? (

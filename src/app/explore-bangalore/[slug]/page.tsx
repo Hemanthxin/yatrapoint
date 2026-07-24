@@ -17,6 +17,7 @@ import { cityPlaces } from "@/lib/db/schema";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
+import { Reveal } from "@/components/app/Reveal";
 import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { formatMinutes } from "@/lib/geo";
@@ -42,7 +43,7 @@ export default async function CityPlacePage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="animate-fadeUp">
+      <Reveal>
       <BackButton fallback="/explore-bangalore" label="Back" />
       <LocationBanner />
 
@@ -143,7 +144,7 @@ export default async function CityPlacePage({ params }: PageProps) {
           centreLng={Number(place.longitude)}
         />
       </section>
-      </div>
+      </Reveal>
     </AppShell>
   );
 }
