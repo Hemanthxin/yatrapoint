@@ -50,6 +50,8 @@ async function run() {
           imageUrl: d.imageUrl,
           openingTimings: d.openingTimings,
           entryFees: d.entryFees,
+          entryFeesForeigner: d.entryFeesForeigner,
+          entryFeesChild: d.entryFeesChild,
           budgetPerDay: d.budgetPerDay,
           recommendedDays: d.recommendedDays,
           bestMonths: d.bestMonths,

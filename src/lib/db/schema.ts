@@ -100,7 +100,13 @@ export const destinations = pgTable("destinations", {
   shortDescription: varchar("short_description", { length: 220 }).notNull(),
   imageUrl: text("image_url"),
   openingTimings: varchar("opening_timings", { length: 120 }),
+  // Indian-adult rate — the figure the budget planner uses for cost calc.
   entryFees: integer("entry_fees").default(0).notNull(),
+  // Optional real-world tiers, filled in where researched; null means "not
+  // researched / same as the base rate", not "free". Never used for budget
+  // math — display only.
+  entryFeesForeigner: integer("entry_fees_foreigner"),
+  entryFeesChild: integer("entry_fees_child"),
   budgetPerDay: integer("budget_per_day").notNull(),
   recommendedDays: integer("recommended_days").default(2).notNull(),
   bestMonths: text("best_months"),

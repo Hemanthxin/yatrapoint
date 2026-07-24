@@ -146,6 +146,21 @@ export default async function DestinationPage({ params }: PageProps) {
               value={`${formatINR(tripCost)} pp`}
             />
           </div>
+
+          {(destination.entryFeesForeigner != null || destination.entryFeesChild != null) && (
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-slate-500">
+              <span className="inline-flex items-center gap-1">
+                <Wallet className="h-3.5 w-3.5 text-emerald-600" />
+                Entry fee — Indian: {destination.entryFees === 0 ? "Free" : formatINR(destination.entryFees)}
+              </span>
+              {destination.entryFeesForeigner != null && (
+                <span>Foreigner: {formatINR(destination.entryFeesForeigner)}</span>
+              )}
+              {destination.entryFeesChild != null && (
+                <span>Child: {formatINR(destination.entryFeesChild)}</span>
+              )}
+            </div>
+          )}
         </div>
       </article>
 

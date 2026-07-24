@@ -13,7 +13,7 @@ export const northeastIndiaDestinations: Omit<NewDestination, "id" | "createdAt"
     category: "pilgrimage",
     placeType: "Temple",
     shortDescription: "One of the 51 Shakti Peethas atop Nilachal Hill in Guwahati, revered centre of Tantric worship.",
-    description: "Kamakhya Temple, perched on Nilachal Hill overlooking the Brahmaputra, is among the holiest Shakti Peethas and the most important seat of Tantric and Shakta worship in India. The temple is famed for the annual Ambubachi Mela, drawing lakhs of pilgrims. Its distinctive beehive-shaped shikhara and sculpted panels reflect classic Assamese temple architecture.",
+    description: "Kamakhya Temple, perched on Nilachal Hill overlooking the Brahmaputra, is among the holiest Shakti Peethas and the most important seat of Tantric and Shakta worship in India. The temple is famed for the annual Ambubachi Mela, drawing lakhs of pilgrims. Its distinctive beehive-shaped shikhara and sculpted panels reflect classic Assamese temple architecture. General darshan queues can run long; a paid VIP darshan pass (bookable online in advance or at the counter) offers priority entry.",
     imageUrl: null,
     openingTimings: "5:30 AM - 1:00 PM, 2:30 PM - 5:30 PM",
     entryFees: 0,

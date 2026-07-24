@@ -43,6 +43,8 @@ export type PlaceFormState = {
   shortDescription: string;
   openingTimings: string;
   entryFees: string;
+  entryFeesForeigner: string;
+  entryFeesChild: string;
   budgetPerDay: string;
   recommendedDays: string;
   bestMonths: string;
@@ -62,6 +64,8 @@ const EMPTY: PlaceFormState = {
   shortDescription: "",
   openingTimings: "",
   entryFees: "0",
+  entryFeesForeigner: "",
+  entryFeesChild: "",
   budgetPerDay: "0",
   recommendedDays: "2",
   bestMonths: "",
@@ -175,6 +179,8 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
         ...form,
         imageUrl: photo,
         entryFees: Number(form.entryFees || 0),
+        entryFeesForeigner: form.entryFeesForeigner.trim() === "" ? null : Number(form.entryFeesForeigner),
+        entryFeesChild: form.entryFeesChild.trim() === "" ? null : Number(form.entryFeesChild),
         budgetPerDay: Number(form.budgetPerDay || 0),
         recommendedDays: Number(form.recommendedDays || 1),
         popularity: Number(form.popularity || 50),
@@ -247,8 +253,14 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
         <Field label="Opening timings">
           <input value={form.openingTimings} onChange={(e) => update("openingTimings", e.target.value)} className="input" placeholder="9:00 AM - 6:00 PM" />
         </Field>
-        <Field label="Entry fees (₹)">
+        <Field label="Entry fees — Indian (₹)">
           <input value={form.entryFees} onChange={(e) => update("entryFees", e.target.value)} className="input" inputMode="numeric" placeholder="0" />
+        </Field>
+        <Field label="Entry fees — Foreigner (₹, optional)">
+          <input value={form.entryFeesForeigner} onChange={(e) => update("entryFeesForeigner", e.target.value)} className="input" inputMode="numeric" placeholder="Same as Indian if blank" />
+        </Field>
+        <Field label="Entry fees — Child (₹, optional)">
+          <input value={form.entryFeesChild} onChange={(e) => update("entryFeesChild", e.target.value)} className="input" inputMode="numeric" placeholder="Leave blank if no child rate" />
         </Field>
         <Field label="Budget per day (₹)">
           <input value={form.budgetPerDay} onChange={(e) => update("budgetPerDay", e.target.value)} className="input" inputMode="numeric" placeholder="2500" />

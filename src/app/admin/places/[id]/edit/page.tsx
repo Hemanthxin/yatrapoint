@@ -30,6 +30,8 @@ export default async function EditPlacePage({ params }: PageProps) {
     shortDescription: place.shortDescription,
     openingTimings: place.openingTimings ?? "",
     entryFees: String(place.entryFees ?? 0),
+    entryFeesForeigner: place.entryFeesForeigner != null ? String(place.entryFeesForeigner) : "",
+    entryFeesChild: place.entryFeesChild != null ? String(place.entryFeesChild) : "",
     budgetPerDay: String(place.budgetPerDay ?? 0),
     recommendedDays: String(place.recommendedDays ?? 1),
     bestMonths: place.bestMonths ?? "",

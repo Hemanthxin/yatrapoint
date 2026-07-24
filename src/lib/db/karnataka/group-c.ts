@@ -357,6 +357,7 @@ export const karnatakaMalnadRegion: Omit<NewDestination, "id" | "createdAt">[] =
     imageUrl: null,
     openingTimings: "6:00 AM - 6:00 PM",
     entryFees: 20,
+    entryFeesForeigner: 100,
     budgetPerDay: 1400,
     recommendedDays: 1,
     bestMonths: "Aug,Sep,Oct,Nov,Dec",

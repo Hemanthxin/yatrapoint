@@ -878,7 +878,7 @@ export const bangaloreCityPlaces: Seed[] = [
     area: "Bidadi (Mysore highway)",
     shortDescription: "60+ rides amusement & water park — the city's biggest day-out.",
     description:
-      "Includes high-thrill rides (Recoil, Insanity), water rides (Lazy River, Vertical Fall) and a kids' zone. Open from 11; arrive at opening to ride the popular ones first. Lockers and rental swimwear on site.",
+      "Includes high-thrill rides (Recoil, Insanity), water rides (Lazy River, Vertical Fall) and a kids' zone. Open from 11; arrive at opening to ride the popular ones first. Lockers and rental swimwear on site. The ₹1,499 figure is the standard adult ticket; children (86-140 cm) pay a lower rate around ₹1,175-1,275, and booking a few days ahead online usually unlocks a discount over the gate price.",
     entryFeePerPerson: 1499,
     idealMinutesAtPlace: 480,
     openTime: "11:00",
