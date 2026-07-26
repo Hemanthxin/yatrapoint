@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -22,6 +21,8 @@ import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import type { CityPlace } from "@/lib/db/schema";
 import { Reveal } from "@/components/app/Reveal";
+import { ParallaxImage } from "@/components/app/ParallaxImage";
+import { CountUp } from "@/components/app/CountUp";
 
 interface Props {
   stats: DashboardStats;
@@ -38,10 +39,10 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
     { title: "Community", desc: "Share tips, hidden gems & more", href: "/community", tone, icon: <Users className="h-5 w-5" /> },
   ];
   const statCards = [
-    { label: "Trips Planned", value: stats.tripsPlanned.toString().padStart(2, "0"), href: "/one-day-trips", icon: <Briefcase className="h-5 w-5" />, tone },
-    { label: "Places Explored", value: stats.placesExplored.toString(), href: "/destinations", icon: <Binoculars className="h-5 w-5" />, tone },
-    { label: "Saved Places", value: stats.placesExplored.toString().padStart(2, "0"), href: "/destinations", icon: <Bookmark className="h-5 w-5" />, tone },
-    { label: "Total Saved", value: formatINR(stats.totalSaved), href: "/budget-planner", icon: <Heart className="h-5 w-5" />, tone },
+    { label: "Trips Planned", value: stats.tripsPlanned, format: (n: number) => Math.round(n).toString().padStart(2, "0"), href: "/one-day-trips", icon: <Briefcase className="h-5 w-5" />, tone },
+    { label: "Places Explored", value: stats.placesExplored, format: undefined as ((n: number) => string) | undefined, href: "/destinations", icon: <Binoculars className="h-5 w-5" />, tone },
+    { label: "Saved Places", value: stats.placesExplored, format: (n: number) => Math.round(n).toString().padStart(2, "0"), href: "/destinations", icon: <Bookmark className="h-5 w-5" />, tone },
+    { label: "Total Saved", value: stats.totalSaved, format: formatINR, href: "/budget-planner", icon: <Heart className="h-5 w-5" />, tone },
   ];
 
   return (
@@ -51,10 +52,9 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
       <div className="min-w-0 flex-1 space-y-6">
         {/* Featured hero */}
         <Reveal as="section" className="relative h-72 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-80" amount={0}>
-          <Image
+          <ParallaxImage
             src="/66242.jpg"
             alt="Scenic Karnataka temple and waterfalls"
-            fill
             priority
             sizes="(max-width: 1280px) 100vw, 60vw"
             className="object-cover"
@@ -111,7 +111,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
                 className="card-hover rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm"
               >
                 <div className={`mb-2 grid h-11 w-11 place-items-center rounded-xl ${s.tone}`}>{s.icon}</div>
-                <p className="truncate text-2xl font-black text-slate-900">{s.value}</p>
+                <CountUp value={s.value} format={s.format} className="block truncate text-2xl font-black text-slate-900" />
                 <p className="text-xs font-medium text-slate-500">{s.label}</p>
               </Link>
             ))}

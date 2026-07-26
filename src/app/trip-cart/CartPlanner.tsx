@@ -13,6 +13,7 @@ import { formatINR } from "@/lib/format";
 import { EmptyState } from "@/components/app/EmptyState";
 import { EmptyCartIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
+import { motion } from "framer-motion";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -160,14 +161,29 @@ export function CartPlanner() {
               Saved stops
             </h3>
             {stops.map((s, i) => (
-              <Reveal
+              <motion.div
                 key={s.id}
-                delay={Math.min(i, 10) * 0.05}
+                initial={{ opacity: 0, rotate: i % 2 === 0 ? -8 : 8, scale: 0.85, x: i % 2 === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, rotate: 0, scale: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{
+                  duration: 0.45,
+                  delay: Math.min(i, 10) * 0.09,
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
                 className="card-hover flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm"
               >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
+                <motion.span
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ delay: Math.min(i, 10) * 0.09 + 0.2, type: "spring", stiffness: 400, damping: 15 }}
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-md shadow-emerald-500/30"
+                >
                   {i + 1}
-                </span>
+                </motion.span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold text-slate-900">{s.name}</p>
                   <p className="flex items-center gap-1 truncate text-xs text-slate-500">
@@ -190,7 +206,7 @@ export function CartPlanner() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
-              </Reveal>
+              </motion.div>
             ))}
           </section>
         </>

@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { Grid3x3, Briefcase, Heart } from "lucide-react";
-import { Reveal } from "@/components/app/Reveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 type TabKey = "posts" | "trips" | "saved";
 
@@ -34,33 +34,48 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className={`flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-sm font-bold transition active:scale-95 ${
-                active
-                  ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+              className={`relative flex min-h-[44px] items-center justify-center gap-1.5 overflow-hidden rounded-xl px-2 py-2 text-sm font-bold transition active:scale-95 ${
+                active ? "text-white" : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               }`}
             >
-              {t.icon}
-              <span className="hidden sm:inline">{t.label}</span>
-              {t.count !== null && (
-                <span
-                  className={`rounded-full px-1.5 text-xs ${
-                    active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
-                  }`}
-                >
-                  {t.count}
-                </span>
+              {active && (
+                <motion.span
+                  layoutId="profile-tab-pill"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 shadow-md shadow-emerald-500/30"
+                  transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                />
               )}
+              <span className="relative flex items-center gap-1.5">
+                {t.icon}
+                <span className="hidden sm:inline">{t.label}</span>
+                {t.count !== null && (
+                  <span
+                    className={`rounded-full px-1.5 text-xs ${
+                      active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {t.count}
+                  </span>
+                )}
+              </span>
             </button>
           );
         })}
       </div>
 
-      <Reveal>
-        {tab === "posts" && posts}
-        {tab === "trips" && trips}
-        {tab === "saved" && saved}
-      </Reveal>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tab}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {tab === "posts" && posts}
+          {tab === "trips" && trips}
+          {tab === "saved" && saved}
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 }

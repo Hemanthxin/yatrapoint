@@ -30,6 +30,16 @@ import { EMPTY_AREA, type AreaSelection } from "./AreaPicker";
 import { LivePlan, type LivePlanProps } from "./LivePlan";
 import { PersonalFinanceIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+
+// Wizard step slide — direction-aware (custom prop) so Next slides in from
+// the right while Back slides in from the left, matching the way each
+// button visually points.
+const stepVariants: Variants = {
+  enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 48 : -48 }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -48 : 48 }),
+};
 
 const STEPS = ["Trip Details", "Preferences", "Travel Style", "Generate Plan"];
 const DAY_OPTIONS = ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"];
@@ -186,6 +196,9 @@ export function WizardForm({ initial }: WizardFormProps) {
 
   // Which wizard step is showing (0…3). The form is a true step-by-step flow.
   const [step, setStep] = useState(0);
+  // Slide direction for the step transition — 1 forward (Next), -1 backward
+  // (Back / jumping to an earlier step marker).
+  const [stepDir, setStepDir] = useState(1);
 
   const daysNum = days === "5+ Days" ? 5 : parseInt(days, 10) || 2;
   const travellersNum = travellers === "5+" ? 5 : parseInt(travellers, 10) || 2;
@@ -263,11 +276,13 @@ export function WizardForm({ initial }: WizardFormProps) {
       setAreaError("Pick at least one type of place to visit.");
       return;
     }
+    setStepDir(1);
     setStep((s) => Math.min(STEPS.length - 1, s + 1));
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   }
   function goBack() {
     setAreaError(null);
+    setStepDir(-1);
     setStep((s) => Math.max(0, s - 1));
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   }
@@ -394,7 +409,11 @@ export function WizardForm({ initial }: WizardFormProps) {
               <button
                 key={s}
                 type="button"
-                onClick={() => i <= step && setStep(i)}
+                onClick={() => {
+                  if (i > step) return;
+                  setStepDir(i < step ? -1 : 1);
+                  setStep(i);
+                }}
                 disabled={i > step}
                 className="flex flex-1 flex-col items-center gap-1.5 text-center disabled:cursor-default"
               >
@@ -419,7 +438,17 @@ export function WizardForm({ initial }: WizardFormProps) {
       </div>
 
       {/* Current step's fields */}
-      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <AnimatePresence mode="wait" custom={stepDir} initial={false}>
+      <motion.div
+        key={step}
+        custom={stepDir}
+        variants={stepVariants}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      >
         {/* ── Step 1 · Trip Details ── */}
         {step === 0 && (
           <div className="space-y-6">
@@ -664,6 +693,8 @@ export function WizardForm({ initial }: WizardFormProps) {
             </div>
           </div>
         )}
+      </motion.div>
+      </AnimatePresence>
       </div>
 
       {areaError && (

@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 // Hero background. Uses a portrait-oriented crop on small screens and a
 // wide landscape crop on md+ so the composition stays readable in both
@@ -35,14 +38,20 @@ export function BackgroundScene() {
       {/* Green brand wash from the bottom for warmth */}
       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/60 via-transparent to-green-900/40" />
 
-      {/* Static glow orbs for depth */}
-      <div
+      {/* Slow-drifting glow orbs — a living background instead of a static
+          image. Large, gentle, looping travel; never distracts from the
+          text sitting on top. */}
+      <motion.div
         aria-hidden
         className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-green-400/25 blur-3xl"
+        animate={{ x: [0, 40, -10, 0], y: [0, -30, 20, 0], scale: [1, 1.15, 0.95, 1] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
       />
-      <div
+      <motion.div
         aria-hidden
         className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl"
+        animate={{ x: [0, -35, 15, 0], y: [0, 25, -20, 0], scale: [1, 0.9, 1.1, 1] }}
+        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
 
       {/* Vignette to focus the center */}

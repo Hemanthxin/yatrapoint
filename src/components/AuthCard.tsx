@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
   User,
@@ -185,7 +186,12 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   }, [gisLoaded, googleClientId, router, mode]);
 
   return (
-    <div className="relative w-full max-w-md animate-fadeUp">
+    <motion.div
+      initial={{ opacity: 0, y: 28, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="relative w-full max-w-md"
+    >
       {/* Glow aura */}
       <div
         aria-hidden
@@ -210,87 +216,125 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
         </div>
 
         <div className="p-6 sm:p-7">
-          {/* Segmented mode toggle */}
+          {/* Segmented mode toggle — spring-physics sliding pill via layoutId,
+              instead of a CSS transition. */}
           <div className="relative mb-5 grid grid-cols-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
-            <span
-              aria-hidden
-              className={`absolute inset-y-1 w-1/2 rounded-xl bg-white shadow-sm transition-transform duration-300 ${
-                mode === "signup" ? "translate-x-[calc(100%-0.5rem)]" : "translate-x-1"
-              }`}
-              style={{ left: 0 }}
-            />
             <button
               type="button"
               onClick={() => switchMode("login")}
               className={`relative z-10 rounded-xl py-2 transition ${mode === "login" ? "text-emerald-700" : "text-slate-500"}`}
             >
-              Log in
+              {mode === "login" && (
+                <motion.span
+                  layoutId="auth-toggle-pill"
+                  className="absolute inset-0 rounded-xl bg-white shadow-sm"
+                  transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                />
+              )}
+              <span className="relative">Log in</span>
             </button>
             <button
               type="button"
               onClick={() => switchMode("signup")}
               className={`relative z-10 rounded-xl py-2 transition ${mode === "signup" ? "text-emerald-700" : "text-slate-500"}`}
             >
-              Sign up
+              {mode === "signup" && (
+                <motion.span
+                  layoutId="auth-toggle-pill"
+                  className="absolute inset-0 rounded-xl bg-white shadow-sm"
+                  transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                />
+              )}
+              <span className="relative">Sign up</span>
             </button>
           </div>
 
-          <form onSubmit={onSubmit} className="space-y-3.5">
-            {mode === "signup" && (
-              <Field icon={<User className="h-4 w-4" />}>
+          <motion.form
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+            onSubmit={onSubmit}
+            className="space-y-3.5"
+          >
+            <AnimatePresence mode="popLayout">
+              {mode === "signup" && (
+                <motion.div
+                  key="name-field"
+                  initial={{ opacity: 0, height: 0, y: -8 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -8 }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Field icon={<User className="h-4 w-4" />}>
+                    <input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Full name"
+                      autoComplete="name"
+                      className="w-full bg-transparent py-3 pl-10 pr-3 text-sm outline-none placeholder:text-slate-400"
+                    />
+                  </Field>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
+              <Field icon={<span className="text-sm font-semibold text-slate-400">+91</span>} pad="left-3.5">
                 <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Full name"
-                  autoComplete="name"
-                  className="w-full bg-transparent py-3 pl-10 pr-3 text-sm outline-none placeholder:text-slate-400"
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={(e) => setPhone(sanitizePhone(e.target.value))}
+                  placeholder="10-digit mobile number"
+                  autoComplete="tel"
+                  className="w-full bg-transparent py-3 pl-14 pr-3 text-sm outline-none placeholder:text-slate-400"
                 />
               </Field>
-            )}
+            </motion.div>
 
-            <Field icon={<span className="text-sm font-semibold text-slate-400">+91</span>} pad="left-3.5">
-              <input
-                type="tel"
-                inputMode="numeric"
-                value={phone}
-                onChange={(e) => setPhone(sanitizePhone(e.target.value))}
-                placeholder="10-digit mobile number"
-                autoComplete="tel"
-                className="w-full bg-transparent py-3 pl-14 pr-3 text-sm outline-none placeholder:text-slate-400"
-              />
-            </Field>
-
-            <Field icon={<Lock className="h-4 w-4" />}>
-              <input
-                type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
-                className="w-full bg-transparent py-3 pl-10 pr-11 text-sm outline-none placeholder:text-slate-400"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPw((v) => !v)}
-                className="absolute inset-y-0 right-0 grid w-11 place-items-center text-slate-400 transition hover:text-slate-600"
-                aria-label={showPw ? "Hide password" : "Show password"}
-              >
-                {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </Field>
-
-            {mode === "signup" && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
               <Field icon={<Lock className="h-4 w-4" />}>
                 <input
                   type={showPw ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm password"
-                  autoComplete="new-password"
-                  className="w-full bg-transparent py-3 pl-10 pr-3 text-sm outline-none placeholder:text-slate-400"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  className="w-full bg-transparent py-3 pl-10 pr-11 text-sm outline-none placeholder:text-slate-400"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPw((v) => !v)}
+                  className="absolute inset-y-0 right-0 grid w-11 place-items-center text-slate-400 transition hover:text-slate-600"
+                  aria-label={showPw ? "Hide password" : "Show password"}
+                >
+                  {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </Field>
-            )}
+            </motion.div>
+
+            <AnimatePresence mode="popLayout">
+              {mode === "signup" && (
+                <motion.div
+                  key="confirm-field"
+                  initial={{ opacity: 0, height: 0, y: -8 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -8 }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Field icon={<Lock className="h-4 w-4" />}>
+                    <input
+                      type={showPw ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm password"
+                      autoComplete="new-password"
+                      className="w-full bg-transparent py-3 pl-10 pr-3 text-sm outline-none placeholder:text-slate-400"
+                    />
+                  </Field>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {mode === "signup" && (
               <label className="flex items-start gap-2.5 text-xs text-slate-500">
@@ -339,7 +383,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
               </span>
               {!submitting && <ArrowRight className="relative h-4 w-4 transition group-hover:translate-x-0.5" />}
             </button>
-          </form>
+          </motion.form>
 
           {googleClientId && (
             <>
@@ -372,7 +416,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
       <Modal open={legalModal === "terms"} onClose={() => setLegalModal(null)} title="Terms of Service">
         <TermsOfServiceContent />
       </Modal>
-    </div>
+    </motion.div>
   );
 }
 

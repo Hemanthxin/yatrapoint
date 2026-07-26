@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 
+import { motion } from "framer-motion";
 import type { CommunityPost, CommunityComment } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
 import { Reveal } from "@/components/app/Reveal";
@@ -477,8 +478,25 @@ export function PostCard({
         <>
           {/* Instagram-style action bar */}
           <div className="flex items-center gap-1 px-2.5 pt-1.5">
-            <button onClick={() => react("love")} aria-label="Love" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
-              <Heart className={`h-6 w-6 ${loved ? "animate-pop fill-rose-500 text-rose-500" : "text-slate-800 hover:text-slate-500"}`} />
+            <button onClick={() => react("love")} aria-label="Love" className="relative grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
+              <motion.span
+                animate={loved ? { scale: [1, 1.5, 0.9, 1.1, 1] } : { scale: 1 }}
+                transition={{ duration: 0.55, ease: [0.34, 1.56, 0.64, 1] }}
+                className="grid place-items-center"
+              >
+                <Heart className={`h-6 w-6 ${loved ? "fill-rose-500 text-rose-500" : "text-slate-800 hover:text-slate-500"}`} />
+              </motion.span>
+              {loved && (
+                <motion.span
+                  key={`burst-${post.id}`}
+                  initial={{ opacity: 0.9, scale: 0.3 }}
+                  animate={{ opacity: 0, scale: 2.1 }}
+                  transition={{ duration: 0.55, ease: "easeOut" }}
+                  className="pointer-events-none absolute inset-0 grid place-items-center"
+                >
+                  <Heart className="h-6 w-6 fill-rose-400 text-rose-400" />
+                </motion.span>
+              )}
             </button>
             <button onClick={toggleComments} aria-label="Comment" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
               <MessageCircle className="h-6 w-6 text-slate-800 hover:text-slate-500" />

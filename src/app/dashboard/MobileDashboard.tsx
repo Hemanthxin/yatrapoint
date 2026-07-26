@@ -16,6 +16,7 @@ import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { CityPlace, Destination } from "@/lib/db/schema";
 import { Reveal } from "@/components/app/Reveal";
 import { AnimatedWords } from "@/components/app/AnimatedWords";
+import { CountUp } from "@/components/app/CountUp";
 
 interface Props {
   firstName: string;
@@ -121,9 +122,9 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
 
       {/* Stats strip */}
       <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
-        <StatPill value={stats.tripsPlanned.toString()} label="Trips planned" />
-        <StatPill value={stats.placesExplored.toString()} label="Places explored" />
-        <StatPill value={formatINR(stats.totalSaved)} label="Total saved" />
+        <StatPill value={stats.tripsPlanned} label="Trips planned" />
+        <StatPill value={stats.placesExplored} label="Places explored" />
+        <StatPill value={stats.totalSaved} label="Total saved" format={formatINR} />
       </div>
 
       {/* Near you — the curated places actually closest to the traveller */}
@@ -192,12 +193,20 @@ function QuickAction({ href, icon, title, sub }: { href: string; icon: React.Rea
   );
 }
 
-function StatPill({ value, label }: { value: string; label: string }) {
+function StatPill({
+  value,
+  label,
+  format,
+}: {
+  value: number;
+  label: string;
+  format?: (n: number) => string;
+}) {
   return (
     <div className="flex min-w-[7.5rem] shrink-0 items-center gap-2.5 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 shadow-sm">
       <span aria-hidden className="h-8 w-1 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
       <div>
-        <p className="text-lg font-black text-slate-900">{value}</p>
+        <CountUp value={value} format={format} className="block text-lg font-black text-slate-900" />
         <p className="text-[11px] font-medium text-slate-500">{label}</p>
       </div>
     </div>

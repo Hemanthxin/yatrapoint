@@ -18,7 +18,7 @@ const MOTION_TAGS = {
   ul: motion.ul,
 } as const;
 
-type Direction = "up" | "left" | "right";
+type Direction = "up" | "left" | "right" | "flip";
 
 interface RevealProps {
   children: ReactNode;
@@ -68,10 +68,12 @@ export function Reveal({
   const travel = x ?? DEFAULT_X;
   const initial =
     direction === "left"
-      ? { opacity: 0, x: -travel, y: 0, scale: 0.96 }
+      ? { opacity: 0, x: -travel, y: 0, rotateX: 0, scale: 0.96 }
       : direction === "right"
-        ? { opacity: 0, x: travel, y: 0, scale: 0.96 }
-        : { opacity: 0, x: 0, y, scale: 1 };
+        ? { opacity: 0, x: travel, y: 0, rotateX: 0, scale: 0.96 }
+        : direction === "flip"
+          ? { opacity: 0, x: 0, y: 0, rotateX: -100, scale: 1 }
+          : { opacity: 0, x: 0, y, rotateX: 0, scale: 1 };
 
   return (
     <MotionTag
@@ -79,13 +81,14 @@ export function Reveal({
       id={id}
       onSubmit={onSubmit}
       initial={initial}
-      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+      whileInView={{ opacity: 1, x: 0, y: 0, rotateX: 0, scale: 1 }}
       viewport={{ once: true, amount }}
       transition={{
-        duration: direction === "up" ? 0.5 : 0.65,
+        duration: direction === "up" ? 0.5 : direction === "flip" ? 0.55 : 0.65,
         delay,
         ease: [0.16, 1, 0.3, 1],
       }}
+      style={direction === "flip" ? { transformPerspective: 800, transformOrigin: "top" } : undefined}
     >
       {children}
     </MotionTag>

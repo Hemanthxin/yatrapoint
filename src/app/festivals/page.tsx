@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { festivalsByNextOccurrence, formatFestivalDate, daysUntil } from "@/lib/festivals";
 import { MobileFestivals } from "./MobileFestivals";
+import { motion } from "framer-motion";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
 
@@ -53,6 +54,7 @@ export default async function FestivalsPage() {
           return (
             <Reveal
               key={f.name}
+              direction="flip"
               className={`card-hover flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm ${
                 isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
               }`}
@@ -63,9 +65,13 @@ export default async function FestivalsPage() {
                   {formatFestivalDate(f.nextISO)}
                 </span>
                 {isNext && (
-                  <span className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/40">
+                  <motion.span
+                    animate={{ scale: [1, 1.06, 1] }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/40"
+                  >
                     Up next{d != null && d >= 0 ? ` · ${d === 0 ? "today" : d === 1 ? "tomorrow" : `${d} days`}` : ""}
-                  </span>
+                  </motion.span>
                 )}
               </div>
               <div className="flex min-w-0 flex-1 flex-col p-4">
