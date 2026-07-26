@@ -8,6 +8,7 @@ import type { CityPlace, Destination, NearbyDestination } from "@/lib/db/schema"
 import { Filters } from "./Filters";
 import { Pagination } from "./Pagination";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 
 interface Props {
   items: Destination[];
@@ -148,11 +149,11 @@ export function MobileDestinations({
         <>
           {items.length > 0 && (
             <>
-              <div className="grid grid-cols-2 gap-3">
+              <RevealGrid className="grid grid-cols-2 gap-3">
                 {items.map((d) => (
                   <DestinationCard key={d.id} destination={d} favored={favIds.has(d.id)} />
                 ))}
-              </div>
+              </RevealGrid>
               <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
             </>
           )}
@@ -162,7 +163,7 @@ export function MobileDestinations({
               <h2 className="mb-2 text-base font-bold text-slate-800">
                 In Bengaluru — restaurants, malls & more
               </h2>
-              <div className="grid grid-cols-2 gap-3">
+              <RevealGrid className="grid grid-cols-2 gap-3">
                 {cityMatches.map((c) => (
                   <SearchResultCard
                     key={c.id}
@@ -174,14 +175,14 @@ export function MobileDestinations({
                     badge={c.kind}
                   />
                 ))}
-              </div>
+              </RevealGrid>
             </section>
           )}
 
           {nearbyMatches.length > 0 && (
             <section className="mt-2">
               <h2 className="mb-2 text-base font-bold text-slate-800">One-day trips</h2>
-              <div className="grid grid-cols-2 gap-3">
+              <RevealGrid className="grid grid-cols-2 gap-3">
                 {nearbyMatches.map((n) => (
                   <SearchResultCard
                     key={n.id}
@@ -193,7 +194,7 @@ export function MobileDestinations({
                     badge="Nearby trip"
                   />
                 ))}
-              </div>
+              </RevealGrid>
             </section>
           )}
         </>

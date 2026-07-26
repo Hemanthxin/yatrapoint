@@ -9,6 +9,7 @@ import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { Filters } from "./Filters";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 
 interface PageProps {
   searchParams: Promise<{
@@ -119,8 +120,8 @@ export default async function StaysPage({ searchParams }: PageProps) {
             <p className="mt-1 text-sm text-slate-400">Try widening your price range or clearing filters.</p>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {data.rows.map((h, i) => {
+          <RevealGrid className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {data.rows.map((h) => {
               const stars = h.starRating != null ? Math.max(0, Math.min(5, Math.round(h.starRating))) : 0;
               const place = [h.area, h.city].filter(Boolean).join(", ");
               const hasGeo = Boolean(h.latitude && h.longitude);
@@ -133,7 +134,6 @@ export default async function StaysPage({ searchParams }: PageProps) {
               return (
                 <Reveal
                   key={h.id}
-                  delay={Math.min(i, 12) * 0.04}
                   className="card-hover flex min-w-0 flex-col rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
                 >
                   <div className="min-w-0">
@@ -226,7 +226,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
                 </Reveal>
               );
             })}
-          </div>
+          </RevealGrid>
         )}
 
         {/* Pagination */}

@@ -7,6 +7,7 @@ import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { festivalsByNextOccurrence, formatFestivalDate, daysUntil } from "@/lib/festivals";
 import { MobileFestivals } from "./MobileFestivals";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -45,14 +46,13 @@ export default async function FestivalsPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-        {FESTIVALS.map((f, i) => {
+      <RevealGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        {FESTIVALS.map((f) => {
           const d = daysUntil(f.nextISO);
           const isNext = nextUpcoming?.name === f.name;
           return (
             <Reveal
               key={f.name}
-              delay={Math.min(i, 10) * 0.06}
               className={`card-hover flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm ${
                 isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
               }`}
@@ -96,7 +96,7 @@ export default async function FestivalsPage() {
             </Reveal>
           );
         })}
-      </div>
+      </RevealGrid>
       </Reveal>
       </div>
     </AppShell>

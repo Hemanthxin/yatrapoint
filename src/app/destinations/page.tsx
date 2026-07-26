@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { SearchResultCard } from "@/components/app/SearchResultCard";
+import { RevealGrid } from "@/components/app/RevealGrid";
 import { Filters } from "./Filters";
 import {
   countDestinations,
@@ -199,7 +200,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         <>
           {items.length > 0 && (
             <>
-              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+              <RevealGrid className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
                 {items.map((d) => (
                   <DestinationCard
                     key={d.id}
@@ -207,7 +208,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
                     favored={favIds.has(d.id)}
                   />
                 ))}
-              </div>
+              </RevealGrid>
               <Pagination page={page} totalPages={totalPages} makeHref={pageHref} />
             </>
           )}
@@ -219,7 +220,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
               <h2 className="mb-3 text-lg font-bold text-slate-800">
                 In Bengaluru — restaurants, malls & more
               </h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+              <RevealGrid className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
                 {cityMatches.map((c) => (
                   <SearchResultCard
                     key={c.id}
@@ -231,14 +232,14 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
                     badge={c.kind}
                   />
                 ))}
-              </div>
+              </RevealGrid>
             </section>
           )}
 
           {nearbyMatches.length > 0 && (
             <section className="mt-8">
               <h2 className="mb-3 text-lg font-bold text-slate-800">One-day trips</h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+              <RevealGrid className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
                 {nearbyMatches.map((n) => (
                   <SearchResultCard
                     key={n.id}
@@ -250,7 +251,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
                     badge="Nearby trip"
                   />
                 ))}
-              </div>
+              </RevealGrid>
             </section>
           )}
         </>

@@ -10,6 +10,7 @@ import { CATEGORIES } from "@/lib/catalog/categories";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 
 interface MobileTripsProps {
   trips: NearbyDestination[];
@@ -108,7 +109,7 @@ export function MobileTrips({ trips }: MobileTripsProps) {
           description="Try removing one to see more trips."
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <RevealGrid className="grid grid-cols-1 gap-4">
           {filtered.map((d) => (
             <NearbyTripCard
               key={d.id}
@@ -116,7 +117,7 @@ export function MobileTrips({ trips }: MobileTripsProps) {
               userDistanceKm={d.userDistanceKm}
             />
           ))}
-        </div>
+        </RevealGrid>
       )}
     </div>
   );

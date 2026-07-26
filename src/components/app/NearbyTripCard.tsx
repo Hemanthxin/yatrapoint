@@ -15,9 +15,11 @@ import { Reveal } from "./Reveal";
 interface NearbyTripCardProps {
   destination: NearbyDestination;
   userDistanceKm: number;
+  direction?: "up" | "left" | "right";
+  delay?: number;
 }
 
-export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardProps) {
+export function NearbyTripCard({ destination, userDistanceKm, direction, delay }: NearbyTripCardProps) {
   const cat = CATEGORY_BY_SLUG[destination.category as CategorySlug];
   const gradient =
     CATEGORY_GRADIENT[destination.category as CategorySlug] ??
@@ -30,7 +32,12 @@ export function NearbyTripCard({ destination, userDistanceKm }: NearbyTripCardPr
     60; // food / breaks
 
   return (
-    <Reveal as="article" className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5">
+    <Reveal
+      as="article"
+      direction={direction}
+      delay={delay}
+      className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5"
+    >
       <Link href={`/one-day-trips/${destination.slug}`} className="relative block">
         <div
           className={`relative grid h-44 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient}`}

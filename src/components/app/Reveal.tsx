@@ -18,13 +18,20 @@ const MOTION_TAGS = {
   ul: motion.ul,
 } as const;
 
+type Direction = "up" | "left" | "right";
+
 interface RevealProps {
   children: ReactNode;
   className?: string;
   /** Extra delay in seconds — pass `index * 0.06` for staggered lists/grids. */
   delay?: number;
-  /** Distance (px) the content travels while fading in. */
+  /** Distance (px) the content travels while fading in (direction="up"). */
   y?: number;
+  /** Distance (px) the content travels while fading in (direction="left"/"right"). */
+  x?: number;
+  /** Which side the content enters from. "left"/"right" use a longer travel
+   *  distance and a light scale-in so the motion reads clearly. */
+  direction?: Direction;
   /** Render as a different element (e.g. "li", "article", "section"). */
   as?: Tag;
   /** Fraction of the element that must be visible before it reveals (0–1). */
@@ -34,21 +41,51 @@ interface RevealProps {
   id?: string;
 }
 
-// Scroll-triggered fade-up — the framer-motion replacement for the old
+const DEFAULT_X = 72;
+
+// Scroll-triggered reveal — the framer-motion replacement for the old
 // mount-only `.animate-fadeUp` CSS class. Animates once, the first time the
 // element scrolls into view, instead of firing for everything at page load
 // (which never showed any motion for content below the fold).
-export function Reveal({ children, className, delay = 0, y = 24, as = "div", amount = 0.2, onSubmit, id }: RevealProps) {
+//
+// direction="up" (default) is the original vertical fade — used for headers,
+// forms, single-column content. direction="left"/"right" is for grid cards:
+// a longer horizontal travel plus a subtle scale-in gives it real, visible
+// weight instead of the barely-there vertical nudge.
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  y = 24,
+  x,
+  direction = "up",
+  as = "div",
+  amount = 0.2,
+  onSubmit,
+  id,
+}: RevealProps) {
   const MotionTag = MOTION_TAGS[as];
+  const travel = x ?? DEFAULT_X;
+  const initial =
+    direction === "left"
+      ? { opacity: 0, x: -travel, y: 0, scale: 0.96 }
+      : direction === "right"
+        ? { opacity: 0, x: travel, y: 0, scale: 0.96 }
+        : { opacity: 0, x: 0, y, scale: 1 };
+
   return (
     <MotionTag
       className={className}
       id={id}
       onSubmit={onSubmit}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={initial}
+      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
       viewport={{ once: true, amount }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: direction === "up" ? 0.5 : 0.65,
+        delay,
+        ease: [0.16, 1, 0.3, 1],
+      }}
     >
       {children}
     </MotionTag>

@@ -7,6 +7,7 @@ import { listDestinations, listFavoriteIds } from "@/lib/queries/destinations";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 
 export default async function HiddenPlacesPage() {
   const session = await auth();
@@ -42,7 +43,7 @@ export default async function HiddenPlacesPage() {
           description="Check back soon — we curate these monthly."
         />
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
+        <RevealGrid className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
           {items.map((d) => (
             <DestinationCard
               key={d.id}
@@ -50,7 +51,7 @@ export default async function HiddenPlacesPage() {
               favored={favIds.has(d.id)}
             />
           ))}
-        </div>
+        </RevealGrid>
       )}
       </Reveal>
     </AppShell>

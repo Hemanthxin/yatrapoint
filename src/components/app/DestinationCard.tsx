@@ -15,9 +15,11 @@ import { Reveal } from "./Reveal";
 interface DestinationCardProps {
   destination: Destination;
   favored?: boolean;
+  direction?: "up" | "left" | "right";
+  delay?: number;
 }
 
-export function DestinationCard({ destination, favored }: DestinationCardProps) {
+export function DestinationCard({ destination, favored, direction, delay }: DestinationCardProps) {
   const cat = CATEGORY_BY_SLUG[destination.category as CategorySlug];
   const gradient =
     CATEGORY_GRADIENT[destination.category as CategorySlug] ??
@@ -27,7 +29,12 @@ export function DestinationCard({ destination, favored }: DestinationCardProps) 
     "bg-slate-100 text-slate-800";
 
   return (
-    <Reveal as="article" className="card card-hover group flex flex-col overflow-hidden">
+    <Reveal
+      as="article"
+      direction={direction}
+      delay={delay}
+      className="card card-hover group flex flex-col overflow-hidden"
+    >
       <Link
         href={`/destinations/${destination.slug}`}
         className="relative block aspect-[4/3] w-full overflow-hidden"

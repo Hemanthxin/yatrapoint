@@ -12,6 +12,8 @@ interface SearchResultCardProps {
   emoji?: string;
   gradient?: string;
   badge: string;
+  direction?: "up" | "left" | "right";
+  delay?: number;
 }
 
 // Lightweight read-only preview card for cross-table search results (city
@@ -27,9 +29,16 @@ export function SearchResultCard({
   emoji = "📍",
   gradient = "from-slate-400 to-slate-600",
   badge,
+  direction,
+  delay,
 }: SearchResultCardProps) {
   return (
-    <Reveal as="article" className="card card-hover group flex flex-col overflow-hidden">
+    <Reveal
+      as="article"
+      direction={direction}
+      delay={delay}
+      className="card card-hover group flex flex-col overflow-hidden"
+    >
       <Link href={href} className="relative block aspect-[4/3] w-full overflow-hidden">
         <PlaceImage
           name={name}

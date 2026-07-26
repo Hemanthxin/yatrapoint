@@ -3,6 +3,7 @@ import { CalendarClock, MapPin, Sparkles, Clock } from "lucide-react";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { formatFestivalDate, daysUntil, type FestivalOccurrence } from "@/lib/festivals";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -107,15 +108,14 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
       {/* Full festival list — large cards */}
       <Reveal as="section" amount={0}>
         <h2 className="mb-3 text-lg font-extrabold tracking-tight text-slate-900">All festivals</h2>
-        <div className="space-y-4">
-          {festivals.map((f, i) => {
+        <RevealGrid className="space-y-4">
+          {festivals.map((f) => {
             const badge = dateBadge(f.nextISO, f.dateLabel);
             const cd = countdown(f.nextISO);
             const isNext = nextUpcomingName === f.name;
             return (
               <Reveal
                 key={f.name}
-                delay={Math.min(i, 10) * 0.05}
                 className={`overflow-hidden rounded-3xl border bg-white shadow-sm ${
                   isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
                 }`}
@@ -182,7 +182,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
               </Reveal>
             );
           })}
-        </div>
+        </RevealGrid>
       </Reveal>
     </div>
   );
