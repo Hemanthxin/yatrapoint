@@ -22,6 +22,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useLocation } from "@/components/app/LocationContext";
+import { AnimatedWords } from "@/components/app/AnimatedWords";
 
 interface Weather {
   temp: number;
@@ -143,10 +144,11 @@ export function WeatherCard() {
             <div className="mt-3 flex items-center justify-between">
               <div>
                 <p className="text-5xl font-black leading-none text-slate-900">
-                  {weather.temp}
-                  <span className="align-top text-2xl">°C</span>
+                  <AnimatedWords as="span" text={`${weather.temp}°C`} stagger={0.06} />
                 </p>
-                <p className="mt-1.5 text-sm font-bold text-slate-800">{label}</p>
+                <p className="mt-1.5 text-sm font-bold text-slate-800">
+                  <AnimatedWords text={label} stagger={0.06} delay={0.1} />
+                </p>
                 <p className="text-xs text-slate-500">Feels like {weather.feels}°</p>
               </div>
               <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-white/70 text-emerald-600 shadow-inner ring-1 ring-white/60">

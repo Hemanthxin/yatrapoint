@@ -15,6 +15,7 @@ import { WeatherCard } from "@/components/app/dashboard/WeatherCard";
 import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { CityPlace, Destination } from "@/lib/db/schema";
 import { Reveal } from "@/components/app/Reveal";
+import { AnimatedWords } from "@/components/app/AnimatedWords";
 
 interface Props {
   firstName: string;
@@ -38,7 +39,11 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--highlight)]" />
           Namaste 🙏
         </p>
-        <h1 className="text-3xl font-black tracking-tight text-slate-900">Hey {firstName}</h1>
+        <AnimatedWords
+          as="h1"
+          text={`Hey ${firstName}`}
+          className="text-3xl font-black tracking-tight text-slate-900"
+        />
         <p className="mt-0.5 text-[13px] font-medium text-slate-500">Where are we headed today?</p>
       </Reveal>
 
