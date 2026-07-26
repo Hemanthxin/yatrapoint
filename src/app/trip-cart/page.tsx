@@ -13,7 +13,7 @@ export default async function TripCartPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Reveal>
+      <Reveal amount={0}>
         {/* Mobile (< lg): app-style hero header */}
         <header className="lg:hidden mb-5">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">

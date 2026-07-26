@@ -85,7 +85,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Reveal>
+      <Reveal amount={0}>
         <header className="mb-6 flex items-center gap-3">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
             <BedDouble className="h-6 w-6" />

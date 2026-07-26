@@ -164,7 +164,7 @@ export default async function ProfilePage() {
 
       {/* Desktop layout — unchanged. */}
       <div className="hidden lg:block">
-        <Reveal>
+        <Reveal amount={0}>
           <ProfileForm
             initial={{
               name: row.name ?? "",

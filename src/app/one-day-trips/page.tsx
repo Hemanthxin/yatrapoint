@@ -25,7 +25,7 @@ export default async function OneDayTripsPage() {
 
       {/* ── Desktop (≥ lg): the original list, unchanged ── */}
       <div className="hidden lg:block">
-      <Reveal>
+      <Reveal amount={0}>
       <TripsTabs />
       <header className="mb-4 flex items-start gap-3">
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">

@@ -66,7 +66,7 @@ export default async function DestinationPage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Reveal>
+      <Reveal amount={0}>
       <BackButton fallback="/destinations" label="All destinations" />
 
       <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white">

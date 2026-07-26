@@ -158,7 +158,7 @@ export function TripDetail({ trip }: TripDetailProps) {
   const highlights = trip.highlights?.split(",").filter(Boolean) ?? [];
 
   return (
-    <Reveal className="mt-4">
+    <Reveal className="mt-4" amount={0}>
       {/* Hero — full-bleed on mobile */}
       <section className="bleed overflow-hidden rounded-none shadow-lg shadow-emerald-500/10 md:rounded-3xl md:border md:border-slate-200">
         <div

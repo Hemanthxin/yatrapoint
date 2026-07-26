@@ -64,7 +64,7 @@ export function MobileDestinations({
   return (
     <div className="space-y-5 pb-4">
       {/* Bold header */}
-      <Reveal as="header">
+      <Reveal as="header" amount={0}>
         <p className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-500">
           <Compass className="h-4 w-4 text-emerald-600" /> Explore India
         </p>
@@ -78,7 +78,7 @@ export function MobileDestinations({
       </Reveal>
 
       {/* Category chip rail */}
-      <Reveal className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
+      <Reveal className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4" amount={0}>
         <Link
           href={catHref(undefined)}
           className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
@@ -109,7 +109,7 @@ export function MobileDestinations({
       </Reveal>
 
       {/* Reused Filters — labelled for the mobile context */}
-      <Reveal>
+      <Reveal amount={0}>
         <p className="mb-2 flex items-center gap-1.5 text-[13px] font-bold text-slate-700">
           <SlidersHorizontal className="h-4 w-4 text-emerald-600" /> Refine
         </p>

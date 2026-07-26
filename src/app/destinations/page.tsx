@@ -134,7 +134,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           />
         }
         desktop={
-          <Reveal>
+          <Reveal amount={0}>
       <header className="mb-5">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
           <span className="text-gradient">Tourist Places</span>

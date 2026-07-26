@@ -43,7 +43,7 @@ export default async function CityPlacePage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Reveal>
+      <Reveal amount={0}>
       <BackButton fallback="/explore-bangalore" label="Back" />
       <LocationBanner />
 

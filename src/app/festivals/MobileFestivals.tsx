@@ -46,7 +46,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
   return (
     <div className="space-y-6 pb-4">
       {/* Bold header */}
-      <Reveal as="header">
+      <Reveal as="header" amount={0}>
         <div className="flex items-center gap-3">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
             <CalendarClock className="h-6 w-6" />
@@ -62,7 +62,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
 
       {/* This month rail */}
       {thisMonth.length > 0 && (
-        <Reveal as="section">
+        <Reveal as="section" amount={0}>
           <div className="mb-3 flex items-center gap-1.5">
             <Sparkles className="h-4 w-4 text-emerald-600" />
             <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Coming up next</h2>
@@ -105,7 +105,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
       )}
 
       {/* Full festival list — large cards */}
-      <Reveal as="section">
+      <Reveal as="section" amount={0}>
         <h2 className="mb-3 text-lg font-extrabold tracking-tight text-slate-900">All festivals</h2>
         <div className="space-y-4">
           {festivals.map((f, i) => {
