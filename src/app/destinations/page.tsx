@@ -22,6 +22,8 @@ import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
 import { Pagination } from "./Pagination";
 import { Reveal } from "@/components/app/Reveal";
+import { PageHero } from "@/components/app/PageHero";
+import { Compass } from "lucide-react";
 
 const PAGE_SIZE = 48;
 
@@ -136,14 +138,12 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         }
         desktop={
           <Reveal amount={0}>
-      <header className="mb-5">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
-          <span className="text-gradient">Tourist Places</span>
-        </h1>
-        <p className="mt-1 text-sm font-semibold text-slate-500">
-          {total} {total === 1 ? "place" : "places"} matching your filters
-        </p>
-      </header>
+      <PageHero
+        eyebrow="Explore India"
+        icon={Compass}
+        title={<>Tourist <span className="italic">Places</span></>}
+        subtitle={`${total} curated ${total === 1 ? "place" : "places"} matching your filters — from heritage forts to hidden waterfalls.`}
+      />
 
       {/* Trips by place-type — quick category chips (folded in from the old
           "Trips by Places" page). */}
@@ -217,7 +217,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
               limited to the main destinations table. */}
           {cityMatches.length > 0 && (
             <section className="mt-8">
-              <h2 className="mb-3 text-lg font-bold text-slate-800">
+              <h2 className="mb-3 font-serif text-xl font-semibold text-slate-900">
                 In Bengaluru — restaurants, malls & more
               </h2>
               <RevealGrid className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
@@ -238,7 +238,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
 
           {nearbyMatches.length > 0 && (
             <section className="mt-8">
-              <h2 className="mb-3 text-lg font-bold text-slate-800">One-day trips</h2>
+              <h2 className="mb-3 font-serif text-xl font-semibold text-slate-900">One-day trips</h2>
               <RevealGrid className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 min-[1700px]:grid-cols-6">
                 {nearbyMatches.map((n) => (
                   <SearchResultCard

@@ -30,6 +30,7 @@ import { EMPTY_AREA, type AreaSelection } from "./AreaPicker";
 import { LivePlan, type LivePlanProps } from "./LivePlan";
 import { PersonalFinanceIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
+import { PageHero } from "@/components/app/PageHero";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 
 // Wizard step slide — direction-aware (custom prop) so Next slides in from
@@ -381,16 +382,15 @@ export function WizardForm({ initial }: WizardFormProps) {
   return (
     <>
     <Reveal as="form" onSubmit={onSubmit} className="mx-auto max-w-3xl space-y-5">
-      {/* Compact header — desktop only; mobile uses the page hero above. */}
-      <div className="hidden items-center gap-3 lg:flex">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-500/30">
-          <Wallet className="h-6 w-6" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Trip Planner</h1>
-          <p className="text-sm text-slate-500">Plan a trip within your budget — {STEPS.length} quick steps.</p>
-        </div>
-        <PersonalFinanceIllustration className="h-20 w-20 shrink-0" />
+      {/* Editorial header — desktop only; mobile uses the page hero above. */}
+      <div className="hidden lg:block">
+        <PageHero
+          eyebrow="Plan smarter, spend less"
+          icon={Wallet}
+          title={<>Trip <span className="italic">Planner</span></>}
+          subtitle={`Plan a trip that fits your budget — ${STEPS.length} quick steps.`}
+          action={<PersonalFinanceIllustration className="hidden h-28 w-28 shrink-0 xl:block" />}
+        />
       </div>
 
       {/* Progress bar + clickable step markers */}

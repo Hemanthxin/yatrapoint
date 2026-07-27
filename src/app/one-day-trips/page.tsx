@@ -8,6 +8,7 @@ import { listNearby } from "@/lib/queries/nearby";
 import { TripsList } from "./TripsList";
 import { MobileTrips } from "./MobileTrips";
 import { Reveal } from "@/components/app/Reveal";
+import { PageHero } from "@/components/app/PageHero";
 
 export default async function OneDayTripsPage() {
   const session = await auth();
@@ -27,19 +28,12 @@ export default async function OneDayTripsPage() {
       <div className="hidden lg:block">
       <Reveal amount={0}>
       <TripsTabs />
-      <header className="mb-4 flex items-start gap-3">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
-          <Compass className="h-6 w-6" />
-        </div>
-        <div className="min-w-0">
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            One-day trips from <span className="text-gradient">Bangalore</span>
-          </h1>
-          <p className="mt-1 text-sm font-medium text-slate-500">
-            {trips.length} curated picks. Sorted by distance from you.
-          </p>
-        </div>
-      </header>
+      <PageHero
+        eyebrow="Weekend-ready"
+        icon={Compass}
+        title={<>One-day trips <span className="italic">from Bangalore</span></>}
+        subtitle={`${trips.length} curated picks, sorted by distance from you.`}
+      />
 
       <LocationBanner />
       <TripsList trips={trips} />

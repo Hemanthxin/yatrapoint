@@ -9,6 +9,7 @@ import { MobileFestivals } from "./MobileFestivals";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
 import { PulseBadge } from "@/components/app/PulseBadge";
+import { PageHero } from "@/components/app/PageHero";
 
 const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
@@ -33,19 +34,13 @@ export default async function FestivalsPage() {
       {/* ── Desktop (≥ lg): the original festivals page, unchanged ── */}
       <div className="hidden lg:block">
       <Reveal amount={0}>
-      <header className="mb-6 flex items-center gap-3">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
-          <CalendarClock className="h-6 w-6" />
-        </div>
-        <div className="min-w-0">
-          <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-            <span className="text-gradient">Festivals &amp; Events</span>
-          </h1>
-          <p className="mt-1 text-sm font-medium text-slate-500">
-            Major Indian festivals through the year — plan a trip around them.
-          </p>
-        </div>
-      </header>
+      <PageHero
+        eyebrow="The year ahead"
+        icon={CalendarClock}
+        title={<>Festivals <span className="italic">&amp; Events</span></>}
+        subtitle="Major Indian festivals through the year — plan a trip around them."
+        gradient="from-amber-600 via-orange-600 to-rose-600"
+      />
 
       <RevealGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {FESTIVALS.map((f) => {

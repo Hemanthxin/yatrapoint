@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Caveat } from "next/font/google";
+import { Inter, Caveat, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { SEO_KEYWORDS } from "@/lib/seo";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const script = Caveat({ subsets: ["latin"], variable: "--font-script" });
+// Editorial display serif for desktop section headlines (magazine/WordPress
+// feel) — mobile keeps the sans headings untouched, this is opt-in via
+// `font-serif` only in desktop-only markup.
+const serif = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://saafera.com"),
@@ -71,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sans.variable} ${script.variable}`} data-theme="light">
+    <html lang="en" className={`${sans.variable} ${script.variable} ${serif.variable}`} data-theme="light">
       <head>
         {/* Apply the saved theme before first paint to avoid a flash. */}
         <script

@@ -23,6 +23,7 @@ import { NearbyPlaces } from "@/components/app/dashboard/NearbyPlaces";
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import type { CityPlace } from "@/lib/db/schema";
 import { Reveal } from "@/components/app/Reveal";
+import { RevealGrid } from "@/components/app/RevealGrid";
 import { ParallaxImage } from "@/components/app/ParallaxImage";
 import { CountUp } from "@/components/app/CountUp";
 
@@ -62,14 +63,14 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#f7f2e9] via-[#f7f2e9]/85 via-40% to-transparent" />
-          <div className="relative flex h-full max-w-lg flex-col justify-center p-8">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-700">Featured Destination</p>
-            <h1 className="mt-2 whitespace-nowrap text-[2.35rem] font-black leading-[1.08] tracking-tight text-slate-900">
+          <div className="relative flex h-full max-w-lg flex-col justify-center p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-700">Featured Destination</p>
+            <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-slate-900">
               Explore Karnataka,
               <br />
-              <span className="text-gradient animate-shimmer">Create Memories</span>
+              <span className="text-gradient animate-shimmer italic">Create Memories</span>
             </h1>
-            <p className="mt-2.5 text-sm font-medium leading-snug text-slate-600">
+            <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-slate-600">
               Smart trips. Budget friendly.
               <br />
               Unforgettable memories.
@@ -87,37 +88,39 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
         </Reveal>
 
         {/* Feature tiles */}
-        <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <RevealGrid className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {features.map((f) => (
-            <Link
-              key={f.title}
-              href={f.href}
-              className="card-hover group relative rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 pr-8 shadow-sm"
-            >
-              <div className={`mb-2.5 grid h-11 w-11 place-items-center rounded-xl ${f.tone}`}>{f.icon}</div>
-              <p className="text-sm font-bold tracking-tight text-slate-900">{f.title}</p>
-              <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
-              <ChevronRight className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
-            </Link>
+            <Reveal key={f.title}>
+              <Link
+                href={f.href}
+                className="card-hover group relative block h-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 pr-8 shadow-sm"
+              >
+                <div className={`mb-3 grid h-11 w-11 place-items-center rounded-xl ${f.tone}`}>{f.icon}</div>
+                <p className="font-serif text-base font-semibold tracking-tight text-slate-900">{f.title}</p>
+                <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
+                <ChevronRight className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+              </Link>
+            </Reveal>
           ))}
-        </section>
+        </RevealGrid>
 
         {/* Trips Planned stats */}
         <section>
           <SectionHeader title="Trips Planned" href="/one-day-trips" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <RevealGrid className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {statCards.map((s) => (
-              <Link
-                key={s.label}
-                href={s.href}
-                className="card-hover rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm"
-              >
-                <div className={`mb-2 grid h-11 w-11 place-items-center rounded-xl ${s.tone}`}>{s.icon}</div>
-                <CountUp value={s.value} format={s.format} className="block truncate text-2xl font-black text-slate-900" />
-                <p className="text-xs font-medium text-slate-500">{s.label}</p>
-              </Link>
+              <Reveal key={s.label}>
+                <Link
+                  href={s.href}
+                  className="card-hover block h-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-sm"
+                >
+                  <div className={`mb-2.5 grid h-11 w-11 place-items-center rounded-xl ${s.tone}`}>{s.icon}</div>
+                  <CountUp value={s.value} format={s.format} className="block truncate font-serif text-2xl font-semibold text-slate-900" />
+                  <p className="text-xs font-medium text-slate-500">{s.label}</p>
+                </Link>
+              </Reveal>
             ))}
-          </div>
+          </RevealGrid>
         </section>
 
         {/* Near by place — the places actually closest to the traveller */}
@@ -152,7 +155,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
 function SectionHeader({ title, href }: { title: string; href: string }) {
   return (
     <div className="mb-4 flex items-center justify-between">
-      <h2 className="flex items-center gap-2.5 text-xl font-black tracking-tight text-slate-900">
+      <h2 className="flex items-center gap-2.5 font-serif text-2xl font-semibold tracking-tight text-slate-900">
         <span aria-hidden className="h-5 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
         {title}
       </h2>

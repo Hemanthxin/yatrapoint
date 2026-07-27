@@ -10,6 +10,7 @@ import { formatINR } from "@/lib/format";
 import { Filters } from "./Filters";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
+import { PageHero } from "@/components/app/PageHero";
 
 interface PageProps {
   searchParams: Promise<{
@@ -86,7 +87,8 @@ export default async function StaysPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <Reveal amount={0}>
+      {/* Mobile keeps this exact compact header — untouched. */}
+      <Reveal amount={0} className="lg:hidden">
         <header className="mb-6 flex items-center gap-3">
           <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
             <BedDouble className="h-6 w-6" />
@@ -98,6 +100,19 @@ export default async function StaysPage({ searchParams }: PageProps) {
             </p>
           </div>
         </header>
+      </Reveal>
+
+      {/* Desktop-only editorial banner. */}
+      <div className="hidden lg:block">
+        <PageHero
+          eyebrow="Rest easy"
+          icon={BedDouble}
+          title={<>Find Your <span className="italic">Stay</span></>}
+          subtitle={`${data.total.toLocaleString("en-IN")} hotels & stays across India — find your night halt.`}
+        />
+      </div>
+
+      <Reveal amount={0}>
 
         <Filters
           cities={cities}

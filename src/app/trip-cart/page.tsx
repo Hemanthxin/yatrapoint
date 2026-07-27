@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { CartPlanner } from "./CartPlanner";
 import { Reveal } from "@/components/app/Reveal";
+import { PageHero } from "@/components/app/PageHero";
 
 export default async function TripCartPage() {
   const session = await auth();
@@ -27,18 +28,15 @@ export default async function TripCartPage() {
           </p>
         </header>
 
-        {/* Desktop (≥ lg): original header, unchanged */}
-        <header className="mb-6 hidden items-center gap-3 lg:flex">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
-            <MapPinned className="h-6 w-6" />
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-gradient text-3xl font-extrabold tracking-tight">Trip route</h1>
-            <p className="mt-1 text-sm font-medium text-slate-500">
-              Everything in your cart, mapped as one route.
-            </p>
-          </div>
-        </header>
+        {/* Desktop (≥ lg): editorial banner */}
+        <div className="hidden lg:block">
+          <PageHero
+            eyebrow="All in one route"
+            icon={MapPinned}
+            title={<>Your <span className="italic">Trip Route</span></>}
+            subtitle="Everything in your cart, mapped as one route."
+          />
+        </div>
 
         <CartPlanner />
       </Reveal>

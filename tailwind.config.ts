@@ -34,6 +34,7 @@ export default {
       fontFamily: {
         script: ["var(--font-script)", "cursive"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
       },
       keyframes: {
         fadeIn: {
