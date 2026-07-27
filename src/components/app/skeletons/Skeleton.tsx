@@ -4,7 +4,6 @@
 // shows the real app chrome (so the sidebar/top bar stay put) with the branded
 // Saafera loader centred in the content area — calm, distinctive, on-brand.
 import { Sidebar } from "../Sidebar";
-import { DesktopNavBar } from "../DesktopNavBar";
 import { SaaferaLoader } from "../SaaferaLoader";
 
 /** A single faint placeholder block (kept for the rare inline use). */
@@ -24,10 +23,9 @@ export function SkeletonShell({ children }: { children: React.ReactNode }) {
     <div className="relative min-h-screen text-[color:var(--text)]">
       <div aria-hidden className="aurora-canvas" />
       <Sidebar open={false} onClose={() => {}} />
-      <DesktopNavBar />
-      <div className="relative z-10">
-        {/* Quiet top bar placeholder (mobile/tablet — desktop shows the real nav above) */}
-        <div className="flex h-16 items-center justify-between gap-3 border-b border-[color:var(--border)] bg-[color:var(--surface)]/70 px-4 md:px-6 lg:hidden">
+      <div className="relative z-10 lg:pl-64">
+        {/* Quiet top bar placeholder */}
+        <div className="flex h-16 items-center justify-between gap-3 border-b border-[color:var(--border)] bg-[color:var(--surface)]/70 px-4 md:px-6">
           <div className="h-4 w-40 rounded-full bg-[color:var(--surface-2)]" />
           <div className="h-8 w-8 rounded-full bg-[color:var(--surface-2)]" />
         </div>
