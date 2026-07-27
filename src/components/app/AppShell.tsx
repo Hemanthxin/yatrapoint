@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+import { DesktopNavBar } from "./DesktopNavBar";
 import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
 import { ToastHost } from "./ToastHost";
@@ -29,8 +30,9 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
       </div>
 
       <Sidebar open={open} onClose={() => setOpen(false)} />
+      <DesktopNavBar />
 
-      <div className="relative z-10 lg:pl-64">
+      <div className="relative z-10">
         <Marquee />
         <Topbar
           userLabel={userLabel}

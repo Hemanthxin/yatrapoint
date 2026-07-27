@@ -49,8 +49,11 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
         }`}
       />
 
+      {/* Off-canvas drawer — mobile/tablet only now. Desktop navigation moved
+          to the horizontal DesktopNavBar, so this never shows as a permanent
+          column on large screens. */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[color:var(--border)] bg-[color:var(--surface)] shadow-xl transition-transform duration-300 ease-out lg:w-64 lg:translate-x-0 lg:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[color:var(--border)] bg-[color:var(--surface)] shadow-xl transition-transform duration-300 ease-out lg:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
