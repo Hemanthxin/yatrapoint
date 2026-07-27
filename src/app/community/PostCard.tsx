@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import {
   MapPin,
   MessageCircle,
@@ -75,6 +76,17 @@ export function PostCard({
   const [total, setTotal] = useState(social.total);
 
   const [commentCount, setCommentCount] = useState(social.comments);
+
+  // The feed polls for fresh counts every few seconds (see Feed.tsx) — pick
+  // up those live updates here. `mine` is intentionally left out: it's only
+  // ever set by THIS user's own reaction, so a stale poll can never clobber
+  // it mid-click.
+  useEffect(() => {
+    setCounts(social.counts);
+    setTotal(social.total);
+    setCommentCount(social.comments);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [social.counts.love, social.counts.wantToGo, social.counts.beenThere, social.total, social.comments]);
   const [comments, setComments] = useState<CommunityComment[] | null>(null);
   const [showComments, setShowComments] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
@@ -322,16 +334,20 @@ export function PostCard({
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
-        {post.authorImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-500/20" />
-        ) : (
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
-            {initial}
-          </div>
-        )}
+        <Link href={`/profile/${post.userId}`} className="shrink-0">
+          {post.authorImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-500/20" />
+          ) : (
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
+              {initial}
+            </div>
+          )}
+        </Link>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold text-slate-900">{post.authorName ?? "Traveller"}</p>
+          <Link href={`/profile/${post.userId}`} className="block truncate text-sm font-bold text-slate-900 hover:underline">
+            {post.authorName ?? "Traveller"}
+          </Link>
           <p className="flex items-center gap-1 truncate text-xs text-slate-400">
             {post.locationName && (
               <>
@@ -518,7 +534,9 @@ export function PostCard({
             )}
 
             <p className="mt-1 text-sm">
-              <span className="font-bold text-slate-900">{post.authorName ?? "Traveller"}</span>{" "}
+              <Link href={`/profile/${post.userId}`} className="font-bold text-slate-900 hover:underline">
+                {post.authorName ?? "Traveller"}
+              </Link>{" "}
               <span className="font-bold text-slate-900">{post.title}</span>{" "}
               <span className="text-slate-600">{post.description}</span>
             </p>

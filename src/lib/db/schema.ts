@@ -380,6 +380,24 @@ export const communityComments = pgTable("community_comments", {
 
 export type CommunityComment = typeof communityComments.$inferSelect;
 
+// Instagram-style follow graph — one row per (follower, following) pair.
+export const follows = pgTable(
+  "follows",
+  {
+    followerId: text("follower_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    followingId: text("following_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.followerId, t.followingId] }),
+    followingIdx: index("follows_following_idx").on(t.followingId),
+  })
+);
+
 // --- Hotels / stays (imported from the Data/ datasets) ---
 export const hotels = pgTable("hotels", {
   id: text("id").primaryKey().$defaultFn(() => createId()),

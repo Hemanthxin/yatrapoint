@@ -12,8 +12,29 @@ import {
   type CommunityComment,
   type CommunityPost,
 } from "@/lib/db/schema";
+import { listPublishedPosts, getFeedSocial, type PostSocial } from "@/lib/queries/community";
 
 const REACTION_TYPES = ["love", "wantToGo", "beenThere"] as const;
+
+// ── Live feed polling ────────────────────────────────────────────────────
+// Not a websocket/push feed (no infra for that here) — the client polls this
+// every few seconds, which reads as "real-time" for a community feed at this
+// scale: new posts + fresh reaction/comment counts without a manual refresh.
+export async function refreshFeed(
+  knownIds: string[],
+  limit = 40
+): Promise<{ newPosts: CommunityPost[]; social: Record<string, PostSocial> }> {
+  const session = await auth();
+  const known = new Set(knownIds);
+
+  const latest = await listPublishedPosts(limit);
+  const newPosts = latest.filter((p) => !known.has(p.id));
+
+  const allIds = [...knownIds, ...newPosts.map((p) => p.id)];
+  const social = await getFeedSocial(allIds, session?.user?.id ?? "");
+
+  return { newPosts, social };
+}
 
 export interface SubmitResult {
   ok: boolean;

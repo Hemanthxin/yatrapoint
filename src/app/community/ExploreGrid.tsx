@@ -24,7 +24,7 @@ export function ExploreGrid({
   currentUserId: string;
   userName: string;
   userImage?: string | null;
-  onDeleted: (postId: string) => void;
+  onDeleted?: (postId: string) => void;
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const activeIndex = posts.findIndex((p) => p.id === activeId);
@@ -77,7 +77,7 @@ export function ExploreGrid({
             currentUserId={currentUserId}
             index={0}
             onDeleted={(id) => {
-              onDeleted(id);
+              onDeleted?.(id);
               setActiveId(null);
             }}
           />

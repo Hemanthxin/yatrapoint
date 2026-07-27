@@ -14,12 +14,15 @@ interface Author {
 }
 
 const MAX_AUTHORS = 24;
-const RECENT_MS = 7 * 24 * 60 * 60 * 1000; // "story" window: last 7 days
+const RECENT_MS = 24 * 60 * 60 * 1000; // real Instagram-style story window: last 24 hours
 
 // Instagram-style horizontal ring of recent posters — tapping one opens a
-// full-screen story viewer cycling through that traveller's recent shares.
-// There's no separate "stories" table: a story is just "this person's posts
-// from the last 7 days", grouped and viewed one at a time.
+// full-screen story viewer cycling through that traveller's shares from the
+// last 24 hours. There's no separate "stories" table: a story is just "this
+// person's posts from the last day", grouped and viewed one at a time — once
+// a post passes 24h old it simply stops showing up here (it's still a normal
+// permanent post in the feed/grid, exactly like Instagram's stories-vs-posts
+// split).
 export function Stories({
   posts,
   social,
