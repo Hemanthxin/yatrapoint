@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { and, sql } from "drizzle-orm";
+import { and, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
 import { haversineKm } from "@/lib/geo";
@@ -19,6 +19,14 @@ const querySchema = z.object({
   lng: z.coerce.number().finite().gte(-180).lte(180),
   radiusKm: z.coerce.number().min(1).max(400).default(30),
   limit: z.coerce.number().int().min(1).max(1200).default(24),
+  // Optional comma-separated city_places `kind` values (e.g. "mall,market").
+  // Applied BEFORE the distance sort + limit — without this, a category like
+  // malls (a few dozen citywide) can get squeezed out entirely by the nearest
+  // `limit` restaurants/temples (thousands citywide) before filtering ever runs.
+  kinds: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v.split(",").map((s) => s.trim()).filter(Boolean) : null)),
 });
 
 export interface NearPlace {
@@ -48,6 +56,7 @@ export async function GET(req: NextRequest) {
     lng: sp.get("lng"),
     radiusKm: sp.get("radiusKm") ?? undefined,
     limit: sp.get("limit") ?? undefined,
+    kinds: sp.get("kinds") ?? undefined,
   });
   if (!parsed.success) {
     return NextResponse.json(
@@ -56,7 +65,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const { lat, lng, radiusKm, limit } = parsed.data;
+  const { lat, lng, radiusKm, limit, kinds } = parsed.data;
   const centre = { lat, lng };
   // Bounding box around the user (a little wider than the radius so the corners
   // aren't clipped before the exact circular filter below).
@@ -64,14 +73,18 @@ export async function GET(req: NextRequest) {
   const dLng = radiusKm / (111 * Math.max(0.2, Math.cos((lat * Math.PI) / 180))) + 0.02;
 
   try {
-    // city_places: SQL bounding box keeps the ~10k-row scan tiny.
+    // city_places: SQL bounding box keeps the ~10k-row scan tiny. When `kinds`
+    // is given, filter by it IN THE SAME QUERY — filtering after the bounding
+    // box (or after the final distance-sort limit) would let a dense category
+    // like restaurants crowd out a rare one like malls before it's ever seen.
     const cityRows = await db
       .select()
       .from(cityPlaces)
       .where(
         and(
           sql`CAST(${cityPlaces.latitude} AS double precision) BETWEEN ${lat - dLat} AND ${lat + dLat}`,
-          sql`CAST(${cityPlaces.longitude} AS double precision) BETWEEN ${lng - dLng} AND ${lng + dLng}`
+          sql`CAST(${cityPlaces.longitude} AS double precision) BETWEEN ${lng - dLng} AND ${lng + dLng}`,
+          kinds ? inArray(cityPlaces.kind, kinds) : undefined
         )
       )
       .limit(1500);

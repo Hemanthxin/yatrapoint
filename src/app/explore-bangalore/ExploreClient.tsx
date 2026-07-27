@@ -68,6 +68,13 @@ const SEED_KIND_TO_GROUP: Record<string, string> = {
   viewpoint: "viewpoints",
 };
 
+// Reverse of SEED_KIND_TO_GROUP — which city_places `kind` values a group
+// covers, so the API can filter server-side before its distance limit runs.
+const GROUP_TO_SEED_KINDS: Record<string, string[]> = {};
+for (const [kind, group] of Object.entries(SEED_KIND_TO_GROUP)) {
+  (GROUP_TO_SEED_KINDS[group] ??= []).push(kind);
+}
+
 const OVERPASS_TO_GROUP: Record<string, string> = {
   restaurant: "restaurants",
   fast_food: "restaurants",
@@ -146,15 +153,23 @@ export function ExploreClient({ seed }: ExploreClientProps) {
   }, [group, radiusKm, coords.lat, coords.lng, status]);
 
   // Pull the full set of curated places WITHIN the chosen radius (bounding-box
-  // API) whenever location or radius changes — so "within 8 km" really shows
-  // everything within 8 km, not just the popularity slice shipped for paint.
+  // API) whenever location, radius or category changes — so "within 8 km"
+  // really shows everything within 8 km, not just the popularity slice
+  // shipped for paint.
   useEffect(() => {
     if (status === "prompting" || status === "idle") return;
     const ctrl = new AbortController();
+    const kinds = GROUP_TO_SEED_KINDS[group];
     const params = new URLSearchParams({
       lat: String(coords.lat),
       lng: String(coords.lng),
       radiusKm: String(radiusKm),
+      // Ask the server to filter by category BEFORE its distance limit runs —
+      // otherwise a rare category (a few dozen malls citywide) gets crowded
+      // out by the nearest cap of a dense one (thousands of restaurants)
+      // before the client ever sees it.
+      limit: "1200",
+      ...(kinds ? { kinds: kinds.join(",") } : {}),
     });
     fetch(`/api/nearby-places?${params}`, { signal: ctrl.signal })
       .then((r) => r.json())
@@ -165,7 +180,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
         /* keep the first-paint seed */
       });
     return () => ctrl.abort();
-  }, [coords.lat, coords.lng, radiusKm, status]);
+  }, [coords.lat, coords.lng, radiusKm, status, group]);
 
   // Build a unified list: seed + Overpass, dedup by lat/lng proximity, sort by distance.
   const unified = useMemo(() => {
