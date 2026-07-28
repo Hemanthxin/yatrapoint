@@ -56,8 +56,6 @@ export function Feed({
   const [composerOpen, setComposerOpen] = useState(false);
   const feedTopRef = useRef<HTMLDivElement>(null);
 
-  const initial = (userName?.trim()?.[0] ?? "?").toUpperCase();
-
   function handleDeleted(postId: string) {
     setPosts((p) => p.filter((x) => x.id !== postId));
   }
@@ -134,38 +132,12 @@ export function Feed({
           onOpenComposer={() => setComposerOpen(true)}
         />
 
-        {/* Composer: compact trigger bar → expands into full form */}
-        {composerOpen ? (
+        {/* Composer — expands here when opened from "Add post" in the tabs bar below */}
+        {composerOpen && (
           <CommunityForm
             onPosted={() => setComposerOpen(false)}
             onCancel={() => setComposerOpen(false)}
           />
-        ) : (
-          <button
-            type="button"
-            onClick={() => setComposerOpen(true)}
-            className="card card-hover flex w-full items-center gap-3 p-3 text-left"
-          >
-            {userImage ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={userImage}
-                alt={userName}
-                className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-[color:var(--border)]"
-              />
-            ) : (
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
-                {initial}
-              </span>
-            )}
-            <span className="min-w-0 flex-1 truncate rounded-full bg-[color:var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[color:var(--muted)]">
-              Share a place, tip or hidden gem…
-            </span>
-            <span className="btn-primary min-h-[44px] shrink-0 rounded-xl px-4 text-sm">
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Add post</span>
-            </span>
-          </button>
         )}
       </div>
 
@@ -224,6 +196,17 @@ export function Feed({
             }`}
           >
             <Grid3x3 className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="flex shrink-0 border-l border-[color:var(--border)] pl-1.5">
+          <button
+            type="button"
+            onClick={() => setComposerOpen(true)}
+            className="btn-primary h-9 shrink-0 gap-1.5 rounded-xl px-3 text-sm"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Add post</span>
           </button>
         </div>
       </div>
