@@ -91,13 +91,13 @@ export function Stories({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={a.image} alt="" className="h-14 w-14 rounded-full object-cover" />
                   ) : (
-                    <span className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-lg font-bold text-white">
+                    <span className="grid h-14 w-14 place-items-center rounded-full bg-emerald-600 text-lg font-bold text-white">
                       {a.name.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </span>
               </span>
-              <span className="max-w-[4.5rem] truncate text-[11px] font-semibold text-slate-600">
+              <span className="max-w-[4.5rem] truncate text-[11px] font-semibold text-[color:var(--text-soft)]">
                 {isMine ? "You" : a.name.split(" ")[0]}
               </span>
             </button>

@@ -356,16 +356,16 @@ export function PostCard({
     <Reveal
       as="article"
       delay={Math.min(index, 8) * 0.06}
-      className="card-hover overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+      className="card card-hover overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
         <Link href={`/profile/${post.userId}`} className="shrink-0">
           {post.authorImage ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-500/20" />
+            <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-1 ring-[color:var(--border)]" />
           ) : (
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
               {initial}
             </div>
           )}
@@ -404,7 +404,7 @@ export function PostCard({
             {menuOpen && (
               <div
                 role="menu"
-                className="animate-pop absolute right-0 top-12 z-20 w-40 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-lg"
+                className="card absolute right-0 top-12 z-20 w-40 overflow-hidden py-1"
               >
                 <button
                   role="menuitem"
@@ -501,7 +501,7 @@ export function PostCard({
             <button
               onClick={saveEdit}
               disabled={saving}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+              className="btn-primary flex-1 rounded-xl px-5 py-3 text-sm active:scale-95 disabled:opacity-60"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               Save
@@ -512,7 +512,7 @@ export function PostCard({
                 setActionError(null);
               }}
               disabled={saving}
-              className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95 disabled:opacity-60"
+              className="btn-secondary px-5 py-2.5 text-sm active:scale-95 disabled:opacity-60"
             >
               <X className="h-4 w-4" /> Cancel
             </button>
@@ -582,7 +582,7 @@ export function PostCard({
                     onClick={() => react(r.type)}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
                       active
-                        ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
+                        ? "border-transparent bg-emerald-600 text-white"
                         : "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50"
                     }`}
                   >
@@ -635,9 +635,8 @@ export function PostCard({
                   <button
                     onClick={submitComment}
                     disabled={posting || !text.trim()}
-                    className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-90 disabled:opacity-50"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
                   >
-                    <span aria-hidden className="sheen-overlay animate-sheen" />
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </button>
                 </div>

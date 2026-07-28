@@ -118,7 +118,7 @@ export function StoryViewer({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={author.image} alt="" className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50" />
         ) : (
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white ring-2 ring-white/50">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white ring-2 ring-white/50">
             {author.name.charAt(0).toUpperCase()}
           </span>
         )}
@@ -159,7 +159,7 @@ export function StoryViewer({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.photoUrl} alt={post.title} className="max-h-full w-full object-contain" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 p-8 text-center">
+          <div className="flex h-full w-full items-center justify-center bg-emerald-700 p-8 text-center">
             <span className="text-2xl font-extrabold text-white">{post.title}</span>
           </div>
         )}

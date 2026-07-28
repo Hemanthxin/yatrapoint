@@ -59,23 +59,23 @@ export function SearchView({
   const showingSearch = query.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-slate-200 bg-white/90 px-3 py-2.5 backdrop-blur">
+    <div className="min-h-screen bg-[color:var(--app-bg)]">
+      <header className="glass-strong sticky top-0 z-10 flex items-center gap-2 border-b border-[color:var(--border)] px-3 py-2.5">
         <Link
           href="/community"
           aria-label="Back to community"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-600 transition hover:bg-slate-100 active:scale-90"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)] active:scale-90"
         >
           <X className="h-5 w-5" />
         </Link>
         <div className="relative flex-1">
-          <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted)]" />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search people, places, #hashtags…"
-            className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+            className="w-full rounded-full border border-[color:var(--border)] bg-[color:var(--surface-2)] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-emerald-400 focus:bg-[color:var(--surface)] focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
       </header>
@@ -97,19 +97,27 @@ export function SearchView({
         ) : (
           <div className="space-y-5">
             {users.length > 0 && (
-              <ul className="flex gap-4 overflow-x-auto pb-1">
+              <ul className="mx-auto max-w-lg">
                 {users.map((u) => (
                   <li key={u.id}>
-                    <Link href={`/profile/${u.id}`} className="flex w-20 flex-col items-center gap-1.5 text-center">
+                    <Link
+                      href={`/profile/${u.id}`}
+                      className="flex items-center gap-3 rounded-2xl p-2.5 transition hover:bg-[color:var(--surface-2)]"
+                    >
                       {u.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={u.image} alt="" className="h-14 w-14 rounded-full object-cover" />
+                        <img src={u.image} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover" />
                       ) : (
-                        <span className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-lg font-bold text-white">
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-emerald-600 text-base font-bold text-white">
                           {u.name.charAt(0).toUpperCase()}
                         </span>
                       )}
-                      <span className="w-full truncate text-xs font-semibold text-slate-700">{u.name}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-bold text-[color:var(--text)]">{u.name}</p>
+                        {u.username && (
+                          <p className="truncate text-sm text-[color:var(--muted)]">@{u.username}</p>
+                        )}
+                      </div>
                     </Link>
                   </li>
                 ))}

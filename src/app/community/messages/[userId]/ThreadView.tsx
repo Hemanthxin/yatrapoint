@@ -66,12 +66,12 @@ export function ThreadView({
   }
 
   return (
-    <div className="flex h-screen flex-col bg-white">
-      <header className="flex shrink-0 items-center gap-3 border-b border-slate-200 px-3 py-2.5">
+    <div className="flex h-screen flex-col bg-[color:var(--surface)]">
+      <header className="flex shrink-0 items-center gap-3 border-b border-[color:var(--border)] px-3 py-2.5">
         <Link
           href="/community/messages"
           aria-label="Back to messages"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-600 transition hover:bg-slate-100 active:scale-90"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)] active:scale-90"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -79,18 +79,18 @@ export function ThreadView({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={otherUserImage} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
         ) : (
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
             {otherUserName.charAt(0).toUpperCase()}
           </span>
         )}
-        <Link href={`/profile/${otherUserId}`} className="min-w-0 flex-1 truncate text-sm font-bold text-slate-900 hover:underline">
+        <Link href={`/profile/${otherUserId}`} className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--text)] hover:underline">
           {otherUserName}
         </Link>
       </header>
 
       <div className="flex-1 space-y-2 overflow-y-auto px-3 py-4">
         {messages.length === 0 ? (
-          <p className="pt-10 text-center text-sm text-slate-400">
+          <p className="pt-10 text-center text-sm text-[color:var(--muted)]">
             Say hello to {otherUserName.split(" ")[0]} 👋
           </p>
         ) : (
@@ -101,12 +101,12 @@ export function ThreadView({
                 <div
                   className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${
                     mine
-                      ? "rounded-br-sm bg-gradient-to-r from-emerald-500 to-green-600 text-white"
-                      : "rounded-bl-sm bg-slate-100 text-slate-800"
+                      ? "rounded-br-sm bg-emerald-600 text-white"
+                      : "rounded-bl-sm bg-[color:var(--surface-2)] text-[color:var(--text)]"
                   }`}
                 >
                   <p className="whitespace-pre-wrap break-words">{m.body}</p>
-                  <p className={`mt-0.5 text-[10px] ${mine ? "text-white/70" : "text-slate-400"}`}>{timeAgo(m.createdAt)}</p>
+                  <p className={`mt-0.5 text-[10px] ${mine ? "text-white/70" : "text-[color:var(--muted)]"}`}>{timeAgo(m.createdAt)}</p>
                 </div>
               </div>
             );
@@ -115,7 +115,7 @@ export function ThreadView({
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex shrink-0 items-center gap-2 border-t border-slate-200 p-3">
+      <div className="flex shrink-0 items-center gap-2 border-t border-[color:var(--border)] p-3">
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -123,13 +123,13 @@ export function ThreadView({
             if (e.key === "Enter") submit();
           }}
           placeholder="Message…"
-          className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          className="min-w-0 flex-1 rounded-full border border-[color:var(--border)] bg-[color:var(--surface-2)] px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-[color:var(--surface)] focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
         <button
           onClick={submit}
           disabled={sending || !text.trim()}
           aria-label="Send"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-90 disabled:opacity-50"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
         >
           {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </button>

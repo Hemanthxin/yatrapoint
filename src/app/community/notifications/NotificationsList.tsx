@@ -50,16 +50,16 @@ export function NotificationsList({ notifications: initial }: { notifications: N
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur">
+    <div className="min-h-screen bg-[color:var(--app-bg)]">
+      <header className="glass-strong sticky top-0 z-10 flex items-center gap-3 border-b border-[color:var(--border)] px-4 py-3">
         <Link
           href="/community"
           aria-label="Back to community"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-600 transition hover:bg-slate-100 active:scale-90"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[color:var(--text-soft)] transition hover:bg-[color:var(--surface-2)] active:scale-90"
         >
           <X className="h-5 w-5" />
         </Link>
-        <h1 className="flex-1 text-base font-extrabold tracking-tight text-slate-900">Notifications</h1>
+        <h1 className="flex-1 text-base font-extrabold tracking-tight text-[color:var(--text)]">Notifications</h1>
         {hasUnread && (
           <button
             type="button"
@@ -89,7 +89,7 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                 <li key={n.id}>
                   <Link
                     href={href}
-                    className={`flex items-center gap-3 rounded-2xl p-3 transition hover:bg-white ${
+                    className={`flex items-center gap-3 rounded-2xl p-3 transition hover:bg-[color:var(--surface-2)] ${
                       n.read ? "" : "bg-emerald-50/60"
                     }`}
                   >
@@ -98,17 +98,17 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={n.actorImage} alt="" className="h-11 w-11 rounded-full object-cover" />
                       ) : (
-                        <span className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white">
+                        <span className="grid h-11 w-11 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
                           {n.actorName?.charAt(0).toUpperCase() ?? "T"}
                         </span>
                       )}
-                      <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-white shadow">
+                      <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-[color:var(--surface)] shadow">
                         <Icon className={`h-3 w-3 ${meta.className}`} fill={n.type === "love" ? "currentColor" : "none"} />
                       </span>
                     </span>
-                    <p className="min-w-0 flex-1 text-sm text-slate-700">
-                      <span className="font-bold text-slate-900">{n.actorName}</span> {actionText(n)}
-                      <span className="ml-1.5 text-xs text-slate-400">{timeAgo(n.createdAt)}</span>
+                    <p className="min-w-0 flex-1 text-sm text-[color:var(--text-soft)]">
+                      <span className="font-bold text-[color:var(--text)]">{n.actorName}</span> {actionText(n)}
+                      <span className="ml-1.5 text-xs text-[color:var(--muted)]">{timeAgo(n.createdAt)}</span>
                     </p>
                     {n.postPhotoUrl && (
                       // eslint-disable-next-line @next/next/no-img-element

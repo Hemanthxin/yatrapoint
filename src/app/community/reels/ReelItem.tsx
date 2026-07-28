@@ -160,7 +160,7 @@ export function ReelItem({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={post.authorImage} alt="" className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50" />
           ) : (
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white ring-2 ring-white/50">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white ring-2 ring-white/50">
               {(post.authorName ?? "T").charAt(0).toUpperCase()}
             </span>
           )}

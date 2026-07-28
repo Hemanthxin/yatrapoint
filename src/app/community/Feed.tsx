@@ -144,25 +144,24 @@ export function Feed({
           <button
             type="button"
             onClick={() => setComposerOpen(true)}
-            className="card-hover flex w-full items-center gap-3 rounded-3xl border border-slate-200 bg-white p-3 text-left shadow-sm"
+            className="card card-hover flex w-full items-center gap-3 p-3 text-left"
           >
             {userImage ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={userImage}
                 alt={userName}
-                className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-emerald-500/20"
+                className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-[color:var(--border)]"
               />
             ) : (
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-sm font-bold text-white shadow-md shadow-emerald-500/30">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
                 {initial}
               </span>
             )}
-            <span className="min-w-0 flex-1 truncate rounded-full bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-500">
+            <span className="min-w-0 flex-1 truncate rounded-full bg-[color:var(--surface-2)] px-4 py-2.5 text-sm font-medium text-[color:var(--muted)]">
               Share a place, tip or hidden gem…
             </span>
-            <span className="relative inline-flex min-h-[44px] shrink-0 items-center gap-1.5 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95">
-              <span aria-hidden className="sheen-overlay animate-sheen" />
+            <span className="btn-primary min-h-[44px] shrink-0 rounded-xl px-4 text-sm">
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Add post</span>
             </span>
@@ -171,8 +170,8 @@ export function Feed({
       </div>
 
       {/* Pill tabs + feed/grid view toggle */}
-      <div className="sticky top-2 z-10 mx-auto flex max-w-6xl items-center gap-1.5">
-        <div className="flex flex-1 gap-1 rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur">
+      <div className="card sticky top-2 z-10 mx-auto flex max-w-6xl items-center gap-1.5 p-1">
+        <div className="flex flex-1 gap-1">
           {TABS.map((t) => {
             const active = tab === t.id;
             const Icon = t.icon;
@@ -183,8 +182,8 @@ export function Feed({
                 aria-pressed={active}
                 className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
                   active
-                    ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                    ? "bg-emerald-600 text-white"
+                    : "text-[color:var(--muted)] hover:bg-[color:var(--surface-2)] hover:text-[color:var(--text)]"
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -192,7 +191,7 @@ export function Feed({
                 {t.id === "mine" && mineCount > 0 && (
                   <span
                     className={`rounded-full px-1.5 text-xs ${
-                      active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
+                      active ? "bg-white/25 text-white" : "bg-[color:var(--surface-2)] text-[color:var(--muted)]"
                     }`}
                   >
                     {mineCount}
@@ -203,14 +202,14 @@ export function Feed({
           })}
         </div>
 
-        <div className="flex shrink-0 gap-0.5 rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm backdrop-blur">
+        <div className="flex shrink-0 gap-0.5 border-l border-[color:var(--border)] pl-1.5">
           <button
             type="button"
             onClick={() => setView("feed")}
             aria-label="Side-by-side view"
             aria-pressed={view === "feed"}
             className={`grid h-9 w-9 place-items-center rounded-xl transition active:scale-95 ${
-              view === "feed" ? "bg-slate-900 text-white" : "text-slate-400 hover:bg-slate-50"
+              view === "feed" ? "bg-[color:var(--text)] text-[color:var(--surface)]" : "text-[color:var(--muted)] hover:bg-[color:var(--surface-2)]"
             }`}
           >
             <Rows3 className="h-4 w-4" />
@@ -221,7 +220,7 @@ export function Feed({
             aria-label="Grid view"
             aria-pressed={view === "grid"}
             className={`grid h-9 w-9 place-items-center rounded-xl transition active:scale-95 ${
-              view === "grid" ? "bg-slate-900 text-white" : "text-slate-400 hover:bg-slate-50"
+              view === "grid" ? "bg-[color:var(--text)] text-[color:var(--surface)]" : "text-[color:var(--muted)] hover:bg-[color:var(--surface-2)]"
             }`}
           >
             <Grid3x3 className="h-4 w-4" />
@@ -235,7 +234,7 @@ export function Feed({
           <button
             type="button"
             onClick={showPendingPosts}
-            className="sticky top-16 z-10 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+            className="btn-primary sticky top-16 z-10 px-5 py-2.5 text-sm"
           >
             <ArrowUp className="h-4 w-4" />
             {pendingPosts.length} new {pendingPosts.length === 1 ? "post" : "posts"}

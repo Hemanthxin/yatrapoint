@@ -35,30 +35,27 @@ export function ProfileHeader({
         <img
           src={image}
           alt={name}
-          className="h-24 w-24 shrink-0 rounded-full object-cover ring-4 ring-emerald-500/15 sm:h-28 sm:w-28"
+          className="h-24 w-24 shrink-0 rounded-full object-cover ring-1 ring-[color:var(--border)] sm:h-28 sm:w-28"
         />
       ) : (
-        <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-3xl font-bold text-white ring-4 ring-emerald-500/15 sm:h-28 sm:w-28">
+        <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-emerald-600 text-3xl font-bold text-white sm:h-28 sm:w-28">
           {name.charAt(0).toUpperCase()}
         </span>
       )}
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-          <h1 className="text-xl font-extrabold tracking-tight text-slate-900">{name}</h1>
+          <h1 className="text-xl font-extrabold tracking-tight text-[color:var(--text)]">{name}</h1>
           <FollowButton
             targetUserId={targetUserId}
             initialFollowing={initialFollowing}
             onCountChange={setFollowerCount}
           />
-          <Link
-            href={`/community/messages/${targetUserId}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
-          >
+          <Link href={`/community/messages/${targetUserId}`} className="btn-secondary min-h-[44px] px-4 py-2 text-sm">
             <MessageCircle className="h-4 w-4" /> Message
           </Link>
         </div>
-        {username && <p className="mt-0.5 text-sm text-slate-500">@{username}</p>}
+        {username && <p className="mt-0.5 text-sm text-[color:var(--muted)]">@{username}</p>}
 
         <div className="mt-4 flex justify-center gap-6 sm:justify-start">
           <Stat value={postsCount} label="Posts" />
@@ -67,7 +64,7 @@ export function ProfileHeader({
         </div>
 
         {bio && (
-          <p className="mt-4 flex items-start justify-center gap-1.5 text-sm text-slate-600 sm:justify-start">
+          <p className="mt-4 flex items-start justify-center gap-1.5 text-sm text-[color:var(--text-soft)] sm:justify-start">
             <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
             {bio}
           </p>
@@ -80,8 +77,8 @@ export function ProfileHeader({
 function Stat({ value, label }: { value: number; label: string }) {
   return (
     <div className="text-center sm:text-left">
-      <p className="text-lg font-extrabold text-slate-900">{value.toLocaleString("en-IN")}</p>
-      <p className="text-xs font-medium text-slate-500">{label}</p>
+      <p className="text-lg font-extrabold text-[color:var(--text)]">{value.toLocaleString("en-IN")}</p>
+      <p className="text-xs font-medium text-[color:var(--muted)]">{label}</p>
     </div>
   );
 }

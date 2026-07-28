@@ -168,7 +168,7 @@ export function CommunityForm({
   }
 
   return (
-    <Reveal as="form" onSubmit={onSubmit} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <Reveal as="form" onSubmit={onSubmit} className="card p-5">
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
@@ -320,7 +320,7 @@ export function CommunityForm({
             type="button"
             onClick={onCancel}
             disabled={isPending}
-            className="flex min-h-[44px] items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95 disabled:opacity-60"
+            className="btn-secondary min-h-[44px] px-5 py-3.5 text-sm disabled:opacity-60"
           >
             Cancel
           </button>
@@ -328,9 +328,8 @@ export function CommunityForm({
         <button
           type="submit"
           disabled={isPending}
-          className="relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+          className="btn-primary flex-1 rounded-xl px-6 py-3.5 text-sm active:scale-95 disabled:opacity-60"
         >
-          <span aria-hidden className="sheen-overlay animate-sheen" />
           {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           Post
         </button>

@@ -1,15 +1,12 @@
 import { notFound, redirect } from "next/navigation";
-import { Users } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { BackButton } from "@/components/app/BackButton";
 import { getPublicProfile, getFollowCounts, isFollowing } from "@/lib/queries/follows";
 import { listMyPosts, getFeedSocial, getPostsMedia } from "@/lib/queries/community";
-import { ExploreGrid } from "@/app/community/ExploreGrid";
-import { EmptyState } from "@/components/app/EmptyState";
-import { CommunityIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
 import { ProfileHeader } from "./ProfileHeader";
+import { ProfilePostsSection } from "./ProfilePostsSection";
 
 interface PageProps {
   params: Promise<{ userId: string }>;
@@ -48,7 +45,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
       <Reveal className="mx-auto max-w-3xl">
         <BackButton fallback="/community" />
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="card p-6">
           <ProfileHeader
             targetUserId={profile.id}
             name={displayName}
@@ -62,26 +59,16 @@ export default async function PublicProfilePage({ params }: PageProps) {
           />
         </section>
 
-        <div className="mt-8">
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-extrabold tracking-tight text-slate-900">
-            <Users className="h-4 w-4 text-emerald-600" /> Posts
-          </h2>
-          {posts.length === 0 ? (
-            <EmptyState
-              illustration={CommunityIllustration}
-              title="No posts yet"
-              description={`${displayName} hasn't shared any places yet.`}
-            />
-          ) : (
-            <ExploreGrid
-              posts={posts}
-              social={social}
-              currentUserId={me.id ?? ""}
-              userName={me.name || me.email || "You"}
-              userImage={me.image}
-              mediaByPost={media}
-            />
-          )}
+        <div className="mt-6">
+          <ProfilePostsSection
+            posts={posts}
+            social={social}
+            media={media}
+            currentUserId={me.id ?? ""}
+            userName={me.name || me.email || "You"}
+            userImage={me.image}
+            displayName={displayName}
+          />
         </div>
       </Reveal>
     </AppShell>

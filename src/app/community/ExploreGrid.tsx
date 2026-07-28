@@ -60,7 +60,7 @@ export function ExploreGrid({
                   />
                 )
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 p-2 text-center">
+                <div className="flex h-full w-full items-center justify-center bg-emerald-700 p-2 text-center">
                   <span className="line-clamp-3 text-xs font-bold text-white">{post.title}</span>
                 </div>
               )}
