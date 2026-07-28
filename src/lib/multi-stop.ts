@@ -315,6 +315,18 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     return !(isFoodCat(c) && !input.includeFood);
   });
 
+  // Per-candidate jitter (fixed for this one planning run, fresh every call) —
+  // lets "Regenerate" turn up a different, still-good selection of places
+  // instead of the greedy scorer picking the exact same winner every time.
+  // Shuffling the pool too means ties in the ratio below resolve differently
+  // across runs, not just the score itself.
+  const jitter = new Map<string, number>();
+  for (const c of pool) jitter.set(c.id, 0.8 + Math.random() * 0.4);
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
   // 1) Hand-picked places first — inserted at their cheapest position.
   for (const c of pool.filter((c) => c.pinned)) {
     if (tour.length >= maxStops) break;
@@ -371,7 +383,9 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
       if (isFoodCat(c) && (foodUsed || !input.includeFood)) continue;
       const { pos, detour } = bestInsertion(c);
       if (!feasible(c, detour)) continue;
-      const ratio = valueOf(c, covered) / Math.max(5, (detour / speed) * 60 + c.idealMinutes);
+      const ratio =
+        (valueOf(c, covered) * (jitter.get(c.id) ?? 1)) /
+        Math.max(5, (detour / speed) * 60 + c.idealMinutes);
       if (!pick || ratio > pick.ratio) pick = { c, pos, detour, ratio };
     }
     if (pick) {
@@ -388,7 +402,7 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
       const { pos, detour } = bestInsertion(c);
       if (!feasible(c, detour)) continue;
       const detourMin = (detour / speed) * 60 + c.idealMinutes;
-      const ratio = valueOf(c, covered) / Math.max(5, detourMin);
+      const ratio = (valueOf(c, covered) * (jitter.get(c.id) ?? 1)) / Math.max(5, detourMin);
       if (!best || ratio > best.ratio) best = { c, pos, detour, ratio };
     }
     if (!best) break;
