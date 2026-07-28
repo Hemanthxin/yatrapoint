@@ -398,6 +398,76 @@ export const follows = pgTable(
   })
 );
 
+// Extra media for a post beyond its primary `photoUrl` — lets a post carry a
+// swipeable carousel of photos, or a video (Reels). Row order = `position`.
+// A post's FIRST media item (position 0) mirrors `communityPosts.photoUrl`
+// for backward compatibility with older posts that only ever had one photo.
+export const communityPostMedia = pgTable(
+  "community_post_media",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    postId: text("post_id")
+      .notNull()
+      .references(() => communityPosts.id, { onDelete: "cascade" }),
+    url: text("url").notNull(),
+    kind: varchar("kind", { length: 10 }).notNull(), // "image" | "video"
+    position: integer("position").default(0).notNull(),
+  },
+  (t) => ({
+    postIdx: index("community_post_media_post_idx").on(t.postId, t.position),
+  })
+);
+export type CommunityPostMedia = typeof communityPostMedia.$inferSelect;
+
+// Simple 1:1 direct messages — a "conversation" is just every message shared
+// between two user ids, derived on read rather than stored as its own row.
+export const messages = pgTable(
+  "messages",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    senderId: text("sender_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    recipientId: text("recipient_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    readAt: timestamp("read_at"),
+  },
+  (t) => ({
+    threadIdx: index("messages_thread_idx").on(t.senderId, t.recipientId, t.createdAt),
+    recipientIdx: index("messages_recipient_idx").on(t.recipientId, t.createdAt),
+  })
+);
+export type Message = typeof messages.$inferSelect;
+
+// Activity notifications — one row per love/react/comment/follow/message so a
+// user can see "who did what" without re-deriving it from the source tables.
+// `commentBody` snapshots the comment text so a later comment delete doesn't
+// blank out the notification.
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }), // recipient
+    actorId: text("actor_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 20 }).notNull(), // love | wantToGo | beenThere | comment | follow | message
+    postId: text("post_id").references(() => communityPosts.id, { onDelete: "cascade" }),
+    commentBody: text("comment_body"),
+    read: boolean("read").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    recipientIdx: index("notifications_recipient_idx").on(t.userId, t.createdAt),
+  })
+);
+export type Notification = typeof notifications.$inferSelect;
+
 // --- Hotels / stays (imported from the Data/ datasets) ---
 export const hotels = pgTable("hotels", {
   id: text("id").primaryKey().$defaultFn(() => createId()),

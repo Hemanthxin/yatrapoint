@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin } from "lucide-react";
+import Link from "next/link";
+import { MapPin, MessageCircle } from "lucide-react";
 import { FollowButton } from "./FollowButton";
 
 export function ProfileHeader({
@@ -50,6 +51,12 @@ export function ProfileHeader({
             initialFollowing={initialFollowing}
             onCountChange={setFollowerCount}
           />
+          <Link
+            href={`/community/messages/${targetUserId}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
+          >
+            <MessageCircle className="h-4 w-4" /> Message
+          </Link>
         </div>
         {username && <p className="mt-0.5 text-sm text-slate-500">@{username}</p>}
 

@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { follows } from "@/lib/db/schema";
 import { getFollowCounts } from "@/lib/queries/follows";
+import { createNotification } from "@/lib/actions/notifications";
 
 export interface ToggleFollowResult {
   ok: boolean;
@@ -33,6 +34,7 @@ export async function toggleFollow(targetUserId: string): Promise<ToggleFollowRe
         .where(and(eq(follows.followerId, me), eq(follows.followingId, targetUserId)));
     } else {
       await db.insert(follows).values({ followerId: me, followingId: targetUserId }).onConflictDoNothing();
+      await createNotification({ userId: targetUserId, actorId: me, type: "follow" });
     }
 
     const counts = await getFollowCounts(targetUserId);

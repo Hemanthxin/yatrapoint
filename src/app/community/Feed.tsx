@@ -10,6 +10,7 @@ import { CommunityForm } from "./CommunityForm";
 import { PostCard } from "./PostCard";
 import { Stories } from "./Stories";
 import { ExploreGrid } from "./ExploreGrid";
+import type { MediaItem } from "./MediaCarousel";
 import { RevealGrid } from "@/components/app/RevealGrid";
 import { EmptyState } from "@/components/app/EmptyState";
 import { CommunityIllustration } from "@/components/illustrations";
@@ -34,18 +35,21 @@ const TABS: { id: Tab; label: string; icon: typeof Sparkles }[] = [
 export function Feed({
   posts: initialPosts,
   social: initialSocial,
+  media: initialMedia,
   currentUserId,
   userName,
   userImage,
 }: {
   posts: CommunityPost[];
   social: Record<string, PostSocial>;
+  media?: Record<string, MediaItem[]>;
   currentUserId: string;
   userName: string;
   userImage?: string | null;
 }) {
   const [posts, setPosts] = useState(initialPosts);
   const [social, setSocial] = useState(initialSocial);
+  const [media, setMedia] = useState<Record<string, MediaItem[]>>(initialMedia ?? {});
   const [pendingPosts, setPendingPosts] = useState<CommunityPost[]>([]);
   const [tab, setTab] = useState<Tab>("latest");
   const [view, setView] = useState<"feed" | "grid">("feed");
@@ -70,6 +74,15 @@ export function Feed({
         const knownIds = [...posts.map((p) => p.id), ...pendingPosts.map((p) => p.id)];
         const result = await refreshFeed(knownIds);
         setSocial((prev) => ({ ...prev, ...result.social }));
+        if (Object.keys(result.media).length > 0) {
+          setMedia((prev) => {
+            const next = { ...prev };
+            for (const [postId, items] of Object.entries(result.media)) {
+              next[postId] = items.map((m) => ({ url: m.url, kind: m.kind === "video" ? "video" : "image" }));
+            }
+            return next;
+          });
+        }
         if (result.newPosts.length > 0) {
           setPendingPosts((prev) => {
             const seen = new Set(prev.map((p) => p.id));
@@ -244,6 +257,7 @@ export function Feed({
           userName={userName}
           userImage={userImage}
           onDeleted={handleDeleted}
+          mediaByPost={media}
         />
       ) : (
         <RevealGrid className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
@@ -257,6 +271,7 @@ export function Feed({
               currentUserId={currentUserId}
               index={i}
               onDeleted={handleDeleted}
+              media={media[p.id]}
             />
           ))}
         </RevealGrid>

@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
-import { X, Heart, MessageCircle } from "lucide-react";
+import { X, Heart, MessageCircle, Copy, Play } from "lucide-react";
 import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
 import { PostCard } from "./PostCard";
+import type { MediaItem } from "./MediaCarousel";
 
 // Instagram-style Explore: a dense 3-column square grid of every post. Tapping
 // a tile opens the same PostCard (with all its reaction/comment logic) in a
@@ -18,6 +19,7 @@ export function ExploreGrid({
   userName,
   userImage,
   onDeleted,
+  mediaByPost,
 }: {
   posts: CommunityPost[];
   social: Record<string, PostSocial>;
@@ -25,6 +27,7 @@ export function ExploreGrid({
   userName: string;
   userImage?: string | null;
   onDeleted?: (postId: string) => void;
+  mediaByPost?: Record<string, MediaItem[]>;
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const activeIndex = posts.findIndex((p) => p.id === activeId);
@@ -35,6 +38,9 @@ export function ExploreGrid({
       <div className="grid grid-cols-3 gap-1 sm:gap-2">
         {posts.map((post) => {
           const s = social[post.id] ?? { counts: { love: 0, wantToGo: 0, beenThere: 0 }, total: 0, comments: 0, mine: null };
+          const media = mediaByPost?.[post.id];
+          const isVideo = media?.[0]?.kind === "video";
+          const isCarousel = !!media && media.length > 1;
           return (
             <button
               key={post.id}
@@ -43,16 +49,25 @@ export function ExploreGrid({
               className="group relative block aspect-square w-full overflow-hidden rounded-xl bg-slate-100 focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
             >
               {post.photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={post.photoUrl}
-                  alt={post.title}
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                />
+                isVideo ? (
+                  <video src={post.photoUrl} className="h-full w-full object-cover" muted playsInline />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={post.photoUrl}
+                    alt={post.title}
+                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+                )
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 p-2 text-center">
                   <span className="line-clamp-3 text-xs font-bold text-white">{post.title}</span>
                 </div>
+              )}
+              {(isVideo || isCarousel) && (
+                <span className="absolute right-2 top-2 text-white drop-shadow">
+                  {isVideo ? <Play className="h-4 w-4 fill-white" /> : <Copy className="h-4 w-4" />}
+                </span>
               )}
               <div className="absolute inset-0 flex items-center justify-center gap-4 bg-black/40 text-sm font-bold text-white opacity-0 transition group-hover:opacity-100 group-focus:opacity-100">
                 <span className="inline-flex items-center gap-1.5">
@@ -76,6 +91,7 @@ export function ExploreGrid({
             userImage={userImage}
             currentUserId={currentUserId}
             index={0}
+            media={mediaByPost?.[active.id]}
             onDeleted={(id) => {
               onDeleted?.(id);
               setActiveId(null);

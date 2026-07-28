@@ -4,9 +4,38 @@ import {
   communityPosts,
   communityReactions,
   communityComments,
+  communityPostMedia,
   type CommunityPost,
   type CommunityComment,
+  type CommunityPostMedia,
 } from "@/lib/db/schema";
+
+export interface PostMediaItem {
+  url: string;
+  kind: "image" | "video";
+}
+
+// Extra media (beyond `post.photoUrl`) for a set of posts, keyed by post id
+// and ordered by `position` — powers the swipeable multi-photo/video
+// carousel. Posts with no extra rows (the common case for older posts)
+// simply won't have a key here; callers fall back to `post.photoUrl`.
+export async function getPostsMedia(postIds: string[]): Promise<Record<string, PostMediaItem[]>> {
+  const out: Record<string, PostMediaItem[]> = {};
+  if (postIds.length === 0) return out;
+  try {
+    const rows = await db
+      .select()
+      .from(communityPostMedia)
+      .where(inArray(communityPostMedia.postId, postIds))
+      .orderBy(communityPostMedia.position);
+    for (const r of rows) {
+      (out[r.postId] ??= []).push({ url: r.url, kind: r.kind === "video" ? "video" : "image" });
+    }
+  } catch {
+    // ignore — callers fall back to photoUrl
+  }
+  return out;
+}
 
 export interface PostSocial {
   counts: { love: number; wantToGo: number; beenThere: number };
@@ -88,6 +117,28 @@ export async function listPublishedPosts(limit = 60): Promise<CommunityPost[]> {
       .where(eq(communityPosts.status, "published"))
       .orderBy(desc(communityPosts.createdAt))
       .limit(limit);
+  } catch {
+    return [];
+  }
+}
+
+// Reels — every published post whose FIRST media item is a video.
+export async function listVideoPosts(limit = 40): Promise<CommunityPost[]> {
+  try {
+    const rows = await db
+      .select({ post: communityPosts })
+      .from(communityPostMedia)
+      .innerJoin(communityPosts, eq(communityPosts.id, communityPostMedia.postId))
+      .where(
+        and(
+          eq(communityPostMedia.position, 0),
+          eq(communityPostMedia.kind, "video"),
+          eq(communityPosts.status, "published")
+        )
+      )
+      .orderBy(desc(communityPosts.createdAt))
+      .limit(limit);
+    return rows.map((r) => r.post);
   } catch {
     return [];
   }

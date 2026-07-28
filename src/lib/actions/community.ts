@@ -8,11 +8,18 @@ import {
   communityPosts,
   communityReactions,
   communityComments,
+  communityPostMedia,
   users,
   type CommunityComment,
   type CommunityPost,
 } from "@/lib/db/schema";
-import { listPublishedPosts, getFeedSocial, type PostSocial } from "@/lib/queries/community";
+import { listPublishedPosts, getFeedSocial, getPostsMedia, type PostSocial, type PostMediaItem } from "@/lib/queries/community";
+import { createNotification } from "@/lib/actions/notifications";
+
+export interface MediaInput {
+  url: string;
+  kind: "image" | "video";
+}
 
 const REACTION_TYPES = ["love", "wantToGo", "beenThere"] as const;
 
@@ -23,7 +30,11 @@ const REACTION_TYPES = ["love", "wantToGo", "beenThere"] as const;
 export async function refreshFeed(
   knownIds: string[],
   limit = 40
-): Promise<{ newPosts: CommunityPost[]; social: Record<string, PostSocial> }> {
+): Promise<{
+  newPosts: CommunityPost[];
+  social: Record<string, PostSocial>;
+  media: Record<string, PostMediaItem[]>;
+}> {
   const session = await auth();
   const known = new Set(knownIds);
 
@@ -31,9 +42,12 @@ export async function refreshFeed(
   const newPosts = latest.filter((p) => !known.has(p.id));
 
   const allIds = [...knownIds, ...newPosts.map((p) => p.id)];
-  const social = await getFeedSocial(allIds, session?.user?.id ?? "");
+  const [social, media] = await Promise.all([
+    getFeedSocial(allIds, session?.user?.id ?? ""),
+    getPostsMedia(newPosts.map((p) => p.id)),
+  ]);
 
-  return { newPosts, social };
+  return { newPosts, social, media };
 }
 
 export interface SubmitResult {
@@ -42,12 +56,14 @@ export interface SubmitResult {
 }
 
 // Post about a place directly — like Instagram/Facebook, no admin approval.
-// Photo + review + rating go live immediately.
+// Photo(s)/video + review + rating go live immediately.
 export async function submitCommunityPost(input: {
   title: string;
   description: string;
   rating?: number;
+  /** @deprecated pass `media` instead — kept for older callers. */
   photoUrl?: string;
+  media?: MediaInput[];
   latitude?: string;
   longitude?: string;
   locationName?: string;
@@ -60,8 +76,15 @@ export async function submitCommunityPost(input: {
   if (!title || title.length < 2) return { ok: false, error: "Add the place name." };
   if (!description || description.length < 3)
     return { ok: false, error: "Write a short review." };
-  if (input.photoUrl && input.photoUrl.length > 2_500_000)
-    return { ok: false, error: "Photo is too large — try a smaller one." };
+
+  const media = input.media?.length ? input.media : input.photoUrl ? [{ url: input.photoUrl, kind: "image" as const }] : [];
+  for (const m of media) {
+    const cap = m.kind === "video" ? 15_000_000 : 2_500_000;
+    if (m.url.length > cap) {
+      return { ok: false, error: m.kind === "video" ? "Video is too large — keep clips short." : "Photo is too large — try a smaller one." };
+    }
+  }
+  if (media.length > 8) return { ok: false, error: "Up to 8 photos per post." };
 
   const rating =
     typeof input.rating === "number" && input.rating >= 1 && input.rating <= 5
@@ -78,20 +101,32 @@ export async function submitCommunityPost(input: {
     .limit(1);
 
   try {
-    await db.insert(communityPosts).values({
-      userId: session.user.id,
-      authorName:
-        me?.name || me?.username || me?.email || session.user.name || session.user.email || "Traveller",
-      authorImage: me?.image ?? session.user.image ?? null,
-      title,
-      description,
-      rating,
-      photoUrl: input.photoUrl || null,
-      latitude: input.latitude || null,
-      longitude: input.longitude || null,
-      locationName: input.locationName || null,
-      status: "published",
-    });
+    const [created] = await db
+      .insert(communityPosts)
+      .values({
+        userId: session.user.id,
+        authorName:
+          me?.name || me?.username || me?.email || session.user.name || session.user.email || "Traveller",
+        authorImage: me?.image ?? session.user.image ?? null,
+        title,
+        description,
+        rating,
+        // First media item mirrors into `photoUrl` — every older piece of the
+        // app that just reads `post.photoUrl` keeps working unchanged.
+        photoUrl: media[0]?.url ?? null,
+        latitude: input.latitude || null,
+        longitude: input.longitude || null,
+        locationName: input.locationName || null,
+        status: "published",
+      })
+      .returning({ id: communityPosts.id });
+
+    if (created && media.length > 0) {
+      await db.insert(communityPostMedia).values(
+        media.map((m, i) => ({ postId: created.id, url: m.url, kind: m.kind, position: i }))
+      );
+    }
+
     revalidatePath("/community");
     revalidatePath("/dashboard");
     return { ok: true };
@@ -139,6 +174,20 @@ export async function setReaction(postId: string, type: string): Promise<Reactio
           set: { type },
         });
       mine = type;
+
+      const [post] = await db
+        .select({ userId: communityPosts.userId })
+        .from(communityPosts)
+        .where(eq(communityPosts.id, postId))
+        .limit(1);
+      if (post) {
+        await createNotification({
+          userId: post.userId,
+          actorId: session.user.id,
+          type: type as "love" | "wantToGo" | "beenThere",
+          postId,
+        });
+      }
     }
 
     const rows = await db
@@ -183,6 +232,22 @@ export async function addComment(
         body: text,
       })
       .returning();
+
+    const [post] = await db
+      .select({ userId: communityPosts.userId })
+      .from(communityPosts)
+      .where(eq(communityPosts.id, postId))
+      .limit(1);
+    if (post) {
+      await createNotification({
+        userId: post.userId,
+        actorId: session.user.id,
+        type: "comment",
+        postId,
+        commentBody: text,
+      });
+    }
+
     return { ok: true, comment: created };
   } catch {
     return { ok: false, error: "Could not comment." };

@@ -1,13 +1,15 @@
 import { Users, Sparkles } from "lucide-react";
 
 import type { CommunityPost } from "@/lib/db/schema";
-import type { PostSocial } from "@/lib/queries/community";
+import type { PostSocial, PostMediaItem } from "@/lib/queries/community";
 import { Feed } from "./Feed";
 import { Reveal } from "@/components/app/Reveal";
+import { CommunityTopBar } from "./CommunityTopBar";
 
 interface Props {
   posts: CommunityPost[];
   social: Record<string, PostSocial>;
+  media?: Record<string, PostMediaItem[]>;
   currentUserId: string;
   userName: string;
   userImage?: string | null;
@@ -18,7 +20,7 @@ interface Props {
 // mobile hero header, so nothing about the feed's reaction / comment / edit /
 // delete behaviour is duplicated. Coral accent comes automatically from the
 // mobile theme, so every `emerald`/`green` utility here paints coral on phones.
-export function MobileCommunity({ posts, social, currentUserId, userName, userImage }: Props) {
+export function MobileCommunity({ posts, social, media, currentUserId, userName, userImage }: Props) {
   return (
     <div className="space-y-5 pb-4">
       {/* Welcoming hero header */}
@@ -30,10 +32,11 @@ export function MobileCommunity({ posts, social, currentUserId, userName, userIm
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/20 backdrop-blur">
               <Users className="h-6 w-6" />
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="text-2xl font-extrabold tracking-tight">Community</h1>
               <p className="text-[13px] font-medium text-white/85">Real places from real travellers</p>
             </div>
+            <CommunityTopBar light />
           </div>
           <p className="relative mt-3 text-sm font-medium leading-snug text-white/90">
             Double-tap to love, save spots for later, and mark 🎒 Want to go / ✅ Been there — comment &amp; share too.
@@ -54,6 +57,7 @@ export function MobileCommunity({ posts, social, currentUserId, userName, userIm
       <Feed
         posts={posts}
         social={social}
+        media={media}
         currentUserId={currentUserId}
         userName={userName}
         userImage={userImage}

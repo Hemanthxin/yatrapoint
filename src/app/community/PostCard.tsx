@@ -22,6 +22,8 @@ import { motion } from "framer-motion";
 import type { CommunityPost, CommunityComment } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
 import { Reveal } from "@/components/app/Reveal";
+import { MediaCarousel, type MediaItem } from "./MediaCarousel";
+import { splitHashtags } from "@/lib/hashtags";
 import {
   setReaction,
   addComment,
@@ -52,6 +54,28 @@ function timeAgo(date: Date | string): string {
   return new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 }
 
+// Renders a caption with `#tag` runs as tappable links into search-by-hashtag.
+function Caption({ text }: { text: string }) {
+  const parts = splitHashtags(text);
+  return (
+    <>
+      {parts.map((p, i) =>
+        p.tag ? (
+          <Link
+            key={i}
+            href={`/community/search?tag=${encodeURIComponent(p.tag)}`}
+            className="font-semibold text-emerald-700 hover:underline"
+          >
+            {p.text}
+          </Link>
+        ) : (
+          <span key={i}>{p.text}</span>
+        )
+      )}
+    </>
+  );
+}
+
 export function PostCard({
   post: initialPost,
   social,
@@ -60,6 +84,7 @@ export function PostCard({
   currentUserId,
   index,
   onDeleted,
+  media,
 }: {
   post: CommunityPost;
   social: PostSocial;
@@ -67,6 +92,7 @@ export function PostCard({
   userImage?: string | null;
   currentUserId: string;
   index: number;
+  media?: MediaItem[];
   onDeleted?: (postId: string) => void;
 }) {
   const [post, setPost] = useState(initialPost);
@@ -404,13 +430,15 @@ export function PostCard({
         <p className="px-4 pb-1 text-xs font-medium text-rose-600">{actionError}</p>
       )}
 
-      {/* Photo — double-tap to love */}
-      <div className="relative cursor-pointer select-none" onDoubleClick={onPhotoDoubleClick}>
-        {post.photoUrl ? (
+      {/* Photo/video — double-tap to love */}
+      <div className="relative h-[26rem] cursor-pointer select-none" onDoubleClick={onPhotoDoubleClick}>
+        {media && media.length > 0 ? (
+          <MediaCarousel media={media} alt={post.title} className="h-full w-full" />
+        ) : post.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.photoUrl} alt={post.title} className="max-h-[30rem] w-full object-cover" />
+          <img src={post.photoUrl} alt={post.title} className="h-full w-full object-cover" />
         ) : (
-          <div className="grid h-60 w-full place-items-center bg-slate-100 text-5xl">🌄</div>
+          <div className="grid h-full w-full place-items-center bg-slate-100 text-5xl">🌄</div>
         )}
         {burst && (
           <span className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -538,7 +566,9 @@ export function PostCard({
                 {post.authorName ?? "Traveller"}
               </Link>{" "}
               <span className="font-bold text-slate-900">{post.title}</span>{" "}
-              <span className="text-slate-600">{post.description}</span>
+              <span className="text-slate-600">
+                <Caption text={post.description} />
+              </span>
             </p>
 
             {/* Advanced travel reactions — intent + visited markers */}

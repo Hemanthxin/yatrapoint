@@ -2,39 +2,21 @@
 
 import { useRef, useState, useTransition, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, MapPin, Loader2, Star, X, Send } from "lucide-react";
+import { Camera, Clapperboard, MapPin, Loader2, Star, X, Send } from "lucide-react";
 
 import { submitCommunityPost } from "@/lib/actions/community";
 import { Reveal } from "@/components/app/Reveal";
 
-export function CommunityForm({
-  onPosted,
-  onCancel,
-}: {
-  onPosted?: () => void;
-  onCancel?: () => void;
-} = {}) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const fileRef = useRef<HTMLInputElement>(null);
+interface MediaDraft {
+  url: string;
+  kind: "image" | "video";
+}
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [photo, setPhoto] = useState<string>("");
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [locationName, setLocationName] = useState("");
-  const [locating, setLocating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const MAX_PHOTOS = 8;
+const MAX_VIDEO_BYTES = 12_000_000;
 
-  function onPhoto(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith("image/")) {
-      setError("Please choose an image.");
-      return;
-    }
-    setError(null);
+function resizeImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       const src = typeof reader.result === "string" ? reader.result : "";
@@ -51,14 +33,95 @@ export function CommunityForm({
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext("2d");
-        if (!ctx) return setPhoto(src);
+        if (!ctx) return resolve(src);
         ctx.drawImage(img, 0, 0, width, height);
-        setPhoto(canvas.toDataURL("image/jpeg", 0.75));
+        resolve(canvas.toDataURL("image/jpeg", 0.75));
       };
-      img.onerror = () => setError("Could not read that image.");
+      img.onerror = () => reject(new Error("Could not read that image."));
       img.src = src;
     };
+    reader.onerror = () => reject(new Error("Could not read that file."));
     reader.readAsDataURL(file);
+  });
+}
+
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => reject(new Error("Could not read that file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+export function CommunityForm({
+  onPosted,
+  onCancel,
+}: {
+  onPosted?: () => void;
+  onCancel?: () => void;
+} = {}) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [media, setMedia] = useState<MediaDraft[]>([]);
+  const [mediaBusy, setMediaBusy] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationName, setLocationName] = useState("");
+  const [locating, setLocating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function onPhotos(e: ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []).filter((f) => f.type.startsWith("image/"));
+    if (files.length === 0) return;
+    setError(null);
+    setMediaBusy(true);
+    try {
+      // Adding photos always replaces a video — a post is either a photo
+      // carousel or a single video, matching how Instagram's composer works.
+      const existingPhotos = media.filter((m) => m.kind === "image");
+      const room = Math.max(0, MAX_PHOTOS - existingPhotos.length);
+      const toAdd = files.slice(0, room);
+      const resized = await Promise.all(toAdd.map(resizeImage));
+      setMedia([...existingPhotos, ...resized.map((url) => ({ url, kind: "image" as const }))]);
+      if (files.length > toAdd.length) setError(`Only added the first ${MAX_PHOTOS} photos.`);
+    } catch {
+      setError("Could not read one of those images.");
+    } finally {
+      setMediaBusy(false);
+    }
+  }
+
+  async function onVideo(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith("video/")) {
+      setError("Please choose a video.");
+      return;
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      setError("Video is too large — keep clips under ~10 seconds.");
+      return;
+    }
+    setError(null);
+    setMediaBusy(true);
+    try {
+      const url = await readAsDataUrl(file);
+      setMedia([{ url, kind: "video" }]);
+    } catch {
+      setError("Could not read that video.");
+    } finally {
+      setMediaBusy(false);
+    }
+  }
+
+  function removeMediaAt(i: number) {
+    setMedia((m) => m.filter((_, idx) => idx !== i));
   }
 
   function addLiveLocation() {
@@ -85,7 +148,7 @@ export function CommunityForm({
         title,
         description,
         rating: rating || undefined,
-        photoUrl: photo || undefined,
+        media,
         latitude: coords ? String(coords.lat) : undefined,
         longitude: coords ? String(coords.lng) : undefined,
         locationName: locationName || undefined,
@@ -94,10 +157,11 @@ export function CommunityForm({
       setTitle("");
       setDescription("");
       setRating(0);
-      setPhoto("");
+      setMedia([]);
       setCoords(null);
       setLocationName("");
       if (fileRef.current) fileRef.current.value = "";
+      if (videoRef.current) videoRef.current.value = "";
       router.refresh();
       onPosted?.();
     });
@@ -124,30 +188,60 @@ export function CommunityForm({
         )}
       </div>
 
-      {/* Photo */}
-      {photo ? (
-        <div className="relative mb-3 h-44 w-full overflow-hidden rounded-2xl">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photo} alt="preview" className="h-full w-full object-cover" />
-          <button
-            type="button"
-            onClick={() => setPhoto("")}
-            className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-black/60 text-white"
-          >
-            <X className="h-4 w-4" />
-          </button>
+      {/* Media — up to 8 photos (swipeable) OR a single short video */}
+      {media.length > 0 ? (
+        <div className="mb-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          {media.map((m, i) => (
+            <div key={i} className="relative h-32 w-32 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+              {m.kind === "video" ? (
+                <video src={m.url} className="h-full w-full object-cover" muted playsInline />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={m.url} alt={`preview ${i + 1}`} className="h-full w-full object-cover" />
+              )}
+              <button
+                type="button"
+                onClick={() => removeMediaAt(i)}
+                className="absolute right-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-white"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+          {media[0]?.kind === "image" && media.length < MAX_PHOTOS && (
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="grid h-32 w-32 shrink-0 place-items-center rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-emerald-400 hover:text-emerald-600"
+            >
+              <Camera className="h-6 w-6" />
+            </button>
+          )}
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className="mb-3 flex h-32 w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600"
-        >
-          <Camera className="h-7 w-7" />
-          <span className="text-sm font-medium">Add a photo</span>
-        </button>
+        <div className="mb-3 flex gap-2">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={mediaBusy}
+            className="flex h-32 flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600 disabled:opacity-60"
+          >
+            {mediaBusy ? <Loader2 className="h-7 w-7 animate-spin" /> : <Camera className="h-7 w-7" />}
+            <span className="text-sm font-medium">Add photos</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => videoRef.current?.click()}
+            disabled={mediaBusy}
+            className="flex h-32 flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600 disabled:opacity-60"
+          >
+            <Clapperboard className="h-7 w-7" />
+            <span className="text-sm font-medium">Add a video</span>
+          </button>
+        </div>
       )}
-      <input ref={fileRef} type="file" accept="image/*" onChange={onPhoto} className="hidden" />
+      <input ref={fileRef} type="file" accept="image/*" multiple onChange={onPhotos} className="hidden" />
+      <input ref={videoRef} type="file" accept="video/*" onChange={onVideo} className="hidden" />
 
       {/* Place name */}
       <input

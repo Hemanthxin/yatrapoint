@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { BackButton } from "@/components/app/BackButton";
 import { getPublicProfile, getFollowCounts, isFollowing } from "@/lib/queries/follows";
-import { listMyPosts, getFeedSocial } from "@/lib/queries/community";
+import { listMyPosts, getFeedSocial, getPostsMedia } from "@/lib/queries/community";
 import { ExploreGrid } from "@/app/community/ExploreGrid";
 import { EmptyState } from "@/components/app/EmptyState";
 import { CommunityIllustration } from "@/components/illustrations";
@@ -36,7 +36,10 @@ export default async function PublicProfilePage({ params }: PageProps) {
     getFollowCounts(userId),
     isFollowing(me.id ?? "", userId),
   ]);
-  const social = await getFeedSocial(posts.map((p) => p.id), me.id ?? "");
+  const [social, media] = await Promise.all([
+    getFeedSocial(posts.map((p) => p.id), me.id ?? ""),
+    getPostsMedia(posts.map((p) => p.id)),
+  ]);
 
   const displayName = profile.name || profile.username || "Traveller";
 
@@ -76,6 +79,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
               currentUserId={me.id ?? ""}
               userName={me.name || me.email || "You"}
               userImage={me.image}
+              mediaByPost={media}
             />
           )}
         </div>
