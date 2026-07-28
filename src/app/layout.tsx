@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Caveat, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     "Plan memorable India trips with Saafera. Discover places, build budget-friendly routes, compare stays, and explore festivals and hidden gems.",
   keywords: SEO_KEYWORDS,
   applicationName: "Saafera",
+  manifest: "/manifest.webmanifest",
   authors: [{ name: "Saafera" }],
   creator: "Saafera",
   publisher: "Saafera",
@@ -68,10 +69,14 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/saafera-logo.jpg",
-    shortcut: "/saafera-logo.jpg",
-    apple: "/saafera-logo.jpg",
+    icon: "/icons/icon-512.png",
+    shortcut: "/icons/icon-512.png",
+    apple: "/icons/icon-192.png",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1f6b45",
 };
 
 export default function RootLayout({

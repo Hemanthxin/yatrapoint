@@ -1,0 +1,27 @@
+diff --git a/node_modules/@bubblewrap/core/dist/lib/GradleWrapper.js b/node_modules/@bubblewrap/core/dist/lib/GradleWrapper.js
+index 67d5ad5..f2eb3a4 100644
+--- a/node_modules/@bubblewrap/core/dist/lib/GradleWrapper.js
++++ b/node_modules/@bubblewrap/core/dist/lib/GradleWrapper.js
+@@ -32,7 +32,7 @@ class GradleWrapper {
+         this.androidSdkTools = androidSdkTools;
+         this.projectLocation = projectLocation || this.process.cwd();
+         if (process.platform === 'win32') {
+-            this.gradleCmd = 'gradlew.bat';
++            this.gradleCmd = '.\\gradlew.bat';
+         }
+         else {
+             this.gradleCmd = './gradlew';
+diff --git a/node_modules/@bubblewrap/core/dist/lib/jdk/JdkHelper.js b/node_modules/@bubblewrap/core/dist/lib/jdk/JdkHelper.js
+index 46f0aac..85ca12c 100644
+--- a/node_modules/@bubblewrap/core/dist/lib/jdk/JdkHelper.js
++++ b/node_modules/@bubblewrap/core/dist/lib/jdk/JdkHelper.js
+@@ -52,7 +52,8 @@ class JdkHelper {
+     async runJava(args) {
+         const java = this.process.platform === 'win32' ? '/bin/java.exe' : '/bin/java';
+         const runJavaCmd = this.joinPath(this.getJavaHome(), java);
+-        return await (0, util_1.executeFile)(runJavaCmd, args, this.getEnv());
++        const quotedRunJavaCmd = this.process.platform === 'win32' ? `"${runJavaCmd}"` : runJavaCmd;
++        return await (0, util_1.executeFile)(quotedRunJavaCmd, args, this.getEnv());
+     }
+     /**
+      * Returns information from the JAVA_HOME, based on the config and platform.

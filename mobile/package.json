@@ -1,0 +1,15 @@
+{
+  "name": "saafera-twa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Android Trusted Web Activity (TWA) project wrapping https://saafera.com for the Play Store. See README.md.",
+  "scripts": {
+    "postinstall": "patch-package",
+    "build": "bubblewrap build --skipPwaValidation",
+    "update": "bubblewrap update"
+  },
+  "devDependencies": {
+    "@bubblewrap/cli": "1.24.1",
+    "patch-package": "^8.0.1"
+  }
+}

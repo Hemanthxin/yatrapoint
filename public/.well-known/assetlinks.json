@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.saafera.app",
+      "sha256_cert_fingerprints": [
+        "8C:5A:EF:E1:4A:2F:74:A8:9B:BC:B3:53:4F:2B:31:DE:44:1B:AE:78:84:04:81:6E:33:19:35:7E:69:70:69:0A"
+      ]
+    }
+  }
+]

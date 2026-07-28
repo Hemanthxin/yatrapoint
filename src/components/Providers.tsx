@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { LocationProvider } from "./app/LocationContext";
 import { ThemeProvider } from "./ThemeProvider";
 import { NavProgress } from "./app/NavProgress";
+import { ServiceWorkerRegister } from "./app/ServiceWorkerRegister";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <Suspense fallback={null}>
             <NavProgress />
           </Suspense>
+          <ServiceWorkerRegister />
           {children}
         </LocationProvider>
       </ThemeProvider>
