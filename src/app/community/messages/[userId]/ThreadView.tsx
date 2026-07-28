@@ -29,6 +29,21 @@ export function ThreadView({
   const lastCreatedAtRef = useRef<string | null>(
     initialMessages.length > 0 ? new Date(initialMessages[initialMessages.length - 1].createdAt).toISOString() : null
   );
+  // Synchronous locks — plain refs, not state, so they take effect immediately
+  // even within the same event-loop tick (React state updates are batched and
+  // can lag by a render, which isn't fast enough to stop a double keydown).
+  const sendingRef = useRef(false);
+  const pollingRef = useRef(false);
+
+  // Merge in new messages by id, so a duplicate arriving from either a
+  // double-send or an overlapping poll tick can never render twice.
+  function addMessages(incoming: Message[]) {
+    setMessages((prev) => {
+      const seen = new Set(prev.map((m) => m.id));
+      const fresh = incoming.filter((m) => !seen.has(m.id));
+      return fresh.length > 0 ? [...prev, ...fresh] : prev;
+    });
+  }
 
   useEffect(() => {
     markThreadRead(otherUserId);
@@ -40,27 +55,40 @@ export function ThreadView({
 
   useEffect(() => {
     const id = setInterval(async () => {
-      const res = await refreshThread(otherUserId, lastCreatedAtRef.current);
-      if (res.messages.length > 0) {
-        setMessages((prev) => [...prev, ...res.messages]);
-        lastCreatedAtRef.current = new Date(res.messages[res.messages.length - 1].createdAt).toISOString();
-        if (res.messages.some((m) => m.senderId === otherUserId)) markThreadRead(otherUserId);
+      if (pollingRef.current) return; // previous tick still in flight — skip, don't overlap
+      pollingRef.current = true;
+      try {
+        const res = await refreshThread(otherUserId, lastCreatedAtRef.current);
+        if (res.messages.length > 0) {
+          addMessages(res.messages);
+          lastCreatedAtRef.current = new Date(res.messages[res.messages.length - 1].createdAt).toISOString();
+          if (res.messages.some((m) => m.senderId === otherUserId)) markThreadRead(otherUserId);
+        }
+      } finally {
+        pollingRef.current = false;
       }
     }, POLL_MS);
     return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otherUserId]);
 
   function submit() {
+    if (sendingRef.current) return; // guards against a double Enter/click firing before re-render
     const body = text.trim();
     if (!body) return;
+    sendingRef.current = true;
     setText("");
     startSending(async () => {
-      const res = await sendMessage(otherUserId, body);
-      if (res.ok && res.message) {
-        setMessages((prev) => [...prev, res.message as Message]);
-        lastCreatedAtRef.current = new Date(res.message!.createdAt).toISOString();
-      } else {
-        setText(body);
+      try {
+        const res = await sendMessage(otherUserId, body);
+        if (res.ok && res.message) {
+          addMessages([res.message]);
+          lastCreatedAtRef.current = new Date(res.message.createdAt).toISOString();
+        } else {
+          setText(body);
+        }
+      } finally {
+        sendingRef.current = false;
       }
     });
   }
