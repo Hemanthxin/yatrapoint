@@ -6,6 +6,7 @@ import {
   ExternalLink,
   MapPin,
   Tag,
+  Ticket,
   Wallet,
 } from "lucide-react";
 
@@ -115,6 +116,16 @@ export default async function CityPlacePage({ params }: PageProps) {
         )}
 
         <div className="mt-6 flex flex-wrap gap-2">
+          {place.bookingUrl && (
+            <a
+              href={place.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
+            >
+              <Ticket className="h-4 w-4" /> Book tickets <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
           <a
             href={placeMapUrl(place)}
             target="_blank"

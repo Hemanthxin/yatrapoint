@@ -65,7 +65,7 @@ export function calcBudget(input: BudgetInput): BudgetBreakdown {
 
 export const defaultBudgetParams = {
   vehicle: "small_car" as VehicleKind,
-  people: 2,
+  people: 1,
   foodPerPerson: 350,
   miscPerPerson: 100,
   parkingFee: 50,

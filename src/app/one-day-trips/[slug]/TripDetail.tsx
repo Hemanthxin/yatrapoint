@@ -11,10 +11,13 @@ import {
   Wallet,
   Play,
   MapPin,
+  Ticket,
+  ExternalLink,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
+import { NumberField } from "@/components/app/NumberField";
 import { fetchDrivingRoute, type RouteResult } from "@/lib/routing";
 import {
   addMinutes,
@@ -195,6 +198,17 @@ export function TripDetail({ trip }: TripDetailProps) {
                 </span>
               ))}
             </div>
+          )}
+          {trip.bookingUrl && (
+            <a
+              href={trip.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
+            >
+              <Ticket className="h-4 w-4" /> Book tickets
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
           )}
         </div>
       </section>
@@ -390,41 +404,3 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function NumberField({
-  label,
-  value,
-  onChange,
-  min = 0,
-  max = 999999,
-  step = 1,
-  prefix,
-}: {
-  label: string;
-  value: number;
-  onChange: (n: number) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-  prefix?: string;
-}) {
-  return (
-    <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
-      {label}
-      <div className="mt-1 flex items-center rounded-lg border border-slate-200 bg-white px-2 py-1.5">
-        {prefix && (
-          <span className="mr-1 text-sm text-slate-500">{prefix}</span>
-        )}
-        <input
-          type="number"
-          inputMode="numeric"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(Math.max(min, Math.min(max, Number(e.target.value) || 0)))}
-          className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none"
-        />
-      </div>
-    </label>
-  );
-}
