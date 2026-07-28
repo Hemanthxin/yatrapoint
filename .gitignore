@@ -18,6 +18,9 @@ next-env.d.ts
 .idea
 .vscode
 
+# TypeScript incremental build cache — regenerated on every compile, pure noise
+*.tsbuildinfo
+
 # DB export workbooks + long-running enrichment checkpoint
 exports
 scripts/.enrich-checkpoint.json
