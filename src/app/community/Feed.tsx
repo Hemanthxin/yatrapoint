@@ -159,7 +159,7 @@ export function Feed({
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{t.label}</span>
+                <span className="hidden truncate sm:inline">{t.label}</span>
                 {t.id === "mine" && mineCount > 0 && (
                   <span
                     className={`rounded-full px-1.5 text-xs ${
