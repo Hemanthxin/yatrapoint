@@ -213,7 +213,10 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   const v = VEHICLES[input.vehicle];
   const costPerKm = input.costPerKm ?? v.costPerKm;
   const people = Math.max(1, input.people);
-  const maxStops = input.maxStops ?? 6;
+  const pinnedCount = input.candidates.filter((c) => c.pinned).length;
+  // Hand-picked places are a hard requirement, not a suggestion — never let the
+  // stop-count cap truncate the traveller's own explicit selection.
+  const maxStops = Math.max(input.maxStops ?? 6, pinnedCount);
   const start: Pt = input.start;
 
   // 15% buffer of time for traffic + breaks.
@@ -327,11 +330,15 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
 
-  // 1) Hand-picked places first — inserted at their cheapest position.
+  // 1) Hand-picked places first — inserted at their cheapest position. These
+  // are placed UNCONDITIONALLY: the traveller explicitly chose them, so the
+  // budget/time/distance caps below only ever govern how many EXTRA
+  // auto-discovered stops get added on top, never whether a hand-picked place
+  // makes it in. (Money/time still show honestly over-budget if 5 far-apart
+  // picks genuinely can't fit — but they're never silently dropped.)
   for (const c of pool.filter((c) => c.pinned)) {
-    if (tour.length >= maxStops) break;
     const { pos, detour } = bestInsertion(c);
-    if (feasible(c, detour)) place(c, pos, detour);
+    place(c, pos, detour);
   }
 
   const taken = new Set(tour.map((c) => c.id));
