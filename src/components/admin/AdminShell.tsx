@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   ShieldCheck,
+  ImageIcon,
   type LucideIcon,
 } from "lucide-react";
 
@@ -28,6 +29,7 @@ const NAV: NavItem[] = [
   { href: "/admin/dashboard", label: "Overview", icon: LayoutDashboard, match: "/admin/dashboard" },
   { href: "/admin/places", label: "Places", icon: MapPinned, match: "/admin/places" },
   { href: "/admin/places/new", label: "Add Place", icon: PlusCircle, match: "/admin/places/new" },
+  { href: "/admin/images", label: "Place Photos", icon: ImageIcon, match: "/admin/images" },
   { href: "/dashboard", label: "Public Site", icon: Globe },
 ];
 
@@ -42,6 +44,7 @@ function pageTitle(path: string): string {
   if (path.startsWith("/admin/places/new")) return "Add Place";
   if (/^\/admin\/places\/.+\/edit/.test(path)) return "Edit Place";
   if (path.startsWith("/admin/places")) return "Places";
+  if (path.startsWith("/admin/images")) return "Place Photos";
   if (path.startsWith("/admin/dashboard")) return "Overview";
   return "Overview";
 }
