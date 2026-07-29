@@ -300,6 +300,17 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     const newCost = curStopCost + stopCostOf(c) + newDist * costPerKm * ROAD_FACTOR;
     return newMin <= minutesBudget && newCost <= spendable;
   };
+  // Same as `feasible` but WITHOUT the distance-cap check — money and time are
+  // real limits, but distCap is just a heuristic ("don't balloon past ~2× the
+  // chosen distance") that shouldn't leave the traveller's own stop count and
+  // budget unmet when there's genuinely spare money/time to go a bit further.
+  // Only used as a fallback (see step 2b) once the capped fill stalls short.
+  const feasibleIgnoringDistance = (c: Candidate, detour: number) => {
+    const newDist = curDist + detour;
+    const newMin = (newDist / speed) * 60 + curStopMin + c.idealMinutes;
+    const newCost = curStopCost + stopCostOf(c) + newDist * costPerKm * ROAD_FACTOR;
+    return newMin <= minutesBudget && newCost <= spendable;
+  };
   const place = (c: Candidate, pos: number, detour: number) => {
     tour.splice(pos, 0, c);
     curDist += detour;
@@ -408,6 +419,26 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
       if (isFoodCat(c) && foodUsed) continue;
       const { pos, detour } = bestInsertion(c);
       if (!feasible(c, detour)) continue;
+      const detourMin = (detour / speed) * 60 + c.idealMinutes;
+      const ratio = (valueOf(c, covered) * (jitter.get(c.id) ?? 1)) / Math.max(5, detourMin);
+      if (!best || ratio > best.ratio) best = { c, pos, detour, ratio };
+    }
+    if (!best) break;
+    place(best.c, best.pos, best.detour);
+    pool = pool.filter((c) => c.id !== best!.c.id);
+  }
+
+  // 2b) Relaxed fill — the distance-capped loop above stalled short of the
+  // requested stop count. If there's real budget/time left over, use it
+  // rather than leaving the trip both under-filled AND under-spent; the
+  // traveller asked for N stops, and "stay within ~2x the chosen distance"
+  // is a heuristic, not a hard promise, the way the money/time limits are.
+  while (tour.length < maxStops) {
+    let best: { c: Candidate; pos: number; detour: number; ratio: number } | null = null;
+    for (const c of pool) {
+      if (isFoodCat(c) && foodUsed) continue;
+      const { pos, detour } = bestInsertion(c);
+      if (!feasibleIgnoringDistance(c, detour)) continue;
       const detourMin = (detour / speed) * 60 + c.idealMinutes;
       const ratio = (valueOf(c, covered) * (jitter.get(c.id) ?? 1)) / Math.max(5, detourMin);
       if (!best || ratio > best.ratio) best = { c, pos, detour, ratio };
