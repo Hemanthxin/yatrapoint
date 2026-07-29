@@ -119,7 +119,11 @@ export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
     return () => ctrl.abort();
   }, [coords]);
 
-  const nearest = useMemo(() => {
+  // Haversine (straight-line) shortlist — instant, no network. Wider than the
+  // final 4 so there's real choice left for the driving-distance re-rank
+  // below to work with (the nearest-as-the-crow-flies place isn't always the
+  // nearest by road).
+  const shortlist = useMemo(() => {
     const items: NearItem[] = [];
 
     for (const p of curated) {
@@ -160,17 +164,54 @@ export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
 
     items.sort((a, b) => a.distanceKm - b.distanceKm);
 
-    // De-dup places within ~120 m of one already chosen; keep the nearest four.
+    // De-dup places within ~120 m of one already chosen; keep the nearest 16
+    // as candidates for the real-driving-distance re-rank.
     const out: NearItem[] = [];
     for (const it of items) {
       if (out.some((o) => haversineKm({ lat: o.lat, lng: o.lng }, { lat: it.lat, lng: it.lng }) < 0.12)) {
         continue;
       }
       out.push(it);
-      if (out.length >= 4) break;
+      if (out.length >= 16) break;
     }
     return out;
   }, [curated, live, coords]);
+
+  // Upgrade the shortlist to real driving distance (Google Distance Matrix),
+  // then re-rank and keep the nearest four BY ROAD — falls straight back to
+  // the haversine shortlist (already sorted, already deduped) if the call
+  // fails, so this can never leave the widget empty or broken.
+  const [refined, setRefined] = useState<NearItem[] | null>(null);
+  useEffect(() => {
+    if (shortlist.length === 0) {
+      setRefined(null);
+      return;
+    }
+    const ctrl = new AbortController();
+    fetch("/api/driving-distance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        origin: coords,
+        destinations: shortlist.map((p) => ({ lat: p.lat, lng: p.lng })),
+      }),
+      signal: ctrl.signal,
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        const km: (number | null)[] = Array.isArray(d?.distancesKm) ? d.distancesKm : [];
+        const withReal = shortlist.map((p, i) => ({ ...p, distanceKm: km[i] ?? p.distanceKm }));
+        withReal.sort((a, b) => a.distanceKm - b.distanceKm);
+        setRefined(withReal.slice(0, 4));
+      })
+      .catch(() => {
+        // keep whatever the haversine fallback below is already showing
+      });
+    return () => ctrl.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shortlist]);
+
+  const nearest = refined ?? shortlist.slice(0, 4);
 
   if (nearest.length === 0) {
     return (
