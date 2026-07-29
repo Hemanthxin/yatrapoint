@@ -220,6 +220,13 @@ export async function POST(req: NextRequest) {
   const wantedCats = parsed.data.categories.filter((c): c is OverpassCategory =>
     (ALL_OVERPASS as string[]).includes(c)
   );
+  // Always widen the search to general tourist attractions/heritage spots on
+  // top of whatever specific interests the traveller picked — keeps the
+  // candidate pool from being too thin to hit the requested stop count when
+  // the chosen interests are narrow or the area is sparsely seeded (e.g. a
+  // far "around me" search), and travellers expect well-known tourist places
+  // to always be considered, not just their exact category picks.
+  if (!wantedCats.includes("tourist_attraction")) wantedCats.push("tourist_attraction");
   const mode = parsed.data.mode as TravelMode;
   // In TRAIN mode, also discover railway stations so the actual stations along
   // the trip (e.g. Bangarpet) show up as stops on the map.
