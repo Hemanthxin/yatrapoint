@@ -33,6 +33,7 @@ export default async function OneDayTripsPage() {
         icon={Compass}
         title={<>One-day trips <span className="italic">from Bangalore</span></>}
         subtitle={`${trips.length} curated picks, sorted by distance from you.`}
+        backgroundImage="/pagehero-bg.jpg"
       />
 
       <LocationBanner />

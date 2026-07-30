@@ -46,6 +46,7 @@ export default async function HiddenPlacesPage() {
           icon={Sparkles}
           title={<>Hidden <span className="italic">Places</span></>}
           subtitle="Offbeat destinations — the ones travel agents rarely sell."
+          backgroundImage="/pagehero-bg.jpg"
         />
       </div>
 

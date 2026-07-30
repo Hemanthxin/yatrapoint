@@ -35,6 +35,7 @@ export default async function TripCartPage() {
             icon={MapPinned}
             title={<>Your <span className="italic">Trip Route</span></>}
             subtitle="Everything in your cart, mapped as one route."
+            backgroundImage="/pagehero-bg.jpg"
           />
         </div>
 

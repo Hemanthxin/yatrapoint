@@ -390,6 +390,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           title={<>Trip <span className="italic">Planner</span></>}
           subtitle={`Plan a trip that fits your budget — ${STEPS.length} quick steps.`}
           action={<PersonalFinanceIllustration className="hidden h-28 w-28 shrink-0 xl:block" />}
+          backgroundImage="/pagehero-bg.jpg"
         />
       </div>
 

@@ -143,6 +143,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
         icon={Compass}
         title={<>Tourist <span className="italic">Places</span></>}
         subtitle={`${total} curated ${total === 1 ? "place" : "places"} matching your filters — from heritage forts to hidden waterfalls.`}
+        backgroundImage="/pagehero-bg.jpg"
       />
 
       {/* Trips by place-type — quick category chips (folded in from the old

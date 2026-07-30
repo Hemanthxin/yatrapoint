@@ -109,6 +109,7 @@ export default async function StaysPage({ searchParams }: PageProps) {
           icon={BedDouble}
           title={<>Find Your <span className="italic">Stay</span></>}
           subtitle={`${data.total.toLocaleString("en-IN")} hotels & stays across India — find your night halt.`}
+          backgroundImage="/pagehero-bg.jpg"
         />
       </div>
 

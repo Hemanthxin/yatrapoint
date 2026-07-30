@@ -50,6 +50,7 @@ export default async function ExploreBangalorePage() {
           icon={Sparkles}
           title={<>Explore <span className="italic">Bengaluru</span></>}
           subtitle="Restaurants, malls, temples, parks, museums and more — sorted by distance from you."
+          backgroundImage="/pagehero-bg.jpg"
         />
       </div>
 
