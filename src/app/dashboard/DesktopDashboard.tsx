@@ -65,17 +65,19 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
             sizes="(max-width: 1280px) 100vw, 60vw"
             className="object-cover"
           />
-          {/* Image renders at full opacity — this is only a light scrim behind
-              the text so the photo itself stays clearly visible. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f7f2e9]/70 via-[#f7f2e9]/35 via-30% to-transparent" />
+          {/* Dark scrim so white text sits comfortably over the photo — still
+              image renders at full opacity, the fade just clears sooner. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/55 via-45% to-transparent" />
           <div className="relative flex h-full max-w-lg flex-col justify-center p-10">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-700">Featured Destination</p>
-            <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-slate-900 drop-shadow-sm">
+            <p className="inline-flex w-max items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-200 backdrop-blur-sm">
+              <MapPin className="h-3 w-3" /> Featured Destination
+            </p>
+            <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-white drop-shadow-sm">
               Explore Karnataka,
               <br />
-              <span className="text-gradient animate-shimmer italic">Create Memories</span>
+              <span className="italic text-emerald-300">Create Memories</span>
             </h1>
-            <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-slate-600 drop-shadow-sm">
+            <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-emerald-50/80 drop-shadow-sm">
               Smart trips. Budget friendly.
               <br />
               Unforgettable memories.
@@ -84,12 +86,12 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
               Explore Now <ArrowRight className="h-4 w-4" />
             </Link>
             <div className="mt-4 flex gap-1.5">
-              <span className="h-1.5 w-6 rounded-full bg-emerald-600" />
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600/30" />
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600/30" />
+              <span className="h-1.5 w-6 rounded-full bg-white" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
             </div>
           </div>
-          <LeafSprig className="pointer-events-none absolute bottom-3 right-4 h-24 w-24 rotate-12 text-emerald-500/40" />
+          <LeafSprig className="pointer-events-none absolute bottom-3 right-4 h-24 w-24 rotate-12 text-white/20" />
         </Reveal>
 
         {/* Feature tiles */}
