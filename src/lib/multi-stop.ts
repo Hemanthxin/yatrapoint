@@ -60,6 +60,8 @@ export interface Candidate {
   // When true, the traveller hand-picked this exact place — the planner pulls
   // it in ahead of auto-discovered candidates (budget/time permitting).
   pinned?: boolean;
+  // Stored photo (curated catalogue rows only — live Overpass places have none).
+  imageUrl?: string | null;
   // Pass-through metadata so the UI can render extra info.
   meta?: {
     osmId?: string;

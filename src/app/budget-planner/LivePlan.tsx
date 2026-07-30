@@ -27,10 +27,31 @@ import {
 
 import { useLocation } from "@/components/app/LocationContext";
 import { SaaferaLoader } from "@/components/app/SaaferaLoader";
+import { PlaceImage } from "@/components/app/PlaceImage";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
+
+// Fallback tile look (emoji + gradient) per Overpass category, shown until a
+// stop has a real stored photo (admin-added or curated).
+const CATEGORY_EMOJI: Record<string, string> = {
+  restaurant: "🍽️", cafe: "☕", fast_food: "🍔", nightlife: "🍻", mall: "🛍️", marketplace: "🧺",
+  temple: "🛕", church: "⛪", mosque: "🕌", gurudwara: "🛐", place_of_worship: "🛐",
+  park: "🌳", garden: "🌷", museum: "🏛️", viewpoint: "🌄", monument: "🏯", fort: "🏰",
+  lake: "💧", tourist_attraction: "📍", cinema: "🎬", theatre: "🎭", zoo: "🦁", amusement: "🎢", station: "🚉",
+};
+const CATEGORY_TILE_GRADIENT: Record<string, string> = {
+  restaurant: "from-amber-400 to-orange-500", cafe: "from-amber-300 to-amber-600", fast_food: "from-orange-400 to-red-500",
+  nightlife: "from-fuchsia-500 to-purple-700", mall: "from-sky-400 to-blue-600", marketplace: "from-yellow-500 to-amber-700",
+  temple: "from-orange-400 to-red-500", church: "from-slate-400 to-slate-600", mosque: "from-emerald-500 to-teal-700",
+  gurudwara: "from-blue-400 to-indigo-600", place_of_worship: "from-orange-400 to-red-500",
+  park: "from-lime-500 to-green-700", garden: "from-green-400 to-emerald-600", museum: "from-violet-500 to-purple-700",
+  viewpoint: "from-sky-400 to-emerald-500", monument: "from-rose-500 to-red-700", fort: "from-stone-500 to-stone-700",
+  lake: "from-cyan-400 to-blue-600", tourist_attraction: "from-emerald-400 to-teal-600", cinema: "from-red-500 to-rose-700",
+  theatre: "from-purple-500 to-fuchsia-700", zoo: "from-lime-500 to-emerald-700", amusement: "from-pink-500 to-rose-600",
+  station: "from-slate-500 to-slate-700",
+};
 import { groupsToOverpass } from "@/lib/catalog/place-groups";
 import { Reveal } from "@/components/app/Reveal";
 
@@ -56,6 +77,7 @@ interface PlanStop {
   travelCost: number;
   arrivalKmFromPrev: number;
   arrivalMinutesFromPrev: number;
+  imageUrl?: string | null;
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -881,10 +903,23 @@ export function LivePlan({
                     {i + 1}
                   </span>
                   <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
-                      <p className="font-extrabold tracking-tight text-slate-900">{s.name}</p>
-                      <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                        <PlaceImage
+                          name={s.name}
+                          storedSrc={s.imageUrl}
+                          category={s.category}
+                          emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
+                          gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
+                          className="absolute inset-0 h-full w-full"
+                          emojiClassName="text-xl"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
+                        <p className="font-extrabold tracking-tight text-slate-900">{s.name}</p>
+                        <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
+                      </div>
                     </div>
                     <div className="text-right text-xs text-slate-600">
                       <p className="font-bold text-emerald-700">

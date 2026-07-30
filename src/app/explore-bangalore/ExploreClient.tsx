@@ -20,6 +20,7 @@ import { formatKm, formatMinutes } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
+import { PlaceImage } from "@/components/app/PlaceImage";
 
 interface OverpassPlaceClient {
   osmId: string;
@@ -74,6 +75,22 @@ const GROUP_TO_SEED_KINDS: Record<string, string[]> = {};
 for (const [kind, group] of Object.entries(SEED_KIND_TO_GROUP)) {
   (GROUP_TO_SEED_KINDS[group] ??= []).push(kind);
 }
+
+// Fallback tile colour per group, shown until the admin adds a real photo.
+const GROUP_GRADIENT: Record<string, string> = {
+  restaurants: "from-amber-400 to-orange-500",
+  cafes: "from-amber-300 to-amber-600",
+  nightlife: "from-fuchsia-500 to-purple-700",
+  malls: "from-sky-400 to-blue-600",
+  temples: "from-orange-400 to-red-500",
+  churches: "from-slate-400 to-slate-600",
+  parks: "from-lime-500 to-green-700",
+  lakes: "from-cyan-400 to-blue-600",
+  museums: "from-violet-500 to-purple-700",
+  heritage: "from-rose-500 to-red-700",
+  viewpoints: "from-sky-400 to-emerald-500",
+  amusement: "from-pink-500 to-rose-600",
+};
 
 const OVERPASS_TO_GROUP: Record<string, string> = {
   restaurant: "restaurants",
@@ -334,61 +351,79 @@ function SeedCard({
   place: CityPlace;
   userDistanceKm: number;
 }) {
+  const groupSlug = SEED_KIND_TO_GROUP[place.kind] ?? "heritage";
+  const group = GROUPS.find((g) => g.slug === groupSlug);
   return (
-    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:border-emerald-100 lg:bg-emerald-50/50">
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
-            ★ Curated · {place.kind}
-          </p>
-          <p className="mt-0.5 text-[15px] font-extrabold tracking-tight text-slate-900 lg:text-base">{place.name}</p>
-          <p className="text-xs font-medium text-slate-500">{place.area ?? place.city}</p>
-        </div>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
-          <Navigation className="h-3 w-3" /> {formatKm(userDistanceKm)}
-        </span>
+    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm lg:border-emerald-100 lg:bg-emerald-50/50">
+      <div className="relative h-36 w-full shrink-0 bg-slate-100">
+        <PlaceImage
+          name={place.name}
+          storedSrc={place.imageUrl}
+          hint={place.area ?? place.city}
+          category={place.kind}
+          emoji={group?.emoji ?? "📍"}
+          gradient={GROUP_GRADIENT[groupSlug] ?? "from-emerald-400 to-teal-600"}
+          className="absolute inset-0 h-full w-full"
+          emojiClassName="text-4xl"
+        />
       </div>
-      <p className="mt-2 line-clamp-2 text-sm text-slate-700">{place.shortDescription}</p>
-      <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
-        {place.entryFeePerPerson > 0 ? (
-          <span className="inline-flex items-center gap-1">
-            <Wallet className="h-3 w-3" />
-            {formatINR(place.entryFeePerPerson)} entry
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+              ★ Curated · {place.kind}
+            </p>
+            <p className="mt-0.5 text-[15px] font-extrabold tracking-tight text-slate-900 lg:text-base">{place.name}</p>
+            <p className="text-xs font-medium text-slate-500">{place.area ?? place.city}</p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+            <Navigation className="h-3 w-3" /> {formatKm(userDistanceKm)}
           </span>
-        ) : (
-          place.avgCostForTwo != null && (
+        </div>
+        <p className="mt-2 line-clamp-2 text-sm text-slate-700">{place.shortDescription}</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
+          {place.entryFeePerPerson > 0 ? (
             <span className="inline-flex items-center gap-1">
               <Wallet className="h-3 w-3" />
-              {formatINR(place.avgCostForTwo)} for two
+              {formatINR(place.entryFeePerPerson)} entry
             </span>
-          )
-        )}
-        {place.openTime && place.closeTime && (
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {place.openTime}–{place.closeTime}
-          </span>
-        )}
-        <span className="inline-flex items-center gap-1">
-          <MapPin className="h-3 w-3" />
-          {formatMinutes(place.idealMinutesAtPlace)} typical
-        </span>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Link
-          href={`/explore-bangalore/${place.slug}`}
-          className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
-        >
-          Details
-        </Link>
-        <a
-          href={placeMapUrl(place)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
-        >
-          Map <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
-        </a>
+          ) : (
+            place.avgCostForTwo != null && (
+              <span className="inline-flex items-center gap-1">
+                <Wallet className="h-3 w-3" />
+                {formatINR(place.avgCostForTwo)} for two
+              </span>
+            )
+          )}
+          {place.openTime && place.closeTime && (
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {place.openTime}–{place.closeTime}
+            </span>
+          )}
+          {place.idealMinutesAtPlace != null && (
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {formatMinutes(place.idealMinutesAtPlace)} typical
+            </span>
+          )}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link
+            href={`/explore-bangalore/${place.slug}`}
+            className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
+          >
+            Details
+          </Link>
+          <a
+            href={placeMapUrl(place)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
+          >
+            Map <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
+          </a>
+        </div>
       </div>
     </article>
   );

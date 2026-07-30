@@ -375,6 +375,7 @@ export async function POST(req: NextRequest) {
         idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
         popularity: 100,
         pinned: true,
+        imageUrl: d.imageUrl,
         meta: { citySeedSlug: d.slug },
       });
     }
@@ -431,6 +432,7 @@ export async function POST(req: NextRequest) {
         foodCostPerPerson:
           s.avgCostForTwo != null ? Math.round(s.avgCostForTwo / 2) : undefined,
         popularity: s.popularity,
+        imageUrl: s.imageUrl,
         meta: { citySeedSlug: s.slug },
       };
     });
@@ -477,6 +479,7 @@ export async function POST(req: NextRequest) {
       entryFeeKnown: true,
       idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
       popularity: d.popularity,
+      imageUrl: d.imageUrl,
       meta: { citySeedSlug: d.slug },
     });
   }
@@ -509,6 +512,7 @@ export async function POST(req: NextRequest) {
       // Stored in HOURS at the spot; the planner works in minutes.
       idealMinutes: Math.max(15, Math.round(n.idealHoursAtPlace * 60)),
       popularity: n.popularity,
+      imageUrl: n.imageUrl,
       meta: { citySeedSlug: n.slug },
     });
   }
