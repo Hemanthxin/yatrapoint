@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, MapPin, Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 
 import { INDIA_STATES } from "@/lib/india-states";
 import {
@@ -10,6 +10,8 @@ import {
   listAreaPlaces,
   type AreaPlace,
 } from "@/lib/actions/areas";
+import { PlaceImage } from "@/components/app/PlaceImage";
+import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
 
 export type AreaScope = "state" | "districts" | "taluks";
 
@@ -259,15 +261,17 @@ export function AreaPicker({ value, onChange }: Props) {
                     className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
                   />
                 </div>
-                <div className="max-h-52 space-y-1 overflow-auto rounded-xl border border-slate-100 p-1">
+                <div className="max-h-64 space-y-1.5 overflow-auto rounded-xl border border-slate-100 p-1.5">
                   {filteredPlaces.map((p) => {
                     const on = value.placeIds.includes(p.id);
+                    const cat = CATEGORY_BY_SLUG[p.category as CategorySlug];
+                    const gradient = CATEGORY_GRADIENT[p.category as CategorySlug] ?? "from-slate-400 to-slate-600";
                     return (
                       <button
                         key={p.id}
                         type="button"
                         onClick={() => togglePlace(p.id)}
-                        className={`flex min-h-[44px] w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm transition ${
+                        className={`flex min-h-[52px] w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left text-sm transition ${
                           on ? "bg-emerald-50 text-emerald-900" : "text-slate-700 hover:bg-slate-50"
                         }`}
                       >
@@ -278,8 +282,18 @@ export function AreaPicker({ value, onChange }: Props) {
                         >
                           {on && "✓"}
                         </span>
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-                        <span className="truncate font-medium">{p.name}</span>
+                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                          <PlaceImage
+                            name={p.name}
+                            storedSrc={p.imageUrl}
+                            category={p.category}
+                            emoji={cat?.emoji ?? "📍"}
+                            gradient={gradient}
+                            className="absolute inset-0 h-full w-full"
+                            emojiClassName="text-base"
+                          />
+                        </div>
+                        <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
                         {p.district && (
                           <span className="ml-auto shrink-0 text-xs text-slate-400">{p.district}</span>
                         )}

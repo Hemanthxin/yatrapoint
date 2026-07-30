@@ -847,6 +847,7 @@ export async function POST(req: NextRequest) {
       entryFeeKnown: c.entryFeeKnown ?? false,
       idealMinutes: c.idealMinutes,
       foodCostPerPerson: c.foodCostPerPerson,
+      imageUrl: c.imageUrl,
       meta: c.meta,
     }));
 

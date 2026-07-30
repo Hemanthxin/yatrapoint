@@ -23,6 +23,7 @@ export interface AreaPlace {
   category: string;
   lat: number;
   lng: number;
+  imageUrl: string | null;
 }
 
 // Simple in-process cache so re-opening the dropdowns doesn't re-hit Overpass.
@@ -285,6 +286,7 @@ export async function listAreaPlaces(
       category: destinations.category,
       latitude: destinations.latitude,
       longitude: destinations.longitude,
+      imageUrl: destinations.imageUrl,
     })
     .from(destinations)
     .where(and(...where))
@@ -299,6 +301,7 @@ export async function listAreaPlaces(
       category: r.category,
       lat: Number(r.latitude),
       lng: Number(r.longitude),
+      imageUrl: r.imageUrl,
     }))
     .filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
 }
