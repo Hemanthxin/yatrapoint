@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Clock,
   Loader2,
@@ -23,6 +23,7 @@ import {
   Star,
   Bookmark,
   BookmarkCheck,
+  ChevronDown,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -894,87 +895,102 @@ export function LivePlan({
                       </span>
                     </div>
                   )}
-                  <ol className="relative space-y-3 border-l-2 border-emerald-100 pl-5">
-                    {bucket.map((s) => {
+                  <ol className="space-y-0">
+                    {d === 0 && bucket.length > 0 && (
+                      <li className="flex items-center gap-4 pb-1">
+                        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-slate-100 ring-4 ring-white">
+                          <LocateFixed className="h-6 w-6 text-slate-500" />
+                        </div>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Your location</p>
+                      </li>
+                    )}
+                    {d === 0 && bucket.length > 0 && (
+                      <Connector
+                        distanceKm={bucket[0].arrivalKmFromPrev}
+                        minutes={bucket[0].arrivalMinutesFromPrev}
+                      />
+                    )}
+                    {bucket.map((s, idx) => {
                       const i = running++;
                       return (
-                <li key={s.id} className="card-hover relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-                  <span className="absolute -left-[30px] top-4 z-10 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
-                    {i + 1}
-                  </span>
-                  <div className="relative h-44 w-full sm:h-48">
-                    <PlaceImage
-                      name={s.name}
-                      storedSrc={s.imageUrl}
-                      category={s.category}
-                      emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
-                      gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
-                      className="absolute inset-0 h-full w-full"
-                      emojiClassName="text-6xl"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-4">
-                      <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-300">Stop {i + 1}</p>
-                      <h3 className="truncate text-lg font-extrabold tracking-tight text-white drop-shadow">{s.name}</h3>
-                      <p className="text-[11px] uppercase tracking-wide text-white/75">{s.category}</p>
+                <Fragment key={s.id}>
+                <li>
+                  <div className="flex items-start gap-4">
+                    {/* Avatar node — sits on the connecting line, forming a journey path. */}
+                    <div className="flex w-16 shrink-0 flex-col items-center">
+                      <div className="relative h-16 w-16 overflow-hidden rounded-full ring-4 ring-white shadow-lg shadow-emerald-900/10">
+                        <PlaceImage
+                          name={s.name}
+                          storedSrc={s.imageUrl}
+                          category={s.category}
+                          emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
+                          gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
+                          className="absolute inset-0 h-full w-full"
+                          emojiClassName="text-2xl"
+                        />
+                      </div>
+                      <span className="-mt-3 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-2 ring-white">
+                        {i + 1}
+                      </span>
                     </div>
-                  </div>
-                  <div className="p-4 sm:p-5">
-                  <div className="flex flex-wrap items-start justify-between gap-2 text-xs text-slate-600">
-                    <p className="font-bold text-emerald-700">
-                      {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
-                    </p>
-                    <div className="text-right">
-                      <p>
-                        {formatKm(s.arrivalKmFromPrev)} · {formatMinutes(s.arrivalMinutesFromPrev)} from{" "}
-                        {i === 0 ? "start" : "previous stop"}
-                      </p>
-                      <p className="font-semibold text-slate-900">Stay {formatMinutes(s.idealMinutes)}</p>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                    {s.entryFee > 0 ? (
-                      <Chip>
-                        Entry {s.entryFeeKnown ? "" : "≈"}{formatINR(s.entryFee)} / person
-                        {s.entryFeeKnown ? "" : " (est.)"}
-                      </Chip>
-                    ) : (
-                      <Chip>Free entry</Chip>
-                    )}
-                    {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
-                    {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
-                    {/* "Nearby Restaurants" — opens a live map of places to eat
-                        right around this stop. Shown for every stop. */}
-                    <a
-                      href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-800 transition hover:bg-emerald-200 active:scale-95"
-                    >
-                      Nearby Restaurants →
-                    </a>
-                    <a
-                      href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-[32px] items-center rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-200 active:scale-95"
-                    >
-                      Open in Maps →
-                    </a>
-                    {/* Already been here? Swap this place for another. */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSwapError(null);
-                        setSwapIndex(swapIndex === i ? null : i);
-                      }}
-                      className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-800 transition hover:bg-amber-200 active:scale-95"
-                    >
-                      <Repeat className="h-3 w-3" /> Visited? Replace
-                    </button>
-                  </div>
 
-                  {swapIndex === i && (
+                    <div className="card-hover min-w-0 flex-1 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
+                          <h3 className="truncate font-extrabold tracking-tight text-slate-900">{s.name}</h3>
+                          <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
+                        </div>
+                        <div className="text-right text-xs text-slate-600">
+                          <p className="font-bold text-emerald-700">
+                            {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
+                          </p>
+                          <p className="font-semibold text-slate-900">Stay {formatMinutes(s.idealMinutes)}</p>
+                        </div>
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                        {s.entryFee > 0 ? (
+                          <Chip>
+                            Entry {s.entryFeeKnown ? "" : "≈"}{formatINR(s.entryFee)} / person
+                            {s.entryFeeKnown ? "" : " (est.)"}
+                          </Chip>
+                        ) : (
+                          <Chip>Free entry</Chip>
+                        )}
+                        {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
+                        {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
+                        {/* "Nearby Restaurants" — opens a live map of places to eat
+                            right around this stop. Shown for every stop. */}
+                        <a
+                          href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-800 transition hover:bg-emerald-200 active:scale-95"
+                        >
+                          Nearby Restaurants →
+                        </a>
+                        <a
+                          href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex min-h-[32px] items-center rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-200 active:scale-95"
+                        >
+                          Open in Maps →
+                        </a>
+                        {/* Already been here? Swap this place for another. */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSwapError(null);
+                            setSwapIndex(swapIndex === i ? null : i);
+                          }}
+                          className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-800 transition hover:bg-amber-200 active:scale-95"
+                        >
+                          <Repeat className="h-3 w-3" /> Visited? Replace
+                        </button>
+                      </div>
+
+                      {swapIndex === i && (
                     <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
                       <div className="mb-2 flex items-start justify-between gap-2">
                         <p className="text-xs font-semibold text-amber-900">
@@ -1026,8 +1042,16 @@ export function LivePlan({
                       )}
                     </div>
                   )}
+                    </div>
                   </div>
                 </li>
+                {idx < bucket.length - 1 && (
+                  <Connector
+                    distanceKm={bucket[idx + 1].arrivalKmFromPrev}
+                    minutes={bucket[idx + 1].arrivalMinutesFromPrev}
+                  />
+                )}
+                </Fragment>
                       );
                     })}
                   </ol>
@@ -1091,6 +1115,22 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
 
 function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{children}</span>;
+}
+
+// The travel "edge" between two stops in the journey path — sits centred
+// under the avatar column so the whole day reads as one connected route
+// rather than a stack of unrelated cards.
+function Connector({ distanceKm, minutes }: { distanceKm: number; minutes: number }) {
+  return (
+    <li className="flex flex-col items-center py-1.5" aria-hidden>
+      <div className="h-5 w-0.5 bg-gradient-to-b from-emerald-300 to-emerald-200" />
+      <span className="my-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700 shadow-sm">
+        <Car className="h-3 w-3" /> {formatKm(distanceKm)} · {formatMinutes(minutes)}
+      </span>
+      <ChevronDown className="h-4 w-4 animate-bounce text-emerald-300" />
+      <div className="h-5 w-0.5 bg-gradient-to-b from-emerald-200 to-transparent" />
+    </li>
+  );
 }
 
 const MAP_MODES: { id: "road" | "train"; label: string; icon: typeof Car }[] = [
