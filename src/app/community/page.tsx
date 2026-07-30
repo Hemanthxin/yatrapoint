@@ -46,6 +46,8 @@ export default async function CommunityPage() {
           icon={Users}
           title={<>The <span className="italic">Community</span></>}
           subtitle="Double-tap to love, save spots for later, and mark 🎒 Want to go / ✅ Been there — comment & share too."
+          gradient="from-emerald-800 via-emerald-700 to-green-700"
+          backgroundImage="/community-hero-bg.jpg"
         />
 
         <div className="mx-auto flex max-w-7xl items-start gap-8">
