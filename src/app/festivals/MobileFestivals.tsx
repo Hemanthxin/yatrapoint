@@ -1,11 +1,11 @@
 import { CalendarClock, MapPin, Sparkles, Clock } from "lucide-react";
 
 import { AddToCartButton } from "@/components/app/AddToCartButton";
-import { formatFestivalDate, daysUntil, type FestivalOccurrence } from "@/lib/festivals";
+import { formatFestivalDate, daysUntil, festivalSlug, type FestivalOccurrence } from "@/lib/festivals";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
 
-const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const festSlug = festivalSlug;
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -30,12 +30,13 @@ function countdown(iso: string | null): string | null {
 interface Props {
   festivals: FestivalOccurrence[];
   nextUpcomingName: string | null;
+  images: Record<string, string>;
 }
 
 // A bespoke, app-first mobile festivals screen — distinct from the desktop grid.
 // Rendered only below `lg`. Coral accent comes automatically from the mobile
 // theme, so all `emerald` utilities here paint coral on phones.
-export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
+export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) {
   // "This month" rail = the nearest upcoming festivals (nearest first).
   const thisMonth = festivals
     .filter((f) => {
@@ -73,6 +74,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
               const badge = dateBadge(f.nextISO, f.dateLabel);
               const cd = countdown(f.nextISO);
               const isNext = nextUpcomingName === f.name;
+              const image = images[festSlug(f.name)];
               return (
                 <div
                   key={f.name}
@@ -80,18 +82,25 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
                     isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
                   }`}
                 >
+                  {image && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={image} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+                    </>
+                  )}
                   {isNext && (
                     <span aria-hidden className="sheen-overlay animate-sheen" />
                   )}
-                  <div className="flex items-start justify-between">
-                    <span className="text-4xl drop-shadow-sm">{f.emoji}</span>
+                  <div className="relative flex items-start justify-between">
+                    <span className="text-4xl drop-shadow-sm">{image ? "" : f.emoji}</span>
                     <div className="text-right leading-none">
-                      <p className="text-xl font-extrabold text-slate-900">{badge.day}</p>
-                      <p className="text-[10px] font-bold tracking-wider text-slate-400">{badge.month}</p>
+                      <p className={`text-xl font-extrabold ${image ? "text-white drop-shadow" : "text-slate-900"}`}>{badge.day}</p>
+                      <p className={`text-[10px] font-bold tracking-wider ${image ? "text-white/80" : "text-slate-400"}`}>{badge.month}</p>
                     </div>
                   </div>
-                  <div className="mt-3 min-w-0">
-                    <p className="truncate text-sm font-extrabold tracking-tight text-slate-900">{f.name}</p>
+                  <div className="relative mt-3 min-w-0">
+                    <p className={`truncate text-sm font-extrabold tracking-tight ${image ? "text-white drop-shadow" : "text-slate-900"}`}>{f.name}</p>
                     {cd && (
                       <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
                         <Clock className="h-2.5 w-2.5" /> {cd}
@@ -113,6 +122,7 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
             const badge = dateBadge(f.nextISO, f.dateLabel);
             const cd = countdown(f.nextISO);
             const isNext = nextUpcomingName === f.name;
+            const image = images[festSlug(f.name)];
             return (
               <Reveal
                 key={f.name}
@@ -121,20 +131,27 @@ export function MobileFestivals({ festivals, nextUpcomingName }: Props) {
                 }`}
               >
                 {/* Imagery banner with stacked date badge */}
-                <div className="relative flex items-center gap-4 border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
-                  <span className="text-5xl drop-shadow-sm">{f.emoji}</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-base font-extrabold leading-tight tracking-tight text-slate-900">
+                <div className="relative flex items-center gap-4 overflow-hidden border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
+                  {image && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={image} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-black/10" />
+                    </>
+                  )}
+                  <span className="relative text-5xl drop-shadow-sm">{image ? "" : f.emoji}</span>
+                  <div className="relative min-w-0 flex-1">
+                    <p className={`text-base font-extrabold leading-tight tracking-tight ${image ? "text-white drop-shadow" : "text-slate-900"}`}>
                       {f.name}
                     </p>
                     {f.hub && (
-                      <p className="mt-1 flex items-center gap-1 text-xs font-medium text-slate-500">
+                      <p className={`mt-1 flex items-center gap-1 text-xs font-medium ${image ? "text-white/80" : "text-slate-500"}`}>
                         <MapPin className="h-3.5 w-3.5 shrink-0" />
                         <span className="truncate">{f.hub}</span>
                       </p>
                     )}
                   </div>
-                  <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white text-center leading-none shadow-sm ring-1 ring-slate-200">
+                  <div className="relative grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white text-center leading-none shadow-sm ring-1 ring-slate-200">
                     <div>
                       <p className="text-lg font-extrabold text-slate-900">{badge.day}</p>
                       <p className="text-[9px] font-bold tracking-wider text-slate-400">{badge.month}</p>

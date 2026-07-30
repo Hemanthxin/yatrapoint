@@ -13,6 +13,13 @@ export const FESTIVALS: Festival[] = (data as Festival[])
   .slice()
   .sort((a, b) => (a.dateISO || "9999").localeCompare(b.dateISO || "9999"));
 
+// Stable, URL/key-safe identifier for a festival — festival names have no id
+// of their own (they live in a static JSON file), so this doubles as both the
+// cart item id and the admin-uploaded image lookup key.
+export function festivalSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
 // Festivals from `today` onwards, nearest first. Once a festival's date passes
 // it drops off, so the list always leads with the next upcoming festival. If
 // every festival is in the past (e.g. late in the year), fall back to the full

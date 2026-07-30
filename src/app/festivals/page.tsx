@@ -4,14 +4,15 @@ import { CalendarClock, MapPin } from "lucide-react";
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
-import { festivalsByNextOccurrence, formatFestivalDate, daysUntil } from "@/lib/festivals";
+import { festivalsByNextOccurrence, festivalSlug, formatFestivalDate, daysUntil } from "@/lib/festivals";
+import { getFestivalImages } from "@/lib/actions/festival-images";
 import { MobileFestivals } from "./MobileFestivals";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
 import { PulseBadge } from "@/components/app/PulseBadge";
 import { PageHero } from "@/components/app/PageHero";
 
-const festSlug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const festSlug = festivalSlug;
 
 export default async function FestivalsPage() {
   const session = await auth();
@@ -21,6 +22,7 @@ export default async function FestivalsPage() {
   // Ordered by next occurrence — upcoming festivals first (nearest first),
   // anything already finished this year rolls to the end with next year's date.
   const FESTIVALS = festivalsByNextOccurrence();
+  const festivalImages = await getFestivalImages();
   // The very first one is always the next upcoming festival.
   const nextUpcoming = FESTIVALS[0] ?? null;
 
@@ -28,7 +30,11 @@ export default async function FestivalsPage() {
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       {/* ── Mobile (< lg): bespoke app UI ── */}
       <div className="lg:hidden">
-        <MobileFestivals festivals={FESTIVALS} nextUpcomingName={nextUpcoming?.name ?? null} />
+        <MobileFestivals
+          festivals={FESTIVALS}
+          nextUpcomingName={nextUpcoming?.name ?? null}
+          images={festivalImages}
+        />
       </div>
 
       {/* ── Desktop (≥ lg): the original festivals page, unchanged ── */}
@@ -47,6 +53,7 @@ export default async function FestivalsPage() {
         {FESTIVALS.map((f) => {
           const d = daysUntil(f.nextISO);
           const isNext = nextUpcoming?.name === f.name;
+          const image = festivalImages[festSlug(f.name)];
           return (
             <Reveal
               key={f.name}
@@ -55,9 +62,22 @@ export default async function FestivalsPage() {
                 isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
               }`}
             >
-              <div className="relative flex items-center justify-between border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
-                <span className="text-4xl drop-shadow-sm sm:text-5xl">{f.emoji}</span>
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-600 ring-1 ring-slate-200">
+              <div className="relative flex h-32 items-center justify-between overflow-hidden border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
+                {image && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={image} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
+                )}
+                {image && <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />}
+                <span className={`relative text-4xl drop-shadow-sm sm:text-5xl ${image ? "drop-shadow-lg" : ""}`}>
+                  {image ? "" : f.emoji}
+                </span>
+                <span
+                  className={`relative rounded-full px-3 py-1 text-xs font-bold ring-1 ${
+                    image
+                      ? "bg-white/90 text-slate-700 ring-white/40 backdrop-blur"
+                      : "bg-white text-slate-600 ring-slate-200"
+                  }`}
+                >
                   {formatFestivalDate(f.nextISO)}
                 </span>
                 {isNext && (

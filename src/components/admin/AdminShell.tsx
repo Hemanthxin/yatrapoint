@@ -12,6 +12,7 @@ import {
   Menu,
   ShieldCheck,
   ImageIcon,
+  CalendarClock,
   type LucideIcon,
 } from "lucide-react";
 
@@ -30,6 +31,7 @@ const NAV: NavItem[] = [
   { href: "/admin/places", label: "Places", icon: MapPinned, match: "/admin/places" },
   { href: "/admin/places/new", label: "Add Place", icon: PlusCircle, match: "/admin/places/new" },
   { href: "/admin/images", label: "Place Photos", icon: ImageIcon, match: "/admin/images" },
+  { href: "/admin/festivals", label: "Festival Photos", icon: CalendarClock, match: "/admin/festivals" },
   { href: "/dashboard", label: "Public Site", icon: Globe },
 ];
 
@@ -45,6 +47,7 @@ function pageTitle(path: string): string {
   if (/^\/admin\/places\/.+\/edit/.test(path)) return "Edit Place";
   if (path.startsWith("/admin/places")) return "Places";
   if (path.startsWith("/admin/images")) return "Place Photos";
+  if (path.startsWith("/admin/festivals")) return "Festival Photos";
   if (path.startsWith("/admin/dashboard")) return "Overview";
   return "Overview";
 }
