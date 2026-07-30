@@ -141,6 +141,12 @@ export interface PlannerInput {
   // For a local trip (0) we just pick the nearest N, so the requested number of
   // places actually gets filled instead of a far anchor eating the budget.
   minDistanceKm?: number;
+  // Candidate ids from a PREVIOUS plan (Regenerate) to steer away from — a
+  // soft preference, not a hard ban. Lets Regenerate turn up a genuinely
+  // different set of places when the pool has real alternatives, while still
+  // falling back to a repeat rather than shrinking the stop count when it
+  // doesn't (e.g. a thin rural pool with only a handful of real candidates).
+  excludeIds?: string[];
 }
 
 export interface PlannerStop extends Candidate {
@@ -256,11 +262,16 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   // Worth of a place: base + popularity, a big bonus for a not-yet-covered
   // category (keeps the trip diverse), a bonus for reaching a not-yet-covered
   // distance band (far trips only), and a decisive boost for hand-picked places.
+  const excludeIds = new Set(input.excludeIds ?? []);
   const valueOf = (c: Candidate, covered: Set<string>) => {
     let val = 10 + (c.popularity ?? 50);
     if (!covered.has(c.category)) val += 60;
     if (reachKm && !coveredBands.has(bandOf(c))) val += 45;
     if (c.pinned) val += 1_000_000;
+    // Regenerate: a place from the previous plan is heavily deprioritised —
+    // still pickable as a last resort (thin pools), but any fresh alternative
+    // with a comparable detour wins instead.
+    if (excludeIds.has(c.id)) val *= 0.05;
     return val;
   };
 
@@ -393,12 +404,19 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
         const projMinutes = ((curDist + detour) / speed) * 60 + curStopMin + c.idealMinutes;
         if (projMoney > anchorMoneyCap || projMinutes > anchorMinutesCap) continue;
       }
-      // Prefer the farthest reach; break ties by popularity.
+      // Regenerate: a fresh candidate always beats a repeat from the previous
+      // plan, regardless of reach — only fall back to the farthest/popularity
+      // tie-break between two candidates that are equally fresh (or equally
+      // repeats, when nothing fresh clears the bar).
+      const anchorIsRepeat = !!anchor && excludeIds.has(anchor.c.id);
+      const cIsRepeat = excludeIds.has(c.id);
       const better =
         !anchor ||
-        dStart > anchor.dist + 1 ||
-        (Math.abs(dStart - anchor.dist) <= 1 &&
-          (c.popularity ?? 50) > (anchor.c.popularity ?? 50));
+        (anchorIsRepeat && !cIsRepeat) ||
+        (anchorIsRepeat === cIsRepeat &&
+          (dStart > anchor.dist + 1 ||
+            (Math.abs(dStart - anchor.dist) <= 1 &&
+              (c.popularity ?? 50) > (anchor.c.popularity ?? 50))));
       if (better) anchor = { c, pos, detour, dist: dStart };
     }
     if (anchor) {

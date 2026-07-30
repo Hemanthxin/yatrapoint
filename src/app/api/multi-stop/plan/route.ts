@@ -114,6 +114,11 @@ const bodySchema = z.object({
   mode: z.enum(["any", "car", "bike", "bus", "train", "flight"]).default("any"),
   // Number of days — used for the nightly stay cost (nights = days − 1).
   days: z.number().int().min(1).max(30).default(1),
+  // Ids of stops from a PREVIOUS plan (Regenerate) to steer away from, so the
+  // traveller sees a genuinely different set of places when they ask again —
+  // not a hard ban (a repeat is still used if nothing else fits the budget/
+  // time/distance), just strongly deprioritised.
+  excludeIds: z.array(z.string()).max(50).default([]),
 });
 
 // Curated `destinations.category` → Overpass category, so hand-picked catalogue
@@ -293,12 +298,16 @@ export async function POST(req: NextRequest) {
   //   • Cap the query radius at 60 km — an Overpass scan over hundreds of km is
   //     very slow and often times out; far places come from the curated DB
   //     catalogue (already loaded in-memory) instead.
-  //   • Skip Overpass entirely for far "outstation" bands (a large minimum
-  //     distance): everything Overpass could return near the centre would be
-  //     filtered out by the min-distance gate anyway, so the call is pure waste.
+  //   • Skip Overpass entirely once the minimum distance is at or beyond that
+  //     60 km cap: everything Overpass could return near the centre would be
+  //     filtered out by the min-distance gate anyway, so the call is pure
+  //     waste. Below that, there's a real overlap ring (minDistanceKm..60 km)
+  //     worth querying — this is what lets the 50-100 km "around me" band
+  //     surface genuine live places (and things to actually spend money on)
+  //     instead of relying solely on the thin curated catalogue out there.
   const OVERPASS_MAX_KM = 60;
   const overpassRadiusKm = Math.min(radiusKm, OVERPASS_MAX_KM);
-  const useOverpass = wantedCats.length > 0 && minDistanceKm <= 40;
+  const useOverpass = wantedCats.length > 0 && minDistanceKm < OVERPASS_MAX_KM;
 
   // Kick the slowest external call (live Overpass) off NOW so it runs in
   // parallel with all the curated DB lookups below — this shaves seconds off
@@ -658,6 +667,7 @@ export async function POST(req: NextRequest) {
     // big radius yields a genuinely wide-ranging trip instead of hugging home.
     maxTripKm: radiusKm * 2.5,
     costPerKm: effCostPerKm,
+    excludeIds: parsed.data.excludeIds,
   });
 
   if (plan.stops.length === 0) {

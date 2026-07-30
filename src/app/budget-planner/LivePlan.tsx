@@ -204,6 +204,14 @@ export function LivePlan({
   const [shared, setShared] = useState(false);
   const [saved, setSaved] = useState(false);
   const didAutoRun = useRef(false);
+  // Mirrors `plan` for `generate` to read without becoming stale — keeps
+  // Regenerate from being recreated (and re-triggering the auto-run effect)
+  // every time a plan lands, while still letting it see the LATEST plan's
+  // stops so it can steer the next generation away from repeating them.
+  const planRef = useRef<PlanResponse | null>(null);
+  useEffect(() => {
+    planRef.current = plan;
+  }, [plan]);
 
   // "Already visited / replace this place" — which stop's swap panel is open,
   // and whether a re-route is in flight.
@@ -234,6 +242,10 @@ export function LivePlan({
     setError(null);
     setLoading(true);
     try {
+      // Regenerate: steer away from repeating the same stops when a plan
+      // already exists — the backend treats this as a soft preference, so a
+      // thin pool still falls back to a repeat rather than losing stops.
+      const excludeIds = planRef.current?.stops.map((s) => s.id) ?? [];
       const res = await fetch("/api/multi-stop/plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -255,6 +267,7 @@ export function LivePlan({
           areaDistricts,
           mode,
           days,
+          excludeIds,
         }),
       });
       const data: PlanResponse = await res.json();
