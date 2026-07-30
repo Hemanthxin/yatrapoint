@@ -11,8 +11,10 @@ interface PageHeroProps {
   icon?: LucideIcon;
   /** Quick stat pills shown under the subtitle, e.g. {label:"Places", value:"1,300+"}. */
   stats?: { label: string; value: string }[];
-  /** Tailwind gradient stops for the banner background. */
+  /** Tailwind gradient stops for the banner background. Ignored when `backgroundImage` is set. */
   gradient?: string;
+  /** Optional photo/illustration behind the banner, in place of the flat gradient — a dark scrim is added automatically so the title stays readable. */
+  backgroundImage?: string;
   /** Optional CTA / controls slot, right-aligned on wide screens. */
   action?: ReactNode;
   className?: string;
@@ -29,16 +31,33 @@ export function PageHero({
   icon: Icon,
   stats,
   gradient = "from-emerald-700 via-emerald-600 to-teal-700",
+  backgroundImage,
   action,
   className = "",
 }: PageHeroProps) {
   return (
-    <Reveal amount={0} y={16} className={`relative mb-10 overflow-hidden rounded-[2rem] bg-gradient-to-br ${gradient} px-10 py-12 text-white shadow-xl shadow-emerald-900/15 ${className}`}>
-      {/* Soft decorative texture */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.14]">
-        <div className="absolute -left-16 -top-24 h-72 w-72 rounded-full bg-white blur-3xl" />
-        <div className="absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-white blur-3xl" />
-      </div>
+    <Reveal
+      amount={0}
+      y={16}
+      className={`relative mb-10 overflow-hidden rounded-[2rem] px-10 py-12 text-white shadow-xl shadow-emerald-900/15 ${
+        backgroundImage ? "bg-slate-900" : `bg-gradient-to-br ${gradient}`
+      } ${className}`}
+    >
+      {backgroundImage && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={backgroundImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent" />
+        </>
+      )}
+      {/* Soft decorative texture — only over the flat gradient; a photo already
+          carries its own detail. */}
+      {!backgroundImage && (
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.14]">
+          <div className="absolute -left-16 -top-24 h-72 w-72 rounded-full bg-white blur-3xl" />
+          <div className="absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-white blur-3xl" />
+        </div>
+      )}
       <div aria-hidden className="sheen-overlay animate-sheen" />
 
       <div className="relative flex flex-wrap items-end justify-between gap-8">

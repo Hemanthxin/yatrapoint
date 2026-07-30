@@ -40,6 +40,7 @@ export default async function FestivalsPage() {
         title={<>Festivals <span className="italic">&amp; Events</span></>}
         subtitle="Major Indian festivals through the year — plan a trip around them."
         gradient="from-amber-600 via-orange-600 to-rose-600"
+        backgroundImage="/festivals-hero-bg.jpg"
       />
 
       <RevealGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
