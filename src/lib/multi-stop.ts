@@ -363,7 +363,24 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   // fits time + budget; the greedy fill then strings places along the corridor
   // out to it, so the trip genuinely spans the chosen distance.
   if (wantFar && reachKm > 40 && tour.length < maxStops) {
-    const outer = reachKm * 0.55; // only the outer half counts as a real anchor
+    const minKm = input.minDistanceKm ?? 0;
+    // 200 km+ "around me" trips already work well — keep their exact behaviour
+    // untouched below. Smaller distance BANDS (25-50 / 50-100 / 100-200 km)
+    // have a large minDistanceKm relative to reachKm, so measuring "far enough
+    // to be a real anchor" from zero (reachKm * 0.55) is nearly always already
+    // true for every candidate in the band — the search then always grabs the
+    // single most extreme point near the outer edge, whose own round trip can
+    // swallow almost the entire distance/time/money budget on its own, leaving
+    // nothing for the other stops the traveller asked for ("picked 5 places,
+    // only 1 shows up, budget barely used"). Below 200 km, measure the "outer
+    // half" from the band's OWN inner edge (minKm) instead of from zero, and
+    // cap how much of the total budget the anchor alone may spend so real room
+    // is reserved for the rest of `maxStops`.
+    const legacyBand = minKm >= 200;
+    const outer = legacyBand ? reachKm * 0.55 : minKm + (reachKm - minKm) * 0.55;
+    const anchorShare = legacyBand ? 1 : Math.min(1, 1.6 / Math.max(1, maxStops));
+    const anchorMoneyCap = spendable * anchorShare;
+    const anchorMinutesCap = minutesBudget * anchorShare;
     let anchor: { c: Candidate; pos: number; detour: number; dist: number } | null = null;
     for (const c of pool) {
       if (isFoodCat(c) && (foodUsed || !input.includeFood)) continue;
@@ -371,6 +388,11 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
       if (dStart < outer) continue;
       const { pos, detour } = bestInsertion(c);
       if (!feasible(c, detour)) continue;
+      if (!legacyBand) {
+        const projMoney = curStopCost + stopCostOf(c) + (curDist + detour) * costPerKm * ROAD_FACTOR;
+        const projMinutes = ((curDist + detour) / speed) * 60 + curStopMin + c.idealMinutes;
+        if (projMoney > anchorMoneyCap || projMinutes > anchorMinutesCap) continue;
+      }
       // Prefer the farthest reach; break ties by popularity.
       const better =
         !anchor ||
