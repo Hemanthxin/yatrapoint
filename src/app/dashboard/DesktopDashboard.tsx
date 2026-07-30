@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -24,7 +25,7 @@ import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import type { CityPlace } from "@/lib/db/schema";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
-import { ParallaxImage } from "@/components/app/ParallaxImage";
+import { HeroSlideshow } from "@/components/app/HeroSlideshow";
 import { CountUp } from "@/components/app/CountUp";
 
 interface Props {
@@ -38,6 +39,10 @@ interface Props {
 
 export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Props) {
   const tone = "bg-emerald-100 text-emerald-700";
+  // The admin-uploaded (or default) banner, plus two shipped travel scenes —
+  // the hero auto-cycles through all three.
+  const heroSlides = [heroImageUrl || "/66242.jpg", "/hero-slide-lake-temple.jpg", "/hero-slide-mountain-coast.jpg"];
+  const [heroSlide, setHeroSlide] = useState(0);
   const features = [
     { title: "Trip Planner", desc: "Plan your trip within budget", href: "/budget-planner", tone, icon: <Wallet className="h-5 w-5" /> },
     { title: "By State Places", desc: "Explore top places by state", href: "/destinations", tone, icon: <MapPin className="h-5 w-5" /> },
@@ -58,12 +63,10 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
       <div className="min-w-0 flex-1 space-y-6">
         {/* Featured hero */}
         <Reveal as="section" className="relative h-72 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-80" amount={0}>
-          <ParallaxImage
-            src={heroImageUrl || "/66242.jpg"}
-            alt="Scenic Karnataka temple and waterfalls"
-            priority
-            sizes="(max-width: 1280px) 100vw, 60vw"
-            className="object-cover"
+          <HeroSlideshow
+            images={heroSlides}
+            alt="Scenic travel destinations"
+            onIndexChange={setHeroSlide}
           />
           {/* Dark scrim so white text sits comfortably over the photo — still
               image renders at full opacity, the fade just clears sooner. */}
@@ -86,9 +89,14 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
               Explore Now <ArrowRight className="h-4 w-4" />
             </Link>
             <div className="mt-4 flex gap-1.5">
-              <span className="h-1.5 w-6 rounded-full bg-white" />
-              <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-              <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+              {heroSlides.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    i === heroSlide ? "w-6 bg-white" : "w-1.5 bg-white/40"
+                  }`}
+                />
+              ))}
             </div>
           </div>
           <LeafSprig className="pointer-events-none absolute bottom-3 right-4 h-24 w-24 rotate-12 text-white/20" />
