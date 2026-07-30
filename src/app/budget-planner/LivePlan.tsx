@@ -898,33 +898,33 @@ export function LivePlan({
                     {bucket.map((s) => {
                       const i = running++;
                       return (
-                <li key={s.id} className="card-hover relative rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                  <span className="absolute -left-[30px] top-4 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
+                <li key={s.id} className="card-hover relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                  <span className="absolute -left-[30px] top-4 z-10 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-4 ring-white">
                     {i + 1}
                   </span>
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="flex min-w-0 items-start gap-3">
-                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
-                        <PlaceImage
-                          name={s.name}
-                          storedSrc={s.imageUrl}
-                          category={s.category}
-                          emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
-                          gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
-                          className="absolute inset-0 h-full w-full"
-                          emojiClassName="text-xl"
-                        />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
-                        <p className="font-extrabold tracking-tight text-slate-900">{s.name}</p>
-                        <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
-                      </div>
+                  <div className="relative h-44 w-full sm:h-48">
+                    <PlaceImage
+                      name={s.name}
+                      storedSrc={s.imageUrl}
+                      category={s.category}
+                      emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
+                      gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
+                      className="absolute inset-0 h-full w-full"
+                      emojiClassName="text-6xl"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-300">Stop {i + 1}</p>
+                      <h3 className="truncate text-lg font-extrabold tracking-tight text-white drop-shadow">{s.name}</h3>
+                      <p className="text-[11px] uppercase tracking-wide text-white/75">{s.category}</p>
                     </div>
-                    <div className="text-right text-xs text-slate-600">
-                      <p className="font-bold text-emerald-700">
-                        {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
-                      </p>
+                  </div>
+                  <div className="p-4 sm:p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-2 text-xs text-slate-600">
+                    <p className="font-bold text-emerald-700">
+                      {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
+                    </p>
+                    <div className="text-right">
                       <p>
                         {formatKm(s.arrivalKmFromPrev)} · {formatMinutes(s.arrivalMinutesFromPrev)} from{" "}
                         {i === 0 ? "start" : "previous stop"}
@@ -1026,6 +1026,7 @@ export function LivePlan({
                       )}
                     </div>
                   )}
+                  </div>
                 </li>
                       );
                     })}
