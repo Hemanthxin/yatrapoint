@@ -508,6 +508,16 @@ export const announcements = pgTable("announcements", {
 
 export type Announcement = typeof announcements.$inferSelect;
 
+// --- Site-wide content the admin can change without a redeploy (currently
+// just the dashboard hero banner image) — one row per `key`. ---
+export const siteSettings = pgTable("site_settings", {
+  key: varchar("key", { length: 60 }).primaryKey(),
+  imageUrl: text("image_url"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type OtpCode = typeof otpCodes.$inferSelect;

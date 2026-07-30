@@ -7,6 +7,7 @@ import { cityPlaces } from "@/lib/db/schema";
 import { AppShell } from "@/components/app/AppShell";
 import { getDashboardStats, listUpcomingTrips } from "@/lib/queries/trip-plans";
 import { listDestinations } from "@/lib/queries/destinations";
+import { getHeroBannerImage } from "@/lib/actions/site-settings";
 import { MobileDashboard } from "./MobileDashboard";
 import { DesktopDashboard } from "./DesktopDashboard";
 
@@ -23,10 +24,11 @@ export default async function DashboardPage() {
   // <NearbyPlaces> then pulls the real nearest ones for the user's location.
   // popular = top Karnataka destinations. Degrade gracefully if the DB times out
   // (Neon is serverless + far away) so a transient hiccup never 500s the page.
-  const [citySeed, popularTrips, upcoming] = await Promise.all([
+  const [citySeed, popularTrips, upcoming, heroImageUrl] = await Promise.all([
     db.select().from(cityPlaces).orderBy(desc(cityPlaces.popularity)).limit(60).catch(() => []),
     listDestinations({ state: "Karnataka", isHidden: false, limit: 8 }).catch(() => []),
     listUpcomingTrips(u.id ?? ""),
+    getHeroBannerImage(),
   ]);
 
   return (
@@ -43,7 +45,7 @@ export default async function DashboardPage() {
 
       {/* ── Desktop (≥ lg): three-column cream + green dashboard ── */}
       <div className="hidden lg:block">
-        <DesktopDashboard stats={stats} citySeed={citySeed} upcoming={upcoming} />
+        <DesktopDashboard stats={stats} citySeed={citySeed} upcoming={upcoming} heroImageUrl={heroImageUrl} />
       </div>
     </AppShell>
   );

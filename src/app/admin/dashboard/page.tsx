@@ -17,19 +17,22 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { isAdminSession, ADMIN_ACCOUNTS } from "@/lib/admin";
 import { getAdminPlaceStats, listRecentAdminPlaces, listPlacesByAdmin } from "@/lib/queries/admin";
 import { listAnnouncements } from "@/lib/actions/announcements";
+import { getHeroBannerImage } from "@/lib/actions/site-settings";
 import { AddPlaceForm } from "./AddPlaceForm";
 import { AnnouncementsManager } from "./AnnouncementsManager";
+import { HeroBannerManager } from "./HeroBannerManager";
 
 export default async function AdminDashboardPage() {
   const session = await auth();
   if (!session || !isAdminSession(session.user)) redirect("/admin-login");
 
   const u = session.user;
-  const [stats, recent, contributions, announcements] = await Promise.all([
+  const [stats, recent, contributions, announcements, heroImageUrl] = await Promise.all([
     getAdminPlaceStats(),
     listRecentAdminPlaces(8),
     listPlacesByAdmin(),
     listAnnouncements(),
+    getHeroBannerImage(),
   ]);
 
   const byEmail = new Map(contributions.map((c) => [c.email.toLowerCase(), c]));
@@ -198,6 +201,7 @@ export default async function AdminDashboardPage() {
           <div id="add-place" className="scroll-mt-20">
             <AddPlaceForm />
           </div>
+          <HeroBannerManager initialImageUrl={heroImageUrl} />
           <AnnouncementsManager initial={announcements} />
           <Panel title="Quick summary">
             <div className="space-y-3 text-sm">

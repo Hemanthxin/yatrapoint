@@ -31,9 +31,12 @@ interface Props {
   stats: DashboardStats;
   citySeed: CityPlace[];
   upcoming: UpcomingTrip[];
+  // Admin-uploaded hero banner image (data URL) — falls back to the built-in
+  // default photo when the admin hasn't set one.
+  heroImageUrl?: string | null;
 }
 
-export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
+export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Props) {
   const tone = "bg-emerald-100 text-emerald-700";
   const features = [
     { title: "Trip Planner", desc: "Plan your trip within budget", href: "/budget-planner", tone, icon: <Wallet className="h-5 w-5" /> },
@@ -56,21 +59,23 @@ export function DesktopDashboard({ stats, citySeed, upcoming }: Props) {
         {/* Featured hero */}
         <Reveal as="section" className="relative h-72 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-80" amount={0}>
           <ParallaxImage
-            src="/66242.jpg"
+            src={heroImageUrl || "/66242.jpg"}
             alt="Scenic Karnataka temple and waterfalls"
             priority
             sizes="(max-width: 1280px) 100vw, 60vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f7f2e9] via-[#f7f2e9]/85 via-40% to-transparent" />
+          {/* Image renders at full opacity — this is only a light scrim behind
+              the text so the photo itself stays clearly visible. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#f7f2e9]/70 via-[#f7f2e9]/35 via-30% to-transparent" />
           <div className="relative flex h-full max-w-lg flex-col justify-center p-10">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-700">Featured Destination</p>
-            <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-slate-900">
+            <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-slate-900 drop-shadow-sm">
               Explore Karnataka,
               <br />
               <span className="text-gradient animate-shimmer italic">Create Memories</span>
             </h1>
-            <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-slate-600">
+            <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-slate-600 drop-shadow-sm">
               Smart trips. Budget friendly.
               <br />
               Unforgettable memories.

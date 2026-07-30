@@ -21,11 +21,20 @@ export function ParallaxImage({ src, alt, className, sizes, priority }: Parallax
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["-6%", "12%"]);
+  // Admin-uploaded banners are data: URLs — next/image's optimizer doesn't
+  // apply to those, so render a plain <img> instead (same as every other
+  // admin-uploaded photo in the app).
+  const isDataUrl = src.startsWith("data:");
 
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden">
       <motion.div style={{ y }} className="absolute inset-[-10%]">
-        <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className={className} />
+        {isDataUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt={alt} className={`h-full w-full object-cover ${className ?? ""}`} />
+        ) : (
+          <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className={className} />
+        )}
       </motion.div>
     </div>
   );
