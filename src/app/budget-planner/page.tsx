@@ -11,6 +11,15 @@ export default async function BudgetPlannerPage() {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      {/* Page-wide illustrated backdrop, behind the wizard's own cards — fixed so
+          it stays put while the form scrolls, and confined to THIS page only. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: "url('/trip-planner-bg.jpg')" }}
+      />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/70" />
+
       {/* Mobile-only app-style hero — desktop keeps the wizard's own inline header. */}
       <div className="lg:hidden -mx-4 mb-5 border-b border-slate-200 bg-white px-4 pb-5 pt-1 shadow-sm">
         <div className="flex items-center gap-3">
