@@ -19,6 +19,7 @@ import {
   X,
   TrainFront,
   Car,
+  Bike,
   BedDouble,
   Star,
   Bookmark,
@@ -244,9 +245,11 @@ export function LivePlan({
   const [swapError, setSwapError] = useState<string | null>(null);
 
   // Which map view is showing — the traveller can flip the SAME trip between
-  // road / rail / flight map styles (no re-costing; just the map).
-  const [mapMode, setMapMode] = useState<"road" | "train">(
-    mode === "train" ? "train" : "road"
+  // road / bike / rail / flight map styles (no re-costing; just the map).
+  // Bike shares the road's real routed geometry (same roads); only train
+  // falls back to a straight-line preview since there's no rail geometry.
+  const [mapMode, setMapMode] = useState<"road" | "bike" | "train">(
+    mode === "bike" ? "bike" : mode === "train" ? "train" : "road"
   );
 
   const overpassCategories = useMemo(() => groupsToOverpass(groups), [groups]);
@@ -819,9 +822,9 @@ export function LivePlan({
                   </button>
                 </div>
               </div>
-              {/* Map-mode pager — flip the SAME route between road / rail / flight views */}
+              {/* Map-mode pager — flip the SAME route between road / bike / rail views */}
               <div className="mb-3 -mx-4 flex gap-2 overflow-x-auto px-4 no-scrollbar sm:mx-0 sm:px-0">
-                {MAP_MODES.map((m) => {
+                {getMapModes(mode).map((m) => {
                   const Icon = m.icon;
                   const on = mapMode === m.id;
                   return (
@@ -858,7 +861,7 @@ export function LivePlan({
                   <TripMap
                     origin={start}
                     stops={stopMarkers}
-                    route={mapMode === "road" ? plan.geometry ?? undefined : undefined}
+                    route={mapMode === "road" || mapMode === "bike" ? plan.geometry ?? undefined : undefined}
                     mode={mapMode}
                     height={440}
                   />
@@ -866,6 +869,8 @@ export function LivePlan({
                     Green pin is your location. Numbered pins are stops in optimal order — nearest first.{" "}
                     {mapMode === "train"
                       ? "The rail line links your stops in sequence."
+                      : mapMode === "bike"
+                      ? "The line follows real roads (OSRM) — the same route your bike takes."
                       : "The line follows real driving roads (OSRM)."}
                   </p>
                 </>
@@ -1146,10 +1151,18 @@ function Connector({ distanceKm, minutes }: { distanceKm: number; minutes: numbe
   );
 }
 
-const MAP_MODES: { id: "road" | "train"; label: string; icon: typeof Car }[] = [
-  { id: "road", label: "Road", icon: Car },
-  { id: "train", label: "Train", icon: TrainFront },
-];
+// The map's second view toggle matches whatever transport the trip actually
+// uses — a Bike trip gets a genuine "Bike" view (same real routed roads a
+// bike takes), a Train trip keeps "Train" (straight-line preview — no rail
+// geometry available). Anything else (car and any legacy/other mode) just
+// shows the one real "Road" view.
+function getMapModes(
+  tripMode: string | undefined
+): { id: "road" | "bike" | "train"; label: string; icon: typeof Car }[] {
+  if (tripMode === "bike") return [{ id: "road", label: "Road", icon: Car }, { id: "bike", label: "Bike", icon: Bike }];
+  if (tripMode === "train") return [{ id: "road", label: "Road", icon: Car }, { id: "train", label: "Train", icon: TrainFront }];
+  return [{ id: "road", label: "Road", icon: Car }];
+}
 
 function StationCard({
   title,

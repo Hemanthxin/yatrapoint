@@ -102,8 +102,10 @@ export interface TripMapProps {
   // Pre-fetched driving polyline (lat, lng pairs).
   route?: [number, number][];
   // Travel mode — themes the connecting line: solid road route, dashed rail
-  // line, or dotted flight arcs. Defaults to road.
-  mode?: "road" | "train" | "flight";
+  // line, or dotted flight arcs. "bike" shares the road's real routed geometry
+  // (a bike takes the same roads a car does) with its own line colour.
+  // Defaults to road.
+  mode?: "road" | "bike" | "train" | "flight";
   // Live breadcrumb trail.
   trail?: LatLng[];
   // px height. Omit to fill parent (parent must have height).
@@ -271,17 +273,18 @@ export default function TripMap({
     }
   }, [stops, destination, destinationName]);
 
-  // Route polyline. Road uses the real OSRM geometry; train draws straight
-  // segments through the stops (closed loop); flight draws bowed arcs.
+  // Route polyline. Road/bike use the real OSRM geometry (a bike takes the
+  // same roads a car does — no fake straight lines for it); train draws
+  // straight segments through the stops (closed loop); flight draws bowed arcs.
   const routePositions = useMemo<[number, number][]>(() => {
     // For flight/train we intentionally ignore any road geometry.
-    if (mode === "road" && route && route.length > 1) return route;
+    if ((mode === "road" || mode === "bike") && route && route.length > 1) return route;
 
     // Build the ordered sequence origin → stops → (back to origin for a loop).
     const seq: [number, number][] = [[origin.lat, origin.lng]];
     if (stops && stops.length > 0) {
       for (const s of stops) seq.push([s.lat, s.lng]);
-      if (mode !== "road") seq.push([origin.lat, origin.lng]); // close the loop
+      if (mode !== "road" && mode !== "bike") seq.push([origin.lat, origin.lng]); // close the loop
     } else if (destination) {
       seq.push([destination.lat, destination.lng]);
     }
@@ -314,6 +317,8 @@ export default function TripMap({
         ? { color: "#6366f1", weight: 4, opacity: 0.9, dashArray: "12 8" }
         : mode === "flight"
         ? { color: "#0ea5e9", weight: 3, opacity: 0.9, dashArray: "3 9" }
+        : mode === "bike"
+        ? { color: "#f59e0b", weight: 5, opacity: 0.85, dashArray: undefined as string | undefined }
         : { color: "#10b981", weight: 5, opacity: 0.85, dashArray: undefined as string | undefined };
     // Recreate the line so the style follows the current mode.
     if (routeLineRef.current) {
