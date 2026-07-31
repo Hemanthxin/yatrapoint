@@ -605,20 +605,25 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Far-directional safety net: bands with minDistanceKm >= OVERPASS_MAX_KM
-  // skip the near-field Overpass fetch above entirely (anything it could find
-  // within OVERPASS_MAX_KM of the traveller would fail the min-distance filter
-  // anyway), so those bands rely solely on the curated catalogue. That
-  // catalogue's coverage is uneven — dense in some corridors, thin in a
-  // specific 90° compass sector — so a request like "100-200 km East" can
-  // turn up only a handful of real candidates even where "any direction"
-  // would have plenty. When that happens, run live Overpass discovery
-  // centred on a few points ALONG the chosen bearing (not the traveller's own
-  // location), spread across the requested band, so real OSM places out
-  // there get a chance to fill the pool too.
+  // Directional safety net: the curated catalogue's coverage is uneven around
+  // any given starting point — dense in some compass sectors, genuinely THIN
+  // (sometimes zero) in others, independent of how far out the band reaches.
+  // E.g. from one real "around me" location, 25-50 km EAST turned up zero
+  // curated candidates while north/west had hundreds — nothing wrong with
+  // "east" specifically, that direction's sector from that point just has
+  // little seeded data. Bands with minDistanceKm >= OVERPASS_MAX_KM already
+  // skip the near-field Overpass fetch above entirely (anything it could
+  // find within OVERPASS_MAX_KM of the traveller would fail the min-distance
+  // filter anyway), so they rely solely on the catalogue; near-field bands DO
+  // query Overpass already, but as one uncapped circle around the traveller —
+  // capped at 200 results across ALL directions, so a thin sector can still
+  // lose out to denser ones sharing that same circle. Either way, when the
+  // pool is still thin for a chosen direction, run live Overpass discovery
+  // centred on a few points ALONG the chosen bearing (not just the
+  // traveller's own location), spread across the requested band, so real OSM
+  // places out there get a fair, sector-targeted chance to fill the pool.
   const maxStopsRequested = parsed.data.maxStops;
   if (
-    minDistanceKm >= OVERPASS_MAX_KM &&
     direction !== "any" &&
     wantedCats.length > 0 &&
     finalCandidates.length < Math.max(20, maxStopsRequested * 2)
