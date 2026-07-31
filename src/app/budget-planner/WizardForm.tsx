@@ -303,10 +303,18 @@ export function WizardForm({ initial }: WizardFormProps) {
     const minKm = parseInt(km, 10) || 0;
     const reachKm = minKm === 0 ? 50 : minKm >= 200 ? 500 : minKm * 2;
 
+    // A multi-day trip with a chosen minimum distance implies an overnight
+    // stay away from home (already reflected in the nightly stay cost the
+    // planner reserves below) — so the traveller has a full waking day for
+    // EACH day, not just enough hours to drive out there and back before
+    // dark. Same-day plans (1 day, or a local trip with no minimum distance)
+    // keep the tighter 9 h/day, since the traveller must be home that night.
+    const hoursPerDay = daysNum > 1 && minKm > 0 ? 15 : 9;
+
     const snap: LivePlanProps = {
       budget,
       people: travellersNum,
-      hours: Math.min(120, Math.max(6, daysNum * 9)),
+      hours: Math.min(120, Math.max(6, daysNum * hoursPerDay)),
       vehicle: TRANSPORT_VEHICLE[transport] ?? "small_car",
       mode: MODE_BY_TRANSPORT[transport] ?? "any",
       groups: [...groups],
