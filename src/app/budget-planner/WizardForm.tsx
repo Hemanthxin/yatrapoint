@@ -7,9 +7,7 @@ import {
   Heart,
   Users,
   UsersRound,
-  Bus,
   Car,
-  TrainFront,
   Bike,
   CheckCircle2,
   Check,
@@ -110,19 +108,13 @@ function availableTripTypes(travellersNum: number) {
 }
 
 const TRANSPORT = [
-  { key: "Any", icon: null },
-  { key: "Bus", icon: Bus },
   { key: "Car", icon: Car },
-  { key: "Train", icon: TrainFront },
   { key: "Bike", icon: Bike },
 ];
 
 // Transport chip → travel mode sent to the planner (drives cost + map style).
 const MODE_BY_TRANSPORT: Record<string, "any" | "car" | "bike" | "bus" | "train"> = {
-  Any: "any",
-  Bus: "bus",
   Car: "car",
-  Train: "train",
   Bike: "bike",
 };
 
@@ -130,10 +122,7 @@ const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 
 // Preferred transport → vehicle profile used for fuel-cost estimates.
 const TRANSPORT_VEHICLE: Record<string, VehicleKind> = {
-  Any: "small_car",
-  Bus: "suv",
   Car: "small_car",
-  Train: "small_car",
   Bike: "bike",
 };
 
@@ -170,7 +159,7 @@ export function WizardForm({ initial }: WizardFormProps) {
   const [days, setDays] = useState(initial.days ? `${initial.days} Days` : "2 Days");
   const [travellers, setTravellers] = useState(initial.travellers?.toString() ?? "2");
   const [tripType, setTripType] = useState("Family");
-  const [transport, setTransport] = useState("Any");
+  const [transport, setTransport] = useState("Car");
   const [food, setFood] = useState("Any");
   // Food is optional. When on, the traveller may enter their own trip food
   // budget (₹) — blank means "estimate it for me" (₹350/person/day).
