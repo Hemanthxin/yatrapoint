@@ -296,7 +296,8 @@ export function LivePlan({
       });
       const data: PlanResponse = await res.json();
       if (!res.ok || !data.ok) {
-        setError(data.error || "Could not generate a plan.");
+        const detail = data.overpassError ? ` (live-places lookup: ${data.overpassError})` : "";
+        setError((data.error || "Could not generate a plan.") + detail);
         setPlan(null);
         return;
       }
