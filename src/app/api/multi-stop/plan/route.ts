@@ -830,6 +830,19 @@ export async function POST(req: NextRequest) {
   const realTotalCost = fuelTotal + stopCostTotal + extraFood + stayTotal;
   const realPerPerson = Math.round(realTotalCost / Math.max(1, people));
 
+  // plan.unspentMinutes is based on the planner's own one-way, haversine-based
+  // time estimate (no return-to-start leg) — it understates real time spent
+  // once totalDurationMinutes above becomes the actual routed ROUND TRIP
+  // (real roads + the drive back), which is what let a "still 9 not 10 stops,
+  // but time left over" plan get generated: the leftover time shown wasn't
+  // real. Recompute against the SAME time budget the planner used, but with
+  // the real driving duration + real stop dwell time.
+  const dwellMinutes = orderedStops.reduce((sum, s) => sum + s.idealMinutes, 0);
+  const realUnspentMinutes = Math.max(
+    0,
+    Math.round(plan.minutesBudget - totalDurationMinutes - dwellMinutes)
+  );
+
   // Alternatives — strong candidates we considered but didn't include, so the
   // traveller can swap any stop ("already visited / replace") for another place.
   const usedIds = new Set(orderedStops.map((s) => s.id));
@@ -879,7 +892,7 @@ export async function POST(req: NextRequest) {
       stayNights: nights,
       stayRooms,
       unspentBudget: Math.max(0, parsed.data.totalBudget - realTotalCost),
-      unspentMinutes: plan.unspentMinutes,
+      unspentMinutes: realUnspentMinutes,
     },
     geometry,
     legs: legsOut,

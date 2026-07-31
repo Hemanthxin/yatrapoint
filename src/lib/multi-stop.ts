@@ -167,6 +167,14 @@ export interface PlannerResult {
   // Sum of total minutes at places + travel minutes. Useful for UI.
   unspentBudget: number;
   unspentMinutes: number;
+  // The time budget planning worked against (hoursAvailable × 60 × the traffic
+  // buffer). Exposed so a caller that re-times the route with a real router
+  // (OSRM) can recompute unspentMinutes against the SAME budget instead of
+  // reusing this planner's haversine-based estimate — see route.ts, where
+  // totalMinutes here is a one-way sum (no return-to-start leg) but the real
+  // routed duration is a genuine round trip, so reusing unspentMinutes as-is
+  // overstates how much time is actually left.
+  minutesBudget: number;
 }
 
 type Pt = { lat: number; lng: number };
@@ -522,5 +530,6 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     perPersonCost: perPerson,
     unspentBudget: Math.max(0, Math.round(budget - reserved - totalCost)),
     unspentMinutes: Math.max(0, Math.round(minutesBudget - forwardMins)),
+    minutesBudget,
   };
 }
