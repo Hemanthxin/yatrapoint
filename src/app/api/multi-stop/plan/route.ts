@@ -627,6 +627,7 @@ export async function POST(req: NextRequest) {
     const bandWidthKm = Math.max(0, radiusKm - minDistanceKm);
     const sampleRadiusKm = Math.min(OVERPASS_MAX_KM, Math.max(30, bandWidthKm / 2 + 20));
     const sampleDistancesKm = [0.25, 0.5, 0.75].map((f) => minDistanceKm + bandWidthKm * f);
+    const farOverpassErrors: string[] = [];
     try {
       const results = await Promise.all(
         sampleDistancesKm.map((distKm) =>
@@ -636,12 +637,20 @@ export async function POST(req: NextRequest) {
             radius: sampleRadiusKm * 1000,
             limit: 200,
             cap: 200,
-          }).catch(() => [] as Awaited<ReturnType<typeof fetchOverpassPlaces>>)
+          }).catch((err) => {
+            farOverpassErrors.push(err instanceof Error ? err.message : String(err));
+            return [] as Awaited<ReturnType<typeof fetchOverpassPlaces>>;
+          })
         )
       );
       for (const places of results) ingestOverpass(places);
-    } catch {
-      /* keep what we have */
+      if (farOverpassErrors.length === sampleDistancesKm.length && !overpassError) {
+        overpassError = `Far-directional Overpass: ${farOverpassErrors[0]}`;
+      }
+    } catch (err) {
+      if (!overpassError) {
+        overpassError = `Far-directional Overpass: ${err instanceof Error ? err.message : String(err)}`;
+      }
     }
   }
 
