@@ -28,6 +28,31 @@ export function haversineKm(a: LatLng, b: LatLng): number {
   return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(h));
 }
 
+// Great-circle destination point: given a start, a compass bearing (0 = north,
+// 90 = east, clockwise) and a distance, returns the point you'd land on. Used
+// to aim a search at a point FAR from the traveller (e.g. Overpass discovery
+// for a "100-200 km east" band, centred 150 km east — not at the traveller's
+// own location, which a >100 km min-distance filter would reject anyway).
+export function destinationPoint(from: LatLng, bearingDeg: number, distanceKm: number): LatLng {
+  const angDist = distanceKm / EARTH_RADIUS_KM;
+  const bearing = toRad(bearingDeg);
+  const lat1 = toRad(from.lat);
+  const lng1 = toRad(from.lng);
+  const lat2 = Math.asin(
+    Math.sin(lat1) * Math.cos(angDist) + Math.cos(lat1) * Math.sin(angDist) * Math.cos(bearing)
+  );
+  const lng2 =
+    lng1 +
+    Math.atan2(
+      Math.sin(bearing) * Math.sin(angDist) * Math.cos(lat1),
+      Math.cos(angDist) - Math.sin(lat1) * Math.sin(lat2)
+    );
+  return {
+    lat: (lat2 * 180) / Math.PI,
+    lng: (((lng2 * 180) / Math.PI + 540) % 360) - 180, // normalise to -180..180
+  };
+}
+
 export function formatKm(km: number): string {
   if (km < 1) return `${Math.round(km * 1000)} m`;
   if (km < 10) return `${km.toFixed(1)} km`;

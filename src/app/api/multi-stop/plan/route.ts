@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
 import { fetchOverpassPlaces, findNearestStation, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
-import { haversineKm } from "@/lib/geo";
+import { destinationPoint, haversineKm } from "@/lib/geo";
 import {
   CATEGORY_DEFAULTS,
   candidateFromOverpass,
@@ -600,6 +600,46 @@ export async function POST(req: NextRequest) {
     currentKm = Math.min(OVERPASS_MAX_KM, overpassRadiusKm * 1.2);
     try {
       await addOverpass(currentKm);
+    } catch {
+      /* keep what we have */
+    }
+  }
+
+  // Far-directional safety net: bands with minDistanceKm >= OVERPASS_MAX_KM
+  // skip the near-field Overpass fetch above entirely (anything it could find
+  // within OVERPASS_MAX_KM of the traveller would fail the min-distance filter
+  // anyway), so those bands rely solely on the curated catalogue. That
+  // catalogue's coverage is uneven — dense in some corridors, thin in a
+  // specific 90° compass sector — so a request like "100-200 km East" can
+  // turn up only a handful of real candidates even where "any direction"
+  // would have plenty. When that happens, run live Overpass discovery
+  // centred on a few points ALONG the chosen bearing (not the traveller's own
+  // location), spread across the requested band, so real OSM places out
+  // there get a chance to fill the pool too.
+  const maxStopsRequested = parsed.data.maxStops;
+  if (
+    minDistanceKm >= OVERPASS_MAX_KM &&
+    direction !== "any" &&
+    wantedCats.length > 0 &&
+    finalCandidates.length < Math.max(20, maxStopsRequested * 2)
+  ) {
+    const bearing = DIR_BEARING[direction];
+    const bandWidthKm = Math.max(0, radiusKm - minDistanceKm);
+    const sampleRadiusKm = Math.min(OVERPASS_MAX_KM, Math.max(30, bandWidthKm / 2 + 20));
+    const sampleDistancesKm = [0.25, 0.5, 0.75].map((f) => minDistanceKm + bandWidthKm * f);
+    try {
+      const results = await Promise.all(
+        sampleDistancesKm.map((distKm) =>
+          fetchOverpassPlaces({
+            centre: destinationPoint(start, bearing, distKm),
+            categories: wantedCats,
+            radius: sampleRadiusKm * 1000,
+            limit: 200,
+            cap: 200,
+          }).catch(() => [] as Awaited<ReturnType<typeof fetchOverpassPlaces>>)
+        )
+      );
+      for (const places of results) ingestOverpass(places);
     } catch {
       /* keep what we have */
     }
