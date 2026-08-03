@@ -343,6 +343,13 @@ export async function POST(req: NextRequest) {
         .filter((t) => t.length > 1)
     );
   const isSubset = (a: Set<string>, b: Set<string>) => a.size > 0 && [...a].every((t) => b.has(t));
+  // Words that signal "a different branch/location of the same-named chain"
+  // rather than "the same place with an extra descriptor" — e.g. "Orion Mall"
+  // vs "Orion East Mall" are two distinct malls, not one place mapped twice.
+  const BRANCH_QUALIFIERS = new Set([
+    "east", "west", "north", "south", "new", "old", "main",
+    "upper", "lower", "first", "second", "phase", "branch", "extension",
+  ]);
   // Token overlap ratio (0..1) — catches near-identical names like "Ranganatha
   // Swamy Temple" vs "Sri Ranganathaswamy Temple" that share most words.
   const jaccard = (a: Set<string>, b: Set<string>) => {
@@ -536,9 +543,36 @@ export async function POST(req: NextRequest) {
     const tk = tokensOf(c.name);
     for (const p of placedTokens) {
       const gapKm = haversineKm({ lat: c.lat, lng: c.lng }, { lat: p.lat, lng: p.lng });
+      const aSubB = isSubset(tk, p.tokens);
+      const bSubA = isSubset(p.tokens, tk);
       // Same complex mapped twice: one name's words are a subset of the other's
       // and they sit close together (≤1.2 km).
-      if (gapKm <= 1.2 && (isSubset(tk, p.tokens) || isSubset(p.tokens, tk))) return false;
+      if (gapKm <= 1.2 && (aSubB || bSubA)) return false;
+      // Same real place catalogued independently in two source tables (e.g.
+      // "Kurudumale Ganesha" from the day-trip catalogue vs "Kurudumale Ganesha
+      // Temple" from the statewide catalogue) — one name is the other's words
+      // plus a single generic descriptor. Independently-entered rows for the
+      // same place can carry coordinates several km apart (one source's entry
+      // is just imprecise), well past the 1.2 km case above. Guarded two ways:
+      // the shorter name must have ≥2 tokens (never fires on a single generic
+      // word like "Park" matching an unrelated "X Park" elsewhere in the
+      // radius), and the extra word must NOT be a location/branch qualifier —
+      // "Orion Mall" vs "Orion East Mall" are two different real malls (Orion
+      // is a multi-branch chain), not the same mall catalogued twice, so a
+      // directional/branch word blocks the merge even though it's textually
+      // just "one extra token".
+      const smaller = tk.size <= p.tokens.size ? tk : p.tokens;
+      const larger = tk.size <= p.tokens.size ? p.tokens : tk;
+      const extraTokens = [...larger].filter((t) => !smaller.has(t));
+      const extraIsBranchQualifier = extraTokens.some((t) => BRANCH_QUALIFIERS.has(t));
+      if (
+        gapKm <= 10 &&
+        smaller.size >= 2 &&
+        larger.size - smaller.size <= 1 &&
+        (aSubB || bSubA) &&
+        !extraIsBranchQualifier
+      )
+        return false;
       // Near-identical names (≥70% token overlap) a short distance apart (≤2 km)
       // — the same place from two data sources with slightly different spellings.
       if (gapKm <= 2 && jaccard(tk, p.tokens) >= 0.7) return false;
