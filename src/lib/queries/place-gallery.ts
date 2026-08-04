@@ -2,6 +2,9 @@ import { and, eq, inArray, asc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { placeImages } from "@/lib/db/schema";
 import type { ImageSource } from "@/lib/queries/admin-images";
+import { MAX_GALLERY_IMAGES } from "@/lib/gallery-constants";
+
+export { MAX_GALLERY_IMAGES };
 
 export interface GalleryImage {
   id: string;
@@ -9,8 +12,6 @@ export interface GalleryImage {
   caption: string | null;
   position: number;
 }
-
-export const MAX_GALLERY_IMAGES = 4;
 
 // Gallery for a single place — used by the admin manager when editing one
 // card's photos.

@@ -11,7 +11,8 @@ import {
   swapPlaceGalleryPosition,
   fetchPlaceGalleriesBatch,
 } from "@/lib/actions/admin-place-gallery";
-import { MAX_GALLERY_IMAGES, type GalleryImage } from "@/lib/queries/place-gallery";
+import type { GalleryImage } from "@/lib/queries/place-gallery";
+import { MAX_GALLERY_IMAGES } from "@/lib/gallery-constants";
 import { resizeImageToDataUrl } from "@/lib/image-resize";
 
 const SOURCE_LABEL: Record<ImageSource, string> = {
