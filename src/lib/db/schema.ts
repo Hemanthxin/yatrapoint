@@ -314,6 +314,30 @@ export const cityPlaces = pgTable("city_places", {
   popularityIdx: index("city_places_popularity_idx").on(table.popularity),
 }));
 
+// Photo gallery for a place — up to 4 images with an optional caption each,
+// shown on the trip-plan stop card. Attaches to ONE of destinations /
+// nearby_destinations / city_places via a polymorphic (placeId, placeType)
+// pair rather than a real FK, since a single FK can't reference three
+// tables — mirrors the ImageSource discriminator already used by
+// src/lib/actions/admin-images.ts. Because there's no DB-level ON DELETE
+// CASCADE possible here, deleting a place row must also delete its
+// placeImages rows at the app level (see deleteAdminPlace) — any future
+// delete action for city_places/nearby_destinations must do the same for
+// its placeType.
+export const placeImages = pgTable("place_images", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  placeId: text("place_id").notNull(),
+  // "destination" | "nearby" | "city" — matches ImageSource exactly.
+  placeType: varchar("place_type", { length: 20 }).notNull(),
+  url: text("url").notNull(),
+  caption: varchar("caption", { length: 140 }),
+  position: integer("position").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  placeIdx: index("place_images_place_idx").on(table.placeId, table.placeType, table.position),
+}));
+export type PlaceImageRow = typeof placeImages.$inferSelect;
+
 // --- Community / Hidden Places (Module 4) ---
 // User-submitted hidden gems: photo + live location + description, held for
 // admin verification before being published to the community feed.

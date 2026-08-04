@@ -21,6 +21,23 @@ import {
   FLIGHT_BASE,
   type TravelMode,
 } from "@/lib/transport";
+import { listGalleryImagesForPlaces } from "@/lib/queries/place-gallery";
+import type { ImageSource } from "@/lib/queries/admin-images";
+
+// Candidate/stop ids are self-describing prefixes tied 1:1 to their source
+// table (dest:${id} -> destinations, seed:${id} -> city_places,
+// nearby:${id} -> nearby_destinations, osm:${id} -> live Overpass, no DB
+// row). Used to batch-fetch each stop's photo gallery without an N+1 query.
+function splitGalleryId(id: string): { placeId: string; placeType: ImageSource } | null {
+  const sep = id.indexOf(":");
+  if (sep < 0) return null;
+  const prefix = id.slice(0, sep);
+  const placeId = id.slice(sep + 1);
+  if (prefix === "dest") return { placeId, placeType: "destination" };
+  if (prefix === "seed") return { placeId, placeType: "city" };
+  if (prefix === "nearby") return { placeId, placeType: "nearby" };
+  return null;
+}
 
 export const runtime = "nodejs";
 // Plan generation fans out to Overpass (mirror race) + OSRM + DB; give it room.
@@ -952,6 +969,24 @@ export async function POST(req: NextRequest) {
       meta: c.meta,
     }));
 
+  // Attach each stop/alternative's photo gallery (up to 4 images + captions,
+  // managed via /admin/images). Candidate ids are self-describing prefixes
+  // tied 1:1 to their source table (dest:/seed:/nearby:) — osm: candidates
+  // have no DB row and so no gallery, batched in 3 queries total regardless
+  // of stop count.
+  const galleryLookups = [...orderedStops, ...alternatives]
+    .map((s) => splitGalleryId(s.id))
+    .filter((x): x is { placeId: string; placeType: ImageSource } => x !== null)
+    .map((x) => ({ id: x.placeId, source: x.placeType }));
+  const galleryMap = await listGalleryImagesForPlaces(galleryLookups);
+  const withImages = <T extends { id: string }>(s: T): T & { images: { url: string; caption: string | null }[] } => {
+    const key = splitGalleryId(s.id);
+    const images = key ? (galleryMap.get(key.placeId) ?? []) : [];
+    return { ...s, images: images.map((i) => ({ url: i.url, caption: i.caption })) };
+  };
+  orderedStops = orderedStops.map(withImages);
+  const alternativesWithImages = alternatives.map(withImages);
+
   return NextResponse.json({
     ok: true,
     candidatesConsidered: finalCandidates.length,
@@ -959,7 +994,7 @@ export async function POST(req: NextRequest) {
     seedPlaces: seedCandidates.length + destCandidates.length + nearbyCandidates.length,
     overpassError,
     stops: orderedStops,
-    alternatives,
+    alternatives: alternativesWithImages,
     mode,
     travelLabel: modeInfo.label,
     travelPerPerson: modeInfo.perPerson,

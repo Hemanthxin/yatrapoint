@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Plus, Save, X, Upload, MapPin, ExternalLink } from "lucide-react";
 
 import { addAdminPlace, updateAdminPlace } from "@/lib/actions/admin";
+import { resizeImageToDataUrl } from "@/lib/image-resize";
 
 // Pull latitude/longitude out of a pasted Google Maps link OR a plain
 // "lat, lng" string. Handles the common Google Maps URL shapes.
@@ -133,31 +134,9 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
       return;
     }
     setError(null);
-    const reader = new FileReader();
-    reader.onload = () => {
-      const src = typeof reader.result === "string" ? reader.result : "";
-      const img = new window.Image();
-      img.onload = () => {
-        const maxDim = 1280;
-        let { width, height } = img;
-        if (width > maxDim || height > maxDim) {
-          const scale = Math.min(maxDim / width, maxDim / height);
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return setPhoto(src);
-        ctx.drawImage(img, 0, 0, width, height);
-        setPhoto(canvas.toDataURL("image/jpeg", 0.78));
-      };
-      img.onerror = () => setError("Could not read the image.");
-      img.src = src;
-    };
-    reader.onerror = () => setError("Could not read that file.");
-    reader.readAsDataURL(file);
+    resizeImageToDataUrl(file, { maxDim: 1280, quality: 0.78 })
+      .then(setPhoto)
+      .catch(() => setError("Could not read the image."));
   }
 
   function clearPhoto() {

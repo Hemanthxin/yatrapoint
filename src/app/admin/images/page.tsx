@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { isAdminSession } from "@/lib/admin";
 import { listPlacesMissingImages } from "@/lib/queries/admin-images";
+import { fetchPlaceGalleriesBatch } from "@/lib/actions/admin-place-gallery";
 import { ImagesManager } from "./ImagesManager";
 
 export default async function AdminImagesPage() {
@@ -10,6 +11,7 @@ export default async function AdminImagesPage() {
   if (!session || !isAdminSession(session.user)) redirect("/admin-login");
 
   const missing = await listPlacesMissingImages(24);
+  const initialGalleries = await fetchPlaceGalleriesBatch(missing.map((r) => ({ id: r.id, source: r.source })));
   const u = session.user;
 
   return (
@@ -18,10 +20,10 @@ export default async function AdminImagesPage() {
         <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Place photos</h1>
         <p className="mt-1 text-sm text-slate-500">
           Search any place across Destinations, One-day trips and City places, and add or replace its
-          photo — it goes live on the site immediately.
+          photo, and manage its photo gallery (up to 4 photos with captions) shown on trip-plan stop cards.
         </p>
       </div>
-      <ImagesManager initialMissing={missing} />
+      <ImagesManager initialMissing={missing} initialGalleries={initialGalleries} />
     </AdminShell>
   );
 }

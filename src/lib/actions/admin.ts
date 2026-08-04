@@ -6,7 +6,7 @@ import { and, eq, ne, sql } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { destinations } from "@/lib/db/schema";
+import { destinations, placeImages } from "@/lib/db/schema";
 import { createId } from "@/lib/utils/id";
 import { isAdminSession } from "@/lib/admin";
 
@@ -218,6 +218,12 @@ export async function updateAdminPlace(
 
 export async function deleteAdminPlace(id: string) {
   await requireAdmin();
+  // No DB-level cascade is possible for place_images (polymorphic placeId/
+  // placeType, not a real FK — see schema.ts) — clean up its gallery rows
+  // at the app level before deleting the place itself. Any future delete
+  // action for city_places/nearby_destinations must do the same for its
+  // own placeType.
+  await db.delete(placeImages).where(and(eq(placeImages.placeId, id), eq(placeImages.placeType, "destination")));
   await db.delete(destinations).where(eq(destinations.id, id));
   revalidatePath("/admin/places");
   revalidatePath("/admin/dashboard");

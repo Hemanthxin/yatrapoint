@@ -30,6 +30,7 @@ import {
 import { useLocation } from "@/components/app/LocationContext";
 import { SaaferaLoader } from "@/components/app/SaaferaLoader";
 import { PlaceImage } from "@/components/app/PlaceImage";
+import { StopImageGrid } from "./StopImageGrid";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
@@ -80,6 +81,7 @@ interface PlanStop {
   arrivalKmFromPrev: number;
   arrivalMinutesFromPrev: number;
   imageUrl?: string | null;
+  images?: { url: string; caption: string | null }[];
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -95,6 +97,7 @@ interface Alternative {
   idealMinutes: number;
   foodCostPerPerson?: number;
   imageUrl?: string | null;
+  images?: { url: string; caption: string | null }[];
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -997,6 +1000,15 @@ export function LivePlan({
                           <Repeat className="h-3 w-3" /> Visited? Replace
                         </button>
                       </div>
+
+                      <StopImageGrid
+                        name={s.name}
+                        category={s.category}
+                        images={s.images ?? []}
+                        fallbackImageUrl={s.imageUrl}
+                        emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
+                        gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
+                      />
 
                       {swapIndex === i && (
                     <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">

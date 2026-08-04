@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useState, type ChangeEvent } from "react";
-import { Search, Upload, Loader2, Check, ImageOff } from "lucide-react";
+import { Search, Upload, Loader2, Check, ImageOff, Plus, X, ArrowUp, ArrowDown } from "lucide-react";
 import type { AdminImageRow, ImageSource } from "@/lib/queries/admin-images";
 import { searchPlaceImages, updatePlaceImage } from "@/lib/actions/admin-images";
+import {
+  addPlaceGalleryImage,
+  deletePlaceGalleryImage,
+  updatePlaceGalleryCaption,
+  swapPlaceGalleryPosition,
+  fetchPlaceGalleriesBatch,
+} from "@/lib/actions/admin-place-gallery";
+import { MAX_GALLERY_IMAGES, type GalleryImage } from "@/lib/queries/place-gallery";
+import { resizeImageToDataUrl } from "@/lib/image-resize";
 
 const SOURCE_LABEL: Record<ImageSource, string> = {
   destination: "Destination",
@@ -18,40 +27,23 @@ const SOURCE_CHIP: Record<ImageSource, string> = {
 
 const DEBOUNCE_MS = 350;
 
-function resizeToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const src = typeof reader.result === "string" ? reader.result : "";
-      const img = new window.Image();
-      img.onload = () => {
-        const maxDim = 1280;
-        let { width, height } = img;
-        if (width > maxDim || height > maxDim) {
-          const scale = Math.min(maxDim / width, maxDim / height);
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(src);
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.78));
-      };
-      img.onerror = () => reject(new Error("Could not read that image."));
-      img.src = src;
-    };
-    reader.onerror = () => reject(new Error("Could not read that file."));
-    reader.readAsDataURL(file);
-  });
-}
+const resizeToDataUrl = (file: File) => resizeImageToDataUrl(file, { maxDim: 1280, quality: 0.78 });
+// Gallery photos get a tighter budget than the single hero photo — a place
+// can have up to 4 of them, so each needs to stay small or the total cost
+// balloons to roughly 4x a single photo's.
+const resizeGalleryToDataUrl = (file: File) => resizeImageToDataUrl(file, { maxDim: 800, quality: 0.62 });
 
-export function ImagesManager({ initialMissing }: { initialMissing: AdminImageRow[] }) {
+export function ImagesManager({
+  initialMissing,
+  initialGalleries,
+}: {
+  initialMissing: AdminImageRow[];
+  initialGalleries: Record<string, GalleryImage[]>;
+}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<AdminImageRow[] | null>(null);
   const [searching, setSearching] = useState(false);
+  const [galleries, setGalleries] = useState(initialGalleries);
 
   useEffect(() => {
     const q = query.trim();
@@ -62,7 +54,11 @@ export function ImagesManager({ initialMissing }: { initialMissing: AdminImageRo
     setSearching(true);
     const id = setTimeout(() => {
       searchPlaceImages(q)
-        .then(setResults)
+        .then((rows) => {
+          setResults(rows);
+          return fetchPlaceGalleriesBatch(rows.map((r) => ({ id: r.id, source: r.source })));
+        })
+        .then((fetched) => setGalleries((prev) => ({ ...prev, ...fetched })))
         .finally(() => setSearching(false));
     }, DEBOUNCE_MS);
     return () => clearTimeout(id);
@@ -99,16 +95,32 @@ export function ImagesManager({ initialMissing }: { initialMissing: AdminImageRo
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {showing.map((row) => (
-            <Row key={`${row.source}:${row.id}`} row={row} />
-          ))}
+          {showing.map((row) => {
+            const key = `${row.source}:${row.id}`;
+            return (
+              <Row
+                key={key}
+                row={row}
+                gallery={galleries[key] ?? []}
+                onGalleryChange={(images) => setGalleries((prev) => ({ ...prev, [key]: images }))}
+              />
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-function Row({ row }: { row: AdminImageRow }) {
+function Row({
+  row,
+  gallery,
+  onGalleryChange,
+}: {
+  row: AdminImageRow;
+  gallery: GalleryImage[];
+  onGalleryChange: (images: GalleryImage[]) => void;
+}) {
   const [imageUrl, setImageUrl] = useState(row.imageUrl);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -175,7 +187,133 @@ function Row({ row }: { row: AdminImageRow }) {
           <input type="file" accept="image/*" className="hidden" onChange={onFile} disabled={busy} />
         </label>
         {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
+
+        <Gallery row={row} gallery={gallery} onGalleryChange={onGalleryChange} />
       </div>
+    </div>
+  );
+}
+
+// Trip-plan stop-card gallery — up to 4 photos with captions, shown on the
+// budget planner. Separate from the single hero photo above (still used
+// site-wide on detail pages / listing cards).
+function Gallery({
+  row,
+  gallery,
+  onGalleryChange,
+}: {
+  row: AdminImageRow;
+  gallery: GalleryImage[];
+  onGalleryChange: (images: GalleryImage[]) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function onAdd(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      return;
+    }
+    setError(null);
+    setBusy(true);
+    try {
+      const dataUrl = await resizeGalleryToDataUrl(file);
+      const res = await addPlaceGalleryImage(row.source, row.id, dataUrl, null);
+      if (res.ok && res.images) onGalleryChange(res.images);
+      else setError(res.error || "Could not save the photo.");
+    } catch {
+      setError("Could not read that image.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDelete(imageId: string) {
+    setBusy(true);
+    const res = await deletePlaceGalleryImage(imageId);
+    if (res.ok && res.images) onGalleryChange(res.images);
+    else setError(res.error || "Could not delete the photo.");
+    setBusy(false);
+  }
+
+  async function onCaptionBlur(imageId: string, caption: string) {
+    const res = await updatePlaceGalleryCaption(imageId, caption);
+    if (res.ok && res.images) onGalleryChange(res.images);
+  }
+
+  async function onMove(imageId: string, dir: -1 | 1) {
+    const idx = gallery.findIndex((g) => g.id === imageId);
+    const swapIdx = idx + dir;
+    if (idx < 0 || swapIdx < 0 || swapIdx >= gallery.length) return;
+    setBusy(true);
+    const res = await swapPlaceGalleryPosition(gallery[idx].id, gallery[swapIdx].id);
+    if (res.ok && res.images) onGalleryChange(res.images);
+    setBusy(false);
+  }
+
+  return (
+    <div className="mt-3 border-t border-slate-100 pt-3">
+      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
+        Gallery ({gallery.length}/{MAX_GALLERY_IMAGES}) — shown on trip-plan stop cards
+      </p>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        {gallery.map((img, idx) => (
+          <div key={img.id} className="overflow-hidden rounded-xl border border-slate-200">
+            <div className="relative h-16 w-full bg-slate-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img.url} alt={img.caption || row.name} className="h-full w-full object-cover" />
+              <button
+                type="button"
+                onClick={() => onDelete(img.id)}
+                disabled={busy}
+                className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-black/60 text-white hover:bg-rose-600"
+                aria-label="Delete photo"
+              >
+                <X className="h-3 w-3" />
+              </button>
+              <div className="absolute bottom-1 right-1 flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => onMove(img.id, -1)}
+                  disabled={busy || idx === 0}
+                  className="grid h-5 w-5 place-items-center rounded-full bg-black/60 text-white disabled:opacity-30"
+                  aria-label="Move earlier"
+                >
+                  <ArrowUp className="h-3 w-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onMove(img.id, 1)}
+                  disabled={busy || idx === gallery.length - 1}
+                  className="grid h-5 w-5 place-items-center rounded-full bg-black/60 text-white disabled:opacity-30"
+                  aria-label="Move later"
+                >
+                  <ArrowDown className="h-3 w-3" />
+                </button>
+              </div>
+            </div>
+            <input
+              defaultValue={img.caption ?? ""}
+              onBlur={(e) => onCaptionBlur(img.id, e.target.value)}
+              placeholder="Caption…"
+              maxLength={140}
+              disabled={busy}
+              className="w-full border-0 border-t border-slate-100 px-2 py-1 text-[11px] outline-none focus:bg-slate-50"
+            />
+          </div>
+        ))}
+        {gallery.length < MAX_GALLERY_IMAGES && (
+          <label className="flex h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-slate-300 text-slate-400 transition hover:border-indigo-300 hover:text-indigo-500">
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            <span className="text-[10px] font-semibold">Add photo</span>
+            <input type="file" accept="image/*" className="hidden" onChange={onAdd} disabled={busy} />
+          </label>
+        )}
+      </div>
+      {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
     </div>
   );
 }

@@ -5,36 +5,9 @@ import { Upload, Loader2, Check, RotateCcw } from "lucide-react";
 import type { Festival } from "@/lib/festivals";
 import { festivalSlug } from "@/lib/festivals";
 import { updateFestivalImage, resetFestivalImage } from "@/lib/actions/festival-images";
+import { resizeImageToDataUrl } from "@/lib/image-resize";
 
-function resizeToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const src = typeof reader.result === "string" ? reader.result : "";
-      const img = new window.Image();
-      img.onload = () => {
-        const maxDim = 1280;
-        let { width, height } = img;
-        if (width > maxDim || height > maxDim) {
-          const scale = Math.min(maxDim / width, maxDim / height);
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(src);
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.8));
-      };
-      img.onerror = () => reject(new Error("Could not read that image."));
-      img.src = src;
-    };
-    reader.onerror = () => reject(new Error("Could not read that file."));
-    reader.readAsDataURL(file);
-  });
-}
+const resizeToDataUrl = (file: File) => resizeImageToDataUrl(file, { maxDim: 1280, quality: 0.8 });
 
 export function FestivalImagesManager({
   festivals,
