@@ -316,15 +316,25 @@ export function LivePlan({
   }, [start.lat, start.lng, searchCentre.lat, searchCentre.lng, budget, hours, people, vehicle, overpassCategories, placeIds, includeFood, foodBudget, maxStops, radiusKm, minDistanceKm, direction, areaDistricts, mode, days]);
 
   // Restore a previously generated plan on mount (e.g. after visiting a place
-  // and pressing Back) so it isn't lost. Only if the inputs still match.
+  // and pressing Back) so it isn't lost. Only if the inputs still match, AND
+  // only if the cached plan is from a build that actually knows about photo
+  // galleries — older cached plans have no `images` key on their stops at
+  // all (not even an empty array), so restoring one would silently keep
+  // showing pre-gallery data forever with no way for the traveller to tell
+  // why newly-added admin photos never show up. Discarding it here just
+  // means the normal auto-generate effect below fetches a fresh plan.
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(PLAN_CACHE_KEY);
       if (raw) {
         const cached = JSON.parse(raw) as { sig: string; plan: PlanResponse };
-        if (cached?.sig === sig && cached.plan) {
+        const firstStop = cached?.plan?.stops?.[0];
+        const predatesGalleries = firstStop != null && !("images" in firstStop);
+        if (cached?.sig === sig && cached.plan && !predatesGalleries) {
           setPlan(cached.plan);
           didAutoRun.current = true; // don't auto-regenerate over the restored plan
+        } else if (predatesGalleries) {
+          sessionStorage.removeItem(PLAN_CACHE_KEY);
         }
       }
     } catch {
