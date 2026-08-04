@@ -19,6 +19,8 @@ import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
 import { Reveal } from "@/components/app/Reveal";
+import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { formatMinutes } from "@/lib/geo";
@@ -40,6 +42,7 @@ export default async function CityPlacePage({ params }: PageProps) {
     .limit(1);
   if (!place) notFound();
 
+  const gallery = await listGalleryImages(place.id, "city");
   const tags = place.tags?.split(",").map((t) => t.trim()).filter(Boolean) ?? [];
 
   return (
@@ -49,7 +52,21 @@ export default async function CityPlacePage({ params }: PageProps) {
       <LocationBanner />
 
       <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 md:p-8">
+        <div
+          className={`relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 md:p-8 ${
+            gallery.length > 0 ? "min-h-[16rem] sm:min-h-[18rem]" : ""
+          }`}
+        >
+          {gallery.length > 0 && (
+            <div className="absolute inset-0">
+              <MediaCarousel
+                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
+                alt={place.name}
+                className="h-full w-full"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-800/40 to-transparent" />
+            </div>
+          )}
           <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
           <p className="relative text-xs font-bold uppercase tracking-wide text-white/90">
             ★ Curated · {place.kind}

@@ -16,23 +16,34 @@ export function MediaCarousel({
   alt,
   className = "",
   imgClassName = "h-full w-full object-cover",
+  captions,
+  captionClassName = "mt-1.5 line-clamp-2 text-xs font-medium text-slate-600",
 }: {
   media: MediaItem[];
   alt: string;
   className?: string;
   imgClassName?: string;
+  // Optional, parallel to `media` — when provided, the current slide's
+  // caption renders below the carousel. Omit entirely for callers (like
+  // community posts) that have nothing to caption; behavior is identical
+  // to before this was added.
+  captions?: (string | null)[];
+  captionClassName?: string;
 }) {
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
 
   if (media.length === 0) return null;
-  const current = media[Math.min(index, media.length - 1)];
+  const clampedIndex = Math.min(index, media.length - 1);
+  const current = media[clampedIndex];
+  const currentCaption = captions?.[clampedIndex];
 
   function go(delta: number) {
     setIndex((i) => Math.max(0, Math.min(media.length - 1, i + delta)));
   }
 
   return (
+    <>
     <div className={`relative ${className}`}>
       {current.kind === "video" ? (
         <div className="relative h-full w-full">
@@ -104,5 +115,7 @@ export function MediaCarousel({
         </>
       )}
     </div>
+    {currentCaption && <p className={captionClassName}>{currentCaption}</p>}
+    </>
   );
 }

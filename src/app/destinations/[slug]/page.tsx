@@ -19,6 +19,8 @@ import { LocationBanner } from "@/components/app/LocationBanner";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
+import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { listGalleryImages } from "@/lib/queries/place-gallery";
 import {
   getDestinationBySlug,
   listDestinations,
@@ -45,12 +47,13 @@ export default async function DestinationPage({ params }: PageProps) {
   const destination = await getDestinationBySlug(slug);
   if (!destination) notFound();
 
-  const [related, favIds] = await Promise.all([
+  const [related, favIds, gallery] = await Promise.all([
     listDestinations({
       category: destination.category,
       limit: 4,
     }),
     listFavoriteIds(u.id ?? ""),
+    listGalleryImages(destination.id, "destination"),
   ]);
   const relatedFiltered = related.filter((d) => d.id !== destination.id).slice(0, 3);
 
@@ -71,7 +74,15 @@ export default async function DestinationPage({ params }: PageProps) {
 
       <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
         <div className="relative h-72 sm:h-80 md:h-96">
-          {destination.imageUrl ? (
+          {gallery.length > 0 ? (
+            <div className="absolute inset-0">
+              <MediaCarousel
+                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
+                alt={destination.name}
+                className="h-full w-full"
+              />
+            </div>
+          ) : destination.imageUrl ? (
             <Image
               src={destination.imageUrl}
               alt={destination.name}
@@ -87,7 +98,7 @@ export default async function DestinationPage({ params }: PageProps) {
               <span className="text-9xl drop-shadow">{cat?.emoji ?? "📍"}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
           <div className="absolute right-4 top-4">
             <FavoriteButton

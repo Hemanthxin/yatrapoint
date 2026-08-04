@@ -37,6 +37,8 @@ import {
 import type { NearbyDestination } from "@/lib/db/schema";
 import { placeDirectionsUrl } from "@/lib/maps";
 import { Reveal } from "@/components/app/Reveal";
+import { MediaCarousel } from "@/app/community/MediaCarousel";
+import type { GalleryImage } from "@/lib/queries/place-gallery";
 
 // Leaflet uses window — must be client-only.
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -50,9 +52,10 @@ const TripMap = dynamic(() => import("@/components/map/TripMap"), {
 
 interface TripDetailProps {
   trip: NearbyDestination;
+  gallery?: GalleryImage[];
 }
 
-export function TripDetail({ trip }: TripDetailProps) {
+export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
   const { coords, isFallback } = useLocation();
   const destination = useMemo<LatLng>(
     () => ({ lat: Number(trip.latitude), lng: Number(trip.longitude) }),
@@ -167,8 +170,18 @@ export function TripDetail({ trip }: TripDetailProps) {
         <div
           className={`relative grid h-56 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient} sm:h-64 md:h-72`}
         >
-          <span className="text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+          {gallery.length > 0 ? (
+            <div className="absolute inset-0">
+              <MediaCarousel
+                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
+                alt={trip.name}
+                className="h-full w-full"
+              />
+            </div>
+          ) : (
+            <span className="text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
           {/* Emerald glow wash for that Play-Store hero pop. */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_10%_110%,rgba(16,185,129,0.5),transparent_60%)] mix-blend-screen" />
           <div className="absolute inset-x-0 bottom-0 p-6">
