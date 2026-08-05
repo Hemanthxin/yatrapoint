@@ -59,10 +59,10 @@ const DIRECTIONS = [
 const SESSION_KEY = "yatra-point/budget-wizard";
 
 // Human label for a distance-band chip: the km value is the floor, the ceiling
-// is double it (0 = anywhere nearby, 200 = 200 km and beyond).
+// is double it (0 = within 25 km, 200 = 200 km and beyond).
 function distBandLabel(km: string): string {
   const n = parseInt(km, 10) || 0;
-  if (n === 0) return "Anywhere";
+  if (n === 0) return "Within 25 km";
   if (n >= 200) return "200+ km";
   return `${n}–${n * 2} km`;
 }
@@ -287,10 +287,10 @@ export function WizardForm({ initial }: WizardFormProps) {
     setAreaError(null);
 
     // In "around me" mode the km chip picks a DISTANCE BAND from the traveller:
-    // 25 → 25-50 km, 50 → 50-100, 100 → 100-200, 200 → 200 km+, and 0 → anywhere
-    // nearby (0-50). `minDistanceKm` is the floor and `reachKm` the ceiling.
+    // 25 → 25-50 km, 50 → 50-100, 100 → 100-200, 200 → 200 km+, and 0 → within
+    // 25 km. `minDistanceKm` is the floor and `reachKm` the ceiling.
     const minKm = parseInt(km, 10) || 0;
-    const reachKm = minKm === 0 ? 50 : minKm >= 200 ? 500 : minKm * 2;
+    const reachKm = minKm === 0 ? 25 : minKm >= 200 ? 500 : minKm * 2;
 
     // A multi-day trip with a chosen minimum distance implies an overnight
     // stay away from home (already reflected in the nightly stay cost the
