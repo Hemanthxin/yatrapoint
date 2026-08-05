@@ -1,11 +1,14 @@
 import { Star, Clock } from "lucide-react";
-import { computeOpenStatus, formatWeeklyHours, todayMondayIndexIST, type WeeklyHours } from "@/lib/place-hours";
+import { computeOpenStatus, formatWeeklyHours, todayMondayIndexIST, normalizeWeeklyHours, type WeeklyHours } from "@/lib/place-hours";
 
 function parseWeeklyHours(json: string | null | undefined): WeeklyHours | null {
   if (!json) return null;
   try {
     const parsed = JSON.parse(json);
-    return Array.isArray(parsed) ? (parsed as WeeklyHours) : null;
+    // Normalizes places synced before multi-period-per-day support (which
+    // stored one DayPeriod object per day instead of an array) so old data
+    // keeps rendering correctly without needing a re-sync.
+    return Array.isArray(parsed) ? normalizeWeeklyHours(parsed) : null;
   } catch {
     return null;
   }

@@ -4,7 +4,7 @@
 // src/lib/google-distance.ts's shape: reads GOOGLE_MAPS_API_KEY, returns
 // null on any failure so the sync can skip a place and move on rather than
 // crash the whole batch.
-import type { WeeklyHours, DayHours } from "./place-hours";
+import type { WeeklyHours, DayPeriod } from "./place-hours";
 
 const PLACES_BASE = "https://places.googleapis.com/v1";
 
@@ -72,21 +72,20 @@ function parseWeeklyHours(periods: GoogleOpeningHoursPeriod[] | undefined): Week
   for (const period of periods) {
     if (!period.open) continue;
     const dayIdx = googleDayToMondayIndex(period.open.day);
-    // A day with multiple periods (split lunch/dinner hours) can't be
-    // represented by this app's one-range-per-day model (same limitation
-    // the existing simple openTime/closeTime fields already have) — first
-    // period for a day wins, rest are dropped.
-    if (hours[dayIdx]) continue;
     const openStr = `${pad2(period.open.hour)}:${pad2(period.open.minute)}`;
+    let entry: DayPeriod;
     if (!period.close) {
       // No close time at all = open 24h that day.
-      hours[dayIdx] = { open: openStr, close: "23:59" };
-      continue;
+      entry = { open: openStr, close: "23:59" };
+    } else {
+      const closeStr = `${pad2(period.close.hour)}:${pad2(period.close.minute)}`;
+      entry = { open: openStr, close: closeStr };
+      if (period.close.day !== period.open.day) entry.closesNextDay = true;
     }
-    const closeStr = `${pad2(period.close.hour)}:${pad2(period.close.minute)}`;
-    const entry: DayHours = { open: openStr, close: closeStr };
-    if (period.close.day !== period.open.day) entry.closesNextDay = true;
-    hours[dayIdx] = entry;
+    // Many places (temples especially) have multiple periods per day, e.g.
+    // a morning session and an evening session with a midday close —
+    // collect all of them instead of keeping just the first.
+    (hours[dayIdx] ??= []).push(entry);
   }
   return hours.every((d) => d == null) ? null : hours;
 }

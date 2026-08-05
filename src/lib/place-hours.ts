@@ -5,7 +5,7 @@
 // always computed fresh at render time even though the underlying data is
 // only as fresh as the last admin-triggered sync (src/lib/google-places.ts).
 
-export interface DayHours {
+export interface DayPeriod {
   open: string; // "HH:MM", 24h
   close: string; // "HH:MM", 24h
   // True when this period runs past midnight into the next calendar day
@@ -13,8 +13,23 @@ export interface DayHours {
   closesNextDay?: boolean;
 }
 
-// Index 0 = Monday .. 6 = Sunday. Null = closed all day.
-export type WeeklyHours = (DayHours | null)[];
+// Index 0 = Monday .. 6 = Sunday. Each day can have MULTIPLE periods — many
+// temples (and some shops) close midday and reopen in the evening, e.g.
+// "4:00 AM - 1:00 PM, 3:00 PM - 8:00 PM". Null = closed all day.
+export type WeeklyHours = (DayPeriod[] | null)[];
+
+// Places synced before multi-period support stored a single DayPeriod
+// object per day instead of an array — normalize that legacy shape here so
+// old data (rather than being re-synced) keeps working, just without a
+// second window.
+type LegacyWeeklyHours = (DayPeriod | DayPeriod[] | null)[];
+export function normalizeWeeklyHours(raw: LegacyWeeklyHours | null | undefined): WeeklyHours | null {
+  if (!raw) return null;
+  return raw.map((d) => {
+    if (!d) return null;
+    return Array.isArray(d) ? d : [d];
+  });
+}
 
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -64,50 +79,61 @@ export function computeOpenStatus(hours: WeeklyHours | null | undefined, now: Da
   const { mondayIndex: today, minutesSinceMidnight: nowMin } = nowInIST(now);
   const yesterday = (today + 6) % 7;
 
-  const todayHours = hours[today];
-  const yesterdayHours = hours[yesterday];
+  const todayPeriods = hours[today] ?? [];
+  const yesterdayPeriods = hours[yesterday] ?? [];
 
-  // Open via today's period (same-day, or the start of an overnight one).
-  if (todayHours) {
-    const openMin = toMinutes(todayHours.open);
-    if (todayHours.closesNextDay) {
+  // Open via any of today's periods (same-day, or the start of an overnight one).
+  for (const period of todayPeriods) {
+    const openMin = toMinutes(period.open);
+    if (period.closesNextDay) {
       if (nowMin >= openMin) {
-        return { isOpen: true, changesAtLabel: `Closes at ${formatTime(todayHours.close)}` };
+        return { isOpen: true, changesAtLabel: `Closes at ${formatTime(period.close)}` };
       }
     } else {
-      const closeMin = toMinutes(todayHours.close);
+      const closeMin = toMinutes(period.close);
       if (nowMin >= openMin && nowMin < closeMin) {
-        return { isOpen: true, changesAtLabel: `Closes at ${formatTime(todayHours.close)}` };
+        return { isOpen: true, changesAtLabel: `Closes at ${formatTime(period.close)}` };
       }
     }
   }
-  // Open via yesterday's overnight period still running into today.
-  if (yesterdayHours?.closesNextDay) {
-    const closeMin = toMinutes(yesterdayHours.close);
+  // Open via yesterday's overnight period(s) still running into today.
+  for (const period of yesterdayPeriods) {
+    if (!period.closesNextDay) continue;
+    const closeMin = toMinutes(period.close);
     if (nowMin < closeMin) {
-      return { isOpen: true, changesAtLabel: `Closes at ${formatTime(yesterdayHours.close)}` };
+      return { isOpen: true, changesAtLabel: `Closes at ${formatTime(period.close)}` };
     }
   }
 
-  // Closed — find the next opening, scanning today (later) then forward up
-  // to 6 more days.
-  for (let offset = 0; offset <= 6; offset++) {
+  // Closed — first check for a LATER period today (e.g. it's 2pm and the
+  // place reopens at 3pm after a midday close).
+  const laterToday = todayPeriods
+    .filter((p) => toMinutes(p.open) > nowMin)
+    .sort((a, b) => toMinutes(a.open) - toMinutes(b.open))[0];
+  if (laterToday) {
+    return { isOpen: false, changesAtLabel: `Closed until ${formatTime(laterToday.open)}` };
+  }
+  // Otherwise scan forward up to 6 more days for the next opening.
+  for (let offset = 1; offset <= 6; offset++) {
     const dayIdx = (today + offset) % 7;
-    const day = hours[dayIdx];
-    if (!day) continue;
-    const openMin = toMinutes(day.open);
-    if (offset === 0 && openMin <= nowMin) continue; // already passed today's opening
-    const label = offset === 0 ? `Closed until ${formatTime(day.open)}` : `Closed until ${DAY_LABELS[dayIdx]} ${formatTime(day.open)}`;
-    return { isOpen: false, changesAtLabel: label };
+    const periods = hours[dayIdx];
+    if (!periods || periods.length === 0) continue;
+    const earliest = [...periods].sort((a, b) => toMinutes(a.open) - toMinutes(b.open))[0];
+    return { isOpen: false, changesAtLabel: `Closed until ${DAY_LABELS[dayIdx]} ${formatTime(earliest.open)}` };
   }
   // No opening found in the next 7 days (genuinely closed every day of the week).
   return { isOpen: false, changesAtLabel: "Closed" };
 }
 
 // Monday-first list for a full weekly hours table, e.g. for detail pages.
+// Multiple periods in a day are joined "4:00 AM – 1:00 PM, 3:00 PM – 8:00 PM".
 export function formatWeeklyHours(hours: WeeklyHours): { day: string; label: string }[] {
   return DAY_LABELS.map((day, i) => {
-    const d = hours[i];
-    return { day, label: d ? `${formatTime(d.open)} – ${formatTime(d.close)}` : "Closed" };
+    const periods = hours[i];
+    const label =
+      periods && periods.length > 0
+        ? periods.map((p) => `${formatTime(p.open)} – ${formatTime(p.close)}`).join(", ")
+        : "Closed";
+    return { day, label };
   });
 }
