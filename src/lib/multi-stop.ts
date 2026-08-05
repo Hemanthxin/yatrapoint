@@ -155,6 +155,18 @@ export interface PlannerInput {
   // falling back to a repeat rather than shrinking the stop count when it
   // doesn't (e.g. a thin rural pool with only a handful of real candidates).
   excludeIds?: string[];
+  // The traveller's ACTUAL picked interests (before the caller auto-widens
+  // to also include tourist_attraction as filler — see route.ts). Without
+  // this, a longer-visit category (e.g. malls, 90 min) systematically loses
+  // to a shorter one (tourist_attraction, 60 min) in the value-per-minute
+  // ratio below even when the traveller explicitly asked for the former —
+  // the "diversity bonus" only ever rewards the FIRST pick of a category,
+  // so once one of each is covered, remaining picks compete purely on that
+  // ratio, and a longer ideal-visit time is an inherent ratio disadvantage
+  // regardless of what was actually requested. This makes an explicitly
+  // requested category win decisively over auto-widened filler for every
+  // slot, as long as enough real candidates of it exist.
+  preferredCategories?: string[];
 }
 
 export interface PlannerStop extends Candidate {
@@ -294,14 +306,21 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     }
   }
 
+  const preferredCats = new Set(input.preferredCategories ?? []);
+
   // Worth of a place: base + popularity, a big bonus for a not-yet-covered
   // category (keeps the trip diverse), a bonus for reaching a not-yet-covered
-  // distance band (far trips only), and a decisive boost for hand-picked places.
+  // distance band (far trips only), a decisive boost for hand-picked places,
+  // and a large boost for matching what the traveller actually asked for
+  // (see preferredCategories above) — decisive enough to win over filler
+  // regardless of the visit-duration disadvantage a longer category has in
+  // the ratio below.
   const excludeIds = new Set(input.excludeIds ?? []);
   const valueOf = (c: Candidate, covered: Set<string>) => {
     let val = 10 + (c.popularity ?? 50);
     if (!covered.has(c.category)) val += 60;
     if (reachKm && !coveredBands.has(bandOf(c))) val += 45;
+    if (preferredCats.size > 0 && preferredCats.has(c.category)) val += 500;
     if (c.pinned) val += 1_000_000;
     // Confirmed closed right now — heavily deprioritised (not excluded: a
     // closed place is still better shown-with-a-warning than leaving a
@@ -465,7 +484,15 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
   // leave a chosen type with zero places. We add the best-value feasible
   // candidate per still-uncovered category, cheapest categories first so we fit
   // the most types within the budget/time/stop limits.
-  const categoriesPresent = [...new Set(pool.map((c) => c.category))];
+  // When the traveller picked specific interests, restrict this guarantee to
+  // THOSE categories only — otherwise the auto-widened tourist_attraction
+  // filler (see route.ts) claims a guaranteed slot too, forcing in an
+  // unrequested stop even when there's no shortage of the traveller's actual
+  // pick. With no specific preference (preferredCats empty), guarantee
+  // coverage for everything present, as before.
+  const categoriesPresent = [...new Set(pool.map((c) => c.category))].filter(
+    (cat) => preferredCats.size === 0 || preferredCats.has(cat)
+  );
   for (const cat of categoriesPresent) {
     if (tour.length >= maxStops) break;
     if (covered.has(cat)) continue;

@@ -785,6 +785,7 @@ export async function POST(req: NextRequest) {
     maxTripKm: radiusKm * 2.5,
     costPerKm: effCostPerKm,
     excludeIds: parsed.data.excludeIds,
+    preferredCategories: explicitlyWantedCats,
   });
 
   if (plan.stops.length === 0) {
