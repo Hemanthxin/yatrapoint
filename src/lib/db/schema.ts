@@ -132,6 +132,16 @@ export const destinations = pgTable("destinations", {
   // Which admin created this place (for per-admin analytics).
   addedByEmail: varchar("added_by_email", { length: 255 }),
   addedByName: varchar("added_by_name", { length: 120 }),
+  // Google Places sync (admin-triggered batch, not live-per-view — see
+  // src/lib/actions/admin-place-sync.ts). All null until synced; every
+  // place starts unsynced, so UI reading these must degrade gracefully.
+  googlePlaceId: text("google_place_id"),
+  googleRating: real("google_rating"),
+  googleRatingCount: integer("google_rating_count"),
+  // JSON WeeklyHours array (see src/lib/place-hours.ts) — real per-day
+  // Google hours, kept separate from any simple single-range hours field.
+  googleWeeklyHours: text("google_weekly_hours"),
+  googleSyncedAt: timestamp("google_synced_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
   stateIdx: index("destinations_state_idx").on(table.state),
@@ -275,6 +285,13 @@ export const nearbyDestinations = pgTable("nearby_destinations", {
   // system (e.g. a wildlife-safari permit portal) — most day-trip spots are
   // free/open and have nothing to book.
   bookingUrl: text("booking_url"),
+  // Google Places sync (admin-triggered batch — see
+  // src/lib/actions/admin-place-sync.ts). All null until synced.
+  googlePlaceId: text("google_place_id"),
+  googleRating: real("google_rating"),
+  googleRatingCount: integer("google_rating_count"),
+  googleWeeklyHours: text("google_weekly_hours"),
+  googleSyncedAt: timestamp("google_synced_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -304,6 +321,14 @@ export const cityPlaces = pgTable("city_places", {
   latitude: varchar("latitude", { length: 20 }).notNull(),
   longitude: varchar("longitude", { length: 20 }).notNull(),
   googlePlaceId: text("google_place_id"),
+  // Google Places sync (admin-triggered batch — see
+  // src/lib/actions/admin-place-sync.ts). Separate from the simple
+  // openTime/closeTime/openDays above (curated data, untouched) — this is
+  // real per-day Google hours for the live open/closed status + weekly table.
+  googleRating: real("google_rating"),
+  googleRatingCount: integer("google_rating_count"),
+  googleWeeklyHours: text("google_weekly_hours"),
+  googleSyncedAt: timestamp("google_synced_at"),
   popularity: integer("popularity").default(50).notNull(),
   // Only set for places with a real official online booking system (museums,
   // amusement parks, etc.) — the overwhelming majority (restaurants, temples,

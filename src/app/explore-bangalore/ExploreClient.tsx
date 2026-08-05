@@ -21,6 +21,7 @@ import { placeMapUrl } from "@/lib/maps";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
 import { PlaceImage } from "@/components/app/PlaceImage";
+import { PlaceStatusBadgesCompact } from "@/components/app/PlaceStatusBadges";
 
 interface OverpassPlaceClient {
   osmId: string;
@@ -380,6 +381,12 @@ function SeedCard({
             <Navigation className="h-3 w-3" /> {formatKm(userDistanceKm)}
           </span>
         </div>
+        <PlaceStatusBadgesCompact
+          rating={place.googleRating}
+          ratingCount={place.googleRatingCount}
+          weeklyHoursJson={place.googleWeeklyHours}
+          className="mt-2"
+        />
         <p className="mt-2 line-clamp-2 text-sm text-slate-700">{place.shortDescription}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
           {place.entryFeePerPerson > 0 ? (

@@ -21,6 +21,7 @@ import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
 import { MediaCarousel } from "@/app/community/MediaCarousel";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
+import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import {
   getDestinationBySlug,
   listDestinations,
@@ -134,6 +135,12 @@ export default async function DestinationPage({ params }: PageProps) {
         </div>
 
         <div className="p-5 sm:p-6 md:p-8">
+          <PlaceStatusBadgesFull
+            rating={destination.googleRating}
+            ratingCount={destination.googleRatingCount}
+            weeklyHoursJson={destination.googleWeeklyHours}
+            className="mb-5"
+          />
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">About</h2>
           <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
             {destination.description}

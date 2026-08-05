@@ -21,6 +21,7 @@ import { NearbyRestaurants } from "./NearbyRestaurants";
 import { Reveal } from "@/components/app/Reveal";
 import { MediaCarousel } from "@/app/community/MediaCarousel";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
+import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import { placeMapUrl } from "@/lib/maps";
 import { formatINR } from "@/lib/format";
 import { formatMinutes } from "@/lib/geo";
@@ -81,6 +82,12 @@ export default async function CityPlacePage({ params }: PageProps) {
         </div>
 
         <div className="p-6 md:p-8">
+        <PlaceStatusBadgesFull
+          rating={place.googleRating}
+          ratingCount={place.googleRatingCount}
+          weeklyHoursJson={place.googleWeeklyHours}
+          className="mb-5"
+        />
         <p className="text-sm leading-relaxed text-slate-700">
           {place.description}
         </p>

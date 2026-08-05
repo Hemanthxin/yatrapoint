@@ -31,6 +31,7 @@ import { useLocation } from "@/components/app/LocationContext";
 import { SaaferaLoader } from "@/components/app/SaaferaLoader";
 import { PlaceImage } from "@/components/app/PlaceImage";
 import { StopImageGrid } from "./StopImageGrid";
+import { PlaceStatusBadgesCompact } from "@/components/app/PlaceStatusBadges";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
@@ -82,6 +83,9 @@ interface PlanStop {
   arrivalMinutesFromPrev: number;
   imageUrl?: string | null;
   images?: { url: string; caption: string | null }[];
+  rating?: number | null;
+  ratingCount?: number | null;
+  weeklyHours?: string | null;
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -98,6 +102,9 @@ interface Alternative {
   foodCostPerPerson?: number;
   imageUrl?: string | null;
   images?: { url: string; caption: string | null }[];
+  rating?: number | null;
+  ratingCount?: number | null;
+  weeklyHours?: string | null;
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -961,6 +968,12 @@ export function LivePlan({
                           <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
                           <h3 className="truncate font-extrabold tracking-tight text-slate-900">{s.name}</h3>
                           <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
+                          <PlaceStatusBadgesCompact
+                            rating={s.rating}
+                            ratingCount={s.ratingCount}
+                            weeklyHoursJson={s.weeklyHours}
+                            className="mt-1"
+                          />
                         </div>
                         <div className="text-right text-xs text-slate-600">
                           <p className="font-bold text-emerald-700">

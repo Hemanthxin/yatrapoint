@@ -39,6 +39,7 @@ import { placeDirectionsUrl } from "@/lib/maps";
 import { Reveal } from "@/components/app/Reveal";
 import { MediaCarousel } from "@/app/community/MediaCarousel";
 import type { GalleryImage } from "@/lib/queries/place-gallery";
+import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 
 // Leaflet uses window — must be client-only.
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -198,6 +199,12 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
           </div>
         </div>
         <div className="bg-white p-6">
+          <PlaceStatusBadgesFull
+            rating={trip.googleRating}
+            ratingCount={trip.googleRatingCount}
+            weeklyHoursJson={trip.googleWeeklyHours}
+            className="mb-5"
+          />
           <p className="text-sm leading-relaxed text-slate-700">{trip.description}</p>
           {highlights.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">

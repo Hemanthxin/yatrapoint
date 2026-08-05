@@ -11,6 +11,7 @@ import {
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
 import { Reveal } from "./Reveal";
+import { PlaceStatusBadgesCompact } from "./PlaceStatusBadges";
 
 interface NearbyTripCardProps {
   destination: NearbyDestination;
@@ -68,6 +69,11 @@ export function NearbyTripCard({ destination, userDistanceKm, direction, delay }
       </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
+        <PlaceStatusBadgesCompact
+          rating={destination.googleRating}
+          ratingCount={destination.googleRatingCount}
+          weeklyHoursJson={destination.googleWeeklyHours}
+        />
         <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
           {destination.shortDescription}
         </p>

@@ -11,6 +11,7 @@ import { FavoriteButton } from "./FavoriteButton";
 import { AddToCartButton } from "./AddToCartButton";
 import { PlaceImage } from "./PlaceImage";
 import { Reveal } from "./Reveal";
+import { PlaceStatusBadgesCompact } from "./PlaceStatusBadges";
 
 interface DestinationCardProps {
   destination: Destination;
@@ -78,6 +79,11 @@ export function DestinationCard({ destination, favored, direction, delay }: Dest
       </Link>
 
       <div className="flex flex-1 flex-col gap-2.5 p-3">
+        <PlaceStatusBadgesCompact
+          rating={destination.googleRating}
+          ratingCount={destination.googleRatingCount}
+          weeklyHoursJson={destination.googleWeeklyHours}
+        />
         <div className="flex items-start justify-between gap-2">
           <p className="line-clamp-2 flex-1 text-sm text-slate-600">
             {destination.shortDescription}

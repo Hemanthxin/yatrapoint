@@ -979,10 +979,41 @@ export async function POST(req: NextRequest) {
     .filter((x): x is { placeId: string; placeType: ImageSource } => x !== null)
     .map((x) => ({ id: x.placeId, source: x.placeType }));
   const galleryMap = await listGalleryImagesForPlaces(galleryLookups);
-  const withImages = <T extends { id: string }>(s: T): T & { images: { url: string; caption: string | null }[] } => {
+
+  // Same id-prefix trick for each stop's Google-synced rating/hours (see
+  // src/admin/place-sync — admin-triggered batch, not live). Reuses the
+  // same galleryLookups grouping, one inArray query per source table.
+  type GoogleStatus = { rating: number | null; ratingCount: number | null; weeklyHours: string | null };
+  const googleStatusMap = new Map<string, GoogleStatus>();
+  const destIds = galleryLookups.filter((l) => l.source === "destination").map((l) => l.id);
+  const cityIds = galleryLookups.filter((l) => l.source === "city").map((l) => l.id);
+  const nearbyIds = galleryLookups.filter((l) => l.source === "nearby").map((l) => l.id);
+  const [destStatus, cityStatus, nearbyStatus] = await Promise.all([
+    destIds.length
+      ? db.select({ id: destinations.id, rating: destinations.googleRating, ratingCount: destinations.googleRatingCount, weeklyHours: destinations.googleWeeklyHours }).from(destinations).where(inArray(destinations.id, destIds))
+      : [],
+    cityIds.length
+      ? db.select({ id: cityPlaces.id, rating: cityPlaces.googleRating, ratingCount: cityPlaces.googleRatingCount, weeklyHours: cityPlaces.googleWeeklyHours }).from(cityPlaces).where(inArray(cityPlaces.id, cityIds))
+      : [],
+    nearbyIds.length
+      ? db.select({ id: nearbyDestinations.id, rating: nearbyDestinations.googleRating, ratingCount: nearbyDestinations.googleRatingCount, weeklyHours: nearbyDestinations.googleWeeklyHours }).from(nearbyDestinations).where(inArray(nearbyDestinations.id, nearbyIds))
+      : [],
+  ]);
+  for (const row of [...destStatus, ...cityStatus, ...nearbyStatus]) googleStatusMap.set(row.id, row);
+
+  const withImages = <T extends { id: string }>(
+    s: T
+  ): T & { images: { url: string; caption: string | null }[]; rating: number | null; ratingCount: number | null; weeklyHours: string | null } => {
     const key = splitGalleryId(s.id);
     const images = key ? (galleryMap.get(key.placeId) ?? []) : [];
-    return { ...s, images: images.map((i) => ({ url: i.url, caption: i.caption })) };
+    const status = key ? googleStatusMap.get(key.placeId) : undefined;
+    return {
+      ...s,
+      images: images.map((i) => ({ url: i.url, caption: i.caption })),
+      rating: status?.rating ?? null,
+      ratingCount: status?.ratingCount ?? null,
+      weeklyHours: status?.weeklyHours ?? null,
+    };
   };
   orderedStops = orderedStops.map(withImages);
   const alternativesWithImages = alternatives.map(withImages);
