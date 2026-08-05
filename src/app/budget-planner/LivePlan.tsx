@@ -25,6 +25,7 @@ import {
   Bookmark,
   BookmarkCheck,
   ChevronDown,
+  AlertTriangle,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
@@ -163,6 +164,7 @@ interface PlanResponse {
   overpassPlaces: number;
   seedPlaces: number;
   overpassError?: string | null;
+  categoryWarning?: string | null;
 }
 
 const PLAN_STORAGE_KEY = "yatra-point/multi-stop-plan";
@@ -661,6 +663,12 @@ export function LivePlan({
 
       {plan && (
         <>
+          {plan.categoryWarning && (
+            <div className="mb-4 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-800">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <p>{plan.categoryWarning}</p>
+            </div>
+          )}
           <section className="animate-pop overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
             {/* Summary total — bold Play-Store gradient hero */}
             <div className="relative overflow-hidden bg-emerald-600 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">

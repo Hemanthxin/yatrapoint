@@ -242,6 +242,11 @@ export async function POST(req: NextRequest) {
   const wantedCats = parsed.data.categories.filter((c): c is OverpassCategory =>
     (ALL_OVERPASS as string[]).includes(c)
   );
+  // The traveller's ACTUAL picks, before the tourist_attraction auto-widen
+  // below — kept separate so the response can tell the traveller when their
+  // specific interest(s) turned up nothing and every stop is generic filler
+  // instead, rather than silently mixing them in with no explanation.
+  const explicitlyWantedCats = [...wantedCats];
   // Always widen the search to general tourist attractions/heritage spots on
   // top of whatever specific interests the traveller picked — keeps the
   // candidate pool from being too thin to hit the requested stop count when
@@ -457,6 +462,7 @@ export async function POST(req: NextRequest) {
           s.avgCostForTwo != null ? Math.round(s.avgCostForTwo / 2) : undefined,
         popularity: s.popularity,
         imageUrl: s.imageUrl,
+        weeklyHours: s.googleWeeklyHours,
         meta: { citySeedSlug: s.slug },
       };
     });
@@ -504,6 +510,7 @@ export async function POST(req: NextRequest) {
       idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
       popularity: d.popularity,
       imageUrl: d.imageUrl,
+      weeklyHours: d.googleWeeklyHours,
       meta: { citySeedSlug: d.slug },
     });
   }
@@ -537,6 +544,7 @@ export async function POST(req: NextRequest) {
       idealMinutes: Math.max(15, Math.round(n.idealHoursAtPlace * 60)),
       popularity: n.popularity,
       imageUrl: n.imageUrl,
+      weeklyHours: n.googleWeeklyHours,
       meta: { citySeedSlug: n.slug },
     });
   }
@@ -1018,12 +1026,26 @@ export async function POST(req: NextRequest) {
   orderedStops = orderedStops.map(withImages);
   const alternativesWithImages = alternatives.map(withImages);
 
+  // If the traveller picked specific interests but NONE of the final stops
+  // match any of them (every stop came from the tourist_attraction
+  // auto-widen instead — see explicitlyWantedCats above), say so plainly
+  // rather than silently substituting unrelated places with no explanation.
+  let categoryWarning: string | null = null;
+  if (
+    explicitlyWantedCats.length > 0 &&
+    !orderedStops.some((s) => explicitlyWantedCats.includes(s.category))
+  ) {
+    categoryWarning =
+      "Couldn't find any places matching your chosen interests within this radius/direction — showing popular attractions instead. Try a wider radius, a different direction, or more interests.";
+  }
+
   return NextResponse.json({
     ok: true,
     candidatesConsidered: finalCandidates.length,
     overpassPlaces: overpassCount,
     seedPlaces: seedCandidates.length + destCandidates.length + nearbyCandidates.length,
     overpassError,
+    categoryWarning,
     stops: orderedStops,
     alternatives: alternativesWithImages,
     mode,

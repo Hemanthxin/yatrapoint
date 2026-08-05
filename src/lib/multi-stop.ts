@@ -6,6 +6,7 @@ import type { LatLng } from "./geo";
 import { haversineKm } from "./geo";
 import type { OverpassCategory, OverpassPlace } from "./overpass";
 import { VEHICLES, type VehicleKind } from "./budget";
+import { computeOpenStatus, normalizeWeeklyHours } from "./place-hours";
 
 // Per-category typical Indian entry fee (₹/person), visit duration and, for
 // eateries, a per-person spend. Calibrated to real 2024 averages so plan totals
@@ -62,6 +63,11 @@ export interface Candidate {
   pinned?: boolean;
   // Stored photo (curated catalogue rows only — live Overpass places have none).
   imageUrl?: string | null;
+  // Google-synced weekly hours (raw JSON string, catalogue rows only — see
+  // src/lib/actions/admin-place-sync.ts). Undefined/null = not synced yet;
+  // treated as "unknown", never penalised — only a CONFIRMED-closed place
+  // gets deprioritised, never guessed at.
+  weeklyHours?: string | null;
   // Pass-through metadata so the UI can render extra info.
   meta?: {
     osmId?: string;
@@ -269,6 +275,25 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     reachKm ? Math.min(2, Math.floor(haversineKm(start, { lat: c.lat, lng: c.lng }) / (reachKm / 3))) : 0;
   const coveredBands = new Set<number>();
 
+  // Confirmed-closed-right-now candidates (Google-synced hours only — see
+  // src/lib/actions/admin-place-sync.ts), computed once up front since it's
+  // needed across all three selection passes below. "Right now" means at
+  // planning time, not the traveller's actual arrival time (which could be
+  // hours later after earlier stops) — an approximation, but a real one
+  // rather than ignoring hours entirely. Unsynced candidates (no data) are
+  // never flagged — we deprioritise only what we actually know is closed.
+  const closedNow = new Set<string>();
+  for (const c of input.candidates) {
+    if (!c.weeklyHours) continue;
+    try {
+      const hours = normalizeWeeklyHours(JSON.parse(c.weeklyHours));
+      const status = computeOpenStatus(hours);
+      if (status && !status.isOpen) closedNow.add(c.id);
+    } catch {
+      // Malformed hours data — treat as unknown, not closed.
+    }
+  }
+
   // Worth of a place: base + popularity, a big bonus for a not-yet-covered
   // category (keeps the trip diverse), a bonus for reaching a not-yet-covered
   // distance band (far trips only), and a decisive boost for hand-picked places.
@@ -278,6 +303,10 @@ export function planMultiStop(input: PlannerInput): PlannerResult {
     if (!covered.has(c.category)) val += 60;
     if (reachKm && !coveredBands.has(bandOf(c))) val += 45;
     if (c.pinned) val += 1_000_000;
+    // Confirmed closed right now — heavily deprioritised (not excluded: a
+    // closed place is still better shown-with-a-warning than leaving a
+    // requested stop count unfilled when nothing open is available).
+    if (closedNow.has(c.id)) val *= 0.1;
     // Regenerate: a place from the previous plan is heavily deprioritised —
     // still pickable as a last resort (thin pools), but any fresh alternative
     // with a comparable detour wins instead.
