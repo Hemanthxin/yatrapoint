@@ -75,10 +75,28 @@ export default async function CommunityPage() {
           ]}
         />
 
-        {/* The feed column takes all remaining width (no cap) so the card grid
-            fills it — capping it left a dead gutter between feed and rail. */}
-        <div className="mx-auto flex max-w-7xl items-start gap-6">
-          {/* Left rail — mini profile + labeled quick links, IG/X-style.
+        {/* No max-width on the row: capping it centred the pair and left the
+            rail floating mid-page on wide screens instead of out at the edge.
+            The feed takes all remaining width so its card grid fills it. */}
+        <div className="flex items-start gap-6">
+          <div className="min-w-0 flex-1">
+            {/* Compact icon nav — only shown when the labeled rail (≥xl) is hidden */}
+            <div className="mb-3 flex justify-end xl:hidden">
+              <CommunityTopBar />
+            </div>
+
+            <Feed
+              posts={posts}
+              social={social}
+              media={media}
+              currentUserId={u.id ?? ""}
+              userName={u.name || u.email || "You"}
+              userImage={u.image}
+              authorTiers={authorTiers}
+            />
+          </div>
+
+          {/* Right rail — mini profile + labeled quick links, IG/X-style.
               `sticky` pins it while the feed scrolls past (this only works
               because AppShell uses overflow-x-CLIP, not hidden — see there).
 
@@ -197,23 +215,6 @@ export default async function CommunityPage() {
               <ShareJourneyCard />
             </div>
           </aside>
-
-          <div className="min-w-0 flex-1">
-            {/* Compact icon nav — only shown when the labeled rail (≥xl) is hidden */}
-            <div className="mb-3 flex justify-end xl:hidden">
-              <CommunityTopBar />
-            </div>
-
-            <Feed
-              posts={posts}
-              social={social}
-              media={media}
-              currentUserId={u.id ?? ""}
-              userName={u.name || u.email || "You"}
-              userImage={u.image}
-              authorTiers={authorTiers}
-            />
-          </div>
         </div>
       </div>
     </AppShell>
