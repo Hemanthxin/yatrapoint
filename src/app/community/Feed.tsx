@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, Flame, User2, Plus, Rows3, Grid3x3, ArrowUp } from "lucide-react";
+import { Sparkles, Flame, User2, Plus, Rows3, Grid3x3, ArrowUp, LayoutGrid, BookOpen, Lightbulb, HelpCircle, Image as ImageIcon, CalendarDays } from "lucide-react";
 
 import type { CommunityPost } from "@/lib/db/schema";
 import type { PostSocial } from "@/lib/queries/community";
@@ -32,6 +32,17 @@ const TABS: { id: Tab; label: string; icon: typeof Sparkles }[] = [
   { id: "mine", label: "Mine", icon: User2 },
 ];
 
+type PostType = "story" | "tip" | "question" | "photo" | "event";
+
+const POST_TYPE_FILTERS: { id: PostType | "all"; label: string; icon: typeof LayoutGrid }[] = [
+  { id: "all", label: "All Posts", icon: LayoutGrid },
+  { id: "story", label: "Trip Stories", icon: BookOpen },
+  { id: "tip", label: "Travel Tips", icon: Lightbulb },
+  { id: "question", label: "Questions", icon: HelpCircle },
+  { id: "photo", label: "Photos", icon: ImageIcon },
+  { id: "event", label: "Events", icon: CalendarDays },
+];
+
 export function Feed({
   posts: initialPosts,
   social: initialSocial,
@@ -39,6 +50,8 @@ export function Feed({
   currentUserId,
   userName,
   userImage,
+  communityId,
+  authorTiers,
 }: {
   posts: CommunityPost[];
   social: Record<string, PostSocial>;
@@ -46,12 +59,16 @@ export function Feed({
   currentUserId: string;
   userName: string;
   userImage?: string | null;
+  communityId?: string;
+  /** userId -> contributor-tier badge label, e.g. "Top Contributor". */
+  authorTiers?: Record<string, string>;
 }) {
   const [posts, setPosts] = useState(initialPosts);
   const [social, setSocial] = useState(initialSocial);
   const [media, setMedia] = useState<Record<string, MediaItem[]>>(initialMedia ?? {});
   const [pendingPosts, setPendingPosts] = useState<CommunityPost[]>([]);
   const [tab, setTab] = useState<Tab>("latest");
+  const [typeFilter, setTypeFilter] = useState<PostType | "all">("all");
   const [view, setView] = useState<"feed" | "grid">("feed");
   const [composerOpen, setComposerOpen] = useState(false);
   const feedTopRef = useRef<HTMLDivElement>(null);
@@ -70,7 +87,7 @@ export function Feed({
     const id = setInterval(async () => {
       try {
         const knownIds = [...posts.map((p) => p.id), ...pendingPosts.map((p) => p.id)];
-        const result = await refreshFeed(knownIds);
+        const result = await refreshFeed(knownIds, 40, communityId);
         setSocial((prev) => ({ ...prev, ...result.social }));
         if (Object.keys(result.media).length > 0) {
           setMedia((prev) => {
@@ -94,7 +111,19 @@ export function Feed({
     }, POLL_MS);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posts, pendingPosts, currentUserId]);
+  }, [posts, pendingPosts, currentUserId, communityId]);
+
+  // Lets a CTA outside this component's tree (e.g. the right-rail "Share
+  // Your Journey" card, which is server-rendered by page.tsx) open the
+  // composer without prop-drilling through the server component.
+  useEffect(() => {
+    function open() {
+      setComposerOpen(true);
+      feedTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.addEventListener("yatra:open-composer", open);
+    return () => window.removeEventListener("yatra:open-composer", open);
+  }, []);
 
   function showPendingPosts() {
     setPosts((prev) => [...pendingPosts, ...prev]);
@@ -103,12 +132,13 @@ export function Feed({
   }
 
   const visible = useMemo(() => {
-    if (tab === "mine") return posts.filter((p) => p.userId === currentUserId);
-    if (tab === "popular")
-      return [...posts].sort((a, b) => socialOf(b.id).total - socialOf(a.id).total);
-    return posts; // latest = given order
+    let list = posts;
+    if (tab === "mine") list = list.filter((p) => p.userId === currentUserId);
+    if (typeFilter !== "all") list = list.filter((p) => p.postType === typeFilter);
+    if (tab === "popular") list = [...list].sort((a, b) => socialOf(b.id).total - socialOf(a.id).total);
+    return list; // latest = given order
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posts, tab, currentUserId, social]);
+  }, [posts, tab, typeFilter, currentUserId, social]);
 
   const mineCount = useMemo(
     () => posts.filter((p) => p.userId === currentUserId).length,
@@ -137,8 +167,32 @@ export function Feed({
           <CommunityForm
             onPosted={() => setComposerOpen(false)}
             onCancel={() => setComposerOpen(false)}
+            communityId={communityId}
           />
         )}
+      </div>
+
+      {/* Content-type filter — All Posts / Trip Stories / Travel Tips / Questions / Photos / Events */}
+      <div className="mx-auto flex max-w-6xl gap-1.5 overflow-x-auto pb-0.5">
+        {POST_TYPE_FILTERS.map((t) => {
+          const Icon = t.icon;
+          const active = typeFilter === t.id;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTypeFilter(t.id)}
+              aria-pressed={active}
+              className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
+                active
+                  ? "border-transparent bg-emerald-600 text-white"
+                  : "border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:bg-[color:var(--surface-2)] hover:text-[color:var(--text)]"
+              }`}
+            >
+              <Icon className="h-4 w-4 shrink-0" /> {t.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Pill tabs + feed/grid view toggle */}
@@ -254,6 +308,7 @@ export function Feed({
               index={i}
               onDeleted={handleDeleted}
               media={media[p.id]}
+              tier={authorTiers?.[p.userId]}
             />
           ))}
         </RevealGrid>

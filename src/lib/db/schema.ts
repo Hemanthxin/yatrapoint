@@ -363,6 +363,47 @@ export const placeImages = pgTable("place_images", {
 }));
 export type PlaceImageRow = typeof placeImages.$inferSelect;
 
+// --- Communities (topic groups users create & join) ---
+// A community is a topic group with its own feed. Joining requires the
+// creator's approval (see `communityMembers.status` + notifications below) —
+// the creator is auto-approved as "owner" the moment they create it.
+export const communities = pgTable("communities", {
+  id: text("id").primaryKey().$defaultFn(() => createId()),
+  slug: varchar("slug", { length: 140 }).notNull().unique(),
+  name: varchar("name", { length: 120 }).notNull(),
+  description: varchar("description", { length: 500 }).notNull(),
+  coverImage: text("cover_image"),
+  creatorId: text("creator_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  // Denormalized — only ever touched by createCommunity/approveJoinRequest/
+  // leaveCommunity in src/lib/actions/communities.ts, so it stays authoritative.
+  memberCount: integer("member_count").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  creatorIdx: index("communities_creator_idx").on(table.creatorId),
+}));
+export type Community = typeof communities.$inferSelect;
+
+// One row per (community, user). status "pending" -> "approved" on approval;
+// a rejected request or a member leaving just DELETEs the row — there's no
+// "rejected" tombstone state, so a rejected user can simply request again.
+export const communityMembers = pgTable("community_members", {
+  communityId: text("community_id")
+    .notNull()
+    .references(() => communities.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  role: varchar("role", { length: 20 }).default("member").notNull(), // "owner" | "member"
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // "pending" | "approved"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.communityId, table.userId] }),
+  userIdx: index("community_members_user_idx").on(table.userId),
+}));
+export type CommunityMember = typeof communityMembers.$inferSelect;
+
 // --- Community / Hidden Places (Module 4) ---
 // User-submitted hidden gems: photo + live location + description, held for
 // admin verification before being published to the community feed.
@@ -384,12 +425,19 @@ export const communityPosts = pgTable("community_posts", {
   locationName: varchar("location_name", { length: 200 }),
   // Posts go live instantly now ("published"); kept for compatibility.
   status: varchar("status", { length: 20 }).default("published").notNull(),
+  // Optional — a post can be attributed to a community (see `communities`
+  // below) if the author is an approved member of it. Null = ungrouped, still
+  // shows in the global feed exactly as before.
+  communityId: text("community_id").references(() => communities.id, { onDelete: "set null" }),
+  // story | tip | question | photo | event — content-type filter in the feed.
+  postType: varchar("post_type", { length: 20 }).default("story").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
   // Feed queries filter by status then sort by createdAt desc; "my posts"
   // filters by userId then sorts by createdAt desc.
   statusCreatedIdx: index("community_posts_status_created_idx").on(table.status, table.createdAt),
   userCreatedIdx: index("community_posts_user_created_idx").on(table.userId, table.createdAt),
+  communityCreatedIdx: index("community_posts_community_idx").on(table.communityId, table.createdAt),
 }));
 
 export type CommunityPost = typeof communityPosts.$inferSelect;
@@ -505,8 +553,11 @@ export const notifications = pgTable(
     actorId: text("actor_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: varchar("type", { length: 20 }).notNull(), // love | wantToGo | beenThere | comment | follow | message
+    // love | wantToGo | beenThere | comment | follow | message |
+    // communityJoinRequest | communityJoinApproved
+    type: varchar("type", { length: 32 }).notNull(),
     postId: text("post_id").references(() => communityPosts.id, { onDelete: "cascade" }),
+    communityId: text("community_id").references(() => communities.id, { onDelete: "cascade" }),
     commentBody: text("comment_body"),
     read: boolean("read").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

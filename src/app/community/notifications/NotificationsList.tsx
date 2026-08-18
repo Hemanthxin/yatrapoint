@@ -2,9 +2,21 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { X, Heart, MessageCircle, UserPlus, MapPin as WantToGoIcon, CheckCircle2, CheckCheck } from "lucide-react";
+import {
+  X,
+  Heart,
+  MessageCircle,
+  UserPlus,
+  MapPin as WantToGoIcon,
+  CheckCircle2,
+  CheckCheck,
+  Users,
+  Check,
+  Loader2,
+} from "lucide-react";
 import type { NotificationRow } from "@/lib/queries/notifications";
 import { markAllNotificationsRead } from "@/lib/actions/notifications";
+import { approveJoinRequest, rejectJoinRequest } from "@/lib/actions/communities";
 import { timeAgo } from "@/lib/timeAgo";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
@@ -16,6 +28,8 @@ const ICONS: Record<string, { icon: typeof Heart; className: string }> = {
   comment: { icon: MessageCircle, className: "text-slate-700" },
   follow: { icon: UserPlus, className: "text-emerald-600" },
   message: { icon: MessageCircle, className: "text-emerald-600" },
+  communityJoinRequest: { icon: Users, className: "text-emerald-600" },
+  communityJoinApproved: { icon: Check, className: "text-emerald-600" },
 };
 
 function actionText(n: NotificationRow): string {
@@ -32,9 +46,60 @@ function actionText(n: NotificationRow): string {
       return "started following you";
     case "message":
       return "sent you a message";
+    case "communityJoinRequest":
+      return `wants to join ${n.communityName ?? "your community"}`;
+    case "communityJoinApproved":
+      return `approved your request to join ${n.communityName ?? "the community"}`;
     default:
       return "interacted with your post";
   }
+}
+
+// Inline Approve/Reject for a join-request row — the one notification type
+// that needs two mutually-exclusive actions instead of just navigation, so it
+// can't be a plain wrapping <Link> like every other row.
+function JoinRequestActions({
+  communityId,
+  requesterId,
+  onResolved,
+}: {
+  communityId: string;
+  requesterId: string;
+  onResolved: () => void;
+}) {
+  const [isPending, startTransition] = useTransition();
+  const [action, setAction] = useState<"approve" | "reject" | null>(null);
+
+  function resolve(kind: "approve" | "reject") {
+    setAction(kind);
+    startTransition(async () => {
+      const res = kind === "approve" ? await approveJoinRequest(communityId, requesterId) : await rejectJoinRequest(communityId, requesterId);
+      if (res.ok) onResolved();
+    });
+  }
+
+  return (
+    <div className="flex shrink-0 gap-1.5">
+      <button
+        type="button"
+        onClick={() => resolve("approve")}
+        disabled={isPending}
+        className="grid h-9 w-9 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
+        aria-label="Approve"
+      >
+        {isPending && action === "approve" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+      </button>
+      <button
+        type="button"
+        onClick={() => resolve("reject")}
+        disabled={isPending}
+        className="grid h-9 w-9 place-items-center rounded-full bg-rose-50 text-rose-600 transition hover:bg-rose-100 active:scale-90 disabled:opacity-50"
+        aria-label="Reject"
+      >
+        {isPending && action === "reject" ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4" />}
+      </button>
+    </div>
+  );
 }
 
 export function NotificationsList({ notifications: initial }: { notifications: NotificationRow[] }) {
@@ -84,7 +149,55 @@ export function NotificationsList({ notifications: initial }: { notifications: N
             {notifications.map((n) => {
               const meta = ICONS[n.type] ?? ICONS.love;
               const Icon = meta.icon;
-              const href = n.type === "message" ? `/community/messages/${n.actorId}` : `/profile/${n.actorId}`;
+              const avatar = (
+                <span className="relative shrink-0">
+                  {n.actorImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={n.actorImage} alt="" className="h-11 w-11 rounded-full object-cover" />
+                  ) : (
+                    <span className="grid h-11 w-11 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
+                      {n.actorName?.charAt(0).toUpperCase() ?? "T"}
+                    </span>
+                  )}
+                  <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-[color:var(--surface)] shadow">
+                    <Icon className={`h-3 w-3 ${meta.className}`} fill={n.type === "love" ? "currentColor" : "none"} />
+                  </span>
+                </span>
+              );
+              const text = (
+                <p className="min-w-0 flex-1 text-sm text-[color:var(--text-soft)]">
+                  <span className="font-bold text-[color:var(--text)]">{n.actorName}</span> {actionText(n)}
+                  <span className="ml-1.5 text-xs text-[color:var(--muted)]">{timeAgo(n.createdAt)}</span>
+                </p>
+              );
+
+              // A pending join request needs two mutually-exclusive actions,
+              // not navigation — render buttons instead of a wrapping <Link>.
+              if (n.type === "communityJoinRequest" && n.communityId && !n.read) {
+                return (
+                  <li
+                    key={n.id}
+                    className="flex items-center gap-3 rounded-2xl bg-emerald-50/60 p-3"
+                  >
+                    {avatar}
+                    {text}
+                    <JoinRequestActions
+                      communityId={n.communityId}
+                      requesterId={n.actorId}
+                      onResolved={() => setNotifications((prev) => prev.filter((x) => x.id !== n.id))}
+                    />
+                  </li>
+                );
+              }
+
+              const href =
+                n.type === "message"
+                  ? `/community/messages/${n.actorId}`
+                  : n.type === "communityJoinRequest" || n.type === "communityJoinApproved"
+                    ? n.communitySlug
+                      ? `/community/groups/${n.communitySlug}`
+                      : "/community/groups"
+                    : `/profile/${n.actorId}`;
               return (
                 <li key={n.id}>
                   <Link
@@ -93,23 +206,8 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                       n.read ? "" : "bg-emerald-50/60"
                     }`}
                   >
-                    <span className="relative shrink-0">
-                      {n.actorImage ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={n.actorImage} alt="" className="h-11 w-11 rounded-full object-cover" />
-                      ) : (
-                        <span className="grid h-11 w-11 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
-                          {n.actorName?.charAt(0).toUpperCase() ?? "T"}
-                        </span>
-                      )}
-                      <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-[color:var(--surface)] shadow">
-                        <Icon className={`h-3 w-3 ${meta.className}`} fill={n.type === "love" ? "currentColor" : "none"} />
-                      </span>
-                    </span>
-                    <p className="min-w-0 flex-1 text-sm text-[color:var(--text-soft)]">
-                      <span className="font-bold text-[color:var(--text)]">{n.actorName}</span> {actionText(n)}
-                      <span className="ml-1.5 text-xs text-[color:var(--muted)]">{timeAgo(n.createdAt)}</span>
-                    </p>
+                    {avatar}
+                    {text}
                     {n.postPhotoUrl && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={n.postPhotoUrl} alt="" className="h-11 w-11 shrink-0 rounded-lg object-cover" />

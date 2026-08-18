@@ -1,6 +1,6 @@
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { notifications, users, communityPosts } from "@/lib/db/schema";
+import { notifications, users, communityPosts, communities } from "@/lib/db/schema";
 
 export interface NotificationRow {
   id: string;
@@ -14,6 +14,9 @@ export interface NotificationRow {
   postId: string | null;
   postTitle: string | null;
   postPhotoUrl: string | null;
+  communityId: string | null;
+  communityName: string | null;
+  communitySlug: string | null;
 }
 
 export async function listNotifications(userId: string, limit = 50): Promise<NotificationRow[]> {
@@ -33,10 +36,14 @@ export async function listNotifications(userId: string, limit = 50): Promise<Not
         actorImage: users.image,
         postTitle: communityPosts.title,
         postPhotoUrl: communityPosts.photoUrl,
+        communityId: notifications.communityId,
+        communityName: communities.name,
+        communitySlug: communities.slug,
       })
       .from(notifications)
       .innerJoin(users, eq(users.id, notifications.actorId))
       .leftJoin(communityPosts, eq(communityPosts.id, notifications.postId))
+      .leftJoin(communities, eq(communities.id, notifications.communityId))
       .where(eq(notifications.userId, userId))
       .orderBy(desc(notifications.createdAt))
       .limit(limit);
@@ -53,6 +60,9 @@ export async function listNotifications(userId: string, limit = 50): Promise<Not
       postId: r.postId,
       postTitle: r.postTitle,
       postPhotoUrl: r.postPhotoUrl,
+      communityId: r.communityId,
+      communityName: r.communityName,
+      communitySlug: r.communitySlug,
     }));
   } catch {
     return [];

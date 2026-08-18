@@ -7,16 +7,25 @@ import { db } from "@/lib/db";
 import { notifications } from "@/lib/db/schema";
 import { getUnreadNotificationCount } from "@/lib/queries/notifications";
 
-export type NotificationType = "love" | "wantToGo" | "beenThere" | "comment" | "follow" | "message";
+export type NotificationType =
+  | "love"
+  | "wantToGo"
+  | "beenThere"
+  | "comment"
+  | "follow"
+  | "message"
+  | "communityJoinRequest"
+  | "communityJoinApproved";
 
-// Shared by setReaction/addComment/toggleFollow/sendMessage — never notifies
-// someone about their own activity, and swallows errors so a notification
-// failure can never break the action that triggered it.
+// Shared by setReaction/addComment/toggleFollow/sendMessage/communities —
+// never notifies someone about their own activity, and swallows errors so a
+// notification failure can never break the action that triggered it.
 export async function createNotification(input: {
   userId: string;
   actorId: string;
   type: NotificationType;
   postId?: string | null;
+  communityId?: string | null;
   commentBody?: string | null;
 }): Promise<void> {
   if (input.userId === input.actorId) return;
@@ -26,6 +35,7 @@ export async function createNotification(input: {
       actorId: input.actorId,
       type: input.type,
       postId: input.postId ?? null,
+      communityId: input.communityId ?? null,
       commentBody: input.commentBody ?? null,
     });
   } catch {

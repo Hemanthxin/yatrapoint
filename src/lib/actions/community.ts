@@ -9,6 +9,7 @@ import {
   communityReactions,
   communityComments,
   communityPostMedia,
+  communityMembers,
   users,
   type CommunityComment,
   type CommunityPost,
@@ -29,7 +30,8 @@ const REACTION_TYPES = ["love", "wantToGo", "beenThere"] as const;
 // scale: new posts + fresh reaction/comment counts without a manual refresh.
 export async function refreshFeed(
   knownIds: string[],
-  limit = 40
+  limit = 40,
+  communityId?: string
 ): Promise<{
   newPosts: CommunityPost[];
   social: Record<string, PostSocial>;
@@ -38,7 +40,7 @@ export async function refreshFeed(
   const session = await auth();
   const known = new Set(knownIds);
 
-  const latest = await listPublishedPosts(limit);
+  const latest = await listPublishedPosts(limit, communityId);
   const newPosts = latest.filter((p) => !known.has(p.id));
 
   const allIds = [...knownIds, ...newPosts.map((p) => p.id)];
@@ -67,6 +69,8 @@ export async function submitCommunityPost(input: {
   latitude?: string;
   longitude?: string;
   locationName?: string;
+  communityId?: string;
+  postType?: string;
 }): Promise<SubmitResult> {
   const session = await auth();
   if (!session?.user?.id) return { ok: false, error: "Please sign in first." };
@@ -76,6 +80,21 @@ export async function submitCommunityPost(input: {
   if (!title || title.length < 2) return { ok: false, error: "Add the place name." };
   if (!description || description.length < 3)
     return { ok: false, error: "Write a short review." };
+
+  // Posting INTO a community requires an approved membership there — the
+  // creator is auto-approved at community creation. Never trust a
+  // communityId passed from the client without this check.
+  if (input.communityId) {
+    const [membership] = await db
+      .select({ status: communityMembers.status })
+      .from(communityMembers)
+      .where(and(eq(communityMembers.communityId, input.communityId), eq(communityMembers.userId, session.user.id)))
+      .limit(1);
+    if (membership?.status !== "approved") return { ok: false, error: "Join this community to post here." };
+  }
+
+  const POST_TYPES = ["story", "tip", "question", "photo", "event"];
+  const postType = input.postType && POST_TYPES.includes(input.postType) ? input.postType : "story";
 
   const media = input.media?.length ? input.media : input.photoUrl ? [{ url: input.photoUrl, kind: "image" as const }] : [];
   for (const m of media) {
@@ -118,6 +137,8 @@ export async function submitCommunityPost(input: {
         longitude: input.longitude || null,
         locationName: input.locationName || null,
         status: "published",
+        communityId: input.communityId || null,
+        postType,
       })
       .returning({ id: communityPosts.id });
 
@@ -129,6 +150,7 @@ export async function submitCommunityPost(input: {
 
     revalidatePath("/community");
     revalidatePath("/dashboard");
+    if (input.communityId) revalidatePath("/community/groups", "layout");
     return { ok: true };
   } catch {
     return { ok: false, error: "Could not post — is the database set up? Run db:push." };

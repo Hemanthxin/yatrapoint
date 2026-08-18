@@ -109,12 +109,19 @@ export async function listComments(postId: string): Promise<CommunityComment[]> 
   }
 }
 
-export async function listPublishedPosts(limit = 60): Promise<CommunityPost[]> {
+// `communityId` scopes to one community's page; omitted, this is the global
+// feed (ungrouped + grouped posts together, unchanged from before communities
+// existed).
+export async function listPublishedPosts(limit = 60, communityId?: string): Promise<CommunityPost[]> {
   try {
     return await db
       .select()
       .from(communityPosts)
-      .where(eq(communityPosts.status, "published"))
+      .where(
+        communityId
+          ? and(eq(communityPosts.status, "published"), eq(communityPosts.communityId, communityId))
+          : eq(communityPosts.status, "published")
+      )
       .orderBy(desc(communityPosts.createdAt))
       .limit(limit);
   } catch {

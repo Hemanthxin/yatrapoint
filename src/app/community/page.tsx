@@ -1,15 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Users } from "lucide-react";
+import { Users, TrendingUp, Award, Sparkles } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { listPublishedPosts, getFeedSocial, getPostsMedia } from "@/lib/queries/community";
 import { getFollowCounts } from "@/lib/queries/follows";
+import {
+  getCommunityStats,
+  getTrendingCommunities,
+  getTopContributors,
+  getAuthorPostCounts,
+} from "@/lib/queries/communities";
+import { getContributorTier } from "@/lib/contributorTier";
 import { Feed } from "./Feed";
 import { MobileCommunity } from "./MobileCommunity";
 import { PageHero } from "@/components/app/PageHero";
 import { CommunityTopBar } from "./CommunityTopBar";
+import { ShareJourneyCard } from "./ShareJourneyCard";
 
 export default async function CommunityPage() {
   const session = await auth();
@@ -17,13 +25,23 @@ export default async function CommunityPage() {
   const u = session.user;
 
   const posts = await listPublishedPosts(60);
-  const [social, media, followCounts] = await Promise.all([
+  const [social, media, followCounts, stats, trending, topContributors, authorCounts] = await Promise.all([
     getFeedSocial(posts.map((p) => p.id), u.id ?? ""),
     getPostsMedia(posts.map((p) => p.id)),
     getFollowCounts(u.id ?? ""),
+    getCommunityStats(),
+    getTrendingCommunities(4),
+    getTopContributors(5),
+    getAuthorPostCounts([...new Set(posts.map((p) => p.userId))]),
   ]);
+  const authorTiers: Record<string, string> = {};
+  for (const [userId, count] of Object.entries(authorCounts)) {
+    const tier = getContributorTier(count);
+    if (tier) authorTiers[userId] = tier;
+  }
   const myPostCount = posts.filter((p) => p.userId === u.id).length;
   const displayName = u.name || u.email || u.phone || "Traveller";
+  const formatCount = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K` : String(n));
 
   return (
     <AppShell userLabel={displayName} userImage={u.image}>
@@ -36,18 +54,25 @@ export default async function CommunityPage() {
           currentUserId={u.id ?? ""}
           userName={u.name || u.email || "You"}
           userImage={u.image}
+          authorTiers={authorTiers}
+          trending={trending}
         />
       </div>
 
       {/* ── Desktop (≥ lg): flat, minimalist feed + a right rail (≥xl) ── */}
       <div className="hidden lg:block">
         <PageHero
-          eyebrow="Real travellers, real places"
+          eyebrow="Welcome to Saafera Community"
           icon={Users}
-          title={<>The <span className="italic">Community</span></>}
-          subtitle="Double-tap to love, save spots for later, and mark 🎒 Want to go / ✅ Been there — comment & share too."
+          title={<>Better Travel <span className="italic">Together</span></>}
+          subtitle="Share your travel stories, get tips, ask questions, and connect with fellow explorers."
           gradient="from-emerald-800 via-emerald-700 to-green-700"
           backgroundImage="/community-hero-bg.jpg"
+          stats={[
+            { label: "Travelers", value: formatCount(stats.travellers) },
+            { label: "Posts", value: formatCount(stats.posts) },
+            { label: "Communities", value: formatCount(stats.communities) },
+          ]}
         />
 
         <div className="mx-auto flex max-w-7xl items-start gap-8">
@@ -64,6 +89,7 @@ export default async function CommunityPage() {
               currentUserId={u.id ?? ""}
               userName={u.name || u.email || "You"}
               userImage={u.image}
+              authorTiers={authorTiers}
             />
           </div>
 
@@ -103,6 +129,99 @@ export default async function CommunityPage() {
             <div className="card p-2">
               <CommunityTopBar variant="rail" />
             </div>
+
+            {/* Community stats */}
+            <div className="card p-4">
+              <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
+                <Sparkles className="h-4 w-4 text-emerald-600" /> Community Stats
+              </h2>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <p className="text-base font-extrabold text-[color:var(--text)]">{formatCount(stats.travellers)}</p>
+                  <p className="text-[11px] font-medium text-[color:var(--muted)]">Travelers</p>
+                </div>
+                <div>
+                  <p className="text-base font-extrabold text-[color:var(--text)]">{formatCount(stats.posts)}</p>
+                  <p className="text-[11px] font-medium text-[color:var(--muted)]">Posts</p>
+                </div>
+                <div>
+                  <p className="text-base font-extrabold text-[color:var(--text)]">{formatCount(stats.communities)}</p>
+                  <p className="text-[11px] font-medium text-[color:var(--muted)]">Communities</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Join / browse communities CTA */}
+            <div className="card space-y-2 p-4">
+              <h2 className="flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
+                <Users className="h-4 w-4 text-emerald-600" /> Join a Community
+              </h2>
+              <p className="text-xs text-[color:var(--muted)]">Be a part of a growing community of travel lovers.</p>
+              <Link href="/community/groups" className="btn-primary mt-1 block rounded-xl px-4 py-2.5 text-center text-sm">
+                Browse Communities
+              </Link>
+            </div>
+
+            {/* Trending communities */}
+            {trending.length > 0 && (
+              <div className="card p-4">
+                <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
+                  <TrendingUp className="h-4 w-4 text-emerald-600" /> Trending Now
+                </h2>
+                <ul className="space-y-2.5">
+                  {trending.map((c) => (
+                    <li key={c.id}>
+                      <Link href={`/community/groups/${c.slug}`} className="flex items-center gap-2.5 rounded-xl transition hover:bg-[color:var(--surface-2)]">
+                        <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-emerald-100">
+                          {c.coverImage ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={c.coverImage} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <Users className="h-4 w-4 text-emerald-700" />
+                          )}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-xs font-bold text-[color:var(--text)]">{c.name}</span>
+                          <span className="block text-[11px] text-[color:var(--muted)]">{c.postCount} posts</span>
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Top contributors */}
+            {topContributors.length > 0 && (
+              <div className="card p-4">
+                <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
+                  <Award className="h-4 w-4 text-emerald-600" /> Top Contributors
+                </h2>
+                <ul className="space-y-2.5">
+                  {topContributors.map((c, i) => (
+                    <li key={c.userId}>
+                      <Link href={`/profile/${c.userId}`} className="flex items-center gap-2.5 rounded-xl transition hover:bg-[color:var(--surface-2)]">
+                        <span className="w-4 shrink-0 text-center text-xs font-bold text-[color:var(--muted)]">{i + 1}</span>
+                        {c.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={c.image} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
+                        ) : (
+                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                            {c.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-xs font-bold text-[color:var(--text)]">{c.name}</span>
+                          <span className="block text-[11px] text-[color:var(--muted)]">{c.postCount} posts</span>
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <ShareJourneyCard />
           </aside>
         </div>
       </div>

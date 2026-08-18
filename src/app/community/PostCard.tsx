@@ -16,6 +16,7 @@ import {
   Pencil,
   Trash2,
   X,
+  Award,
 } from "lucide-react";
 
 import { motion } from "framer-motion";
@@ -85,6 +86,7 @@ export function PostCard({
   index,
   onDeleted,
   media,
+  tier,
 }: {
   post: CommunityPost;
   social: PostSocial;
@@ -94,6 +96,8 @@ export function PostCard({
   index: number;
   media?: MediaItem[];
   onDeleted?: (postId: string) => void;
+  /** Contributor-tier badge shown next to the author name — omit for no badge. */
+  tier?: string;
 }) {
   const [post, setPost] = useState(initialPost);
 
@@ -371,9 +375,16 @@ export function PostCard({
           )}
         </Link>
         <div className="min-w-0 flex-1">
-          <Link href={`/profile/${post.userId}`} className="block truncate text-sm font-bold text-slate-900 hover:underline">
-            {post.authorName ?? "Traveller"}
-          </Link>
+          <p className="flex min-w-0 items-center gap-1.5">
+            <Link href={`/profile/${post.userId}`} className="truncate text-sm font-bold text-slate-900 hover:underline">
+              {post.authorName ?? "Traveller"}
+            </Link>
+            {tier && (
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                <Award className="h-3 w-3" /> {tier}
+              </span>
+            )}
+          </p>
           <p className="flex items-center gap-1 truncate text-xs text-slate-400">
             {post.locationName && (
               <>

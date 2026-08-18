@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Film, Heart, Send, type LucideIcon } from "lucide-react";
+import { Search, Film, Heart, Send, Users, type LucideIcon } from "lucide-react";
 import { getMyUnreadNotificationCount } from "@/lib/actions/notifications";
 import { getMyUnreadMessageCount } from "@/lib/actions/messages";
 
 const POLL_MS = 10000;
 
 const LINKS: { href: string; label: string; icon: LucideIcon; badgeKey?: "notifs" | "msgs" }[] = [
+  { href: "/community/groups", label: "Groups", icon: Users },
   { href: "/community/search", label: "Search", icon: Search },
   { href: "/community/reels", label: "Reels", icon: Film },
   { href: "/community/notifications", label: "Notifications", icon: Heart, badgeKey: "notifs" },

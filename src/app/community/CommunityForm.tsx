@@ -2,10 +2,11 @@
 
 import { useRef, useState, useTransition, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, Clapperboard, MapPin, Loader2, Star, X, Send } from "lucide-react";
+import { Camera, Clapperboard, MapPin, Loader2, Star, X, Send, BookOpen, Lightbulb, HelpCircle, Image as ImageIcon, CalendarDays } from "lucide-react";
 
 import { submitCommunityPost } from "@/lib/actions/community";
 import { Reveal } from "@/components/app/Reveal";
+import { resizeImage, readAsDataUrl } from "@/lib/imageUpload";
 
 interface MediaDraft {
   url: string;
@@ -15,51 +16,22 @@ interface MediaDraft {
 const MAX_PHOTOS = 8;
 const MAX_VIDEO_BYTES = 12_000_000;
 
-function resizeImage(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const src = typeof reader.result === "string" ? reader.result : "";
-      const img = new window.Image();
-      img.onload = () => {
-        const maxDim = 1280;
-        let { width, height } = img;
-        if (width > maxDim || height > maxDim) {
-          const scale = Math.min(maxDim / width, maxDim / height);
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(src);
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.75));
-      };
-      img.onerror = () => reject(new Error("Could not read that image."));
-      img.src = src;
-    };
-    reader.onerror = () => reject(new Error("Could not read that file."));
-    reader.readAsDataURL(file);
-  });
-}
-
-function readAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
-    reader.onerror = () => reject(new Error("Could not read that file."));
-    reader.readAsDataURL(file);
-  });
-}
+const POST_TYPES = [
+  { id: "story", label: "Trip Story", icon: BookOpen },
+  { id: "tip", label: "Travel Tip", icon: Lightbulb },
+  { id: "question", label: "Question", icon: HelpCircle },
+  { id: "photo", label: "Photo", icon: ImageIcon },
+  { id: "event", label: "Event", icon: CalendarDays },
+] as const;
 
 export function CommunityForm({
   onPosted,
   onCancel,
+  communityId,
 }: {
   onPosted?: () => void;
   onCancel?: () => void;
+  communityId?: string;
 } = {}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -68,6 +40,7 @@ export function CommunityForm({
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [postType, setPostType] = useState<(typeof POST_TYPES)[number]["id"]>("story");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [media, setMedia] = useState<MediaDraft[]>([]);
@@ -152,10 +125,13 @@ export function CommunityForm({
         latitude: coords ? String(coords.lat) : undefined,
         longitude: coords ? String(coords.lng) : undefined,
         locationName: locationName || undefined,
+        communityId,
+        postType,
       });
       if (!res.ok) return setError(res.error || "Could not post.");
       setTitle("");
       setDescription("");
+      setPostType("story");
       setRating(0);
       setMedia([]);
       setCoords(null);
@@ -242,6 +218,28 @@ export function CommunityForm({
       )}
       <input ref={fileRef} type="file" accept="image/*" multiple onChange={onPhotos} className="hidden" />
       <input ref={videoRef} type="file" accept="video/*" onChange={onVideo} className="hidden" />
+
+      {/* Content type */}
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {POST_TYPES.map((t) => {
+          const Icon = t.icon;
+          const active = postType === t.id;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setPostType(t.id)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
+                active
+                  ? "border-transparent bg-emerald-600 text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" /> {t.label}
+            </button>
+          );
+        })}
+      </div>
 
       {/* Place name */}
       <input
