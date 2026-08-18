@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Users, TrendingUp, Award, Sparkles } from "lucide-react";
+import { Users, TrendingUp, Award } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
@@ -30,8 +30,8 @@ export default async function CommunityPage() {
     getPostsMedia(posts.map((p) => p.id)),
     getFollowCounts(u.id ?? ""),
     getCommunityStats(),
-    getTrendingCommunities(4),
-    getTopContributors(5),
+    getTrendingCommunities(3),
+    getTopContributors(4),
     getAuthorPostCounts([...new Set(posts.map((p) => p.userId))]),
   ]);
   const authorTiers: Record<string, string> = {};
@@ -59,7 +59,7 @@ export default async function CommunityPage() {
         />
       </div>
 
-      {/* ── Desktop (≥ lg): flat, minimalist feed + a right rail (≥xl) ── */}
+      {/* ── Desktop (≥ lg): pinned left rail (≥xl) + the feed ── */}
       <div className="hidden lg:block">
         <PageHero
           eyebrow="Welcome to Saafera Community"
@@ -78,26 +78,19 @@ export default async function CommunityPage() {
         {/* The feed column takes all remaining width (no cap) so the card grid
             fills it — capping it left a dead gutter between feed and rail. */}
         <div className="mx-auto flex max-w-7xl items-start gap-6">
-          <div className="min-w-0 flex-1">
-            {/* Compact icon nav — only shown when the labeled rail (≥xl) is hidden */}
-            <div className="mb-3 flex justify-end xl:hidden">
-              <CommunityTopBar />
-            </div>
+          {/* Left rail — mini profile + labeled quick links, IG/X-style.
+              `sticky` pins it while the feed scrolls past (this only works
+              because AppShell uses overflow-x-CLIP, not hidden — see there).
 
-            <Feed
-              posts={posts}
-              social={social}
-              media={media}
-              currentUserId={u.id ?? ""}
-              userName={u.name || u.email || "You"}
-              userImage={u.image}
-              authorTiers={authorTiers}
-            />
-          </div>
-
-          {/* Right rail — mini profile + labeled quick links, IG/X-style */}
-          <aside className="sticky top-20 hidden w-72 shrink-0 space-y-4 xl:block">
-            <div className="card p-4">
+              It must fit any desktop height without scrolling, so the cards
+              form a priority ladder keyed off viewport height: profile + nav +
+              top contributors always fit (~520px, fine on a 768px screen),
+              Trending joins at ≥800px and Share Your Journey at ≥900px. The
+              max-h/overflow pair is only a backstop for odd window sizes or
+              zoomed text — at these breakpoints nothing actually scrolls, and
+              the scrollbar is hidden either way. */}
+          <aside className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-72 shrink-0 space-y-3 overflow-y-auto [scrollbar-width:none] xl:block [&::-webkit-scrollbar]:hidden">
+            <div className="card p-3">
               <Link href="/profile" className="flex items-center gap-3">
                 {u.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -112,7 +105,7 @@ export default async function CommunityPage() {
                   <p className="text-xs font-medium text-[color:var(--muted)]">View profile</p>
                 </div>
               </Link>
-              <div className="mt-4 flex items-center justify-around border-t border-[color:var(--border)] pt-3 text-center">
+              <div className="mt-3 flex items-center justify-around border-t border-[color:var(--border)] pt-2.5 text-center">
                 <div>
                   <p className="text-sm font-bold text-[color:var(--text)]">{myPostCount}</p>
                   <p className="text-[11px] font-medium text-[color:var(--muted)]">Posts</p>
@@ -128,46 +121,22 @@ export default async function CommunityPage() {
               </div>
             </div>
 
-            <div className="card p-2">
+            <div className="card p-1.5">
               <CommunityTopBar variant="rail" />
             </div>
 
-            {/* Community stats */}
-            <div className="card p-4">
-              <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
-                <Sparkles className="h-4 w-4 text-emerald-600" /> Community Stats
-              </h2>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div>
-                  <p className="text-base font-extrabold text-[color:var(--text)]">{formatCount(stats.travellers)}</p>
-                  <p className="text-[11px] font-medium text-[color:var(--muted)]">Travelers</p>
-                </div>
-                <div>
-                  <p className="text-base font-extrabold text-[color:var(--text)]">{formatCount(stats.posts)}</p>
-                  <p className="text-[11px] font-medium text-[color:var(--muted)]">Posts</p>
-                </div>
-                <div>
-                  <p className="text-base font-extrabold text-[color:var(--text)]">{formatCount(stats.communities)}</p>
-                  <p className="text-[11px] font-medium text-[color:var(--muted)]">Communities</p>
-                </div>
-              </div>
-            </div>
+            {/* No "Community Stats" card here: the hero directly above already
+                shows Travelers / Posts / Communities as large stat pills, and
+                no "Join a Community" card: the Groups link in the nav above
+                goes to the same place. Both were duplicates, and dropping them
+                is what lets the rail fit on screen without its own scrollbar. */}
 
-            {/* Join / browse communities CTA */}
-            <div className="card space-y-2 p-4">
-              <h2 className="flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
-                <Users className="h-4 w-4 text-emerald-600" /> Join a Community
-              </h2>
-              <p className="text-xs text-[color:var(--muted)]">Be a part of a growing community of travel lovers.</p>
-              <Link href="/community/groups" className="btn-primary mt-1 block rounded-xl px-4 py-2.5 text-center text-sm">
-                Browse Communities
-              </Link>
-            </div>
-
-            {/* Trending communities */}
+            {/* Trending communities — a nice-to-have, so it only appears once
+                the window is tall enough to take it without the rail needing
+                to scroll (see the height ladder on <aside> above). */}
             {trending.length > 0 && (
-              <div className="card p-4">
-                <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
+              <div className="card hidden p-3 [@media(min-height:800px)]:block">
+                <h2 className="mb-2.5 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
                   <TrendingUp className="h-4 w-4 text-emerald-600" /> Trending Now
                 </h2>
                 <ul className="space-y-2.5">
@@ -193,10 +162,11 @@ export default async function CommunityPage() {
               </div>
             )}
 
-            {/* Top contributors */}
+            {/* Top contributors — drops out on short laptop windows (≤680px
+                viewport) where profile + nav alone already fill the rail. */}
             {topContributors.length > 0 && (
-              <div className="card p-4">
-                <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
+              <div className="card hidden p-3 [@media(min-height:680px)]:block">
+                <h2 className="mb-2.5 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
                   <Award className="h-4 w-4 text-emerald-600" /> Top Contributors
                 </h2>
                 <ul className="space-y-2.5">
@@ -223,8 +193,27 @@ export default async function CommunityPage() {
               </div>
             )}
 
-            <ShareJourneyCard />
+            <div className="hidden [@media(min-height:900px)]:block">
+              <ShareJourneyCard />
+            </div>
           </aside>
+
+          <div className="min-w-0 flex-1">
+            {/* Compact icon nav — only shown when the labeled rail (≥xl) is hidden */}
+            <div className="mb-3 flex justify-end xl:hidden">
+              <CommunityTopBar />
+            </div>
+
+            <Feed
+              posts={posts}
+              social={social}
+              media={media}
+              currentUserId={u.id ?? ""}
+              userName={u.name || u.email || "You"}
+              userImage={u.image}
+              authorTiers={authorTiers}
+            />
+          </div>
         </div>
       </div>
     </AppShell>

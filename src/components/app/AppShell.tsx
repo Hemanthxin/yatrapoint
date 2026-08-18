@@ -18,8 +18,13 @@ interface AppShellProps {
 export function AppShell({ userLabel, userImage, location, children }: AppShellProps) {
   const [open, setOpen] = useState(false);
 
+  // overflow-x-CLIP, not hidden: `hidden` computes to `overflow: hidden auto`,
+  // which turns this wrapper into a scroll container and silently breaks
+  // `position: sticky` for every descendant (the community rail and the feed's
+  // sticky tab bar both failed to pin because of it). `clip` gives the same
+  // horizontal clipping without creating a scrollport.
   return (
-    <div className="relative min-h-screen overflow-x-hidden text-slate-900">
+    <div className="relative min-h-screen overflow-x-clip text-slate-900">
       {/* Vibrant animated aurora — blue + green light behind every screen. */}
       <div aria-hidden className="aurora-canvas">
         <div className="aurora-blob -left-32 top-[-6rem] h-[26rem] w-[26rem] bg-green-300/35 animate-aurora" />
