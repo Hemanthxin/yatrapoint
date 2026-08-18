@@ -151,14 +151,9 @@ export function Feed({
     mine: { title: "You haven't posted yet", text: "Share your first place above!" },
   };
 
-  // The reading feed is a single centred column (Instagram-style): at 3 columns
-  // each card was ~260px wide, which squeezed captions into tall ragged walls of
-  // text. The dense square Explore grid still wants the full width.
-  const shell = view === "grid" ? "max-w-5xl" : "max-w-2xl";
-
   return (
-    <div className={`mx-auto ${shell} space-y-5`}>
-      <div ref={feedTopRef} className="w-full space-y-5">
+    <div className="space-y-4">
+      <div ref={feedTopRef} className="mx-auto w-full max-w-2xl space-y-4">
         {/* Stories — recent posters, tap for a full-screen story viewer */}
         <Stories
           posts={posts}
@@ -301,7 +296,10 @@ export function Feed({
           mediaByPost={media}
         />
       ) : (
-        <RevealGrid className="grid grid-cols-1 gap-5">
+        // items-start: let each tile keep its natural height. Stretching them
+        // to the row height just opened a void between the caption and the
+        // reaction row.
+        <RevealGrid className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 2xl:grid-cols-3">
           {visible.map((p, i) => (
             <PostCard
               key={p.id}
@@ -314,6 +312,7 @@ export function Feed({
               onDeleted={handleDeleted}
               media={media[p.id]}
               tier={authorTiers?.[p.userId]}
+              variant="grid"
             />
           ))}
         </RevealGrid>

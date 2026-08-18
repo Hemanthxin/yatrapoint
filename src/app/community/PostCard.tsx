@@ -87,6 +87,7 @@ export function PostCard({
   onDeleted,
   media,
   tier,
+  variant = "full",
 }: {
   post: CommunityPost;
   social: PostSocial;
@@ -98,7 +99,12 @@ export function PostCard({
   onDeleted?: (postId: string) => void;
   /** Contributor-tier badge shown next to the author name — omit for no badge. */
   tier?: string;
+  /** "grid" is the compact tile used in the multi-column feed: a fixed 4:3
+   *  photo and tightly clamped text so every card in a row is the same
+   *  height. "full" is the roomy version used inside the Explore modal. */
+  variant?: "grid" | "full";
 }) {
+  const isGrid = variant === "grid";
   const [post, setPost] = useState(initialPost);
 
   const [counts, setCounts] = useState(social.counts);
@@ -368,7 +374,7 @@ export function PostCard({
       // left the first cards still faded out on load — an empty-looking feed
       // until you scrolled. Reveal as soon as any part is on screen.
       amount={0}
-      className="card card-hover overflow-hidden"
+      className={`card card-hover overflow-hidden ${isGrid ? "flex flex-col" : ""}`}
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-3.5">
@@ -449,16 +455,25 @@ export function PostCard({
         <p className="px-4 pb-1 text-xs font-medium text-rose-600">{actionError}</p>
       )}
 
-      {/* Photo/video — double-tap to love */}
-      <div className="relative h-[26rem] cursor-pointer select-none" onDoubleClick={onPhotoDoubleClick}>
-        {media && media.length > 0 ? (
-          <MediaCarousel media={media} alt={post.title} className="h-full w-full" />
-        ) : post.photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.photoUrl} alt={post.title} className="h-full w-full object-cover" />
-        ) : (
-          <div className="grid h-full w-full place-items-center bg-slate-100 text-5xl">🌄</div>
-        )}
+      {/* Photo/video — double-tap to love.
+          The media is absolutely positioned inside the ratio box: as normal
+          flow content a tall portrait photo overrides `aspect-[4/3]` and
+          stretches the box (a 4:3 tile measured 525px instead of 296px),
+          which is what made grid rows uneven. Out of flow, it can't. */}
+      <div
+        className={`relative shrink-0 cursor-pointer select-none overflow-hidden ${isGrid ? "aspect-[4/3]" : "h-[26rem]"}`}
+        onDoubleClick={onPhotoDoubleClick}
+      >
+        <div className="absolute inset-0">
+          {media && media.length > 0 ? (
+            <MediaCarousel media={media} alt={post.title} className="h-full w-full" />
+          ) : post.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={post.photoUrl} alt={post.title} className="h-full w-full object-cover" />
+          ) : (
+            <div className="grid h-full w-full place-items-center bg-slate-100 text-5xl">🌄</div>
+          )}
+        </div>
         {burst && (
           <span className="pointer-events-none absolute inset-0 grid place-items-center">
             <Heart className="h-24 w-24 animate-ping fill-white text-white drop-shadow-lg" />
@@ -540,7 +555,7 @@ export function PostCard({
       ) : (
         <>
           {/* Instagram-style action bar */}
-          <div className="flex items-center gap-1 px-2.5 pt-1.5">
+          <div className={`flex items-center gap-1 pt-1.5 ${isGrid ? "px-1.5" : "px-2.5"}`}>
             <button onClick={() => react("love")} aria-label="Love" className="relative grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
               <motion.span
                 animate={loved ? { scale: [1, 1.5, 0.9, 1.1, 1] } : { scale: 1 }}
@@ -573,17 +588,17 @@ export function PostCard({
           </div>
 
           {/* Likes + body */}
-          <div className="px-4 pb-4 pt-2">
+          <div className={`pb-3 pt-1.5 ${isGrid ? "flex flex-col px-3" : "px-4 pb-4 pt-2"}`}>
             {total > 0 && (
-              <p className="text-sm font-semibold text-slate-900">
+              <p className="text-xs font-semibold text-slate-900">
                 {counts.love > 0 ? `${counts.love} ${counts.love === 1 ? "love" : "loves"}` : `${total} reactions`}
               </p>
             )}
 
-            {/* Caption — clamped to 3 lines by default. Some posts run 1000
-                characters, which otherwise turned a feed card into a wall of
-                text taller than the photo above it. */}
-            <p className={`mt-1 text-sm ${expanded ? "" : "line-clamp-3"}`}>
+            {/* Caption — clamped by default. Some posts run 1000 characters,
+                which otherwise turned a card into a wall of text taller than
+                the photo above it. Tighter clamp in the grid tile. */}
+            <p className={`mt-1 text-sm ${expanded ? "" : isGrid ? "line-clamp-2" : "line-clamp-3"}`}>
               <Link href={`/profile/${post.userId}`} className="font-bold text-slate-900 hover:underline">
                 {post.authorName ?? "Traveller"}
               </Link>{" "}
@@ -596,14 +611,16 @@ export function PostCard({
               <button
                 type="button"
                 onClick={() => setExpanded((v) => !v)}
-                className="mt-0.5 text-sm font-medium text-slate-400 transition hover:text-slate-600"
+                className="mt-0.5 self-start text-xs font-medium text-slate-400 transition hover:text-slate-600"
               >
                 {expanded ? "less" : "… more"}
               </button>
             )}
 
-            {/* Advanced travel reactions — intent + visited markers */}
-            <div className="mt-3 flex flex-wrap gap-2">
+            {/* Advanced travel reactions — intent + visited markers. Kept on
+                one non-wrapping row in the grid tile so a post with a Map link
+                doesn't grow a second row and desync the card heights. */}
+            <div className={`mt-2.5 flex gap-1.5 ${isGrid ? "overflow-hidden" : "flex-wrap gap-2"}`}>
               {TRAVEL_REACTIONS.map((r) => {
                 const active = mine === r.type;
                 const n = counts[r.type as keyof typeof counts];
@@ -611,7 +628,9 @@ export function PostCard({
                   <button
                     key={r.type}
                     onClick={() => react(r.type)}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
+                    className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border py-1.5 text-xs font-bold transition active:scale-95 ${
+                      isGrid ? "px-2.5" : "px-3"
+                    } ${
                       active
                         ? "border-transparent bg-emerald-600 text-white"
                         : "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50"
@@ -628,7 +647,7 @@ export function PostCard({
                   href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 active:scale-95"
+                  className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50/50 px-2.5 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 active:scale-95"
                 >
                   <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Map
                 </a>
@@ -637,7 +656,7 @@ export function PostCard({
 
             {/* View comments */}
             {commentCount > 0 && !showComments && (
-              <button onClick={toggleComments} className="mt-3 text-sm text-slate-400 hover:text-slate-600">
+              <button onClick={toggleComments} className="mt-2 self-start text-xs text-slate-400 hover:text-slate-600">
                 View all {commentCount} {commentCount === 1 ? "comment" : "comments"}
               </button>
             )}
