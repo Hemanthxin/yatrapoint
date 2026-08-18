@@ -39,9 +39,14 @@ interface Props {
 
 export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Props) {
   const tone = "bg-emerald-100 text-emerald-700";
-  // The admin-uploaded (or default) banner, plus two shipped travel scenes —
-  // the hero auto-cycles through all three.
-  const heroSlides = [heroImageUrl || "/66242.jpg", "/hero-slide-lake-temple.jpg", "/hero-slide-mountain-coast.jpg"];
+  // The admin-uploaded (or default) banner, plus the shipped travel scenes —
+  // the hero auto-cycles through all of them.
+  const heroSlides = [
+    heroImageUrl || "/66242.jpg",
+    "/hero-slide-lake-temple.jpg",
+    "/hero-slide-mountain-coast.jpg",
+    "/hero-slide-airplane.jpg",
+  ];
   const [heroSlide, setHeroSlide] = useState(0);
   const features = [
     { title: "Trip Planner", desc: "Plan your trip within budget", href: "/budget-planner", tone, icon: <Wallet className="h-5 w-5" /> },
