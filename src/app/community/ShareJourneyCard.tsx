@@ -1,20 +1,38 @@
 "use client";
 
-import { Camera } from "lucide-react";
+import { Plus } from "lucide-react";
 
-// A real button, not decoration — dispatches a DOM event that <Feed>
-// (rendered separately in the page tree) listens for to open its composer.
+// "Share your journey" prompt in the community right rail.
+//
+// The photo is a real <img> layer rather than a Tailwind `bg-gradient-*`
+// class: `.card` in globals.css sets the `background` SHORTHAND, which resets
+// `background-image` to none, so a gradient utility on a `.card` element
+// silently disappears — which previously left this card's white-on-white text
+// invisible (a blank white box). Layering an element sidesteps that entirely.
 export function ShareJourneyCard() {
   return (
-    <button
-      type="button"
-      onClick={() => window.dispatchEvent(new CustomEvent("yatra:open-composer"))}
-      className="card w-full space-y-2 overflow-hidden bg-gradient-to-br from-emerald-700 to-teal-700 p-4 text-left text-white transition hover:brightness-105 active:scale-[0.98]"
-    >
-      <Camera className="h-6 w-6" />
-      <h2 className="text-sm font-bold">Share Your Journey</h2>
-      <p className="text-xs text-white/80">Your next post could be someone's perfect trip plan.</p>
-      <span className="mt-1 inline-block text-xs font-bold underline underline-offset-2">Create Post →</span>
-    </button>
+    <div className="card relative isolate overflow-hidden p-4 text-white">
+      {/* Photo + scrim, behind the content */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/hero-slide-mountain-coast.jpg"
+        alt=""
+        aria-hidden
+        className="absolute inset-0 -z-10 h-full w-full object-cover object-right"
+      />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-tr from-emerald-950/90 via-emerald-900/75 to-emerald-800/45" />
+
+      <h2 className="text-sm font-bold drop-shadow">Share Your Journey</h2>
+      <p className="mt-1 text-xs leading-relaxed text-white/85 drop-shadow">
+        Your next post could be someone&apos;s perfect trip plan.
+      </p>
+      <button
+        type="button"
+        onClick={() => window.dispatchEvent(new CustomEvent("yatra:open-composer"))}
+        className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-white px-3.5 py-2 text-xs font-bold text-emerald-800 shadow-sm transition hover:bg-emerald-50 active:scale-95"
+      >
+        <Plus className="h-3.5 w-3.5" /> Add post
+      </button>
+    </div>
   );
 }
