@@ -151,9 +151,14 @@ export function Feed({
     mine: { title: "You haven't posted yet", text: "Share your first place above!" },
   };
 
+  // The reading feed is a single centred column (Instagram-style): at 3 columns
+  // each card was ~260px wide, which squeezed captions into tall ragged walls of
+  // text. The dense square Explore grid still wants the full width.
+  const shell = view === "grid" ? "max-w-5xl" : "max-w-2xl";
+
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div ref={feedTopRef} className="mx-auto w-full max-w-2xl space-y-6">
+    <div className={`mx-auto ${shell} space-y-5`}>
+      <div ref={feedTopRef} className="w-full space-y-5">
         {/* Stories — recent posters, tap for a full-screen story viewer */}
         <Stories
           posts={posts}
@@ -173,7 +178,7 @@ export function Feed({
       </div>
 
       {/* Content-type filter — All Posts / Trip Stories / Travel Tips / Questions / Photos / Events */}
-      <div className="mx-auto flex max-w-6xl gap-1.5 overflow-x-auto pb-0.5">
+      <div className="flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden">
         {POST_TYPE_FILTERS.map((t) => {
           const Icon = t.icon;
           const active = typeFilter === t.id;
@@ -196,7 +201,7 @@ export function Feed({
       </div>
 
       {/* Pill tabs + feed/grid view toggle */}
-      <div className="card sticky top-2 z-10 mx-auto flex max-w-6xl items-center gap-1.5 p-1">
+      <div className="card sticky top-2 z-10 flex items-center gap-1.5 p-1">
         <div className="flex flex-1 gap-1">
           {TABS.map((t) => {
             const active = tab === t.id;
@@ -267,7 +272,7 @@ export function Feed({
 
       {/* Live "new posts" banner — real-time without yanking the feed around */}
       {tab === "latest" && pendingPosts.length > 0 && (
-        <div className="mx-auto flex max-w-6xl justify-center">
+        <div className="flex justify-center">
           <button
             type="button"
             onClick={showPendingPosts}
@@ -296,7 +301,7 @@ export function Feed({
           mediaByPost={media}
         />
       ) : (
-        <RevealGrid className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+        <RevealGrid className="grid grid-cols-1 gap-5">
           {visible.map((p, i) => (
             <PostCard
               key={p.id}

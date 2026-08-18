@@ -75,8 +75,11 @@ export default async function CommunityPage() {
           ]}
         />
 
-        <div className="mx-auto flex max-w-7xl items-start gap-8">
-          <div className="min-w-0 flex-1">
+        {/* justify-between + a capped feed column keeps the feed's left edge
+            and the rail's right edge flush with the hero above; the slack
+            falls into the gutter between them. */}
+        <div className="mx-auto flex max-w-7xl items-start justify-between gap-8">
+          <div className="min-w-0 flex-1 xl:max-w-2xl">
             {/* Compact icon nav — only shown when the labeled rail (≥xl) is hidden */}
             <div className="mb-3 flex justify-end xl:hidden">
               <CommunityTopBar />

@@ -129,6 +129,10 @@ export function PostCard({
   const [burst, setBurst] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Long captions collapse behind a "… more" toggle (see the caption block below).
+  const [expanded, setExpanded] = useState(false);
+  const isLongCaption = (post.title.length + post.description.length) > 140;
+
   // Author controls
   const isAuthor = post.userId === currentUserId;
   const [menuOpen, setMenuOpen] = useState(false);
@@ -359,7 +363,11 @@ export function PostCard({
   return (
     <Reveal
       as="article"
-      delay={Math.min(index, 8) * 0.06}
+      delay={Math.min(index, 4) * 0.05}
+      // A post card is taller than the viewport, so the default amount (0.2)
+      // left the first cards still faded out on load — an empty-looking feed
+      // until you scrolled. Reveal as soon as any part is on screen.
+      amount={0}
       className="card card-hover overflow-hidden"
     >
       {/* Header */}
@@ -572,7 +580,10 @@ export function PostCard({
               </p>
             )}
 
-            <p className="mt-1 text-sm">
+            {/* Caption — clamped to 3 lines by default. Some posts run 1000
+                characters, which otherwise turned a feed card into a wall of
+                text taller than the photo above it. */}
+            <p className={`mt-1 text-sm ${expanded ? "" : "line-clamp-3"}`}>
               <Link href={`/profile/${post.userId}`} className="font-bold text-slate-900 hover:underline">
                 {post.authorName ?? "Traveller"}
               </Link>{" "}
@@ -581,6 +592,15 @@ export function PostCard({
                 <Caption text={post.description} />
               </span>
             </p>
+            {isLongCaption && (
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                className="mt-0.5 text-sm font-medium text-slate-400 transition hover:text-slate-600"
+              >
+                {expanded ? "less" : "… more"}
+              </button>
+            )}
 
             {/* Advanced travel reactions — intent + visited markers */}
             <div className="mt-3 flex flex-wrap gap-2">

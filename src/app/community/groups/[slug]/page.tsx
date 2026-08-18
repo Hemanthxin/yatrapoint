@@ -49,7 +49,9 @@ export default async function CommunityGroupPage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
-      <div className="mx-auto max-w-6xl">
+      {/* max-w-2xl matches <Feed>'s own single-column width exactly, so the
+          header card and the posts below it share one left/right edge. */}
+      <div className="mx-auto max-w-2xl">
         <BackButton fallback="/community/groups" label="Communities" />
 
         <div className="card mb-6 overflow-hidden">
