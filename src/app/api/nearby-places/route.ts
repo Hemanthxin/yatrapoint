@@ -4,6 +4,8 @@ import { and, inArray, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
 import { haversineKm } from "@/lib/geo";
+import { isVisiblePlace } from "@/lib/place-visibility";
+import { PlaceDeduper, SOURCE_PRIORITY } from "@/lib/place-dedup";
 
 export const runtime = "nodejs";
 
@@ -102,6 +104,7 @@ export async function GET(req: NextRequest) {
       const la = numeric(r.latitude);
       const lo = numeric(r.longitude);
       if (la == null || lo == null) continue;
+      if (!isVisiblePlace(r)) continue;
       all.push({
         id: r.id, name: r.name, slug: r.slug, source: "city",
         category: r.category, kind: r.kind, area: r.area || r.city || null,
@@ -113,6 +116,7 @@ export async function GET(req: NextRequest) {
       const la = numeric(r.latitude);
       const lo = numeric(r.longitude);
       if (la == null || lo == null) continue;
+      if (r.isHidden || !isVisiblePlace(r)) continue;
       all.push({
         id: r.id, name: r.name, slug: r.slug, source: "destination",
         category: r.category, kind: r.placeType ?? null,
@@ -125,6 +129,7 @@ export async function GET(req: NextRequest) {
       const la = numeric(r.latitude);
       const lo = numeric(r.longitude);
       if (la == null || lo == null) continue;
+      if (!isVisiblePlace(r)) continue;
       all.push({
         id: r.id, name: r.name, slug: r.slug, source: "nearby",
         category: r.category, kind: null, area: `From ${r.baseCity}`,
@@ -133,10 +138,24 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const places = all
-      .filter((p) => p.distanceKm <= radiusKm)
-      .sort((a, b) => a.distanceKm - b.distanceKm)
-      .slice(0, limit);
+    // The three catalogues overlap: a well-known place is very often present in
+    // more than one of them (and under slightly different names/coordinates),
+    // which is what made the same place appear several times in one result set
+    // (BUG-01). De-duplicate AFTER the distance sort so the nearest copy wins
+    // the position, and let source priority decide which row survives — a
+    // curated/manually-added row always beats a bulk-seeded one (BUG-02).
+    const deduper = new PlaceDeduper<NearPlace & { lat: number; lng: number }>((p) =>
+      p.source === "destination"
+        ? SOURCE_PRIORITY.destination
+        : p.source === "nearby"
+        ? SOURCE_PRIORITY.nearby
+        : SOURCE_PRIORITY.city
+    );
+    for (const p of all.filter((p) => p.distanceKm <= radiusKm).sort((a, b) => a.distanceKm - b.distanceKm)) {
+      deduper.add({ ...p, lat: Number(p.latitude), lng: Number(p.longitude) });
+      if (deduper.size >= limit) break;
+    }
+    const places: NearPlace[] = deduper.items.map(({ lat: _lat, lng: _lng, ...p }) => p);
 
     return NextResponse.json({ ok: true, count: places.length, places });
   } catch (err) {

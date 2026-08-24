@@ -13,6 +13,7 @@ import type { CityPlace } from "@/lib/db/schema";
 import type { NearPlace } from "@/app/api/nearby-places/route";
 import { useLocation } from "@/components/app/LocationContext";
 import { haversineKm, formatKm } from "@/lib/geo";
+import { PlaceDeduper, SOURCE_PRIORITY } from "@/lib/place-dedup";
 import { placeMapUrl } from "@/lib/maps";
 import { PlaceImage } from "@/components/app/PlaceImage";
 import { LocationSearchIllustration } from "@/components/illustrations";
@@ -70,6 +71,9 @@ interface OverpassLite {
   lat: number;
   lng: number;
   tags?: { addrFull?: string };
+  // Freely-licensed photo derived from the place's own OSM tags, when it has
+  // one — live places used to always render as a bare emoji tile (BUG-03).
+  imageUrl?: string | null;
 }
 
 interface NearItem {
@@ -156,7 +160,7 @@ export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
         lat: o.lat,
         lng: o.lng,
         area: o.tags?.addrFull || labelOf(o.category),
-        imageSrc: null,
+        imageSrc: o.imageUrl ?? null,
         emoji: emojiFor(o.category),
         distanceKm: d,
       });
@@ -164,17 +168,23 @@ export function NearbyPlaces({ seed }: { seed: CityPlace[] }) {
 
     items.sort((a, b) => a.distanceKm - b.distanceKm);
 
-    // De-dup places within ~120 m of one already chosen; keep the nearest 16
-    // as candidates for the real-driving-distance re-rank.
-    const out: NearItem[] = [];
+    // De-duplicate with the app-wide rule rather than a bare 120 m coordinate
+    // test: the curated catalogues and live OSM map the same place under
+    // different names and up to a few km apart, which the old test could not
+    // see, so the same spot appeared twice in one row (BUG-01). Source
+    // priority makes the curated row win over the live-API one, so the entry
+    // that survives keeps its photo and its in-app detail link rather than
+    // being replaced by a bare map pin (BUG-02).
+    const deduper = new PlaceDeduper<NearItem & { lat: number; lng: number }>((p) =>
+      p.external ? SOURCE_PRIORITY.osm : SOURCE_PRIORITY.destination
+    );
     for (const it of items) {
-      if (out.some((o) => haversineKm({ lat: o.lat, lng: o.lng }, { lat: it.lat, lng: it.lng }) < 0.12)) {
-        continue;
-      }
-      out.push(it);
-      if (out.length >= 16) break;
+      deduper.add(it);
+      // Keep a wider shortlist than the final four so the driving-distance
+      // re-rank below still has real choice.
+      if (deduper.size >= 16) break;
     }
-    return out;
+    return deduper.items;
   }, [curated, live, coords]);
 
   // Upgrade the shortlist to real driving distance (Google Distance Matrix),

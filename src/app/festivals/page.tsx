@@ -6,6 +6,8 @@ import { AppShell } from "@/components/app/AppShell";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { festivalsByNextOccurrence, festivalSlug, formatFestivalDate, daysUntil } from "@/lib/festivals";
 import { getFestivalImages } from "@/lib/actions/festival-images";
+import { listApprovedFestivals } from "@/lib/actions/festival-suggestions";
+import { SuggestFestivalForm } from "./SuggestFestivalForm";
 import { MobileFestivals } from "./MobileFestivals";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
@@ -21,8 +23,12 @@ export default async function FestivalsPage() {
 
   // Ordered by next occurrence — upcoming festivals first (nearest first),
   // anything already finished this year rolls to the end with next year's date.
-  const FESTIVALS = festivalsByNextOccurrence();
-  const festivalImages = await getFestivalImages();
+  // Community-suggested events an admin has approved are merged in (BUG-10).
+  const [approved, festivalImages] = await Promise.all([
+    listApprovedFestivals(),
+    getFestivalImages(),
+  ]);
+  const FESTIVALS = festivalsByNextOccurrence(undefined, approved);
   // The very first one is always the next upcoming festival.
   const nextUpcoming = FESTIVALS[0] ?? null;
 
@@ -48,6 +54,11 @@ export default async function FestivalsPage() {
         gradient="from-amber-600 via-orange-600 to-rose-600"
         backgroundImage="/festivals-hero-bg.jpg"
       />
+
+      {/* Anyone can put a local festival forward for review (BUG-10). */}
+      <div className="mb-5">
+        <SuggestFestivalForm />
+      </div>
 
       <RevealGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {FESTIVALS.map((f) => {

@@ -141,6 +141,11 @@ export const destinations = pgTable("destinations", {
   // JSON WeeklyHours array (see src/lib/place-hours.ts) — real per-day
   // Google hours, kept separate from any simple single-range hours field.
   googleWeeklyHours: text("google_weekly_hours"),
+  // Google businessStatus: "OPERATIONAL" | "CLOSED_TEMPORARILY" |
+  // "CLOSED_PERMANENTLY". Null = never synced / Google had no answer, treated
+  // as operational so an unsynced catalogue never goes blank. One shared rule
+  // in src/lib/place-visibility.ts decides what each list does with it.
+  googleBusinessStatus: varchar("google_business_status", { length: 24 }),
   googleSyncedAt: timestamp("google_synced_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
@@ -291,6 +296,7 @@ export const nearbyDestinations = pgTable("nearby_destinations", {
   googleRating: real("google_rating"),
   googleRatingCount: integer("google_rating_count"),
   googleWeeklyHours: text("google_weekly_hours"),
+  googleBusinessStatus: varchar("google_business_status", { length: 24 }),
   googleSyncedAt: timestamp("google_synced_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -328,6 +334,7 @@ export const cityPlaces = pgTable("city_places", {
   googleRating: real("google_rating"),
   googleRatingCount: integer("google_rating_count"),
   googleWeeklyHours: text("google_weekly_hours"),
+  googleBusinessStatus: varchar("google_business_status", { length: 24 }),
   googleSyncedAt: timestamp("google_synced_at"),
   popularity: integer("popularity").default(50).notNull(),
   // Only set for places with a real official online booking system (museums,
@@ -597,6 +604,48 @@ export const hotels = pgTable("hotels", {
 
 export type Hotel = typeof hotels.$inferSelect;
 export type NewHotel = typeof hotels.$inferInsert;
+
+// --- Community-suggested festivals & events (BUG-10) ---
+// The built-in festival list is a static JSON file of major national
+// festivals, so a locally-organised jatre, temple car festival or town fair
+// could never appear no matter how well-known it is locally. Travellers and
+// community members submit those here; an admin approves before it goes live
+// on /festivals, so the public list can't be spammed.
+export const festivalSuggestions = pgTable(
+  "festival_suggestions",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    // Null when the submitter's account is later deleted — the festival itself
+    // stays live, it just loses its attribution.
+    userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+    submittedByName: varchar("submitted_by_name", { length: 120 }),
+    name: varchar("name", { length: 140 }).notNull(),
+    // Town / city the event is held in, shown as the festival's hub.
+    hub: varchar("hub", { length: 160 }),
+    // "YYYY-MM-DD". Null for festivals whose date moves with the lunar
+    // calendar and hasn't been fixed for the year yet.
+    dateISO: varchar("date_iso", { length: 10 }),
+    // Free-text date when there's no exact day ("second week of March").
+    dateLabel: varchar("date_label", { length: 80 }),
+    significance: text("significance"),
+    imageUrl: text("image_url"),
+    // "pending" | "approved" | "rejected". Only "approved" reaches /festivals.
+    status: varchar("status", { length: 20 }).default("pending").notNull(),
+    // Why an admin rejected it, shown back to the submitter.
+    reviewNote: varchar("review_note", { length: 300 }),
+    reviewedAt: timestamp("reviewed_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    statusCreatedIdx: index("festival_suggestions_status_created_idx").on(
+      table.status,
+      table.createdAt
+    ),
+    userIdx: index("festival_suggestions_user_idx").on(table.userId),
+  })
+);
+export type FestivalSuggestion = typeof festivalSuggestions.$inferSelect;
+export type NewFestivalSuggestion = typeof festivalSuggestions.$inferInsert;
 
 // --- Admin headlines / news ticker ---
 export const announcements = pgTable("announcements", {

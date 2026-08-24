@@ -57,10 +57,21 @@ export interface FestivalOccurrence extends Festival {
 // Every festival ordered by its NEXT occurrence — so still-upcoming festivals
 // come first (nearest first) and any that already finished this year fall to the
 // end carrying next year's date.
-export function festivalsByNextOccurrence(todayISO?: string): FestivalOccurrence[] {
+export function festivalsByNextOccurrence(
+  todayISO?: string,
+  // Community-suggested festivals that an admin has approved (BUG-10). They
+  // sort by date alongside the built-in ones rather than sitting in a separate
+  // second-class list — a local jatre next week matters more to a traveller
+  // than a national festival six months out.
+  extra: Festival[] = []
+): FestivalOccurrence[] {
   const today = todayISO ?? new Date().toISOString().slice(0, 10);
-  return FESTIVALS.map((f) => ({ ...f, nextISO: nextOccurrenceISO(f.dateISO, today) }))
-    .slice()
+  // A community submission for a festival already in the built-in list would
+  // otherwise show twice.
+  const builtInNames = new Set(FESTIVALS.map((f) => festivalSlug(f.name)));
+  const merged = [...FESTIVALS, ...extra.filter((f) => !builtInNames.has(festivalSlug(f.name)))];
+  return merged
+    .map((f) => ({ ...f, nextISO: nextOccurrenceISO(f.dateISO, today) }))
     .sort((a, b) => (a.nextISO || "9999").localeCompare(b.nextISO || "9999"));
 }
 

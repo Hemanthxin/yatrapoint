@@ -36,8 +36,12 @@ export function CartPlanner() {
   // Estimated budget from the catalogue places in the cart. `budgetPerDay` is a
   // per-person mid-range figure covering stay, food & local travel; entry fees
   // are per person too. Festivals / places without catalogue budget data are
-  // simply not counted (and we say so).
-  const budgetStops = (stops ?? []).filter((s) => s.budgetPerDay != null);
+  // simply not counted (and we say so). A stop we couldn't locate, or one that
+  // is permanently closed, is never costed — the estimate must describe the
+  // places actually shown on the route (BUG-14).
+  const budgetStops = (stops ?? []).filter(
+    (s) => s.budgetPerDay != null && !s.unlocated && !s.closed
+  );
   const entryPerPerson = budgetStops.reduce((a, s) => a + (s.entryFee ?? 0), 0);
   const dailyPerPerson = budgetStops.reduce(
     (a, s) => a + (s.budgetPerDay ?? 0) * (s.recommendedDays ?? 1),
@@ -68,13 +72,17 @@ export function CartPlanner() {
   }, [sig]);
 
   const origin = live.coords;
-  const mapStops = (stops ?? []).map((s) => ({ lat: s.lat, lng: s.lng, name: s.name }));
+  // Only stops with real coordinates go on the map or into the directions URL —
+  // an unlocated stop used to be dropped silently upstream; now it stays in the
+  // list (so it can be seen and removed) but must not drag a pin to 0°,0°.
+  const locatedStops = (stops ?? []).filter((s) => !s.unlocated);
+  const mapStops = locatedStops.map((s) => ({ lat: s.lat, lng: s.lng, name: s.name }));
 
   const googleMapsUrl = (() => {
-    if (!stops || stops.length === 0) return "#";
+    if (locatedStops.length === 0) return "#";
     const o = `${origin.lat},${origin.lng}`;
     const params = new URLSearchParams({ api: "1", origin: o, destination: o, travelmode: "driving" });
-    const waypoints = stops.map((s) => `${s.lat},${s.lng}`).join("|");
+    const waypoints = locatedStops.map((s) => `${s.lat},${s.lng}`).join("|");
     if (waypoints) params.set("waypoints", waypoints);
     return `https://www.google.com/maps/dir/?${params.toString()}`;
   })();
@@ -180,25 +188,44 @@ export function CartPlanner() {
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{ delay: Math.min(i, 10) * 0.09 + 0.2, type: "spring", stiffness: 400, damping: 15 }}
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-md shadow-emerald-500/30"
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold shadow-md ${
+                    s.unlocated
+                      ? "bg-slate-200 text-slate-500"
+                      : "bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-emerald-500/30"
+                  }`}
                 >
-                  {i + 1}
+                  {/* The badge is the stop's position ON THE ROUTE, so it lines
+                      up with the map — an unlocated stop isn't on the route and
+                      shows a dash instead of a misleading number. */}
+                  {s.unlocated ? "–" : locatedStops.findIndex((l) => l.id === s.id) + 1}
                 </motion.span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold text-slate-900">{s.name}</p>
                   <p className="flex items-center gap-1 truncate text-xs text-slate-500">
                     <MapPin className="h-3 w-3 shrink-0" /> {s.label}
                   </p>
+                  {s.closed && (
+                    <p className="mt-0.5 text-[11px] font-semibold text-rose-600">
+                      Permanently closed — not included in the estimate.
+                    </p>
+                  )}
+                  {s.unlocated && !s.closed && (
+                    <p className="mt-0.5 text-[11px] font-semibold text-amber-600">
+                      Couldn’t pin this on the map — not included in the route or estimate.
+                    </p>
+                  )}
                 </div>
-                <a
-                  href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-emerald-600 lg:h-9 lg:w-9 lg:rounded-lg"
-                  aria-label="Open on map"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </a>
+                {!s.unlocated && (
+                  <a
+                    href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-emerald-600 lg:h-9 lg:w-9 lg:rounded-lg"
+                    aria-label="Open on map"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                )}
                 <button
                   onClick={() => removeFromCart(s.id)}
                   aria-label="Remove"

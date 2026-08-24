@@ -414,6 +414,22 @@ export function PostCard({
           </span>
         ) : null}
 
+        {/* BUG-13: message the person who wrote the post. Direct messages
+            already existed, but the only way in was via someone's profile page
+            — from a post there was no way to reach the author privately, so
+            questions about a place had to be asked in public comments. Hidden
+            on your own posts (you can't message yourself). */}
+        {!isAuthor && post.userId && (
+          <Link
+            href={`/community/messages/${post.userId}`}
+            aria-label={`Message ${post.authorName ?? "this traveller"}`}
+            title={`Message ${post.authorName ?? "this traveller"}`}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 active:scale-90"
+          >
+            <MessageCircle className="h-5 w-5" />
+          </Link>
+        )}
+
         {/* Author menu */}
         {isAuthor && !editing && (
           <div className="relative shrink-0" ref={menuRef}>
@@ -461,15 +477,33 @@ export function PostCard({
           stretches the box (a 4:3 tile measured 525px instead of 296px),
           which is what made grid rows uneven. Out of flow, it can't. */}
       <div
-        className={`relative shrink-0 cursor-pointer select-none overflow-hidden ${isGrid ? "aspect-[4/3]" : "h-[26rem]"}`}
+        className={`relative shrink-0 cursor-pointer select-none overflow-hidden bg-slate-100 ${
+          // BUG-12: the full card's photo was a fixed 26rem box that cropped
+          // hard on wide screens and stayed small on phones. A 4:5 portrait
+          // frame (Instagram's own) scales with the card width, so the photo is
+          // as large as the column allows on every screen — with a ceiling so a
+          // very wide window can't turn one post into a full page.
+          isGrid ? "aspect-[4/3]" : "aspect-[4/5] max-h-[38rem]"
+        }`}
         onDoubleClick={onPhotoDoubleClick}
       >
         <div className="absolute inset-0">
           {media && media.length > 0 ? (
-            <MediaCarousel media={media} alt={post.title} className="h-full w-full" />
+            <MediaCarousel
+              media={media}
+              alt={post.title}
+              className="h-full w-full"
+              // Compact tiles crop to keep a tidy grid; the full card shows the
+              // WHOLE photo, so nothing the traveller framed is cut off.
+              imgClassName={isGrid ? "h-full w-full object-cover" : "h-full w-full object-contain"}
+            />
           ) : post.photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={post.photoUrl} alt={post.title} className="h-full w-full object-cover" />
+            <img
+              src={post.photoUrl}
+              alt={post.title}
+              className={`h-full w-full ${isGrid ? "object-cover" : "object-contain"}`}
+            />
           ) : (
             <div className="grid h-full w-full place-items-center bg-slate-100 text-5xl">🌄</div>
           )}

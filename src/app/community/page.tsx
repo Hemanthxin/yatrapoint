@@ -17,6 +17,7 @@ import { Feed } from "./Feed";
 import { MobileCommunity } from "./MobileCommunity";
 import { PageHero } from "@/components/app/PageHero";
 import { CommunityTopBar } from "./CommunityTopBar";
+import { ReelsEntry } from "./ReelsEntry";
 import { ShareJourneyCard } from "./ShareJourneyCard";
 
 export default async function CommunityPage() {
@@ -84,6 +85,9 @@ export default async function CommunityPage() {
             <div className="mb-3 flex justify-end xl:hidden">
               <CommunityTopBar />
             </div>
+
+            {/* Named entry point into Reels, above the feed (BUG-11). */}
+            <ReelsEntry className="mb-4" />
 
             <Feed
               posts={posts}

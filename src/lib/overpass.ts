@@ -223,7 +223,52 @@ export interface OverpassPlace {
     // actual amount when mapped, e.g. "20 INR" / "₹50".
     fee?: string;
     charge?: string;
+    // Photo signals (BUG-03). OSM contributors tag many notable places with a
+    // picture, and these particular tags point at freely-licensed material we
+    // may legally use: `image` is a direct URL, `wikimedia_commons` names a
+    // Commons file/category, and `wikipedia` is a "lang:Title" article
+    // reference. See placePhotoFromTags() below.
+    image?: string;
+    wikimediaCommons?: string;
+    wikipedia?: string;
   };
+  // A ready-to-use photo URL derived from the tags above, or null when the
+  // place carries no usable photo reference.
+  imageUrl: string | null;
+}
+
+// Turn OSM's photo tags into a URL we can render.
+//
+// BUG-03: live-API places always came back with no photo at all, so every one
+// of them fell through to a plain coloured tile. OSM's own tags are the
+// reliable, licence-safe source for these: Wikimedia Commons content is
+// freely licensed, and Special:FilePath resolves a file name to the image
+// (`width` asks Commons to serve a thumbnail rather than a full-size original).
+// A place with none of these tags still returns null — the caller then falls
+// back to a name-matched Wikipedia lookup, and finally to the gradient tile.
+export function placePhotoFromTags(tags: {
+  image?: string;
+  wikimediaCommons?: string;
+}): string | null {
+  // A direct image URL, but only over https and only from hosts that actually
+  // serve images — an http URL would be blocked as mixed content, and a link
+  // to some random page isn't a photo.
+  const direct = tags.image?.trim();
+  if (direct && /^https:\/\//i.test(direct) && /\.(jpe?g|png|webp|gif)(\?|$)/i.test(direct)) {
+    return direct;
+  }
+
+  // "File:Foo.jpg" (a single file) — a "Category:..." value names a gallery
+  // rather than one image, so it is not usable directly.
+  const commons = tags.wikimediaCommons?.trim();
+  if (commons && /^file:/i.test(commons)) {
+    const file = commons.replace(/^file:/i, "").trim();
+    if (file) {
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=640`;
+    }
+  }
+
+  return null;
 }
 
 // Default radius for nearby queries.
@@ -351,27 +396,33 @@ export async function fetchOverpassPlaces(
     const detectedCat =
       categories.find((c) => matchesCategory(t, c)) ?? categories[0];
 
+    const placeTags = {
+      cuisine: t.cuisine,
+      openingHours: t.opening_hours,
+      website: t.website ?? t["contact:website"],
+      phone: t.phone ?? t["contact:phone"],
+      addrFull: [t["addr:housenumber"], t["addr:street"], t["addr:suburb"], t["addr:city"]]
+        .filter(Boolean)
+        .join(", ") || undefined,
+      wheelchair: t.wheelchair,
+      religion: t.religion,
+      operator: t.operator,
+      brand: t.brand,
+      fee: t.fee,
+      charge: t.charge,
+      image: t.image,
+      wikimediaCommons: t.wikimedia_commons,
+      wikipedia: t.wikipedia,
+    };
+
     places.push({
       osmId: `${el.type}/${el.id}`,
       name: t.name,
       category: detectedCat,
       lat,
       lng,
-      tags: {
-        cuisine: t.cuisine,
-        openingHours: t.opening_hours,
-        website: t.website ?? t["contact:website"],
-        phone: t.phone ?? t["contact:phone"],
-        addrFull: [t["addr:housenumber"], t["addr:street"], t["addr:suburb"], t["addr:city"]]
-          .filter(Boolean)
-          .join(", ") || undefined,
-        wheelchair: t.wheelchair,
-        religion: t.religion,
-        operator: t.operator,
-        brand: t.brand,
-        fee: t.fee,
-        charge: t.charge,
-      },
+      tags: placeTags,
+      imageUrl: placePhotoFromTags(placeTags),
     });
   }
 

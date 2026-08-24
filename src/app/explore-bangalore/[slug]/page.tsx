@@ -86,6 +86,7 @@ export default async function CityPlacePage({ params }: PageProps) {
           rating={place.googleRating}
           ratingCount={place.googleRatingCount}
           weeklyHoursJson={place.googleWeeklyHours}
+            businessStatus={place.googleBusinessStatus}
           className="mb-5"
         />
         <p className="text-sm leading-relaxed text-slate-700">

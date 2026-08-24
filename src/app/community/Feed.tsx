@@ -296,10 +296,15 @@ export function Feed({
           mediaByPost={media}
         />
       ) : (
-        // items-start: let each tile keep its natural height. Stretching them
+        // BUG-12: the feed view used to render the COMPACT grid tile — a 4:3
+        // crop inside a 2-to-3-column grid — so every photo came out small.
+        // Feed view is now a single readable column of full-size cards (the
+        // Grid button beside the tabs is still there for the dense view), which
+        // is what makes the photos large and clear.
+        // items-start: let each card keep its natural height. Stretching them
         // to the row height just opened a void between the caption and the
         // reaction row.
-        <RevealGrid className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+        <RevealGrid className="mx-auto grid w-full max-w-2xl grid-cols-1 items-start gap-5">
           {visible.map((p, i) => (
             <PostCard
               key={p.id}
@@ -312,7 +317,7 @@ export function Feed({
               onDeleted={handleDeleted}
               media={media[p.id]}
               tier={authorTiers?.[p.userId]}
-              variant="grid"
+              variant="full"
             />
           ))}
         </RevealGrid>

@@ -7,6 +7,9 @@ import { destinations } from "@/lib/db/schema";
 import { INDIA_STATES } from "@/lib/india-states";
 import { INDIA_DISTRICTS } from "@/lib/india-districts";
 import { runOverpassQuery } from "@/lib/overpass";
+import { districtInList, districtMatches } from "@/lib/district-match";
+import { dedupePlaces, SOURCE_PRIORITY } from "@/lib/place-dedup";
+import { isVisiblePlace } from "@/lib/place-visibility";
 
 export interface AreaCenter {
   lat: number;
@@ -124,15 +127,10 @@ async function detectStateLevels(state: string): Promise<StateLevels> {
   return value;
 }
 
-// Normalise a district name for fuzzy matching across data sources — drops
-// "district"/"rural"/"urban"/"taluk" suffixes and all punctuation/spacing so
-// "Mysuru" ↔ "Mysuru District" and "Bagalkot" ↔ "Bagalkote" line up.
-function normDistrict(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/\b(district|rural|urban|taluk[au]?|tehsil)\b/g, "")
-    .replace(/[^a-z0-9]/g, "");
-}
+// District-name comparison lives in @/lib/district-match so the dropdown, the
+// catalogue filter and the planner all agree on what counts as the same
+// district (BUG-09). It notably does NOT strip "Rural"/"Urban", which the old
+// local normaliser here did — that merged Bengaluru Rural into Bengaluru Urban.
 
 // Districts of a state. Prefer the curated authoritative list (OSM admin data is
 // incomplete — e.g. missing Ramanagara) and fall back to live OSM detection for
@@ -168,12 +166,10 @@ export async function listTaluks(
     // vs OSM "Mysuru District"). Bridge to the matching OSM boundary name so the
     // taluk query resolves. If there's no OSM district to match (e.g. Ramanagara
     // isn't in OSM), there are no taluks to fetch — return empty gracefully.
-    const reqN = normDistrict(district);
-    const osmName =
-      lv.districts.find((d) => {
-        const n = normDistrict(d);
-        return n === reqN || n.startsWith(reqN) || reqN.startsWith(n);
-      }) ?? null;
+    // Exact match on the canonical key — the old prefix test in both
+    // directions could bridge to a DIFFERENT district whose name merely starts
+    // the same way, and then fetch that district's taluks (BUG-09).
+    const osmName = lv.districts.find((d) => districtMatches(d, district)) ?? null;
     if (!osmName) return [];
 
     const q = `[out:json][timeout:120];
@@ -268,16 +264,13 @@ export async function listAreaPlaces(
   districts: string[] = []
 ): Promise<AreaPlace[]> {
   if (!state.trim()) return [];
-  const where = [
-    eq(destinations.state, state),
-    eq(destinations.isHidden, false),
-    sql`${destinations.latitude} is not null`,
-    sql`${destinations.longitude} is not null`,
-  ];
-  if (districts.length > 0) {
-    where.push(inArray(destinations.district, districts));
-  }
 
+  // The district filter is applied in JS, not as `inArray(district, …)` in SQL.
+  // The dropdown is built from the curated INDIA_DISTRICTS spellings while the
+  // catalogue rows carry the other common spelling of the same district, so an
+  // exact SQL string match returned NOTHING for districts like Bagalkot(e) or
+  // Chikkaballapur(a) (BUG-09). One state's places are a small set, so
+  // filtering them here costs nothing and is correct.
   const rows = await db
     .select({
       id: destinations.id,
@@ -287,13 +280,23 @@ export async function listAreaPlaces(
       latitude: destinations.latitude,
       longitude: destinations.longitude,
       imageUrl: destinations.imageUrl,
+      googleBusinessStatus: destinations.googleBusinessStatus,
     })
     .from(destinations)
-    .where(and(...where))
+    .where(
+      and(
+        eq(destinations.state, state),
+        eq(destinations.isHidden, false),
+        sql`${destinations.latitude} is not null`,
+        sql`${destinations.longitude} is not null`
+      )
+    )
     .orderBy(destinations.name)
-    .limit(500);
+    .limit(2000);
 
-  return rows
+  const places = rows
+    .filter((r) => isVisiblePlace(r))
+    .filter((r) => districtInList(r.district, districts))
     .map((r) => ({
       id: r.id,
       name: r.name,
@@ -304,4 +307,8 @@ export async function listAreaPlaces(
       imageUrl: r.imageUrl,
     }))
     .filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
+
+  // Two rows for the same real place would otherwise appear as two separate
+  // tick-boxes in the picker (BUG-01).
+  return dedupePlaces(places, () => SOURCE_PRIORITY.destination).slice(0, 500);
 }

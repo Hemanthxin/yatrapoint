@@ -16,6 +16,7 @@ import {
   Share2,
   Check,
   Repeat,
+  Trash2,
   X,
   TrainFront,
   Car,
@@ -87,6 +88,9 @@ interface PlanStop {
   rating?: number | null;
   ratingCount?: number | null;
   weeklyHours?: string | null;
+  // Google's businessStatus. Permanently-closed places are filtered out server
+  // side, so in practice this only carries CLOSED_TEMPORARILY (BUG-01).
+  businessStatus?: string | null;
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -106,6 +110,9 @@ interface Alternative {
   rating?: number | null;
   ratingCount?: number | null;
   weeklyHours?: string | null;
+  // Google's businessStatus. Permanently-closed places are filtered out server
+  // side, so in practice this only carries CLOSED_TEMPORARILY (BUG-01).
+  businessStatus?: string | null;
   meta?: { osmId?: string; citySeedSlug?: string };
 }
 
@@ -255,6 +262,9 @@ export function LivePlan({
   const [swapIndex, setSwapIndex] = useState<number | null>(null);
   const [rerouting, setRerouting] = useState(false);
   const [swapError, setSwapError] = useState<string | null>(null);
+  // Which stop is currently being removed (BUG-08) — drives that row's spinner
+  // and keeps a second click from firing while the re-route is in flight.
+  const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
   // Which map view is showing — the traveller can flip the SAME trip between
   // road / bike / rail / flight map styles (no re-costing; just the map).
@@ -510,6 +520,142 @@ export function LivePlan({
     });
   }
 
+  // Re-route through `draftStops` and rebuild every total from the new route.
+  // Shared by "Replace" and "Remove" so a plan's cost, time, distance, map
+  // geometry and day split can never drift apart depending on which of the two
+  // edits the traveller used.
+  async function rerouteThrough(
+    draftStops: PlanStop[],
+    nextAlternatives: Alternative[]
+  ): Promise<void> {
+    if (!plan) return;
+    const res = await fetch("/api/multi-stop/route", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        start: { lat: start.lat, lng: start.lng },
+        stops: draftStops.map((s) => ({ lat: s.lat, lng: s.lng })),
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "route failed");
+
+    const legs: Array<{ distanceKm: number; durationMinutes: number }> = data.legs ?? [];
+    const costPerKm = VEHICLES[vehicle].costPerKm;
+    const routedStops = draftStops.map((s, k) => {
+      const leg = legs[k];
+      const km = leg?.distanceKm ?? s.arrivalKmFromPrev;
+      return {
+        ...s,
+        arrivalKmFromPrev: km,
+        arrivalMinutesFromPrev: leg?.durationMinutes ?? s.arrivalMinutesFromPrev,
+        travelCost: Math.round(km * costPerKm),
+      };
+    });
+
+    const fuelTotal = Math.round(data.distanceKm * costPerKm);
+    const entryFeesTotal = routedStops.reduce((a, s) => a + s.entryFee * people, 0);
+    const stopCostTotal = routedStops.reduce((a, s) => a + s.stopCost, 0);
+    const foodTotal = Math.max(0, stopCostTotal - entryFeesTotal);
+    const cost = fuelTotal + stopCostTotal;
+    const visitMin = routedStops.reduce((a, s) => a + s.arrivalMinutesFromPrev + s.idealMinutes, 0);
+
+    setPlan({
+      ...plan,
+      stops: routedStops,
+      geometry: data.geometry ?? plan.geometry,
+      legs,
+      alternatives: nextAlternatives,
+      totals: {
+        ...plan.totals,
+        distanceKm: data.distanceKm,
+        durationMinutes: data.durationMinutes,
+        cost,
+        perPersonCost: Math.round(cost / Math.max(1, people)),
+        fuelTotal,
+        entryFeesTotal,
+        foodTotal,
+        unspentBudget: Math.max(0, budget - cost),
+        unspentMinutes: Math.max(0, Math.round(hours * 60 * 0.85 - visitMin)),
+      },
+    });
+  }
+
+  // Turn a stop back into an alternative, so a place the traveller took out
+  // stays offered rather than disappearing from the session for good.
+  function stopAsAlternative(s: PlanStop): Alternative {
+    return {
+      id: s.id,
+      name: s.name,
+      category: s.category,
+      lat: s.lat,
+      lng: s.lng,
+      entryFee: s.entryFee,
+      entryFeeKnown: s.entryFeeKnown,
+      idealMinutes: s.idealMinutes,
+      imageUrl: s.imageUrl,
+      images: s.images,
+      rating: s.rating,
+      ratingCount: s.ratingCount,
+      weeklyHours: s.weeklyHours,
+      businessStatus: s.businessStatus,
+      meta: s.meta,
+    };
+  }
+
+  // BUG-08: drop a place the traveller doesn't want from the final plan. Until
+  // now the only edit was "Replace", which always swapped in ANOTHER place —
+  // there was no way to simply take an unwanted stop out, so a wrong place
+  // stayed in the budget. Removing re-routes and re-costs the whole trip, so
+  // the total, distance, time and map all drop that stop together.
+  async function removeStop(index: number) {
+    if (!plan) return;
+    const removed = plan.stops[index];
+    if (!removed) return;
+    setSwapError(null);
+    setRemovingIndex(index);
+    const draftStops = plan.stops.filter((_, i) => i !== index);
+
+    // Removing the last stop leaves nothing to route — clear the plan's route
+    // and zero the totals rather than asking the router for an empty trip.
+    if (draftStops.length === 0) {
+      setPlan({
+        ...plan,
+        stops: [],
+        geometry: null,
+        legs: [],
+        alternatives: [stopAsAlternative(removed), ...(plan.alternatives ?? [])],
+        totals: {
+          ...plan.totals,
+          distanceKm: 0,
+          durationMinutes: 0,
+          cost: 0,
+          perPersonCost: 0,
+          fuelTotal: 0,
+          entryFeesTotal: 0,
+          foodTotal: 0,
+          unspentBudget: budget,
+          unspentMinutes: Math.round(hours * 60 * 0.85),
+        },
+      });
+      setSwapIndex(null);
+      setRemovingIndex(null);
+      return;
+    }
+
+    try {
+      await rerouteThrough(draftStops, [
+        stopAsAlternative(removed),
+        ...(plan.alternatives ?? []),
+      ]);
+      setSwapIndex(null);
+    } catch {
+      setSwapError("Couldn't remove that place — please try again.");
+    } finally {
+      setRemovingIndex(null);
+    }
+  }
+
   // Swap a stop for an alternative and re-route through the new set of stops.
   async function replaceStop(index: number, alt: Alternative) {
     if (!plan) return;
@@ -534,75 +680,24 @@ export function LivePlan({
       arrivalKmFromPrev: 0,
       arrivalMinutesFromPrev: 0,
       imageUrl: alt.imageUrl,
+      // The swapped-in place keeps its own photos, rating, hours and closure
+      // state — these were dropped before, so a replaced stop lost its gallery
+      // and badges until the plan was regenerated.
+      images: alt.images,
+      rating: alt.rating,
+      ratingCount: alt.ratingCount,
+      weeklyHours: alt.weeklyHours,
+      businessStatus: alt.businessStatus,
       meta: alt.meta,
     };
     const draftStops = plan.stops.map((s, i) => (i === index ? newStop : s));
 
     try {
-      const res = await fetch("/api/multi-stop/route", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          start: { lat: start.lat, lng: start.lng },
-          stops: draftStops.map((s) => ({ lat: s.lat, lng: s.lng })),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok) throw new Error(data.error || "route failed");
-
-      const legs: Array<{ distanceKm: number; durationMinutes: number }> = data.legs ?? [];
-      const costPerKm = VEHICLES[vehicle].costPerKm;
-      const routedStops = draftStops.map((s, k) => {
-        const leg = legs[k];
-        const km = leg?.distanceKm ?? s.arrivalKmFromPrev;
-        return {
-          ...s,
-          arrivalKmFromPrev: km,
-          arrivalMinutesFromPrev: leg?.durationMinutes ?? s.arrivalMinutesFromPrev,
-          travelCost: Math.round(km * costPerKm),
-        };
-      });
-
-      const fuelTotal = Math.round(data.distanceKm * costPerKm);
-      const entryFeesTotal = routedStops.reduce((a, s) => a + s.entryFee * people, 0);
-      const stopCostTotal = routedStops.reduce((a, s) => a + s.stopCost, 0);
-      const foodTotal = Math.max(0, stopCostTotal - entryFeesTotal);
-      const cost = fuelTotal + stopCostTotal;
-      const visitMin = routedStops.reduce((a, s) => a + s.arrivalMinutesFromPrev + s.idealMinutes, 0);
-
       // Put the removed place back into the alternatives pool; drop the chosen one.
-      const removedAlt: Alternative = {
-        id: removed.id,
-        name: removed.name,
-        category: removed.category,
-        lat: removed.lat,
-        lng: removed.lng,
-        entryFee: removed.entryFee,
-        entryFeeKnown: removed.entryFeeKnown,
-        idealMinutes: removed.idealMinutes,
-        meta: removed.meta,
-      };
-      const nextAlts = [removedAlt, ...(plan.alternatives ?? []).filter((a) => a.id !== alt.id)];
-
-      setPlan({
-        ...plan,
-        stops: routedStops,
-        geometry: data.geometry ?? plan.geometry,
-        legs,
-        alternatives: nextAlts,
-        totals: {
-          ...plan.totals,
-          distanceKm: data.distanceKm,
-          durationMinutes: data.durationMinutes,
-          cost,
-          perPersonCost: Math.round(cost / Math.max(1, people)),
-          fuelTotal,
-          entryFeesTotal,
-          foodTotal,
-          unspentBudget: Math.max(0, budget - cost),
-          unspentMinutes: Math.max(0, Math.round(hours * 60 * 0.85 - visitMin)),
-        },
-      });
+      await rerouteThrough(draftStops, [
+        stopAsAlternative(removed),
+        ...(plan.alternatives ?? []).filter((a) => a.id !== alt.id),
+      ]);
       setSwapIndex(null);
     } catch {
       setSwapError("Couldn't swap that place — please try again.");
@@ -910,6 +1005,17 @@ export function LivePlan({
             <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
               Day plan{days > 1 ? ` · split across ${days} days` : ""}
             </h2>
+            {/* Every stop removed (BUG-08) — say so, and point back at the two
+                ways to get places into the plan again. */}
+            {plan.stops.length === 0 && (
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600">
+                <p className="font-semibold text-slate-900">No places left in this plan.</p>
+                <p className="mt-1">
+                  You removed every stop. Hit <span className="font-semibold">Regenerate</span> above for a
+                  fresh set, or change your choices and generate again.
+                </p>
+              </div>
+            )}
             {(() => {
               let running = 0; // global stop counter across days
               return dayBuckets.map((bucket, d) => {
@@ -980,6 +1086,7 @@ export function LivePlan({
                             rating={s.rating}
                             ratingCount={s.ratingCount}
                             weeklyHoursJson={s.weeklyHours}
+                            businessStatus={s.businessStatus}
                             className="mt-1"
                           />
                         </div>
@@ -1030,6 +1137,22 @@ export function LivePlan({
                         >
                           <Repeat className="h-3 w-3" /> Visited? Replace
                         </button>
+                        {/* Don't want this place at all? Take it out of the plan
+                            entirely — the route, time and budget all re-compute
+                            without it (BUG-08). */}
+                        <button
+                          type="button"
+                          onClick={() => removeStop(i)}
+                          disabled={removingIndex !== null || rerouting}
+                          aria-label={`Remove ${s.name} from this plan`}
+                          className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-rose-100 px-3 py-1.5 font-semibold text-rose-800 transition hover:bg-rose-200 active:scale-95 disabled:opacity-60"
+                        >
+                          {removingIndex === i ? (
+                            <><Loader2 className="h-3 w-3 animate-spin" /> Removing…</>
+                          ) : (
+                            <><Trash2 className="h-3 w-3" /> Remove</>
+                          )}
+                        </button>
                       </div>
 
                       <StopImageGrid
@@ -1037,6 +1160,7 @@ export function LivePlan({
                         category={s.category}
                         images={s.images ?? []}
                         fallbackImageUrl={s.imageUrl}
+                        locationHint={originOverride?.label}
                         emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
                         gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
                       />

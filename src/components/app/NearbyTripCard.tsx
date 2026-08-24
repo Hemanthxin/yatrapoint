@@ -73,6 +73,7 @@ export function NearbyTripCard({ destination, userDistanceKm, direction, delay }
           rating={destination.googleRating}
           ratingCount={destination.googleRatingCount}
           weeklyHoursJson={destination.googleWeeklyHours}
+            businessStatus={destination.googleBusinessStatus}
         />
         <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
           {destination.shortDescription}

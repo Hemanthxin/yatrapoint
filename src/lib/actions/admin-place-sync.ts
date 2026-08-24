@@ -54,19 +54,20 @@ type PlaceRow = { id: string; name: string; lat: number; lng: number; googlePlac
 // One place's sync — resolve a Google Place ID if missing, then fetch
 // rating/hours. Always stamps googleSyncedAt (even on failure) so a
 // permanently-unmatchable place doesn't get retried every single batch.
-async function syncOne(row: PlaceRow): Promise<{ googlePlaceId: string | null; rating: number | null; ratingCount: number | null; weeklyHours: string | null; ok: boolean }> {
+async function syncOne(row: PlaceRow): Promise<{ googlePlaceId: string | null; rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null; ok: boolean }> {
   let placeId = row.googlePlaceId;
   if (!placeId) placeId = await findGooglePlaceId(row.name, row.lat, row.lng);
-  if (!placeId) return { googlePlaceId: null, rating: null, ratingCount: null, weeklyHours: null, ok: false };
+  if (!placeId) return { googlePlaceId: null, rating: null, ratingCount: null, weeklyHours: null, businessStatus: null, ok: false };
 
   const status = await fetchGooglePlaceStatus(placeId);
-  if (!status) return { googlePlaceId: placeId, rating: null, ratingCount: null, weeklyHours: null, ok: false };
+  if (!status) return { googlePlaceId: placeId, rating: null, ratingCount: null, weeklyHours: null, businessStatus: null, ok: false };
 
   return {
     googlePlaceId: placeId,
     rating: status.rating,
     ratingCount: status.ratingCount,
     weeklyHours: status.weeklyHours ? JSON.stringify(status.weeklyHours) : null,
+    businessStatus: status.businessStatus,
     ok: true,
   };
 }
@@ -112,6 +113,7 @@ export async function syncNextPlacesBatch(limit = 20): Promise<SyncBatchResult> 
         googleRating: result.rating,
         googleRatingCount: result.ratingCount,
         googleWeeklyHours: result.weeklyHours,
+        googleBusinessStatus: result.businessStatus,
         googleSyncedAt: new Date(),
       })
       .where(eq(destinations.id, row.id));
@@ -132,6 +134,7 @@ export async function syncNextPlacesBatch(limit = 20): Promise<SyncBatchResult> 
         googleRating: result.rating,
         googleRatingCount: result.ratingCount,
         googleWeeklyHours: result.weeklyHours,
+        googleBusinessStatus: result.businessStatus,
         googleSyncedAt: new Date(),
       })
       .where(eq(cityPlaces.id, row.id));
@@ -152,6 +155,7 @@ export async function syncNextPlacesBatch(limit = 20): Promise<SyncBatchResult> 
         googleRating: result.rating,
         googleRatingCount: result.ratingCount,
         googleWeeklyHours: result.weeklyHours,
+        googleBusinessStatus: result.businessStatus,
         googleSyncedAt: new Date(),
       })
       .where(eq(nearbyDestinations.id, row.id));

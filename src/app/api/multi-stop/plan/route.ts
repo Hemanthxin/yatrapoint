@@ -7,6 +7,9 @@ import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
 import { fetchOverpassPlaces, findNearestStation, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
 import { destinationPoint, haversineKm } from "@/lib/geo";
+import { PlaceDeduper, SOURCE_PRIORITY } from "@/lib/place-dedup";
+import { isVisiblePlace } from "@/lib/place-visibility";
+import { districtInList } from "@/lib/district-match";
 import {
   CATEGORY_DEFAULTS,
   candidateFromOverpass,
@@ -348,38 +351,11 @@ export async function POST(req: NextRequest) {
         )
       : Promise.resolve({ places: [] as Awaited<ReturnType<typeof fetchOverpassPlaces>>, error: null as string | null });
 
-  // De-dup keys. We merge a place if EITHER it's within ~110 m of one already
-  // taken, OR it has the same normalised name — so "Royal Meenakshi Mall" from
-  // the seed and the same mall from live OSM (mapped a few hundred metres apart)
-  // collapse into a single stop instead of appearing twice.
-  const coordKey = (lat: number, lng: number) => `${lat.toFixed(3)},${lng.toFixed(3)}`;
-  const nameKey = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  // Word set of a name, for catching "ISKCON Temple" vs "ISKCON Temple Bangalore"
-  // — same place re-mapped with an extra word a short distance away.
-  const tokensOf = (name: string) =>
-    new Set(
-      name
-        .toLowerCase()
-        .replace(/[^a-z0-9\s]+/g, " ")
-        .split(/\s+/)
-        .filter((t) => t.length > 1)
-    );
-  const isSubset = (a: Set<string>, b: Set<string>) => a.size > 0 && [...a].every((t) => b.has(t));
-  // Words that signal "a different branch/location of the same-named chain"
-  // rather than "the same place with an extra descriptor" — e.g. "Orion Mall"
-  // vs "Orion East Mall" are two distinct malls, not one place mapped twice.
-  const BRANCH_QUALIFIERS = new Set([
-    "east", "west", "north", "south", "new", "old", "main",
-    "upper", "lower", "first", "second", "phase", "branch", "extension",
-  ]);
-  // Token overlap ratio (0..1) — catches near-identical names like "Ranganatha
-  // Swamy Temple" vs "Sri Ranganathaswamy Temple" that share most words.
-  const jaccard = (a: Set<string>, b: Set<string>) => {
-    if (a.size === 0 || b.size === 0) return 0;
-    let inter = 0;
-    for (const t of a) if (b.has(t)) inter++;
-    return inter / (a.size + b.size - inter);
-  };
+  // De-duplication now lives in @/lib/place-dedup so the planner, the
+  // nearby-places API and the dashboard all collapse duplicates by the SAME
+  // rule — previously each had its own (or none), which is why the same place
+  // still appeared twice depending on which screen you were looking at
+  // (BUG-01).
 
   // 0) Hand-picked catalogue places — pinned so the planner pulls them in first.
   const pinnedCandidates: Candidate[] = [];
@@ -392,6 +368,9 @@ export async function POST(req: NextRequest) {
       const lat = Number(d.latitude);
       const lng = Number(d.longitude);
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+      // Even a hand-picked place is dropped when Google says it is gone for
+      // good — planning a trip to it would waste the traveller's day (BUG-01).
+      if (!isVisiblePlace(d)) continue;
       const op = resolveDestOverpass(d.category, d.name)[0];
       pinnedCandidates.push({
         id: `dest:${d.id}`,
@@ -436,6 +415,7 @@ export async function POST(req: NextRequest) {
     .filter((s) => {
       const op = effectiveSeedCat(s.kind, s.name);
       if (!op || !wantedCats.includes(op) || JUNK_NAME.test(s.name)) return false;
+      if (!isVisiblePlace(s)) return false;
       // Honour the chosen radius, minimum distance and direction — don't let the
       // whole curated city catalogue leak in regardless of where the traveller
       // wants to roam.
@@ -474,14 +454,13 @@ export async function POST(req: NextRequest) {
   // above; coordinate de-dup in addCandidate stops doubles.)
   // When the traveller chose a specific district/taluk, keep only catalogue
   // places from that district — otherwise nearby districts leak in via radius.
-  const normDist = (s: string) => s.toLowerCase().replace(/\b(district|rural|urban|taluk[au]?|tehsil)\b/g, "").replace(/[^a-z0-9]/g, "");
-  const wantedDistricts = parsed.data.areaDistricts.map(normDist).filter(Boolean);
-  const matchesArea = (district: string | null) => {
-    if (wantedDistricts.length === 0) return true;
-    if (!district) return false;
-    const n = normDist(district);
-    return wantedDistricts.some((w) => n === w || n.startsWith(w) || w.startsWith(n));
-  };
+  // District matching goes through @/lib/district-match, which folds the
+  // catalogue's alternate spellings (Bagalkot/Bagalkote) WITHOUT merging two
+  // genuinely different districts — the old local normaliser stripped
+  // "Rural"/"Urban" and prefix-matched, so choosing Bengaluru Rural also
+  // pulled in Bengaluru Urban places (BUG-09).
+  const wantedDistricts = parsed.data.areaDistricts.filter(Boolean);
+  const matchesArea = (district: string | null) => districtInList(district, wantedDistricts);
 
   const allDestinations = await db.select().from(destinations);
   const destCandidates: Candidate[] = [];
@@ -490,6 +469,7 @@ export async function POST(req: NextRequest) {
     const lng = Number(d.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     if (JUNK_NAME.test(d.name)) continue;
+    if (d.isHidden || !isVisiblePlace(d)) continue;
     if (!withinReach(lat, lng)) continue;
     if (!matchesArea(d.district)) continue;
     // Resolve the category across catalogue slugs AND admin-form labels, so
@@ -527,6 +507,8 @@ export async function POST(req: NextRequest) {
     const lng = Number(n.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     if (JUNK_NAME.test(n.name)) continue;
+    // Permanently closed — never plan a trip around it (BUG-01).
+    if (!isVisiblePlace(n)) continue;
     if (!withinReach(lat, lng)) continue;
     const ops = resolveDestOverpass(n.category, n.name);
     const matched = ops.filter((c) => wantedCats.includes(c));
@@ -551,63 +533,25 @@ export async function POST(req: NextRequest) {
 
   // 2) Live Overpass candidates, merged + de-duped. Auto-widen the radius when
   // the area is sparse so we can reliably reach the requested number of places.
-  const finalCandidates: Candidate[] = [];
-  const usedKeys = new Set<string>();
-  const usedNames = new Set<string>();
-  const placedTokens: Array<{ tokens: Set<string>; lat: number; lng: number }> = [];
-  // Add a candidate unless it's a duplicate of one already taken: same ~110 m
-  // spot, same normalised name, OR a name whose words are a subset/superset of a
-  // VERY nearby place's (≤600 m — i.e. the same complex mapped twice, like
-  // "ISKCON Temple" and "ISKCON Temple Bangalore"). Kept tight so genuinely
-  // different places that merely share a word aren't wrongly merged. Pinned →
-  // seed → Overpass order means the richest source wins.
-  const addCandidate = (c: Candidate): boolean => {
-    const ck = coordKey(c.lat, c.lng);
-    const nk = nameKey(c.name);
-    if (usedKeys.has(ck) || (nk && usedNames.has(nk))) return false;
-    const tk = tokensOf(c.name);
-    for (const p of placedTokens) {
-      const gapKm = haversineKm({ lat: c.lat, lng: c.lng }, { lat: p.lat, lng: p.lng });
-      const aSubB = isSubset(tk, p.tokens);
-      const bSubA = isSubset(p.tokens, tk);
-      // Same complex mapped twice: one name's words are a subset of the other's
-      // and they sit close together (≤1.2 km).
-      if (gapKm <= 1.2 && (aSubB || bSubA)) return false;
-      // Same real place catalogued independently in two source tables (e.g.
-      // "Kurudumale Ganesha" from the day-trip catalogue vs "Kurudumale Ganesha
-      // Temple" from the statewide catalogue) — one name is the other's words
-      // plus a single generic descriptor. Independently-entered rows for the
-      // same place can carry coordinates several km apart (one source's entry
-      // is just imprecise), well past the 1.2 km case above. Guarded two ways:
-      // the shorter name must have ≥2 tokens (never fires on a single generic
-      // word like "Park" matching an unrelated "X Park" elsewhere in the
-      // radius), and the extra word must NOT be a location/branch qualifier —
-      // "Orion Mall" vs "Orion East Mall" are two different real malls (Orion
-      // is a multi-branch chain), not the same mall catalogued twice, so a
-      // directional/branch word blocks the merge even though it's textually
-      // just "one extra token".
-      const smaller = tk.size <= p.tokens.size ? tk : p.tokens;
-      const larger = tk.size <= p.tokens.size ? p.tokens : tk;
-      const extraTokens = [...larger].filter((t) => !smaller.has(t));
-      const extraIsBranchQualifier = extraTokens.some((t) => BRANCH_QUALIFIERS.has(t));
-      if (
-        gapKm <= 10 &&
-        smaller.size >= 2 &&
-        larger.size - smaller.size <= 1 &&
-        (aSubB || bSubA) &&
-        !extraIsBranchQualifier
-      )
-        return false;
-      // Near-identical names (≥70% token overlap) a short distance apart (≤2 km)
-      // — the same place from two data sources with slightly different spellings.
-      if (gapKm <= 2 && jaccard(tk, p.tokens) >= 0.7) return false;
-    }
-    usedKeys.add(ck);
-    if (nk) usedNames.add(nk);
-    placedTokens.push({ tokens: tk, lat: c.lat, lng: c.lng });
-    finalCandidates.push(c);
-    return true;
-  };
+  // Source priority makes the merge deterministic: when the same real place
+  // arrives from more than one catalogue, the hand-picked / manually-curated
+  // row wins and the generic live-API point is dropped, instead of whichever
+  // happened to be seen first. That is the reported "manually added places and
+  // API places are being mixed incorrectly" (BUG-02).
+  const deduper = new PlaceDeduper<Candidate>((c) =>
+    c.pinned
+      ? SOURCE_PRIORITY.pinned
+      : c.id.startsWith("dest:")
+      ? SOURCE_PRIORITY.destination
+      : c.id.startsWith("nearby:")
+      ? SOURCE_PRIORITY.nearby
+      : c.id.startsWith("seed:")
+      ? SOURCE_PRIORITY.city
+      : SOURCE_PRIORITY.osm
+  );
+  const addCandidate = (c: Candidate): boolean => deduper.add(c);
+  // NB: read `deduper.items` / `deduper.size` at the point of use — the
+  // candidate set keeps growing below as Overpass results are ingested.
   for (const c of pinnedCandidates) addCandidate(c);
   for (const c of seedCandidates) addCandidate(c);
   // Sort the curated catalogue by popularity so the best-known places win the
@@ -655,7 +599,7 @@ export async function POST(req: NextRequest) {
   // Sparse-area safety net: only if Overpass was used and returned almost
   // nothing, widen its (capped) radius by 20% once. Never for far outstation
   // bands, which don't use Overpass at all.
-  if (useOverpass && finalCandidates.length < 2 && !overpassError) {
+  if (useOverpass && deduper.size < 2 && !overpassError) {
     currentKm = Math.min(OVERPASS_MAX_KM, overpassRadiusKm * 1.2);
     try {
       await addOverpass(currentKm);
@@ -685,7 +629,7 @@ export async function POST(req: NextRequest) {
   if (
     direction !== "any" &&
     wantedCats.length > 0 &&
-    finalCandidates.length < Math.max(20, maxStopsRequested * 2)
+    deduper.size < Math.max(20, maxStopsRequested * 2)
   ) {
     const bearing = DIR_BEARING[direction];
     const bandWidthKm = Math.max(0, radiusKm - minDistanceKm);
@@ -718,7 +662,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  if (finalCandidates.length === 0) {
+  if (deduper.size === 0) {
     return NextResponse.json(
       {
         ok: false,
@@ -772,7 +716,7 @@ export async function POST(req: NextRequest) {
     vehicle: parsed.data.vehicle,
     includeFood: parsed.data.includeFood,
     maxStops: parsed.data.maxStops,
-    candidates: finalCandidates,
+    candidates: deduper.items,
     avgSpeedKmh,
     reachKm: radiusKm,
     minDistanceKm,
@@ -960,7 +904,7 @@ export async function POST(req: NextRequest) {
   // Alternatives — strong candidates we considered but didn't include, so the
   // traveller can swap any stop ("already visited / replace") for another place.
   const usedIds = new Set(orderedStops.map((s) => s.id));
-  const alternatives = finalCandidates
+  const alternatives = deduper.items
     .filter((c) => !usedIds.has(c.id))
     .sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50))
     .slice(0, 40)
@@ -992,27 +936,27 @@ export async function POST(req: NextRequest) {
   // Same id-prefix trick for each stop's Google-synced rating/hours (see
   // src/admin/place-sync — admin-triggered batch, not live). Reuses the
   // same galleryLookups grouping, one inArray query per source table.
-  type GoogleStatus = { rating: number | null; ratingCount: number | null; weeklyHours: string | null };
+  type GoogleStatus = { rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null };
   const googleStatusMap = new Map<string, GoogleStatus>();
   const destIds = galleryLookups.filter((l) => l.source === "destination").map((l) => l.id);
   const cityIds = galleryLookups.filter((l) => l.source === "city").map((l) => l.id);
   const nearbyIds = galleryLookups.filter((l) => l.source === "nearby").map((l) => l.id);
   const [destStatus, cityStatus, nearbyStatus] = await Promise.all([
     destIds.length
-      ? db.select({ id: destinations.id, rating: destinations.googleRating, ratingCount: destinations.googleRatingCount, weeklyHours: destinations.googleWeeklyHours }).from(destinations).where(inArray(destinations.id, destIds))
+      ? db.select({ id: destinations.id, rating: destinations.googleRating, ratingCount: destinations.googleRatingCount, weeklyHours: destinations.googleWeeklyHours, businessStatus: destinations.googleBusinessStatus }).from(destinations).where(inArray(destinations.id, destIds))
       : [],
     cityIds.length
-      ? db.select({ id: cityPlaces.id, rating: cityPlaces.googleRating, ratingCount: cityPlaces.googleRatingCount, weeklyHours: cityPlaces.googleWeeklyHours }).from(cityPlaces).where(inArray(cityPlaces.id, cityIds))
+      ? db.select({ id: cityPlaces.id, rating: cityPlaces.googleRating, ratingCount: cityPlaces.googleRatingCount, weeklyHours: cityPlaces.googleWeeklyHours, businessStatus: cityPlaces.googleBusinessStatus }).from(cityPlaces).where(inArray(cityPlaces.id, cityIds))
       : [],
     nearbyIds.length
-      ? db.select({ id: nearbyDestinations.id, rating: nearbyDestinations.googleRating, ratingCount: nearbyDestinations.googleRatingCount, weeklyHours: nearbyDestinations.googleWeeklyHours }).from(nearbyDestinations).where(inArray(nearbyDestinations.id, nearbyIds))
+      ? db.select({ id: nearbyDestinations.id, rating: nearbyDestinations.googleRating, ratingCount: nearbyDestinations.googleRatingCount, weeklyHours: nearbyDestinations.googleWeeklyHours, businessStatus: nearbyDestinations.googleBusinessStatus }).from(nearbyDestinations).where(inArray(nearbyDestinations.id, nearbyIds))
       : [],
   ]);
   for (const row of [...destStatus, ...cityStatus, ...nearbyStatus]) googleStatusMap.set(row.id, row);
 
   const withImages = <T extends { id: string }>(
     s: T
-  ): T & { images: { url: string; caption: string | null }[]; rating: number | null; ratingCount: number | null; weeklyHours: string | null } => {
+  ): T & { images: { url: string; caption: string | null }[]; rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null } => {
     const key = splitGalleryId(s.id);
     const images = key ? (galleryMap.get(key.placeId) ?? []) : [];
     const status = key ? googleStatusMap.get(key.placeId) : undefined;
@@ -1022,6 +966,10 @@ export async function POST(req: NextRequest) {
       rating: status?.rating ?? null,
       ratingCount: status?.ratingCount ?? null,
       weeklyHours: status?.weeklyHours ?? null,
+      // Permanently-closed places never become candidates, so in practice this
+      // only ever carries CLOSED_TEMPORARILY — worth showing on the stop card
+      // so the traveller isn't sent to a place that's shut for renovation.
+      businessStatus: status?.businessStatus ?? null,
     };
   };
   orderedStops = orderedStops.map(withImages);
@@ -1042,7 +990,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    candidatesConsidered: finalCandidates.length,
+    candidatesConsidered: deduper.size,
     overpassPlaces: overpassCount,
     seedPlaces: seedCandidates.length + destCandidates.length + nearbyCandidates.length,
     overpassError,

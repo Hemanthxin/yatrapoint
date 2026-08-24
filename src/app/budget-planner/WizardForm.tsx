@@ -8,6 +8,7 @@ import {
   Users,
   UsersRound,
   Car,
+  CarTaxiFront,
   Bike,
   CheckCircle2,
   Check,
@@ -71,6 +72,18 @@ function distBandLabel(km: string): string {
 // labels line up with the thumb (more precision at lower budgets).
 const BUDGET_STOPS = [1000, 5000, 10000, 20000, 50000];
 
+// BUG-04: the budget box accepted any number at all — a stray keystroke could
+// set a ₹5,00,000 trip the planner has no data to fill, and the slider (which
+// tops out at ₹50,000) then disagreed with the typed figure. The planner's
+// range is the slider's range, so that ceiling is now enforced on the input too.
+const MIN_BUDGET = 0;
+const MAX_BUDGET = BUDGET_STOPS[BUDGET_STOPS.length - 1];
+
+function clampBudget(n: number): number {
+  if (!Number.isFinite(n)) return MIN_BUDGET;
+  return Math.min(MAX_BUDGET, Math.max(MIN_BUDGET, Math.round(n)));
+}
+
 function budgetToSlider(b: number): number {
   if (b <= BUDGET_STOPS[0]) return 0;
   const last = BUDGET_STOPS.length - 1;
@@ -107,23 +120,33 @@ function availableTripTypes(travellersNum: number) {
   return TRIP_TYPES.filter((t) => t.key === "Family" || t.key === "Friends");
 }
 
+// BUG-06: Bike / Car / Taxi must each show their OWN icon. Taxi was missing
+// from this picker entirely even though the cost model has always had a `cab`
+// vehicle profile, so a traveller planning by taxi was silently costed as a
+// hatchback. Each chip now carries the icon for the vehicle it names, and the
+// three mappings below (mode, vehicle profile) stay in step with these keys.
 const TRANSPORT = [
-  { key: "Car", icon: Car },
   { key: "Bike", icon: Bike },
+  { key: "Car", icon: Car },
+  { key: "Taxi", icon: CarTaxiFront },
 ];
 
 // Transport chip → travel mode sent to the planner (drives cost + map style).
+// A taxi drives the same roads as a car, so it routes as "car" and differs
+// only in ₹/km, which comes from TRANSPORT_VEHICLE below.
 const MODE_BY_TRANSPORT: Record<string, "any" | "car" | "bike" | "bus" | "train"> = {
-  Car: "car",
   Bike: "bike",
+  Car: "car",
+  Taxi: "car",
 };
 
 const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 
-// Preferred transport → vehicle profile used for fuel-cost estimates.
+// Preferred transport → vehicle profile used for fuel/fare estimates.
 const TRANSPORT_VEHICLE: Record<string, VehicleKind> = {
-  Car: "small_car",
   Bike: "bike",
+  Car: "small_car",
+  Taxi: "cab",
 };
 
 interface WizardFormProps {
@@ -155,7 +178,10 @@ function areaLabel(a: AreaSelection): string {
 }
 
 export function WizardForm({ initial }: WizardFormProps) {
-  const [budget, setBudget] = useState(initial.budget ?? 5000);
+  const [budget, setBudget] = useState(clampBudget(initial.budget ?? 5000));
+  // True right after the traveller typed a figure above the maximum, so the
+  // hint can say the amount was capped rather than silently rewriting it.
+  const [budgetCapped, setBudgetCapped] = useState(false);
   const [days, setDays] = useState(initial.days ? `${initial.days} Days` : "2 Days");
   const [travellers, setTravellers] = useState(initial.travellers?.toString() ?? "2");
   const [tripType, setTripType] = useState("Family");
@@ -204,7 +230,9 @@ export function WizardForm({ initial }: WizardFormProps) {
         snapshot?: LivePlanProps;
       };
       const f = saved.fields ?? {};
-      if (typeof f.budget === "number") setBudget(f.budget);
+      // Clamped on restore too — a session saved before the cap existed could
+      // otherwise bring an over-limit budget back (BUG-04).
+      if (typeof f.budget === "number") setBudget(clampBudget(f.budget));
       if (typeof f.days === "string") setDays(f.days);
       if (typeof f.travellers === "string") setTravellers(f.travellers);
       if (typeof f.tripType === "string") setTripType(f.tripType);
@@ -480,14 +508,34 @@ export function WizardForm({ initial }: WizardFormProps) {
               <div className="flex items-center gap-2">
                 <div className="flex min-h-[44px] flex-1 items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
                   <span className="mr-1 font-semibold text-slate-400">₹</span>
-                  <input type="number" min={0} step={1} value={budget} onChange={(e) => setBudget(Math.max(0, Number(e.target.value)))} placeholder="Enter any amount" className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none" />
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={MIN_BUDGET}
+                    max={MAX_BUDGET}
+                    step={1}
+                    value={budget}
+                    onChange={(e) => {
+                      const n = Number(e.target.value);
+                      setBudgetCapped(n > MAX_BUDGET);
+                      setBudget(clampBudget(n));
+                    }}
+                    placeholder={`Up to ₹${MAX_BUDGET.toLocaleString("en-IN")}`}
+                    aria-describedby="budget-limit-hint"
+                    className="w-full bg-transparent text-sm font-bold text-slate-900 outline-none"
+                  />
                 </div>
                 <span className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">INR</span>
               </div>
-              <input type="range" min={0} max={100} step={0.5} value={budgetToSlider(budget)} onChange={(e) => setBudget(sliderToBudget(Number(e.target.value)))} className="mt-4 h-2 w-full cursor-pointer accent-emerald-600" />
+              <input type="range" min={0} max={100} step={0.5} value={budgetToSlider(budget)} onChange={(e) => setBudget(clampBudget(sliderToBudget(Number(e.target.value))))} className="mt-4 h-2 w-full cursor-pointer accent-emerald-600" />
               <div className="mt-1.5 flex justify-between text-[11px] font-medium text-slate-400">
-                <span>₹1K</span><span>₹5K</span><span>₹10K</span><span>₹20K</span><span>₹50K+</span>
+                <span>₹1K</span><span>₹5K</span><span>₹10K</span><span>₹20K</span><span>₹50K</span>
               </div>
+              <p id="budget-limit-hint" className={`mt-1.5 text-xs ${budgetCapped ? "font-semibold text-amber-700" : "text-slate-500"}`}>
+                {budgetCapped
+                  ? `Capped at ₹${MAX_BUDGET.toLocaleString("en-IN")} — the most this planner plans for.`
+                  : `Maximum ₹${MAX_BUDGET.toLocaleString("en-IN")} for a single plan.`}
+              </p>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">

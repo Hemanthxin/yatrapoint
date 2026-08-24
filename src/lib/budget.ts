@@ -12,12 +12,16 @@ interface VehicleProfile {
   emoji: string;
 }
 
+// BUG-06: the icons did not match the vehicles they labelled — Sedan showed
+// 🚙 (which IS the SUV glyph) and SUV showed 🚐 (a minibus), so the whole
+// picker read one vehicle out of step with itself. Each entry now carries the
+// glyph for the vehicle it actually names.
 export const VEHICLES: Record<VehicleKind, VehicleProfile> = {
-  bike: { label: "Bike", costPerKm: 2.5, seats: 1, emoji: "🏍️" },
-  small_car: { label: "Hatchback", costPerKm: 7, seats: 4, emoji: "🚗" },
-  sedan: { label: "Sedan", costPerKm: 9, seats: 4, emoji: "🚙" },
-  suv: { label: "SUV", costPerKm: 12, seats: 6, emoji: "🚐" },
-  cab: { label: "Cab (Ola/Uber)", costPerKm: 18, seats: 4, emoji: "🚕" },
+  bike: { label: "Bike", costPerKm: 2.5, seats: 1, emoji: "🏍️" }, // motorcycle
+  small_car: { label: "Hatchback", costPerKm: 7, seats: 4, emoji: "🚗" }, // automobile
+  sedan: { label: "Sedan", costPerKm: 9, seats: 4, emoji: "🚘" }, // oncoming automobile
+  suv: { label: "SUV", costPerKm: 12, seats: 6, emoji: "🚙" }, // sport utility vehicle
+  cab: { label: "Taxi (Ola/Uber)", costPerKm: 18, seats: 4, emoji: "🚕" }, // taxi
 };
 
 export interface BudgetInput {

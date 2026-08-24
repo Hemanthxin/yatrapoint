@@ -18,16 +18,30 @@ export interface PlaceStatusBadgesProps {
   rating: number | null | undefined;
   ratingCount: number | null | undefined;
   weeklyHoursJson: string | null | undefined;
+  // Google's businessStatus (BUG-01). A CLOSED_TEMPORARILY place is still
+  // listed — it is expected to reopen — so it must say so plainly here, rather
+  // than showing an ordinary "Closed" that reads as "shut until tomorrow".
+  // (CLOSED_PERMANENTLY places are filtered out before they reach any list;
+  // this handles the case where one is shown deliberately, e.g. in admin.)
+  businessStatus?: string | null;
   className?: string;
+}
+
+function closedLabel(businessStatus: string | null | undefined): string | null {
+  const s = (businessStatus ?? "").toUpperCase();
+  if (s === "CLOSED_PERMANENTLY") return "Permanently closed";
+  if (s === "CLOSED_TEMPORARILY") return "Temporarily closed";
+  return null;
 }
 
 // Small inline row for list cards — star rating + Open/Closed pill. Renders
 // nothing when the place hasn't been synced yet (every place starts
 // unsynced — see /admin/place-sync), so cards look exactly as they did
 // before this feature until an admin runs a sync.
-export function PlaceStatusBadgesCompact({ rating, ratingCount, weeklyHoursJson, className = "" }: PlaceStatusBadgesProps) {
+export function PlaceStatusBadgesCompact({ rating, ratingCount, weeklyHoursJson, businessStatus, className = "" }: PlaceStatusBadgesProps) {
   const status = computeOpenStatus(parseWeeklyHours(weeklyHoursJson));
-  if (rating == null && !status) return null;
+  const closed = closedLabel(businessStatus);
+  if (rating == null && !status && !closed) return null;
 
   return (
     <div className={`inline-flex flex-wrap items-center gap-1.5 ${className}`}>
@@ -38,7 +52,13 @@ export function PlaceStatusBadgesCompact({ rating, ratingCount, weeklyHoursJson,
           {ratingCount != null && <span className="font-medium text-amber-600">({ratingCount})</span>}
         </span>
       )}
-      {status && (
+      {/* A closed-for-business state overrides today's opening hours — "opens
+          at 9 AM" is meaningless for a place that isn't trading. */}
+      {closed ? (
+        <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-bold text-rose-700">
+          {closed}
+        </span>
+      ) : status && (
         <span
           className={`rounded-full px-2 py-0.5 text-xs font-bold ${
             status.isOpen ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-600"
@@ -54,10 +74,11 @@ export function PlaceStatusBadgesCompact({ rating, ratingCount, weeklyHoursJson,
 // Full block for detail pages — rating + review count, Open/Closed with
 // "closes at" / "opens at" detail, and the full Monday-Sunday hours table
 // with today's row highlighted.
-export function PlaceStatusBadgesFull({ rating, ratingCount, weeklyHoursJson, className = "" }: PlaceStatusBadgesProps) {
+export function PlaceStatusBadgesFull({ rating, ratingCount, weeklyHoursJson, businessStatus, className = "" }: PlaceStatusBadgesProps) {
   const weeklyHours = parseWeeklyHours(weeklyHoursJson);
   const status = computeOpenStatus(weeklyHours);
-  if (rating == null && !status) return null;
+  const closed = closedLabel(businessStatus);
+  if (rating == null && !status && !closed) return null;
 
   const todayIdx = todayMondayIndexIST();
   const rows = weeklyHours ? formatWeeklyHours(weeklyHours) : null;
@@ -72,7 +93,12 @@ export function PlaceStatusBadgesFull({ rating, ratingCount, weeklyHoursJson, cl
             {ratingCount != null && <span className="font-medium text-slate-500">({ratingCount} reviews)</span>}
           </span>
         )}
-        {status && (
+        {closed ? (
+          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-rose-700">
+            <Clock className="h-4 w-4" />
+            {closed}
+          </span>
+        ) : status && (
           <span
             className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
               status.isOpen ? "text-emerald-700" : "text-rose-600"

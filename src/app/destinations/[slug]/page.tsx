@@ -24,7 +24,7 @@ import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import {
   getDestinationBySlug,
-  listDestinations,
+  listDestinationsNear,
   listFavoriteIds,
 } from "@/lib/queries/destinations";
 import { formatINR, formatBestMonths, formatDays } from "@/lib/format";
@@ -48,15 +48,13 @@ export default async function DestinationPage({ params }: PageProps) {
   const destination = await getDestinationBySlug(slug);
   if (!destination) notFound();
 
-  const [related, favIds, gallery] = await Promise.all([
-    listDestinations({
-      category: destination.category,
-      limit: 4,
-    }),
+  // Genuinely NEARBY places, nearest first — not the most popular places of the
+  // same category anywhere in India, which is what this used to show (BUG-07).
+  const [relatedFiltered, favIds, gallery] = await Promise.all([
+    listDestinationsNear(destination, { radiusKm: 150, limit: 3 }),
     listFavoriteIds(u.id ?? ""),
     listGalleryImages(destination.id, "destination"),
   ]);
-  const relatedFiltered = related.filter((d) => d.id !== destination.id).slice(0, 3);
 
   const cat = CATEGORY_BY_SLUG[destination.category as CategorySlug];
   const gradient =
@@ -139,6 +137,7 @@ export default async function DestinationPage({ params }: PageProps) {
             rating={destination.googleRating}
             ratingCount={destination.googleRatingCount}
             weeklyHoursJson={destination.googleWeeklyHours}
+            businessStatus={destination.googleBusinessStatus}
             className="mb-5"
           />
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">About</h2>
@@ -217,9 +216,12 @@ export default async function DestinationPage({ params }: PageProps) {
 
       {relatedFiltered.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-extrabold tracking-tight text-slate-900">
-            More {cat?.label ?? "places"} like this
+          <h2 className="mb-1 text-xl font-extrabold tracking-tight text-slate-900">
+            Nearby places
           </h2>
+          <p className="mb-4 text-sm text-slate-500">
+            Other places close to {destination.name}, nearest first.
+          </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3">
             {relatedFiltered.map((d) => (
               <DestinationCard

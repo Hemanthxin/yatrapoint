@@ -83,6 +83,7 @@ export function DestinationCard({ destination, favored, direction, delay }: Dest
           rating={destination.googleRating}
           ratingCount={destination.googleRatingCount}
           weeklyHoursJson={destination.googleWeeklyHours}
+            businessStatus={destination.googleBusinessStatus}
         />
         <div className="flex items-start justify-between gap-2">
           <p className="line-clamp-2 flex-1 text-sm text-slate-600">

@@ -14,6 +14,9 @@ import { RevealGrid } from "@/components/app/RevealGrid";
 
 interface MobileTripsProps {
   trips: NearbyDestination[];
+  baseCity?: string;
+  // Pre-selected distance band from `?within=` (see TripsList) — BUG-16.
+  initialMaxDistance?: number;
 }
 
 const DISTANCES = [
@@ -29,17 +32,25 @@ const DISTANCES = [
 // the same data source and reuses NearbyTripCard so all behaviour is preserved.
 // Coral accent comes automatically from the mobile theme, so every `emerald`
 // utility here paints coral on phones.
-export function MobileTrips({ trips }: MobileTripsProps) {
+export function MobileTrips({
+  trips,
+  baseCity = "Bangalore",
+  initialMaxDistance = 0,
+}: MobileTripsProps) {
   const { coords } = useLocation();
   const [category, setCategory] = useState<string>("");
-  const [maxDistance, setMaxDistance] = useState<number>(0);
+  const [maxDistance, setMaxDistance] = useState<number>(initialMaxDistance);
 
   const sorted = useMemo(() => sortByUserDistance(trips, coords), [trips, coords]);
+  // Same fix as TripsList (BUG-15): the km chips filter on the trip's real
+  // curated distance from the base city — what the label means — instead of
+  // the live-GPS distance, which returned the wrong set (or nothing) for any
+  // traveller not standing in the base city. Sort order still uses live GPS.
   const filtered = useMemo(
     () =>
       sorted.filter((d) => {
         if (category && d.category !== category) return false;
-        if (maxDistance > 0 && d.userDistanceKm > maxDistance) return false;
+        if (maxDistance > 0 && d.distanceKm > maxDistance) return false;
         return true;
       }),
     [sorted, category, maxDistance]
@@ -57,7 +68,7 @@ export function MobileTrips({ trips }: MobileTripsProps) {
             One-day trips
           </h1>
           <p className="mt-0.5 text-sm font-medium text-slate-500">
-            {filtered.length} picks near <span className="font-bold text-emerald-600">Bangalore</span>
+            {filtered.length} picks near <span className="font-bold text-emerald-600">{baseCity}</span>
           </p>
         </div>
       </Reveal>
@@ -65,7 +76,7 @@ export function MobileTrips({ trips }: MobileTripsProps) {
       {/* Distance quick-filter chip rail */}
       <Reveal amount={0}>
         <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
-          <SlidersHorizontal className="h-3.5 w-3.5" /> Distance
+          <SlidersHorizontal className="h-3.5 w-3.5" /> Distance from {baseCity}
         </p>
         <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
           {DISTANCES.map((d) => (

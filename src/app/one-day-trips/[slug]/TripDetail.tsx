@@ -203,6 +203,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
             rating={trip.googleRating}
             ratingCount={trip.googleRatingCount}
             weeklyHoursJson={trip.googleWeeklyHours}
+            businessStatus={trip.googleBusinessStatus}
             className="mb-5"
           />
           <p className="text-sm leading-relaxed text-slate-700">{trip.description}</p>
