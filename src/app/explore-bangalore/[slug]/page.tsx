@@ -53,32 +53,39 @@ export default async function CityPlacePage({ params }: PageProps) {
       <LocationBanner />
 
       <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div
-          className={`relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 md:p-8 ${
-            gallery.length > 0 ? "min-h-[16rem] sm:min-h-[18rem]" : ""
-          }`}
-        >
-          {gallery.length > 0 && (
+        {/* Fixed-height hero, same size whichever image source fills it (gallery,
+            single stored photo, or none) — no layout jump between places. */}
+        <div className="relative h-72 overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 sm:h-80 md:h-96">
+          {gallery.length > 0 ? (
             <div className="absolute inset-0">
               <MediaCarousel
                 media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
                 alt={place.name}
                 className="h-full w-full"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-800/40 to-transparent" />
             </div>
+          ) : place.imageUrl ? (
+            <div className="absolute inset-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={place.imageUrl} alt={place.name} className="h-full w-full object-cover" />
+            </div>
+          ) : (
+            <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
           )}
-          <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-          <p className="relative text-xs font-bold uppercase tracking-wide text-white/90">
-            ★ Curated · {place.kind}
-          </p>
-          <h1 className="relative mt-1 text-3xl font-extrabold tracking-tight text-white drop-shadow sm:text-4xl">
-            {place.name}
-          </h1>
-          <p className="relative mt-1.5 flex items-center gap-1 text-sm font-medium text-white/90">
-            <MapPin className="h-4 w-4 shrink-0" />
-            {place.area ?? place.city}
-          </p>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/85 via-emerald-800/35 to-transparent" />
+
+          <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+            <p className="text-xs font-bold uppercase tracking-wide text-white/90">
+              ★ Curated · {place.kind}
+            </p>
+            <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-white drop-shadow sm:text-4xl">
+              {place.name}
+            </h1>
+            <p className="mt-1.5 flex items-center gap-1 text-sm font-medium text-white/90">
+              <MapPin className="h-4 w-4 shrink-0" />
+              {place.area ?? place.city}
+            </p>
+          </div>
         </div>
 
         <div className="p-6 md:p-8">

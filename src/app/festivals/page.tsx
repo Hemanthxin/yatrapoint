@@ -3,7 +3,6 @@ import { CalendarClock, MapPin } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
-import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { festivalsByNextOccurrence, festivalSlug, formatFestivalDate, daysUntil } from "@/lib/festivals";
 import { getFestivalImages } from "@/lib/actions/festival-images";
 import { MobileFestivals } from "./MobileFestivals";
@@ -96,20 +95,6 @@ export default async function FestivalsPage() {
                 {f.significance && (
                   <p className="mt-2 text-xs leading-relaxed text-slate-500">{f.significance}</p>
                 )}
-                <div className="mt-auto pt-4">
-                  <AddToCartButton
-                    className="w-full"
-                    label="Plan a trip"
-                    item={{
-                      id: `festival-${festSlug(f.name)}`,
-                      name: f.name,
-                      subtitle: [f.hub, formatFestivalDate(f.nextISO)].filter(Boolean).join(" · "),
-                      kind: "festival",
-                      emoji: f.emoji,
-                      href: "/festivals",
-                    }}
-                  />
-                </div>
               </div>
             </Reveal>
           );

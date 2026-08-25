@@ -179,6 +179,11 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
                 className="h-full w-full"
               />
             </div>
+          ) : trip.imageUrl ? (
+            <div className="absolute inset-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={trip.imageUrl} alt={trip.name} className="h-full w-full object-cover" />
+            </div>
           ) : (
             <span className="text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
           )}

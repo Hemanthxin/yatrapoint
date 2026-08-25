@@ -40,6 +40,15 @@ export function PlaceImage({
   // 0 = primary photo, 1 = neutral fallback, 2 = gradient tile.
   const [stage, setStage] = useState(0);
 
+  // Re-sync when the stored image changes under an already-mounted card — e.g.
+  // an admin replaces a place's photo and the list re-renders via client-side
+  // navigation rather than a full page load, which otherwise leaves this
+  // component stuck showing the old `src` from its initial state.
+  useEffect(() => {
+    setSrc(storedSrc || null);
+    setStage(0);
+  }, [storedSrc]);
+
   // Optional background upgrade to a name-matched Wikipedia photo (detail pages).
   useEffect(() => {
     if (storedSrc || !preferWiki) return;

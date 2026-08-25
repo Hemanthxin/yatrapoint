@@ -11,6 +11,7 @@ import {
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
 import { Reveal } from "./Reveal";
+import { PlaceImage } from "./PlaceImage";
 import { PlaceStatusBadgesCompact } from "./PlaceStatusBadges";
 
 interface NearbyTripCardProps {
@@ -39,14 +40,19 @@ export function NearbyTripCard({ destination, userDistanceKm, direction, delay }
       delay={delay}
       className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5"
     >
-      <Link href={`/one-day-trips/${destination.slug}`} className="relative block">
-        <div
-          className={`relative grid h-44 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient}`}
-        >
-          <span className="text-6xl drop-shadow-md transition duration-500 group-hover:scale-110">
-            {cat?.emoji ?? "📍"}
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+      <Link href={`/one-day-trips/${destination.slug}`} className="relative block h-44 w-full overflow-hidden">
+        <PlaceImage
+          name={destination.name}
+          storedSrc={destination.imageUrl}
+          hint={destination.baseCity}
+          category={destination.category}
+          emoji={cat?.emoji ?? "📍"}
+          gradient={gradient}
+          className="h-full w-full transition duration-500 group-hover:scale-110"
+          emojiClassName="text-6xl"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+        <div className="relative h-full w-full">
           <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
             {cat?.emoji} {cat?.label ?? destination.category}
           </span>

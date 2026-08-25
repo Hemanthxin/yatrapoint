@@ -1,6 +1,5 @@
 import { CalendarClock, MapPin, Sparkles, Clock } from "lucide-react";
 
-import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { formatFestivalDate, daysUntil, festivalSlug, type FestivalOccurrence } from "@/lib/festivals";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
@@ -180,21 +179,6 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
                   {f.significance && (
                     <p className="mt-3 text-xs leading-relaxed text-slate-500">{f.significance}</p>
                   )}
-
-                  <div className="mt-4">
-                    <AddToCartButton
-                      className="w-full"
-                      label="Plan a trip"
-                      item={{
-                        id: `festival-${festSlug(f.name)}`,
-                        name: f.name,
-                        subtitle: [f.hub, formatFestivalDate(f.nextISO)].filter(Boolean).join(" · "),
-                        kind: "festival",
-                        emoji: f.emoji,
-                        href: "/festivals",
-                      }}
-                    />
-                  </div>
                 </div>
               </Reveal>
             );
