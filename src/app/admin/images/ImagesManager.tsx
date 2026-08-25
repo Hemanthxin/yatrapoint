@@ -15,14 +15,18 @@ import type { GalleryImage } from "@/lib/queries/place-gallery";
 import { MAX_GALLERY_IMAGES } from "@/lib/gallery-constants";
 import { resizeImageToDataUrl } from "@/lib/image-resize";
 
-const SOURCE_LABEL: Record<ImageSource, string> = {
+// A place can belong to several catalogues at once, so it gets one badge per
+// role rather than one CARD per role. Previously the same fort appeared as two
+// separate cards — a "Destination" with no photos beside a "One-day trip" with
+// four — because each catalogue was searched separately.
+const KIND_LABEL: Record<string, string> = {
   destination: "Destination",
-  nearby: "One-day trip",
+  "day-trip": "One-day trip",
   city: "City place",
 };
-const SOURCE_CHIP: Record<ImageSource, string> = {
+const KIND_CHIP: Record<string, string> = {
   destination: "bg-indigo-50 text-indigo-700",
-  nearby: "bg-amber-50 text-amber-700",
+  "day-trip": "bg-amber-50 text-amber-700",
   city: "bg-teal-50 text-teal-700",
 };
 
@@ -166,8 +170,15 @@ function Row({
             <ImageOff className="h-8 w-8" />
           </div>
         )}
-        <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${SOURCE_CHIP[row.source]}`}>
-          {SOURCE_LABEL[row.source]}
+        <span className="absolute left-2 top-2 flex flex-wrap gap-1">
+          {row.kinds.map((k) => (
+            <span
+              key={k}
+              className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${KIND_CHIP[k] ?? "bg-slate-100 text-slate-700"}`}
+            >
+              {KIND_LABEL[k] ?? k}
+            </span>
+          ))}
         </span>
         {busy && (
           <div className="absolute inset-0 grid place-items-center bg-white/70">

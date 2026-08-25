@@ -14,12 +14,13 @@ import { BackButton } from "@/components/app/BackButton";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { cityPlaces } from "@/lib/db/schema";
+import { getCityPlaceBySlug } from "@/lib/queries/city-places";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
 import { Reveal } from "@/components/app/Reveal";
 import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import { placeMapUrl } from "@/lib/maps";
@@ -36,14 +37,12 @@ export default async function CityPlacePage({ params }: PageProps) {
   const u = session.user;
   const { slug } = await params;
 
-  const [place] = await db
-    .select()
-    .from(cityPlaces)
-    .where(eq(cityPlaces.slug, slug))
-    .limit(1);
+  // Resolves the current slug or any the place was merged out of, so links
+  // minted before the catalogues were consolidated still work.
+  const place = await getCityPlaceBySlug(slug);
   if (!place) notFound();
 
-  const gallery = await listGalleryImages(place.id, "city");
+  const gallery = await listGalleryImages(place.id, IMAGE_SOURCE);
   const tags = place.tags?.split(",").map((t) => t.trim()).filter(Boolean) ?? [];
 
   return (

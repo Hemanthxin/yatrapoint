@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { cityPlaces, destinations, nearbyDestinations } from "@/lib/db/schema";
+import { places } from "@/lib/db/schema";
 import { fetchOverpassPlaces, findNearestStation, type OverpassCategory } from "@/lib/overpass";
 import { fetchRoute } from "@/lib/routing";
 import { destinationPoint, haversineKm } from "@/lib/geo";
 import { PlaceDeduper, SOURCE_PRIORITY } from "@/lib/place-dedup";
 import { isVisiblePlace } from "@/lib/place-visibility";
 import { districtInList } from "@/lib/district-match";
+import { PLACE_KINDS, kindsOf, notPermanentlyClosed } from "@/lib/queries/places";
 import {
   CATEGORY_DEFAULTS,
   candidateFromOverpass,
@@ -25,21 +26,19 @@ import {
   type TravelMode,
 } from "@/lib/transport";
 import { listGalleryImagesForPlaces } from "@/lib/queries/place-gallery";
-import type { ImageSource } from "@/lib/queries/admin-images";
+import { IMAGE_SOURCE, type ImageSource } from "@/lib/queries/admin-images";
 
-// Candidate/stop ids are self-describing prefixes tied 1:1 to their source
-// table (dest:${id} -> destinations, seed:${id} -> city_places,
-// nearby:${id} -> nearby_destinations, osm:${id} -> live Overpass, no DB
-// row). Used to batch-fetch each stop's photo gallery without an N+1 query.
+// Candidate/stop ids carry a source prefix (dest:/seed:/nearby: for a catalogue
+// row, osm: for a live Overpass result that has no database row). Now that the
+// three catalogues are one table the prefix no longer picks a table — it only
+// says whether the stop HAS a row, and every such row lives in `places`. Used
+// to batch-fetch each stop's photo gallery without an N+1 query.
 function splitGalleryId(id: string): { placeId: string; placeType: ImageSource } | null {
   const sep = id.indexOf(":");
   if (sep < 0) return null;
   const prefix = id.slice(0, sep);
-  const placeId = id.slice(sep + 1);
-  if (prefix === "dest") return { placeId, placeType: "destination" };
-  if (prefix === "seed") return { placeId, placeType: "city" };
-  if (prefix === "nearby") return { placeId, placeType: "nearby" };
-  return null;
+  if (prefix !== "dest" && prefix !== "seed" && prefix !== "nearby") return null;
+  return { placeId: id.slice(sep + 1), placeType: IMAGE_SOURCE };
 }
 
 export const runtime = "nodejs";
@@ -360,10 +359,7 @@ export async function POST(req: NextRequest) {
   // 0) Hand-picked catalogue places — pinned so the planner pulls them in first.
   const pinnedCandidates: Candidate[] = [];
   if (placeIds.length > 0) {
-    const picked = await db
-      .select()
-      .from(destinations)
-      .where(inArray(destinations.id, placeIds));
+    const picked = await db.select().from(places).where(inArray(places.id, placeIds));
     for (const d of picked) {
       const lat = Number(d.latitude);
       const lng = Number(d.longitude);
@@ -378,7 +374,7 @@ export async function POST(req: NextRequest) {
         category: op,
         lat,
         lng,
-        entryFee: d.entryFees,
+        entryFee: d.entryFeePerPerson,
         entryFeeKnown: true,
         idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
         popularity: 100,
@@ -399,135 +395,98 @@ export async function POST(req: NextRequest) {
     return WORSHIP_OPS.has(base) ? (worshipKind(name) ?? base) : base;
   };
 
-  // 1) Curated seed places that match the wanted categories. When ANY worship
-  // type is wanted we also pull the worship-kind rows (temple/church) so a
-  // mis-filed mosque can be re-routed to the right filter by effectiveSeedCat.
-  const wantsWorship = wantedCats.some((c) => WORSHIP_OPS.has(c));
-  const seedKinds = Object.entries(SEED_KIND_TO_OVERPASS)
-    .filter(([, op]) => wantedCats.includes(op) || (wantsWorship && WORSHIP_OPS.has(op)))
-    .map(([k]) => k);
-  const seedMatches =
-    seedKinds.length > 0
-      ? await db.select().from(cityPlaces).where(inArray(cityPlaces.kind, seedKinds))
-      : [];
-
-  const seedCandidates: Candidate[] = seedMatches
-    .filter((s) => {
-      const op = effectiveSeedCat(s.kind, s.name);
-      if (!op || !wantedCats.includes(op) || JUNK_NAME.test(s.name)) return false;
-      if (!isVisiblePlace(s)) return false;
-      // Honour the chosen radius, minimum distance and direction — don't let the
-      // whole curated city catalogue leak in regardless of where the traveller
-      // wants to roam.
-      return withinReach(Number(s.latitude), Number(s.longitude));
-    })
-    .map((s) => {
-      const op = effectiveSeedCat(s.kind, s.name) ?? "tourist_attraction";
-      // Bulk OSM-seeded rows (slug ends in -node-/-way-/-relation-) carry
-      // generic category fees — not real. Only genuinely curated seed rows
-      // have trustworthy per-place fees.
-      const isOsmSeed = /-(node|way|relation)-\d+$/i.test(s.slug);
-      return {
-        id: `seed:${s.id}`,
-        name: s.name,
-        category: op,
-        lat: Number(s.latitude),
-        lng: Number(s.longitude),
-        // Curated rows have a real fee; bulk OSM-seeded rows get a realistic
-        // category estimate (flagged as an estimate) so the total isn't ₹0.
-        entryFee: isOsmSeed ? CATEGORY_DEFAULTS[op].entryFee : s.entryFeePerPerson,
-        entryFeeKnown: !isOsmSeed,
-        idealMinutes: s.idealMinutesAtPlace,
-        foodCostPerPerson:
-          s.avgCostForTwo != null ? Math.round(s.avgCostForTwo / 2) : undefined,
-        popularity: s.popularity,
-        imageUrl: s.imageUrl,
-        weeklyHours: s.googleWeeklyHours,
-        meta: { citySeedSlug: s.slug },
-      };
-    });
-
-  // 1b) The statewide curated catalogue — EVERY destination in the database that
-  // falls within the search radius and matches a wanted category. This is the
-  // universal source: it makes the planner work anywhere in the catalogue, not
-  // just where seeded city places exist. (Hand-picked ones are already pinned
-  // above; coordinate de-dup in addCandidate stops doubles.)
+  // 1) The curated catalogue — ONE read of the unified `places` table.
+  //
+  // This used to be three separate reads (city_places, destinations,
+  // nearby_destinations) whose results then had to be de-duplicated against
+  // each other, because the same real place existed in more than one of them.
+  // With one table a place can only be considered once, so a duplicate stop is
+  // no longer possible in a plan at all.
+  //
   // When the traveller chose a specific district/taluk, keep only catalogue
   // places from that district — otherwise nearby districts leak in via radius.
   // District matching goes through @/lib/district-match, which folds the
-  // catalogue's alternate spellings (Bagalkot/Bagalkote) WITHOUT merging two
-  // genuinely different districts — the old local normaliser stripped
-  // "Rural"/"Urban" and prefix-matched, so choosing Bengaluru Rural also
-  // pulled in Bengaluru Urban places (BUG-09).
+  // alternate spellings (Bagalkot/Bagalkote) WITHOUT merging two genuinely
+  // different districts — the old normaliser stripped "Rural"/"Urban" and
+  // prefix-matched, so choosing Bengaluru Rural also pulled in Bengaluru Urban
+  // places (BUG-09).
   const wantedDistricts = parsed.data.areaDistricts.filter(Boolean);
   const matchesArea = (district: string | null) => districtInList(district, wantedDistricts);
 
-  const allDestinations = await db.select().from(destinations);
-  const destCandidates: Candidate[] = [];
-  for (const d of allDestinations) {
-    const lat = Number(d.latitude);
-    const lng = Number(d.longitude);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-    if (JUNK_NAME.test(d.name)) continue;
-    if (d.isHidden || !isVisiblePlace(d)) continue;
-    if (!withinReach(lat, lng)) continue;
-    if (!matchesArea(d.district)) continue;
-    // Resolve the category across catalogue slugs AND admin-form labels, so
-    // admin-added places (category "Temple", "Museum", …) are discovered under
-    // the right place type instead of being silently dropped.
-    const ops = resolveDestOverpass(d.category, d.name);
-    const matched = ops.filter((c) => wantedCats.includes(c));
-    if (matched.length === 0) continue;
-    const op: OverpassCategory = matched[0];
-    destCandidates.push({
-      id: `dest:${d.id}`,
-      name: d.name,
-      category: op,
-      lat,
-      lng,
-      entryFee: d.entryFees,
-      entryFeeKnown: true,
-      idealMinutes: CATEGORY_DEFAULTS[op].idealMinutes,
-      popularity: d.popularity,
-      imageUrl: d.imageUrl,
-      weeklyHours: d.googleWeeklyHours,
-      meta: { citySeedSlug: d.slug },
-    });
-  }
+  const wantsWorship = wantedCats.some((c) => WORSHIP_OPS.has(c));
 
-  // 1c) One-day-trip catalogue (`nearby_destinations`) — day-trip spots that
-  // aren't in the statewide `destinations` table. They use the same broad
-  // category slugs (heritage / hill_station / adventure / wildlife / pilgrimage)
-  // so resolveDestOverpass maps them identically. Included so EVERY curated place
-  // table feeds the planner, not just destinations + city_places.
-  const allNearby = await db.select().from(nearbyDestinations);
-  const nearbyCandidates: Candidate[] = [];
-  for (const n of allNearby) {
-    const lat = Number(n.latitude);
-    const lng = Number(n.longitude);
+  // A place's Overpass category depends on which catalogue it belongs to: a
+  // city row is typed by its `cityKind`, everything else by its catalogue
+  // category and name. Worship kinds are re-derived from the name so a
+  // mosque/church bulk-seeded as a generic "temple" is filtered correctly.
+  const overpassCatFor = (p: typeof catalogueRows[number]): OverpassCategory | null => {
+    const kinds = kindsOf(p);
+    if (kinds.includes(PLACE_KINDS.city) && p.cityKind) {
+      const base = SEED_KIND_TO_OVERPASS[p.cityKind];
+      if (base) return WORSHIP_OPS.has(base) ? worshipKind(p.name) ?? base : base;
+    }
+    const ops = resolveDestOverpass(p.category, p.name);
+    return ops.find((c) => wantedCats.includes(c)) ?? ops[0] ?? null;
+  };
+
+  const catalogueRows = await db
+    .select()
+    .from(places)
+    .where(and(notPermanentlyClosed, eq(places.isHidden, false)));
+
+  const catalogueCandidates: Candidate[] = [];
+  for (const p of catalogueRows) {
+    const lat = Number(p.latitude);
+    const lng = Number(p.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-    if (JUNK_NAME.test(n.name)) continue;
-    // Permanently closed — never plan a trip around it (BUG-01).
-    if (!isVisiblePlace(n)) continue;
+    if (JUNK_NAME.test(p.name)) continue;
     if (!withinReach(lat, lng)) continue;
-    const ops = resolveDestOverpass(n.category, n.name);
-    const matched = ops.filter((c) => wantedCats.includes(c));
-    if (matched.length === 0) continue;
-    const op: OverpassCategory = matched[0];
-    nearbyCandidates.push({
-      id: `nearby:${n.id}`,
-      name: n.name,
+
+    const kinds = kindsOf(p);
+    const isCityOnly = kinds.length === 1 && kinds[0] === PLACE_KINDS.city;
+    // The district filter only constrains catalogue destinations; a city place
+    // has no district of its own and is already bounded by the radius.
+    if (!isCityOnly && !matchesArea(p.district)) continue;
+
+    const op = overpassCatFor(p);
+    if (!op) continue;
+    if (!wantedCats.includes(op)) continue;
+
+    // Bulk OSM-seeded rows (slug ends in -node-/-way-/-relation-) carry generic
+    // category fees, not real ones. Only genuinely curated rows have a
+    // trustworthy per-place fee.
+    const isOsmSeed = /-(node|way|relation)-\d+$/i.test(p.slug);
+    const feeKnown = !(isCityOnly && isOsmSeed);
+
+    // Prefix keeps the id self-describing for the gallery lookup further down,
+    // and decides which detail page the stop links to.
+    const prefix = kinds.includes(PLACE_KINDS.destination)
+      ? "dest"
+      : kinds.includes(PLACE_KINDS.dayTrip)
+      ? "nearby"
+      : "seed";
+
+    catalogueCandidates.push({
+      id: `${prefix}:${p.id}`,
+      name: p.name,
       category: op,
       lat,
       lng,
-      entryFee: n.entryFeePerPerson,
-      entryFeeKnown: true,
-      // Stored in HOURS at the spot; the planner works in minutes.
-      idealMinutes: Math.max(15, Math.round(n.idealHoursAtPlace * 60)),
-      popularity: n.popularity,
-      imageUrl: n.imageUrl,
-      weeklyHours: n.googleWeeklyHours,
-      meta: { citySeedSlug: n.slug },
+      entryFee: feeKnown ? p.entryFeePerPerson : CATEGORY_DEFAULTS[op].entryFee,
+      entryFeeKnown: feeKnown,
+      // Prefer the most specific dwell time the place has: a day trip states
+      // hours at the spot, a city place states minutes, else the category
+      // default applies.
+      idealMinutes:
+        p.idealHoursAtPlace != null
+          ? Math.max(15, Math.round(p.idealHoursAtPlace * 60))
+          : p.idealMinutesAtPlace ?? CATEGORY_DEFAULTS[op].idealMinutes,
+      foodCostPerPerson:
+        p.avgCostForTwo != null ? Math.round(p.avgCostForTwo / 2) : undefined,
+      popularity: p.popularity,
+      imageUrl: p.imageUrl,
+      weeklyHours: p.googleWeeklyHours,
+      meta: { citySeedSlug: p.slug },
     });
   }
 
@@ -553,15 +512,11 @@ export async function POST(req: NextRequest) {
   // NB: read `deduper.items` / `deduper.size` at the point of use — the
   // candidate set keeps growing below as Overpass results are ingested.
   for (const c of pinnedCandidates) addCandidate(c);
-  for (const c of seedCandidates) addCandidate(c);
-  // Sort the curated catalogue by popularity so the best-known places win the
-  // de-dup race against generic OSM points at the same spot.
-  destCandidates.sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50));
-  for (const c of destCandidates) addCandidate(c);
-  // One-day-trip catalogue, also popularity-first so well-known day trips win
-  // the de-dup race against generic OSM points at the same spot.
-  nearbyCandidates.sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50));
-  for (const c of nearbyCandidates) addCandidate(c);
+  // Popularity-first so the best-known places win the de-dup race against
+  // generic OSM points at the same spot. The catalogue no longer needs three
+  // passes — one table, one pass.
+  catalogueCandidates.sort((a, b) => (b.popularity ?? 50) - (a.popularity ?? 50));
+  for (const c of catalogueCandidates) addCandidate(c);
 
   let overpassCount = 0;
   let overpassError: string | null = null;
@@ -933,26 +888,25 @@ export async function POST(req: NextRequest) {
     .map((x) => ({ id: x.placeId, source: x.placeType }));
   const galleryMap = await listGalleryImagesForPlaces(galleryLookups);
 
-  // Same id-prefix trick for each stop's Google-synced rating/hours (see
-  // src/admin/place-sync — admin-triggered batch, not live). Reuses the
-  // same galleryLookups grouping, one inArray query per source table.
+  // Each stop's Google-synced rating/hours (see /admin/place-sync — an
+  // admin-triggered batch, not live). One query now that every catalogue place
+  // lives in one table, instead of one per source table.
   type GoogleStatus = { rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null };
   const googleStatusMap = new Map<string, GoogleStatus>();
-  const destIds = galleryLookups.filter((l) => l.source === "destination").map((l) => l.id);
-  const cityIds = galleryLookups.filter((l) => l.source === "city").map((l) => l.id);
-  const nearbyIds = galleryLookups.filter((l) => l.source === "nearby").map((l) => l.id);
-  const [destStatus, cityStatus, nearbyStatus] = await Promise.all([
-    destIds.length
-      ? db.select({ id: destinations.id, rating: destinations.googleRating, ratingCount: destinations.googleRatingCount, weeklyHours: destinations.googleWeeklyHours, businessStatus: destinations.googleBusinessStatus }).from(destinations).where(inArray(destinations.id, destIds))
-      : [],
-    cityIds.length
-      ? db.select({ id: cityPlaces.id, rating: cityPlaces.googleRating, ratingCount: cityPlaces.googleRatingCount, weeklyHours: cityPlaces.googleWeeklyHours, businessStatus: cityPlaces.googleBusinessStatus }).from(cityPlaces).where(inArray(cityPlaces.id, cityIds))
-      : [],
-    nearbyIds.length
-      ? db.select({ id: nearbyDestinations.id, rating: nearbyDestinations.googleRating, ratingCount: nearbyDestinations.googleRatingCount, weeklyHours: nearbyDestinations.googleWeeklyHours, businessStatus: nearbyDestinations.googleBusinessStatus }).from(nearbyDestinations).where(inArray(nearbyDestinations.id, nearbyIds))
-      : [],
-  ]);
-  for (const row of [...destStatus, ...cityStatus, ...nearbyStatus]) googleStatusMap.set(row.id, row);
+  const statusIds = [...new Set(galleryLookups.map((l) => l.id))];
+  const statusRows = statusIds.length
+    ? await db
+        .select({
+          id: places.id,
+          rating: places.googleRating,
+          ratingCount: places.googleRatingCount,
+          weeklyHours: places.googleWeeklyHours,
+          businessStatus: places.googleBusinessStatus,
+        })
+        .from(places)
+        .where(inArray(places.id, statusIds))
+    : [];
+  for (const row of statusRows) googleStatusMap.set(row.id, row);
 
   const withImages = <T extends { id: string }>(
     s: T
@@ -992,7 +946,7 @@ export async function POST(req: NextRequest) {
     ok: true,
     candidatesConsidered: deduper.size,
     overpassPlaces: overpassCount,
-    seedPlaces: seedCandidates.length + destCandidates.length + nearbyCandidates.length,
+    seedPlaces: catalogueCandidates.length,
     overpassError,
     categoryWarning,
     stops: orderedStops,

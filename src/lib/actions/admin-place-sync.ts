@@ -3,7 +3,7 @@
 import { eq, sql as rawSql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { destinations, cityPlaces, nearbyDestinations } from "@/lib/db/schema";
+import { places } from "@/lib/db/schema";
 import { isAdminSession } from "@/lib/admin";
 import { findGooglePlaceId, fetchGooglePlaceStatus } from "@/lib/google-places";
 
@@ -16,9 +16,7 @@ export interface SyncBatchResult {
 }
 
 export interface SyncCoverage {
-  destinations: { total: number; synced: number };
-  cityPlaces: { total: number; synced: number };
-  nearbyDestinations: { total: number; synced: number };
+  places: { total: number; synced: number };
 }
 
 async function requireAdminOrDeny(): Promise<{ error: string } | null> {
@@ -31,21 +29,15 @@ export async function fetchSyncCoverage(): Promise<SyncCoverage | null> {
   const denied = await requireAdminOrDeny();
   if (denied) return null;
 
-  const [dest, city, nearby] = await Promise.all([
-    db
-      .select({ total: rawSql<number>`count(*)`, synced: rawSql<number>`count(${destinations.googleSyncedAt})` })
-      .from(destinations),
-    db
-      .select({ total: rawSql<number>`count(*)`, synced: rawSql<number>`count(${cityPlaces.googleSyncedAt})` })
-      .from(cityPlaces),
-    db
-      .select({ total: rawSql<number>`count(*)`, synced: rawSql<number>`count(${nearbyDestinations.googleSyncedAt})` })
-      .from(nearbyDestinations),
-  ]);
+  // One count now that every place lives in one table.
+  const [row] = await db
+    .select({
+      total: rawSql<number>`count(*)`,
+      synced: rawSql<number>`count(${places.googleSyncedAt})`,
+    })
+    .from(places);
   return {
-    destinations: { total: Number(dest[0]?.total ?? 0), synced: Number(dest[0]?.synced ?? 0) },
-    cityPlaces: { total: Number(city[0]?.total ?? 0), synced: Number(city[0]?.synced ?? 0) },
-    nearbyDestinations: { total: Number(nearby[0]?.total ?? 0), synced: Number(nearby[0]?.synced ?? 0) },
+    places: { total: Number(row?.total ?? 0), synced: Number(row?.synced ?? 0) },
   };
 }
 
@@ -80,34 +72,35 @@ export async function syncNextPlacesBatch(limit = 20): Promise<SyncBatchResult> 
   const denied = await requireAdminOrDeny();
   if (denied) return { ok: false, error: denied.error, synced: 0, failed: 0, details: [] };
 
-  const perTable = Math.max(1, Math.ceil(limit / 3));
   const details: string[] = [];
   let synced = 0;
   let failed = 0;
 
-  const destRows = await db
-    .select({ id: destinations.id, name: destinations.name, lat: destinations.latitude, lng: destinations.longitude, googlePlaceId: destinations.googlePlaceId })
-    .from(destinations)
-    .orderBy(rawSql`${destinations.googleSyncedAt} asc nulls first`)
-    .limit(perTable);
-  const cityRows = await db
-    .select({ id: cityPlaces.id, name: cityPlaces.name, lat: cityPlaces.latitude, lng: cityPlaces.longitude, googlePlaceId: cityPlaces.googlePlaceId })
-    .from(cityPlaces)
-    .orderBy(rawSql`${cityPlaces.googleSyncedAt} asc nulls first`)
-    .limit(perTable);
-  const nearbyRows = await db
-    .select({ id: nearbyDestinations.id, name: nearbyDestinations.name, lat: nearbyDestinations.latitude, lng: nearbyDestinations.longitude, googlePlaceId: nearbyDestinations.googlePlaceId })
-    .from(nearbyDestinations)
-    .orderBy(rawSql`${nearbyDestinations.googleSyncedAt} asc nulls first`)
-    .limit(perTable);
+  // One queue now that every place lives in one table. This used to take a
+  // third of the batch from each catalogue so none starved; with a single
+  // table the oldest-synced-first ordering covers everything fairly on its
+  // own, and a place that belonged to two catalogues is no longer synced
+  // twice — which was paying Google twice for the same place.
+  const rows = await db
+    .select({
+      id: places.id,
+      name: places.name,
+      lat: places.latitude,
+      lng: places.longitude,
+      googlePlaceId: places.googlePlaceId,
+      kinds: places.kinds,
+    })
+    .from(places)
+    .orderBy(rawSql`${places.googleSyncedAt} asc nulls first`)
+    .limit(limit);
 
-  for (const row of destRows) {
+  for (const row of rows) {
     const lat = Number(row.lat);
     const lng = Number(row.lng);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     const result = await syncOne({ ...row, lat, lng });
     await db
-      .update(destinations)
+      .update(places)
       .set({
         googlePlaceId: result.googlePlaceId,
         googleRating: result.rating,
@@ -116,52 +109,10 @@ export async function syncNextPlacesBatch(limit = 20): Promise<SyncBatchResult> 
         googleBusinessStatus: result.businessStatus,
         googleSyncedAt: new Date(),
       })
-      .where(eq(destinations.id, row.id));
+      .where(eq(places.id, row.id));
     if (result.ok) synced++;
     else failed++;
-    details.push(`${result.ok ? "✓" : "✗"} [destination] ${row.name}`);
-  }
-
-  for (const row of cityRows) {
-    const lat = Number(row.lat);
-    const lng = Number(row.lng);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-    const result = await syncOne({ ...row, lat, lng });
-    await db
-      .update(cityPlaces)
-      .set({
-        googlePlaceId: result.googlePlaceId,
-        googleRating: result.rating,
-        googleRatingCount: result.ratingCount,
-        googleWeeklyHours: result.weeklyHours,
-        googleBusinessStatus: result.businessStatus,
-        googleSyncedAt: new Date(),
-      })
-      .where(eq(cityPlaces.id, row.id));
-    if (result.ok) synced++;
-    else failed++;
-    details.push(`${result.ok ? "✓" : "✗"} [city place] ${row.name}`);
-  }
-
-  for (const row of nearbyRows) {
-    const lat = Number(row.lat);
-    const lng = Number(row.lng);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-    const result = await syncOne({ ...row, lat, lng });
-    await db
-      .update(nearbyDestinations)
-      .set({
-        googlePlaceId: result.googlePlaceId,
-        googleRating: result.rating,
-        googleRatingCount: result.ratingCount,
-        googleWeeklyHours: result.weeklyHours,
-        googleBusinessStatus: result.businessStatus,
-        googleSyncedAt: new Date(),
-      })
-      .where(eq(nearbyDestinations.id, row.id));
-    if (result.ok) synced++;
-    else failed++;
-    details.push(`${result.ok ? "✓" : "✗"} [nearby trip] ${row.name}`);
+    details.push(`${result.ok ? "✓" : "✗"} [${row.kinds}] ${row.name}`);
   }
 
   return { ok: true, synced, failed, details };

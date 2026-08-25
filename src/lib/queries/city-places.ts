@@ -1,7 +1,17 @@
-import { desc, inArray, like, or, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { cityPlaces, type CityPlace } from "@/lib/db/schema";
+import { places, type CityPlace } from "@/lib/db/schema";
 import type { CategorySlug } from "@/lib/catalog/categories";
+import {
+  PLACE_KINDS,
+  hasKind,
+  notPermanentlyClosed,
+  slugMatches,
+  toCityPlace,
+} from "@/lib/queries/places";
+
+// In-city places (Bengaluru attractions, restaurants, malls, nightlife…), read
+// from the unified `places` table and returned in the original CityPlace shape.
 
 // cityPlaces uses its own taxonomy (art/food/heritage/nature/nightlife/
 // shopping/spiritual) rather than the main destinations CATEGORIES — only map
@@ -12,39 +22,77 @@ const CATEGORY_TO_CITY_CATEGORIES: Partial<Record<CategorySlug, string[]>> = {
   pilgrimage: ["spiritual"],
 };
 
-// Text search over in-city places (Bengaluru attractions, restaurants, malls,
-// nightlife, etc.) — used by the global search so results aren't limited to
-// the main `destinations` catalogue.
+const isCityPlace = hasKind(PLACE_KINDS.city);
+
 export async function searchCityPlaces(query: string, limit = 12): Promise<CityPlace[]> {
   const q = `%${query.toLowerCase()}%`;
-  return db
+  const rows = await db
     .select()
-    .from(cityPlaces)
+    .from(places)
     .where(
-      or(
-        like(sql`lower(${cityPlaces.name})`, q),
-        like(sql`lower(${cityPlaces.area})`, q),
-        like(sql`lower(${cityPlaces.city})`, q),
-        like(sql`lower(${cityPlaces.shortDescription})`, q)
+      and(
+        isCityPlace,
+        notPermanentlyClosed,
+        or(
+          like(sql`lower(${places.name})`, q),
+          like(sql`lower(${places.area})`, q),
+          like(sql`lower(${places.city})`, q),
+          like(sql`lower(${places.shortDescription})`, q)
+        )
       )
     )
-    .orderBy(desc(cityPlaces.popularity))
+    .orderBy(desc(places.popularity))
     .limit(limit);
+  return rows.map(toCityPlace);
 }
 
-// City places matching a destinations-style category filter — used so
-// browsing "/destinations?category=heritage" isn't limited to the main
-// destinations table when there's a confident category equivalence.
+// City places matching a destinations-style category filter — used so browsing
+// "/destinations?category=heritage" isn't limited to the main catalogue when
+// there's a confident category equivalence.
 export async function listCityPlacesByCategory(
   category: CategorySlug,
   limit = 12
 ): Promise<CityPlace[]> {
   const cityCategories = CATEGORY_TO_CITY_CATEGORIES[category];
   if (!cityCategories || cityCategories.length === 0) return [];
-  return db
+  const rows = await db
     .select()
-    .from(cityPlaces)
-    .where(inArray(cityPlaces.category, cityCategories))
-    .orderBy(desc(cityPlaces.popularity))
+    .from(places)
+    .where(and(isCityPlace, notPermanentlyClosed, inArray(places.category, cityCategories)))
+    .orderBy(desc(places.popularity))
     .limit(limit);
+  return rows.map(toCityPlace);
 }
+
+export async function getCityPlaceBySlug(slug: string): Promise<CityPlace | null> {
+  const [row] = await db
+    .select()
+    .from(places)
+    .where(and(isCityPlace, slugMatches(slug)))
+    .limit(1);
+  return row ? toCityPlace(row) : null;
+}
+
+// Popularity slice used for first paint on the explore screen.
+export async function listPopularCityPlaces(limit = 60): Promise<CityPlace[]> {
+  const rows = await db
+    .select()
+    .from(places)
+    .where(and(isCityPlace, notPermanentlyClosed))
+    .orderBy(desc(places.popularity))
+    .limit(limit);
+  return rows.map(toCityPlace);
+}
+
+export async function listCityPlacesByKinds(kinds: string[], limit = 200): Promise<CityPlace[]> {
+  if (kinds.length === 0) return [];
+  const rows = await db
+    .select()
+    .from(places)
+    .where(and(isCityPlace, notPermanentlyClosed, inArray(places.cityKind, kinds)))
+    .orderBy(desc(places.popularity))
+    .limit(limit);
+  return rows.map(toCityPlace);
+}
+
+export { eq };

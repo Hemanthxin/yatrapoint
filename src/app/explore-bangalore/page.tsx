@@ -3,7 +3,7 @@ import { desc } from "drizzle-orm";
 import { Sparkles } from "lucide-react";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { cityPlaces } from "@/lib/db/schema";
+import { listPopularCityPlaces } from "@/lib/queries/city-places";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { TripsTabs } from "@/components/app/TripsTabs";
@@ -20,11 +20,7 @@ export default async function ExploreBangalorePage() {
   // location). Once located, the client pulls the full set of places WITHIN the
   // chosen radius from /api/nearby-places, so nothing nearby is missed — and the
   // page payload stays tiny for a fast load.
-  const seed = await db
-    .select()
-    .from(cityPlaces)
-    .orderBy(desc(cityPlaces.popularity))
-    .limit(120);
+  const seed = await listPopularCityPlaces(120);
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>

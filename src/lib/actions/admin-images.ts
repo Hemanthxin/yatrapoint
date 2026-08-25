@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { destinations, nearbyDestinations, cityPlaces } from "@/lib/db/schema";
+import { places } from "@/lib/db/schema";
 import { isAdminSession } from "@/lib/admin";
 import { searchPlacesForImages, type AdminImageRow, type ImageSource } from "@/lib/queries/admin-images";
+import { PLACE_KINDS, kindsOf } from "@/lib/queries/places";
 
 const MAX_IMAGE_BYTES = 2_000_000;
 
@@ -23,12 +24,11 @@ export interface UpdatePlaceImageResult {
   error?: string;
 }
 
-// One lightweight, table-agnostic action: set/replace the photo for a place
-// in whichever catalogue it lives in (destinations / nearby_destinations /
-// city_places), then revalidate everywhere that place's image is shown on
-// the public site.
+// Set or replace the photo for a place. There is one row per place now, so
+// this is a single update — and a photo added here shows up on every screen
+// that place appears on, instead of only the catalogue whose copy was edited.
 export async function updatePlaceImage(
-  source: ImageSource,
+  _source: ImageSource,
   id: string,
   imageUrl: string
 ): Promise<UpdatePlaceImageResult> {
@@ -39,31 +39,25 @@ export async function updatePlaceImage(
   }
 
   try {
-    if (source === "destination") {
-      const [row] = await db
-        .update(destinations)
-        .set({ imageUrl })
-        .where(eq(destinations.id, id))
-        .returning({ slug: destinations.slug });
-      if (!row) return { ok: false, error: "Place not found." };
+    const [row] = await db
+      .update(places)
+      .set({ imageUrl })
+      .where(eq(places.id, id))
+      .returning({ slug: places.slug, kinds: places.kinds });
+    if (!row) return { ok: false, error: "Place not found." };
+
+    // Revalidate every route this place is reachable through — a place can be
+    // a destination AND a day trip AND a city listing at once.
+    const kinds = kindsOf(row);
+    if (kinds.includes(PLACE_KINDS.destination)) {
       revalidatePath("/destinations");
       revalidatePath(`/destinations/${row.slug}`);
-    } else if (source === "nearby") {
-      const [row] = await db
-        .update(nearbyDestinations)
-        .set({ imageUrl })
-        .where(eq(nearbyDestinations.id, id))
-        .returning({ slug: nearbyDestinations.slug });
-      if (!row) return { ok: false, error: "Place not found." };
+    }
+    if (kinds.includes(PLACE_KINDS.dayTrip)) {
       revalidatePath("/one-day-trips");
       revalidatePath(`/one-day-trips/${row.slug}`);
-    } else {
-      const [row] = await db
-        .update(cityPlaces)
-        .set({ imageUrl })
-        .where(eq(cityPlaces.id, id))
-        .returning({ slug: cityPlaces.slug });
-      if (!row) return { ok: false, error: "Place not found." };
+    }
+    if (kinds.includes(PLACE_KINDS.city)) {
       revalidatePath("/explore-bangalore");
       revalidatePath(`/explore-bangalore/${row.slug}`);
     }

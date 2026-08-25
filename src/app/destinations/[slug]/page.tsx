@@ -20,6 +20,7 @@ import { DestinationCard } from "@/components/app/DestinationCard";
 import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
 import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import {
@@ -53,7 +54,7 @@ export default async function DestinationPage({ params }: PageProps) {
   const [relatedFiltered, favIds, gallery] = await Promise.all([
     listDestinationsNear(destination, { radiusKm: 150, limit: 3 }),
     listFavoriteIds(u.id ?? ""),
-    listGalleryImages(destination.id, "destination"),
+    listGalleryImages(destination.id, IMAGE_SOURCE),
   ]);
 
   const cat = CATEGORY_BY_SLUG[destination.category as CategorySlug];

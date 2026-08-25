@@ -3,13 +3,14 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import { destinations } from "@/lib/db/schema";
+import { places } from "@/lib/db/schema";
 import { INDIA_STATES } from "@/lib/india-states";
 import { INDIA_DISTRICTS } from "@/lib/india-districts";
 import { runOverpassQuery } from "@/lib/overpass";
 import { districtInList, districtMatches } from "@/lib/district-match";
 import { dedupePlaces, SOURCE_PRIORITY } from "@/lib/place-dedup";
 import { isVisiblePlace } from "@/lib/place-visibility";
+import { PLACE_KINDS, hasKind } from "@/lib/queries/places";
 
 export interface AreaCenter {
   lat: number;
@@ -273,28 +274,29 @@ export async function listAreaPlaces(
   // filtering them here costs nothing and is correct.
   const rows = await db
     .select({
-      id: destinations.id,
-      name: destinations.name,
-      district: destinations.district,
-      category: destinations.category,
-      latitude: destinations.latitude,
-      longitude: destinations.longitude,
-      imageUrl: destinations.imageUrl,
-      googleBusinessStatus: destinations.googleBusinessStatus,
+      id: places.id,
+      name: places.name,
+      district: places.district,
+      category: places.category,
+      latitude: places.latitude,
+      longitude: places.longitude,
+      imageUrl: places.imageUrl,
+      googleBusinessStatus: places.googleBusinessStatus,
     })
-    .from(destinations)
+    .from(places)
     .where(
       and(
-        eq(destinations.state, state),
-        eq(destinations.isHidden, false),
-        sql`${destinations.latitude} is not null`,
-        sql`${destinations.longitude} is not null`
+        hasKind(PLACE_KINDS.destination),
+        eq(places.state, state),
+        eq(places.isHidden, false),
+        sql`${places.latitude} is not null`,
+        sql`${places.longitude} is not null`
       )
     )
-    .orderBy(destinations.name)
+    .orderBy(places.name)
     .limit(2000);
 
-  const places = rows
+  const areaPlaces = rows
     .filter((r) => isVisiblePlace(r))
     .filter((r) => districtInList(r.district, districts))
     .map((r) => ({
@@ -310,5 +312,5 @@ export async function listAreaPlaces(
 
   // Two rows for the same real place would otherwise appear as two separate
   // tick-boxes in the picker (BUG-01).
-  return dedupePlaces(places, () => SOURCE_PRIORITY.destination).slice(0, 500);
+  return dedupePlaces(areaPlaces, () => SOURCE_PRIORITY.destination).slice(0, 500);
 }

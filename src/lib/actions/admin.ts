@@ -6,7 +6,8 @@ import { and, eq, ne, sql } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { destinations, placeImages } from "@/lib/db/schema";
+import { places, placeImages } from "@/lib/db/schema";
+import { PLACE_KINDS } from "@/lib/queries/places";
 import { createId } from "@/lib/utils/id";
 import { isAdminSession } from "@/lib/admin";
 
@@ -74,12 +75,12 @@ export async function addAdminPlace(
 
     // Reject duplicates — same place name in the same state (case-insensitive).
     const duplicate = await db
-      .select({ id: destinations.id })
-      .from(destinations)
+      .select({ id: places.id })
+      .from(places)
       .where(
         and(
-          eq(sql`lower(${destinations.name})`, name.toLowerCase()),
-          eq(sql`lower(${destinations.state})`, data.state.trim().toLowerCase())
+          eq(sql`lower(${places.name})`, name.toLowerCase()),
+          eq(sql`lower(${places.state})`, data.state.trim().toLowerCase())
         )
       )
       .limit(1);
@@ -93,9 +94,9 @@ export async function addAdminPlace(
 
     while (tries < 5) {
       const exists = await db
-        .select({ id: destinations.id })
-        .from(destinations)
-        .where(eq(destinations.slug, slug))
+        .select({ id: places.id })
+        .from(places)
+        .where(eq(places.slug, slug))
         .limit(1);
       if (exists.length === 0) break;
       slug = `${baseSlug}-${createId(3).slice(0, 4)}`;
@@ -107,10 +108,12 @@ export async function addAdminPlace(
     }
 
     const [created] = await db
-      .insert(destinations)
+      .insert(places)
       .values({
         slug,
         name,
+        // An admin-added place is a catalogue destination.
+        kinds: PLACE_KINDS.destination,
         state: data.state,
         district: data.district || null,
         category: data.category,
@@ -119,7 +122,7 @@ export async function addAdminPlace(
         shortDescription: data.shortDescription,
         imageUrl: data.imageUrl || null,
         openingTimings: data.openingTimings || null,
-        entryFees: data.entryFees,
+        entryFeePerPerson: data.entryFees,
         entryFeesForeigner: data.entryFeesForeigner ?? null,
         entryFeesChild: data.entryFeesChild ?? null,
         bookingUrl: data.bookingUrl || null,
@@ -165,13 +168,13 @@ export async function updateAdminPlace(
 
     // Block duplicate name+state on a DIFFERENT place.
     const dup = await db
-      .select({ id: destinations.id })
-      .from(destinations)
+      .select({ id: places.id })
+      .from(places)
       .where(
         and(
-          eq(sql`lower(${destinations.name})`, name.toLowerCase()),
-          eq(sql`lower(${destinations.state})`, data.state.trim().toLowerCase()),
-          ne(destinations.id, id)
+          eq(sql`lower(${places.name})`, name.toLowerCase()),
+          eq(sql`lower(${places.state})`, data.state.trim().toLowerCase()),
+          ne(places.id, id)
         )
       )
       .limit(1);
@@ -180,7 +183,7 @@ export async function updateAdminPlace(
     }
 
     await db
-      .update(destinations)
+      .update(places)
       .set({
         name,
         state: data.state,
@@ -191,7 +194,7 @@ export async function updateAdminPlace(
         shortDescription: data.shortDescription,
         imageUrl: data.imageUrl || null,
         openingTimings: data.openingTimings || null,
-        entryFees: data.entryFees,
+        entryFeePerPerson: data.entryFees,
         entryFeesForeigner: data.entryFeesForeigner ?? null,
         entryFeesChild: data.entryFeesChild ?? null,
         bookingUrl: data.bookingUrl || null,
@@ -204,7 +207,7 @@ export async function updateAdminPlace(
         popularity: data.popularity ?? 50,
         isHidden: data.isHidden ?? false,
       })
-      .where(eq(destinations.id, id));
+      .where(eq(places.id, id));
 
     revalidatePath("/admin/places");
     revalidatePath(`/admin/places/${id}/edit`);
@@ -224,7 +227,7 @@ export async function deleteAdminPlace(id: string) {
   // action for city_places/nearby_destinations must do the same for its
   // own placeType.
   await db.delete(placeImages).where(and(eq(placeImages.placeId, id), eq(placeImages.placeType, "destination")));
-  await db.delete(destinations).where(eq(destinations.id, id));
+  await db.delete(places).where(eq(places.id, id));
   revalidatePath("/admin/places");
   revalidatePath("/admin/dashboard");
   revalidatePath("/destinations");

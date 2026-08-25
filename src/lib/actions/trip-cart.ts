@@ -2,8 +2,9 @@
 
 import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { destinations, nearbyDestinations } from "@/lib/db/schema";
+import { places } from "@/lib/db/schema";
 import { isVisiblePlace } from "@/lib/place-visibility";
+import { PLACE_KINDS, kindsOf } from "@/lib/queries/places";
 
 // Mid-range per-person, per-day allowance for a day trip: local travel, meals
 // and incidentals. Same scale as `destinations.budgetPerDay`, which is the
@@ -67,81 +68,70 @@ export async function resolveTripStops(
 ): Promise<TripStop[]> {
   const out: TripStop[] = [];
 
-  const destIds = items.filter((i) => i.id.startsWith("dest-")).map((i) => i.id.slice(5));
-  const nearbyIds = items.filter((i) => i.id.startsWith("nearby-")).map((i) => i.id.slice(7));
+  // Both cart prefixes resolve against the same table now — the id after the
+  // prefix is a `places` id either way, so this is one lookup instead of two.
+  const catalogueIds = items
+    .filter((i) => i.id.startsWith("dest-") || i.id.startsWith("nearby-"))
+    .map((i) => (i.id.startsWith("dest-") ? i.id.slice(5) : i.id.slice(7)));
 
-  const [destRows, nearbyRows] = await Promise.all([
-    destIds.length
-      ? db.select().from(destinations).where(inArray(destinations.id, destIds))
-      : Promise.resolve([]),
-    nearbyIds.length
-      ? db.select().from(nearbyDestinations).where(inArray(nearbyDestinations.id, nearbyIds))
-      : Promise.resolve([]),
-  ]);
-  const destMap = new Map(destRows.map((d) => [d.id, d]));
-  const nearbyMap = new Map(nearbyRows.map((n) => [n.id, n]));
+  const rows = catalogueIds.length
+    ? await db.select().from(places).where(inArray(places.id, catalogueIds))
+    : [];
+  const byId = new Map(rows.map((p) => [p.id, p]));
 
   for (const item of items) {
-    if (item.id.startsWith("dest-")) {
-      const d = destMap.get(item.id.slice(5));
-      if (d?.latitude && d?.longitude) {
-        out.push({
-          id: item.id,
-          name: d.name,
-          label: [d.district, d.state].filter(Boolean).join(", ") || d.name,
-          lat: Number(d.latitude),
-          lng: Number(d.longitude),
-          entryFee: d.entryFees,
-          budgetPerDay: d.budgetPerDay,
-          recommendedDays: d.recommendedDays,
-          closed: !isVisiblePlace(d),
-        });
-        continue;
-      }
-      const q = d ? [d.district, d.state, "India"].filter(Boolean).join(", ") : item.name;
-      const g = await geocode(q);
-      out.push(
-        g
-          ? { id: item.id, name: item.name, label: q, lat: g.lat, lng: g.lng }
-          : { id: item.id, name: item.name, label: q, lat: 0, lng: 0, unlocated: true }
-      );
-      continue;
-    }
+    const isCatalogue = item.id.startsWith("dest-") || item.id.startsWith("nearby-");
+    if (isCatalogue) {
+      const key = item.id.startsWith("dest-") ? item.id.slice(5) : item.id.slice(7);
+      const p = byId.get(key);
 
-    // One-day trips carry their own precise coordinates, entry fee and time at
-    // the place — use them rather than geocoding the base city.
-    if (item.id.startsWith("nearby-")) {
-      const n = nearbyMap.get(item.id.slice(7));
-      if (n) {
-        const lat = Number(n.latitude);
-        const lng = Number(n.longitude);
+      if (p) {
+        const lat = Number(p.latitude);
+        const lng = Number(p.longitude);
         if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          const kinds = kindsOf(p);
+          const isDayTrip = kinds.includes(PLACE_KINDS.dayTrip);
           out.push({
             id: item.id,
-            name: n.name,
+            name: p.name,
             // The place's OWN context, not the city you'd set out from.
-            label: `${n.distanceKm} km from ${n.baseCity}`,
+            label:
+              isDayTrip && p.distanceKm != null && p.baseCity
+                ? `${p.distanceKm} km from ${p.baseCity}`
+                : [p.district, p.state].filter(Boolean).join(", ") || p.name,
             lat,
             lng,
-            entryFee: n.entryFeePerPerson,
-            // A day trip is exactly that — one day, and no overnight stay. Its
-            // spend beyond the entry ticket is food and local travel, so it
-            // counts toward the estimate instead of being silently skipped.
-            budgetPerDay: DAY_TRIP_BUDGET_PER_PERSON,
-            recommendedDays: 1,
-            closed: !isVisiblePlace(n),
+            entryFee: p.entryFeePerPerson,
+            // A multi-day destination states its own per-day budget. A day trip
+            // is exactly one day with no overnight stay, so its spend beyond
+            // the ticket is food and local travel — counted rather than
+            // silently skipped, which used to leave it out of the estimate.
+            budgetPerDay: p.budgetPerDay ?? (isDayTrip ? DAY_TRIP_BUDGET_PER_PERSON : undefined),
+            recommendedDays: p.recommendedDays ?? (isDayTrip ? 1 : undefined),
+            closed: !isVisiblePlace(p),
           });
           continue;
         }
       }
-      out.push({
-        id: item.id,
-        name: item.name,
-        label: item.subtitle ?? "Location unavailable",
-        lat: 0,
-        lng: 0,
-        unlocated: true,
-      });
+
+      // No row, or no usable coordinates — fall back to geocoding whatever
+      // location context we have.
+      const q = p
+        ? [p.district, p.state, "India"].filter(Boolean).join(", ")
+        : item.subtitle || item.name;
+      const g = await geocode(q);
+      out.push(
+        g
+          ? { id: item.id, name: p?.name ?? item.name, label: q, lat: g.lat, lng: g.lng }
+          : {
+              id: item.id,
+              name: p?.name ?? item.name,
+              label: q,
+              lat: 0,
+              lng: 0,
+              unlocated: true,
+            }
+      );
       continue;
     }
 
