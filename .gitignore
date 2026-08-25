@@ -24,3 +24,8 @@ next-env.d.ts
 # DB export workbooks + long-running enrichment checkpoint
 exports
 scripts/.enrich-checkpoint.json
+
+# Generated merge plans — regenerate with scripts/merge/plan-place-merge.ts
+scripts/merge/merge-plan.json
+scripts/merge/merge-plan.md
+scripts/merge/needs-review.json
