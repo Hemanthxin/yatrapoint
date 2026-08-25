@@ -18,11 +18,18 @@ interface LocationState {
   accuracyMeters?: number;
   status: Status;
   isFallback: boolean;
+  /** "device" = from the browser's geolocation API; "manual" = the user
+   *  searched and picked their own location (see setManual). */
+  source: "device" | "manual";
   request: () => void;
   startWatch: () => void;
   stopWatch: () => void;
   watching: boolean;
   lastUpdate?: number;
+  /** Override the detected location with one the user picked themselves —
+   *  the fix for devices (mainly laptops) whose browser can only report a
+   *  coarse, IP-based location. */
+  setManual: (lat: number, lng: number) => void;
 }
 
 const Ctx = createContext<LocationState | null>(null);
@@ -31,6 +38,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   const [coords, setCoords] = useState<LatLng>(BANGALORE_CENTER);
   const [accuracyMeters, setAccuracyMeters] = useState<number | undefined>();
   const [status, setStatus] = useState<Status>("idle");
+  const [source, setSource] = useState<"device" | "manual">("device");
   const [watching, setWatching] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<number | undefined>();
   const watchId = useRef<number | null>(null);
@@ -43,6 +51,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   const apply = useCallback((pos: GeolocationPosition) => {
     setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
     setAccuracyMeters(pos.coords.accuracy);
+    setSource("device");
     setLastUpdate(Date.now());
     setStatus("granted");
   }, []);
@@ -126,6 +135,18 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     setWatching(false);
   }, []);
 
+  const setManual = useCallback(
+    (lat: number, lng: number) => {
+      stopRefine();
+      setCoords({ lat, lng });
+      setAccuracyMeters(undefined);
+      setSource("manual");
+      setLastUpdate(Date.now());
+      setStatus("granted");
+    },
+    [stopRefine]
+  );
+
   useEffect(() => {
     return () => {
       if (watchId.current !== null) {
@@ -142,13 +163,15 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       accuracyMeters,
       status,
       isFallback: status !== "granted",
+      source,
       request,
       startWatch,
       stopWatch,
       watching,
       lastUpdate,
+      setManual,
     }),
-    [coords, accuracyMeters, status, request, startWatch, stopWatch, watching, lastUpdate]
+    [coords, accuracyMeters, status, source, request, startWatch, stopWatch, watching, lastUpdate, setManual]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

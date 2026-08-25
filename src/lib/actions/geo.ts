@@ -9,14 +9,11 @@ export interface GeocodeHit {
   label: string;
 }
 
-// Server-side geocoding via OpenStreetMap Nominatim (free, no key). Done on the
-// server so we can send a proper User-Agent and avoid browser CORS limits.
-// Coordinates are biased to India and returned at full precision — the same
-// point you'd read off Google Maps.
-export async function geocodePlace(query: string): Promise<GeocodeHit[]> {
-  const session = await auth();
-  if (!isAdminSession(session?.user)) return [];
-
+// Shared Nominatim (OpenStreetMap) lookup — done on the server so we can send
+// a proper User-Agent and avoid browser CORS limits. Coordinates are biased
+// to India and returned at full precision — the same point you'd read off
+// Google Maps.
+async function nominatimSearch(query: string, userAgent: string): Promise<GeocodeHit[]> {
   const q = query.trim();
   if (q.length < 3) return [];
 
@@ -32,10 +29,7 @@ export async function geocodePlace(query: string): Promise<GeocodeHit[]> {
 
   try {
     const res = await fetch(url, {
-      headers: {
-        "User-Agent": "YatraPoint-Admin/1.0 (admin place geocoding)",
-        Accept: "application/json",
-      },
+      headers: { "User-Agent": userAgent, Accept: "application/json" },
     });
     if (!res.ok) return [];
     const rows = (await res.json()) as Array<{
@@ -51,4 +45,21 @@ export async function geocodePlace(query: string): Promise<GeocodeHit[]> {
   } catch {
     return [];
   }
+}
+
+// Admin place-management search — used when curating tourist places.
+export async function geocodePlace(query: string): Promise<GeocodeHit[]> {
+  const session = await auth();
+  if (!isAdminSession(session?.user)) return [];
+  return nominatimSearch(query, "YatraPoint-Admin/1.0 (admin place geocoding)");
+}
+
+// Consumer-facing search — lets a signed-in user correct their own detected
+// location (e.g. a desktop browser's coarse IP-based fix) by searching for
+// their address or area. Any logged-in user may call this; it's just a
+// lookup, not a write.
+export async function searchLocation(query: string): Promise<GeocodeHit[]> {
+  const session = await auth();
+  if (!session?.user) return [];
+  return nominatimSearch(query, "YatraPoint/1.0 (user location search)");
 }
