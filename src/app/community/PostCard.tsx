@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   MapPin,
@@ -17,6 +18,8 @@ import {
   Trash2,
   X,
   Award,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import { motion } from "framer-motion";
@@ -135,6 +138,12 @@ export function PostCard({
   const [burst, setBurst] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Full-image lightbox — a single tap opens the uncropped photo; a double
+  // tap still loves it (see the click-timer dance in onPhotoClick below).
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Long captions collapse behind a "… more" toggle (see the caption block below).
   const [expanded, setExpanded] = useState(false);
   const isLongCaption = (post.title.length + post.description.length) > 140;
@@ -231,9 +240,25 @@ export function PostCard({
 
   // Double-tap / double-click the photo to love it (with a heart burst).
   function onPhotoDoubleClick() {
+    if (clickTimer.current) {
+      clearTimeout(clickTimer.current);
+      clickTimer.current = null;
+    }
     if (!loved) react("love");
     setBurst(true);
     setTimeout(() => setBurst(false), 800);
+  }
+
+  // Single tap opens the full-image lightbox — but a click always fires
+  // before a dblclick, so delay it briefly and let the second click (which
+  // triggers onPhotoDoubleClick above) cancel it instead.
+  function onPhotoClick() {
+    if (clickTimer.current || lightboxMedia.length === 0) return;
+    clickTimer.current = setTimeout(() => {
+      clickTimer.current = null;
+      setLightboxIndex(0);
+      setLightboxOpen(true);
+    }, 220);
   }
 
   async function toggleComments() {
@@ -365,6 +390,8 @@ export function PostCard({
   if (removed) return null;
 
   const initial = (post.authorName ?? "T").charAt(0).toUpperCase();
+  const lightboxMedia: MediaItem[] =
+    media && media.length > 0 ? media : post.photoUrl ? [{ url: post.photoUrl, kind: "image" }] : [];
 
   return (
     <Reveal
@@ -455,13 +482,15 @@ export function PostCard({
         <p className="px-4 pb-1 text-xs font-medium text-rose-600">{actionError}</p>
       )}
 
-      {/* Photo/video — double-tap to love.
+      {/* Photo/video — tap to open the full image, double-tap to love.
           The media is absolutely positioned inside the ratio box: as normal
-          flow content a tall portrait photo overrides `aspect-[4/3]` and
-          stretches the box (a 4:3 tile measured 525px instead of 296px),
-          which is what made grid rows uneven. Out of flow, it can't. */}
+          flow content a tall portrait photo overrides `aspect-square` and
+          stretches the box, which is what made cards uneven. Out of flow,
+          it can't — every card gets the same Instagram-style square tile
+          regardless of variant or the photo's native dimensions. */}
       <div
-        className={`relative shrink-0 cursor-pointer select-none overflow-hidden ${isGrid ? "aspect-[4/3]" : "h-[26rem]"}`}
+        className="relative aspect-square shrink-0 cursor-pointer select-none overflow-hidden"
+        onClick={onPhotoClick}
         onDoubleClick={onPhotoDoubleClick}
       >
         <div className="absolute inset-0">
@@ -732,6 +761,128 @@ export function PostCard({
           </div>
         </>
       )}
+
+      {lightboxOpen && lightboxMedia.length > 0 && (
+        <PhotoLightbox
+          media={lightboxMedia}
+          index={lightboxIndex}
+          onIndexChange={setLightboxIndex}
+          onClose={() => setLightboxOpen(false)}
+          alt={post.title}
+        />
+      )}
     </Reveal>
+  );
+}
+
+// Full-screen, uncropped view of a post's photo/video — Instagram's "tap the
+// square tile to see the whole shot" pattern. Portaled to <body> so it isn't
+// clipped by the card's `overflow-hidden` photo box.
+function PhotoLightbox({
+  media,
+  index,
+  onIndexChange,
+  onClose,
+  alt,
+}: {
+  media: MediaItem[];
+  index: number;
+  onIndexChange: (i: number) => void;
+  onClose: () => void;
+  alt: string;
+}) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onIndexChange(Math.max(0, index - 1));
+      if (e.key === "ArrowRight") onIndexChange(Math.min(media.length - 1, index + 1));
+    }
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose, onIndexChange, index, media.length]);
+
+  if (!mounted) return null;
+
+  const current = media[Math.min(index, media.length - 1)];
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close"
+        className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
+      >
+        <X className="h-5 w-5" />
+      </button>
+
+      {media.length > 1 && index > 0 && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onIndexChange(index - 1);
+          }}
+          aria-label="Previous"
+          className="absolute left-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-90 sm:left-4"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
+      {media.length > 1 && index < media.length - 1 && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onIndexChange(index + 1);
+          }}
+          aria-label="Next"
+          className="absolute right-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-90 sm:right-4"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      )}
+
+      <div className="max-h-full max-w-full" onClick={(e) => e.stopPropagation()}>
+        {current.kind === "video" ? (
+          <video
+            src={current.url}
+            className="max-h-[92vh] max-w-[95vw] rounded-lg object-contain"
+            controls
+            autoPlay
+            playsInline
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={current.url}
+            alt={alt}
+            className="max-h-[92vh] max-w-[95vw] rounded-lg object-contain"
+          />
+        )}
+      </div>
+
+      {media.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+          {media.map((_, i) => (
+            <span
+              key={i}
+              className={`h-1.5 w-1.5 rounded-full transition ${i === index ? "bg-white" : "bg-white/40"}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>,
+    document.body
   );
 }
