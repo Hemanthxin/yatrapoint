@@ -605,6 +605,111 @@ export const hotels = pgTable("hotels", {
 export type Hotel = typeof hotels.$inferSelect;
 export type NewHotel = typeof hotels.$inferInsert;
 
+// --- Unified place catalogue ---
+//
+// ONE row per real place. Replaces the three overlapping catalogues
+// (destinations / nearby_destinations / city_places), which duplicated the same
+// place across tables — the same fort was a Destination AND a One-day trip, and
+// its photo gallery attached to only one of the two copies, so the admin saw it
+// twice with the photos on the wrong one.
+//
+// A place can be several things at once, which is the whole point: Nandi Hills
+// is genuinely a destination AND a day trip. `kinds` records which catalogues a
+// row belongs to, and the facet columns below hold the fields each catalogue
+// needs. A facet's columns are null when the place isn't of that kind.
+export const places = pgTable(
+  "places",
+  {
+    // Preserved from the surviving source row, so favourites and saved trip
+    // plans that reference a destination id keep working.
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    slug: varchar("slug", { length: 160 }).notNull().unique(),
+    // JSON array of slugs this place used to be reachable by, from the other
+    // catalogues it was merged out of. /destinations/x, /one-day-trips/y and
+    // /explore-bangalore/z must all keep resolving after consolidation.
+    legacySlugs: text("legacy_slugs"),
+    name: varchar("name", { length: 220 }).notNull(),
+    // Comma-separated: "destination", "day-trip", "city". Never empty.
+    kinds: varchar("kinds", { length: 60 }).notNull(),
+
+    // --- shared by every place ---
+    category: varchar("category", { length: 40 }).notNull(),
+    description: text("description").notNull(),
+    shortDescription: varchar("short_description", { length: 240 }).notNull(),
+    imageUrl: text("image_url"),
+    latitude: varchar("latitude", { length: 20 }),
+    longitude: varchar("longitude", { length: 20 }),
+    popularity: integer("popularity").default(50).notNull(),
+    bookingUrl: text("booking_url"),
+    // Unified per-person entry fee. `destinations.entry_fees` and the other two
+    // tables' `entry_fee_per_person` were the same figure under two names.
+    entryFeePerPerson: integer("entry_fee_per_person").default(0).notNull(),
+    isHidden: boolean("is_hidden").default(false).notNull(),
+
+    // --- destination facet ---
+    state: varchar("state", { length: 60 }),
+    district: varchar("district", { length: 80 }),
+    placeType: varchar("place_type", { length: 60 }),
+    openingTimings: varchar("opening_timings", { length: 120 }),
+    entryFeesForeigner: integer("entry_fees_foreigner"),
+    entryFeesChild: integer("entry_fees_child"),
+    ticketOptions: text("ticket_options"),
+    visitorGuidelines: text("visitor_guidelines"),
+    budgetPerDay: integer("budget_per_day"),
+    recommendedDays: integer("recommended_days"),
+    bestMonths: text("best_months"),
+    addedByEmail: varchar("added_by_email", { length: 255 }),
+    addedByName: varchar("added_by_name", { length: 120 }),
+
+    // --- day-trip facet ---
+    baseCity: varchar("base_city", { length: 60 }),
+    distanceKm: integer("distance_km"),
+    drivingMinutes: integer("driving_minutes"),
+    idealHoursAtPlace: integer("ideal_hours_at_place"),
+    bestStartTime: varchar("best_start_time", { length: 10 }),
+    highlights: text("highlights"),
+
+    // --- city facet ---
+    city: varchar("city", { length: 120 }),
+    cityKind: varchar("city_kind", { length: 40 }),
+    area: varchar("area", { length: 200 }),
+    avgCostForTwo: integer("avg_cost_for_two"),
+    idealMinutesAtPlace: integer("ideal_minutes_at_place"),
+    openTime: varchar("open_time", { length: 10 }),
+    closeTime: varchar("close_time", { length: 10 }),
+    openDays: varchar("open_days", { length: 30 }),
+    tags: text("tags"),
+
+    // --- Google Places sync ---
+    googlePlaceId: text("google_place_id"),
+    googleRating: real("google_rating"),
+    googleRatingCount: integer("google_rating_count"),
+    googleWeeklyHours: text("google_weekly_hours"),
+    googleBusinessStatus: varchar("google_business_status", { length: 24 }),
+    googleSyncedAt: timestamp("google_synced_at"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    kindsIdx: index("places_kinds_idx").on(table.kinds),
+    stateIdx: index("places_state_idx").on(table.state),
+    districtIdx: index("places_district_idx").on(table.district),
+    categoryIdx: index("places_category_idx").on(table.category),
+    popularityIdx: index("places_popularity_idx").on(table.popularity),
+    baseCityIdx: index("places_base_city_idx").on(table.baseCity),
+  })
+);
+export type Place = typeof places.$inferSelect;
+export type NewPlace = typeof places.$inferInsert;
+
+// The three catalogues a place can belong to.
+export const PLACE_KIND = {
+  destination: "destination",
+  dayTrip: "day-trip",
+  city: "city",
+} as const;
+export type PlaceKind = (typeof PLACE_KIND)[keyof typeof PLACE_KIND];
+
 // --- Community-suggested festivals & events (BUG-10) ---
 // The built-in festival list is a static JSON file of major national
 // festivals, so a locally-organised jatre, temple car festival or town fair

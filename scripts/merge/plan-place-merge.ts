@@ -94,6 +94,51 @@ function toleranceKm(sharedNameFrequency: number): number {
   return 0.5; // common — only an exact co-location counts
 }
 
+// Human decisions on the containment matches, which are never auto-approved.
+// Keyed by the survivor's slug. `exclude` drops individual rows from a cluster
+// that is otherwise right — several clusters correctly pair two catalogue rows
+// AND wrongly sweep in a neighbour, and rejecting the whole cluster would throw
+// away a real merge to avoid a bad one.
+const REVIEW_DECISIONS: Record<
+  string,
+  { approve: boolean; exclude?: string[]; note: string }
+> = {
+  // --- confirmed the same place ---
+  "kurudumale-ganesha-temple": { approve: true, note: "same temple; the day-trip row holds the 4-photo gallery" },
+  "lepakshi-veerabhadra-temple": { approve: true, note: "one temple, 0.93 km apart" },
+  "nanjangud-srikanteshwara-temple": { approve: true, note: "identical coordinates" },
+  "gavi-gangadhareshwara-temple": { approve: true, note: "cave temple, same site" },
+  "harihareshwara-temple-harihar": { approve: true, note: "60 m apart, same temple" },
+  "ghati-subramanya-temple": { approve: true, note: "same temple; day-trip row has imprecise coordinates" },
+  "wonderla-amusement-park-2": { approve: true, note: "Wonderla Bengaluru, one park" },
+
+  // --- right pairing, wrong extras ---
+  "nandi-hills": {
+    approve: true,
+    exclude: ["vivekananda-falls-nandi"],
+    note: "merge the destination + day-trip rows (rescues the gallery); Vivekananda Falls is a separate spot ON Nandi Hills, not the hill itself",
+  },
+  "hal-aerospace-museum": {
+    approve: true,
+    exclude: ["hal-market-way-144989739", "hal-park-way-1274050061"],
+    note: "HAL Heritage Centre IS the museum's full name; HAL Market and HAL Park are unrelated places sharing the HAL prefix",
+  },
+  "orion-mall": {
+    approve: true,
+    exclude: ["pvr-orion-mall-node-2489017325"],
+    note: "the two Orion Mall rows are one mall; the PVR is a cinema inside it, worth keeping separately",
+  },
+
+  // --- rejected ---
+  "cubbon-park": { approve: false, note: "Cubbon Park Circle is a road junction and Mark Cubbon Statue is a statue" },
+  "jawaharlal-nehru-planetarium-bengaluru": { approve: false, note: "Nehru Park and the 'Jawaharlal Nehru' node are not the planetarium" },
+  "ulsoor-lake": { approve: false, note: "Watson's Ulsoor is a pub; Ulsoor Lake Park is the surrounding park" },
+  "kaivara-kailasagiri": { approve: false, note: "Kaiwara is a village with several distinct sites, not one place" },
+  "big-banyan-tree": { approve: false, note: "the matched city row's slug reads blr-nandi-hills-viewpoint — its name and slug disagree, so the source data is unreliable" },
+  "blr-big-banyan-tree": { approve: false, note: "20 km apart; likely a different banyan" },
+  "revana-siddeshwara-betta": { approve: false, note: "21 km between the hill and the temple — needs a human to confirm they are one site" },
+};
+
 function km(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 6371;
   const rad = (d: number) => (d * Math.PI) / 180;
@@ -344,15 +389,44 @@ async function run() {
       confidence: c.some((x) => c.some((y) => x !== y && sameForMerge(x, y).confidence === "review"))
         ? "review"
         : "high",
-      // Only exact-name matches are pre-approved. Anything resting on one name
-      // containing another starts EXCLUDED — flip it to true after checking
-      // the two rows really are one place.
-      approved: false, // set by confidence below
+      // Filled in below from confidence + the recorded review decisions.
+      approved: false,
+      excludedFromCluster: [] as string[],
+      decisionNote: "" as string,
     };
   });
 
-  // Exact-name clusters are safe to pre-approve; containment clusters are not.
-  for (const c of plan) c.approved = c.confidence === "high";
+  // Exact-name clusters are safe to pre-approve; containment clusters are not,
+  // and take their answer from the recorded human decisions above.
+  let undecided = 0;
+  for (const c of plan) {
+    if (c.confidence === "high") {
+      c.approved = true;
+      continue;
+    }
+    const decision = REVIEW_DECISIONS[c.survivor.slug];
+    if (!decision) {
+      c.approved = false;
+      undecided++;
+      continue;
+    }
+    if (decision.exclude?.length) {
+      const drop = new Set(decision.exclude);
+      const kept = c.absorbed.filter((a) => !drop.has(a.slug));
+      c.excludedFromCluster = c.absorbed.filter((a) => drop.has(a.slug)).map((a) => a.slug);
+      c.absorbed = kept;
+      c.legacySlugs = kept.map((a) => a.slug);
+      c.galleryMovedFrom = kept
+        .filter((a) => a.gallery > 0)
+        .map((a) => `${a.src}:${a.id} (${a.gallery} photos)`);
+    }
+    // A cluster whose every absorbed row was excluded is no longer a merge.
+    c.approved = decision.approve && c.absorbed.length > 0;
+    c.decisionNote = decision.note;
+  }
+  if (undecided > 0) {
+    console.log(`\n${undecided} containment cluster(s) have no recorded decision — left unmerged.`);
+  }
 
   mkdirSync("scripts/merge", { recursive: true });
   writeFileSync("scripts/merge/merge-plan.json", JSON.stringify(plan, null, 2));
