@@ -9,7 +9,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { BANGALORE_CENTER, type LatLng } from "@/lib/geo";
+import { BANGALORE_CENTER, haversineKm, type LatLng } from "@/lib/geo";
+import { reverseGeocode } from "@/lib/actions/geo";
 
 type Status = "idle" | "prompting" | "granted" | "denied" | "unavailable";
 
@@ -30,6 +31,9 @@ interface LocationState {
    *  the fix for devices (mainly laptops) whose browser can only report a
    *  coarse, IP-based location. */
   setManual: (lat: number, lng: number) => void;
+  /** Short, human-readable label for `coords` (e.g. "HSR Layout, Karnataka"),
+   *  resolved in the background — null until the lookup finishes. */
+  placeName: string | null;
 }
 
 const Ctx = createContext<LocationState | null>(null);
@@ -41,6 +45,8 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   const [source, setSource] = useState<"device" | "manual">("device");
   const [watching, setWatching] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<number | undefined>();
+  const [placeName, setPlaceName] = useState<string | null>(null);
+  const lastGeocodedRef = useRef<LatLng | null>(null);
   const watchId = useRef<number | null>(null);
   // Tracks the best (lowest) accuracy seen during the current request(), so
   // the brief refine-watch below never overwrites a good fix with a worse one.
@@ -143,9 +149,30 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       setSource("manual");
       setLastUpdate(Date.now());
       setStatus("granted");
+      // Force a fresh reverse-geocode for the new point instead of briefly
+      // showing the previous location's name.
+      setPlaceName(null);
+      lastGeocodedRef.current = null;
     },
     [stopRefine]
   );
+
+  // Resolve `coords` to a short place name in the background. Debounced and
+  // distance-gated so the refine-watch's burst of updates (see `request`
+  // above) doesn't fire a lookup per tick — only once things settle, and
+  // only when we've actually moved far enough for the old name to be stale.
+  useEffect(() => {
+    if (status !== "granted") return;
+    const timer = setTimeout(() => {
+      const last = lastGeocodedRef.current;
+      if (last && haversineKm(last, coords) < 1) return;
+      lastGeocodedRef.current = coords;
+      reverseGeocode(coords.lat, coords.lng)
+        .then((name) => setPlaceName(name))
+        .catch(() => {});
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [coords, status]);
 
   useEffect(() => {
     return () => {
@@ -170,8 +197,21 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       watching,
       lastUpdate,
       setManual,
+      placeName,
     }),
-    [coords, accuracyMeters, status, source, request, startWatch, stopWatch, watching, lastUpdate, setManual]
+    [
+      coords,
+      accuracyMeters,
+      status,
+      source,
+      request,
+      startWatch,
+      stopWatch,
+      watching,
+      lastUpdate,
+      setManual,
+      placeName,
+    ]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -64,7 +64,7 @@ export function LocationBanner({
                 isCoarse ? "bg-amber-100/70 text-amber-700/80" : "bg-emerald-100/70 text-emerald-700/80"
               }`}
             >
-              {loc.coords.lat.toFixed(4)}, {loc.coords.lng.toFixed(4)}
+              {loc.placeName ?? `${loc.coords.lat.toFixed(4)}, ${loc.coords.lng.toFixed(4)}`}
             </span>
             <button
               type="button"
