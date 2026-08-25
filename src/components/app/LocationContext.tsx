@@ -34,6 +34,11 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   const [watching, setWatching] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<number | undefined>();
   const watchId = useRef<number | null>(null);
+  // Tracks the best (lowest) accuracy seen during the current request(), so
+  // the brief refine-watch below never overwrites a good fix with a worse one.
+  const bestAccuracyRef = useRef<number>(Infinity);
+  const refineWatchId = useRef<number | null>(null);
+  const refineTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const apply = useCallback((pos: GeolocationPosition) => {
     setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
@@ -42,20 +47,59 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     setStatus("granted");
   }, []);
 
+  const applyIfBetter = useCallback(
+    (pos: GeolocationPosition) => {
+      if (pos.coords.accuracy > bestAccuracyRef.current) return;
+      bestAccuracyRef.current = pos.coords.accuracy;
+      apply(pos);
+    },
+    [apply]
+  );
+
+  const stopRefine = useCallback(() => {
+    if (refineWatchId.current !== null) {
+      navigator.geolocation.clearWatch(refineWatchId.current);
+      refineWatchId.current = null;
+    }
+    if (refineTimeoutId.current !== null) {
+      clearTimeout(refineTimeoutId.current);
+      refineTimeoutId.current = null;
+    }
+  }, []);
+
   const request = useCallback(() => {
     if (typeof window === "undefined" || !("geolocation" in navigator)) {
       setStatus("unavailable");
       return;
     }
     setStatus("prompting");
+    stopRefine();
+    bestAccuracyRef.current = Infinity;
     navigator.geolocation.getCurrentPosition(
-      apply,
+      (pos) => {
+        applyIfBetter(pos);
+        // The first fix is often a coarse network/IP-based estimate (city- or
+        // country-level accuracy) that gets replaced by a much tighter GPS/Wi-Fi
+        // fix a few seconds later. Keep listening briefly and adopt any better
+        // reading, instead of freezing on that first coarse fix.
+        refineWatchId.current = navigator.geolocation.watchPosition(
+          (better) => {
+            applyIfBetter(better);
+            if (better.coords.accuracy <= 50) stopRefine();
+          },
+          () => {
+            // A refine error doesn't invalidate the fix we already applied.
+          },
+          { enableHighAccuracy: true, timeout: 10_000, maximumAge: 0 }
+        );
+        refineTimeoutId.current = setTimeout(stopRefine, 15_000);
+      },
       (err) => {
         setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "unavailable");
       },
       { enableHighAccuracy: true, timeout: 10_000, maximumAge: 30_000 }
     );
-  }, [apply]);
+  }, [applyIfBetter, stopRefine]);
 
   const startWatch = useCallback(() => {
     if (typeof window === "undefined" || !("geolocation" in navigator)) {
@@ -63,6 +107,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     if (watchId.current !== null) return;
+    stopRefine();
     watchId.current = navigator.geolocation.watchPosition(
       apply,
       (err) => {
@@ -71,7 +116,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       { enableHighAccuracy: true, timeout: 10_000, maximumAge: 5_000 }
     );
     setWatching(true);
-  }, [apply]);
+  }, [apply, stopRefine]);
 
   const stopWatch = useCallback(() => {
     if (watchId.current !== null) {
@@ -86,7 +131,9 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
       if (watchId.current !== null) {
         navigator.geolocation.clearWatch(watchId.current);
       }
+      stopRefine();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const value = useMemo<LocationState>(
