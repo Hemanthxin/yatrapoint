@@ -208,6 +208,47 @@ body {
   background-color: var(--app-bg);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BLUEPRINT GRID
+   Ported from the Rexovi "Digital Workshop" design system (d:\Hemanth\pro,
+   app/globals.css `.blueprint`) — same 68px cell and the same radial mask, so
+   it reads identically: crisp near the top of the viewport, dissolving as it
+   falls away. Sits behind everything and never takes a pointer event.
+
+   The line colour is a token rather than a literal because Saafera has three
+   themes; a fixed hairline that works on the near-white canvas is invisible on
+   the dark one and far too loud on vibrant.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root { --grid-line: rgba(17, 24, 20, 0.055); }
+:root[data-theme="dark"] { --grid-line: rgba(232, 237, 243, 0.055); }
+:root[data-theme="vibrant"] { --grid-line: rgba(255, 255, 255, 0.07); }
+
+.blueprint {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 68px 68px;
+  -webkit-mask-image: radial-gradient(120% 80% at 50% 0%, #000 15%, transparent 78%);
+  mask-image: radial-gradient(120% 80% at 50% 0%, #000 15%, transparent 78%);
+}
+
+/* Scoped variant for a single section that wants its own grid (the app-wide
+   one is fixed to the viewport, so a section needs absolute positioning to
+   scroll with its own content). */
+.blueprint--local {
+  position: absolute;
+}
+
+/* The grid is decoration. Anyone who has asked for less motion/contrast still
+   gets it, but it should never fight the text on a high-contrast display. */
+@media (prefers-contrast: more) {
+  .blueprint { display: none; }
+}
+
 /* The signature green aura — layered emerald glows on black. */
 :root[data-theme="dark"] .aurora-canvas {
   opacity: 1;

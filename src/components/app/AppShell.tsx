@@ -33,6 +33,12 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
         <div className="aurora-blob right-1/4 top-1/2 h-64 w-64 bg-teal-200/35 animate-breathe" />
       </div>
 
+      {/* Blueprint grid, over the aurora and under the content. Fixed to the
+          viewport so it stays put while the page scrolls, the way it does on
+          Rexovi — a grid that scrolls with a long page reads as wallpaper
+          rather than as a drafting surface. */}
+      <span aria-hidden className="blueprint" />
+
       <Sidebar open={open} onClose={() => setOpen(false)} />
 
       <div className="relative z-10 lg:pl-64">
