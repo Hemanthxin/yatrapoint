@@ -7,8 +7,7 @@ import {
   Heart,
   Users,
   UsersRound,
-  Car,
-  CarTaxiFront,
+  Car,
   Bike,
   CheckCircle2,
   Check,
@@ -120,24 +119,20 @@ function availableTripTypes(travellersNum: number) {
   return TRIP_TYPES.filter((t) => t.key === "Family" || t.key === "Friends");
 }
 
-// BUG-06: Bike / Car / Taxi must each show their OWN icon. Taxi was missing
-// from this picker entirely even though the cost model has always had a `cab`
-// vehicle profile, so a traveller planning by taxi was silently costed as a
-// hatchback. Each chip now carries the icon for the vehicle it names, and the
-// three mappings below (mode, vehicle profile) stay in step with these keys.
+// BUG-06 was that each chip must show the icon for the vehicle it names —
+// Sedan carried the SUV glyph and SUV a minibus. That part stands. Taxi is
+// deliberately NOT offered here: the planner prices a self-driven trip, and the
+// `cab` profile is still available on a place's own budget panel for anyone
+// costing a taxi. The three maps below must stay in step with these keys.
 const TRANSPORT = [
   { key: "Bike", icon: Bike },
   { key: "Car", icon: Car },
-  { key: "Taxi", icon: CarTaxiFront },
 ];
 
 // Transport chip → travel mode sent to the planner (drives cost + map style).
-// A taxi drives the same roads as a car, so it routes as "car" and differs
-// only in ₹/km, which comes from TRANSPORT_VEHICLE below.
 const MODE_BY_TRANSPORT: Record<string, "any" | "car" | "bike" | "bus" | "train"> = {
   Bike: "bike",
   Car: "car",
-  Taxi: "car",
 };
 
 const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
@@ -146,7 +141,6 @@ const FOOD = ["Any", "Veg", "Non-Veg", "Jain", "Eggetarian"];
 const TRANSPORT_VEHICLE: Record<string, VehicleKind> = {
   Bike: "bike",
   Car: "small_car",
-  Taxi: "cab",
 };
 
 interface WizardFormProps {
@@ -236,7 +230,12 @@ export function WizardForm({ initial }: WizardFormProps) {
       if (typeof f.days === "string") setDays(f.days);
       if (typeof f.travellers === "string") setTravellers(f.travellers);
       if (typeof f.tripType === "string") setTripType(f.tripType);
-      if (typeof f.transport === "string") setTransport(f.transport);
+      // Ignore a saved transport that is no longer offered (a session stored
+      // while Taxi was still a choice) — restoring it would leave the picker
+      // with nothing selected and silently fall back to a car anyway.
+      if (typeof f.transport === "string" && TRANSPORT.some((t) => t.key === f.transport)) {
+        setTransport(f.transport);
+      }
       if (typeof f.food === "string") setFood(f.food);
       if (typeof f.includeFood === "boolean") setIncludeFood(f.includeFood);
       if (typeof f.foodBudget === "string") setFoodBudget(f.foodBudget);
