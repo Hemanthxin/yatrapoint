@@ -12,6 +12,7 @@ import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
 import { Reveal } from "./Reveal";
 import { PlaceStatusBadgesCompact } from "./PlaceStatusBadges";
+import { PlaceImage } from "./PlaceImage";
 
 interface NearbyTripCardProps {
   destination: NearbyDestination;
@@ -39,41 +40,54 @@ export function NearbyTripCard({ destination, userDistanceKm, direction, delay }
       delay={delay}
       className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5"
     >
-      <Link href={`/one-day-trips/${destination.slug}`} className="relative block">
-        <div
-          className={`relative grid h-44 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient}`}
-        >
-          <span className="text-6xl drop-shadow-md transition duration-500 group-hover:scale-110">
-            {cat?.emoji ?? "📍"}
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
-            {cat?.emoji} {cat?.label ?? destination.category}
-          </span>
-          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-xs font-bold text-white backdrop-blur">
-            <Navigation className="h-3 w-3" />
-            {formatKm(userDistanceKm)}
-          </span>
-          <div className="absolute inset-x-0 bottom-0 p-4">
-            <h3 className="truncate text-lg font-extrabold tracking-tight text-white drop-shadow">
-              {destination.name}
-            </h3>
-            <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-white/85">
-              <MapPin className="h-3 w-3 shrink-0" />
-              <span className="truncate">
-                from {destination.baseCity} · {destination.distanceKm} km
-              </span>
-            </p>
-          </div>
-        </div>
+      <Link href={`/one-day-trips/${destination.slug}`} className="relative block h-44 w-full overflow-hidden">
+        {/* The card used to paint a flat gradient + emoji here, so a trip with
+            a real photo never showed it. Same component as every other card in
+            the app now, which also gives it the Wikipedia fallback. */}
+        <PlaceImage
+          name={destination.name}
+          storedSrc={destination.imageUrl}
+          hint={destination.baseCity}
+          category={destination.category}
+          emoji={cat?.emoji ?? "📍"}
+          gradient={gradient}
+          className="h-full w-full transition duration-500 group-hover:scale-105"
+          emojiClassName="text-6xl"
+        />
+        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
+          {cat?.emoji} {cat?.label ?? destination.category}
+        </span>
+        <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-xs font-bold text-white backdrop-blur">
+          <Navigation className="h-3 w-3" />
+          {formatKm(userDistanceKm)}
+        </span>
       </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
+        {/* The place name lives in the card BODY, not as white text laid over
+            the photo. Overlaid on an arbitrary image it was unreadable — and
+            on these cards it was not showing at all, which is what left the
+            trips looking anonymous. Dark text on the card cannot fail that
+            way, whatever photo the place has. */}
+        <div>
+          <h3 className="line-clamp-2 text-base font-extrabold leading-snug tracking-tight text-slate-900">
+            <Link href={`/one-day-trips/${destination.slug}`} className="hover:underline">
+              {destination.name}
+            </Link>
+          </h3>
+          <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-slate-500">
+            <MapPin className="h-3 w-3 shrink-0" />
+            <span className="truncate">
+              from {destination.baseCity} · {destination.distanceKm} km
+            </span>
+          </p>
+        </div>
+
         <PlaceStatusBadgesCompact
           rating={destination.googleRating}
           ratingCount={destination.googleRatingCount}
           weeklyHoursJson={destination.googleWeeklyHours}
-            businessStatus={destination.googleBusinessStatus}
+          businessStatus={destination.googleBusinessStatus}
         />
         <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
           {destination.shortDescription}
