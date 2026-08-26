@@ -1,5 +1,4 @@
 import { notFound, redirect } from "next/navigation";
-import Image from "next/image";
 import {
   Calendar,
   MapPin,
@@ -19,7 +18,7 @@ import { LocationBanner } from "@/components/app/LocationBanner";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
-import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
@@ -74,30 +73,13 @@ export default async function DestinationPage({ params }: PageProps) {
 
       <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
         <div className="relative h-72 sm:h-80 md:h-96">
-          {gallery.length > 0 ? (
-            <div className="absolute inset-0">
-              <MediaCarousel
-                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
-                alt={destination.name}
-                className="h-full w-full"
-              />
-            </div>
-          ) : destination.imageUrl ? (
-            <Image
-              src={destination.imageUrl}
-              alt={destination.name}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-          ) : (
-            <div
-              className={`relative grid h-full w-full place-items-center bg-gradient-to-br ${gradient}`}
-            >
-              <span className="text-9xl drop-shadow">{cat?.emoji ?? "📍"}</span>
-            </div>
-          )}
+          <HeroPhoto
+            images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
+            fallbackImageUrl={destination.imageUrl}
+            alt={destination.name}
+            emoji={cat?.emoji ?? "📍"}
+            gradient={gradient}
+          />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
           <div className="absolute right-4 top-4">
@@ -108,7 +90,10 @@ export default async function DestinationPage({ params }: PageProps) {
             />
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+          {/* pointer-events-none so a tap on the title area still reaches the
+              photo underneath and opens it — this block covers the lower half
+              of the hero and holds nothing clickable. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${chip}`}
