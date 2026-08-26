@@ -79,6 +79,8 @@ export default async function DestinationPage({ params }: PageProps) {
             alt={destination.name}
             emoji={cat?.emoji ?? "📍"}
             gradient={gradient}
+            preferWiki
+            hint={[destination.district, destination.state].filter(Boolean).join(", ")}
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 

@@ -19,7 +19,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
 import { Reveal } from "@/components/app/Reveal";
-import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
@@ -52,32 +52,37 @@ export default async function CityPlacePage({ params }: PageProps) {
       <LocationBanner />
 
       <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div
-          className={`relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 md:p-8 ${
-            gallery.length > 0 ? "min-h-[16rem] sm:min-h-[18rem]" : ""
-          }`}
-        >
-          {gallery.length > 0 && (
-            <div className="absolute inset-0">
-              <MediaCarousel
-                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
-                alt={place.name}
-                className="h-full w-full"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-800/40 to-transparent" />
-            </div>
-          )}
+        {/* This hero only ever drew a photo when the place had a GALLERY — it
+            ignored the place's own stored photo entirely, so most city places
+            showed nothing but a flat green panel. It now shows the stored
+            photo, falls back to a name-matched Wikipedia one for the many
+            OpenStreetMap-sourced places that have no picture of their own, and
+            opens full screen when tapped. */}
+        <div className="relative min-h-[16rem] overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 sm:min-h-[18rem] md:p-8">
+          <HeroPhoto
+            images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
+            fallbackImageUrl={place.imageUrl}
+            alt={place.name}
+            emoji="📍"
+            gradient="from-emerald-500 via-emerald-600 to-teal-700"
+            preferWiki
+            hint={place.area ?? place.city}
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-800/40 to-transparent" />
           <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-          <p className="relative text-xs font-bold uppercase tracking-wide text-white/90">
-            ★ Curated · {place.kind}
-          </p>
-          <h1 className="relative mt-1 text-3xl font-extrabold tracking-tight text-white drop-shadow sm:text-4xl">
-            {place.name}
-          </h1>
-          <p className="relative mt-1.5 flex items-center gap-1 text-sm font-medium text-white/90">
-            <MapPin className="h-4 w-4 shrink-0" />
-            {place.area ?? place.city}
-          </p>
+          {/* Nothing here is clickable, so taps fall through to the photo. */}
+          <div className="pointer-events-none relative flex h-full flex-col justify-end">
+            <p className="text-xs font-bold uppercase tracking-wide text-white/90">
+              ★ Curated · {place.kind}
+            </p>
+            <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-white drop-shadow sm:text-4xl">
+              {place.name}
+            </h1>
+            <p className="mt-1.5 flex items-center gap-1 text-sm font-medium text-white/90">
+              <MapPin className="h-4 w-4 shrink-0" />
+              {place.area ?? place.city}
+            </p>
+          </div>
         </div>
 
         <div className="p-6 md:p-8">

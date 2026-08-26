@@ -37,7 +37,7 @@ import {
 import type { NearbyDestination } from "@/lib/db/schema";
 import { placeDirectionsUrl } from "@/lib/maps";
 import { Reveal } from "@/components/app/Reveal";
-import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { HeroPhoto } from "@/components/app/HeroPhoto";
 import type { GalleryImage } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 
@@ -171,21 +171,24 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
         <div
           className={`relative grid h-56 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient} sm:h-64 md:h-72`}
         >
-          {gallery.length > 0 ? (
-            <div className="absolute inset-0">
-              <MediaCarousel
-                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
-                alt={trip.name}
-                className="h-full w-full"
-              />
-            </div>
-          ) : (
-            <span className="text-8xl drop-shadow-lg">{cat?.emoji ?? "📍"}</span>
-          )}
+          {/* Tapping the photo opens it full screen. This also falls back to
+              the trip's stored photo, which the hero used to ignore entirely —
+              a trip with a picture but no gallery showed only a category
+              emoji. */}
+          <HeroPhoto
+            images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
+            fallbackImageUrl={trip.imageUrl}
+            alt={trip.name}
+            emoji={cat?.emoji ?? "📍"}
+            gradient={gradient}
+            preferWiki
+            hint={trip.baseCity}
+          />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
           {/* Emerald glow wash for that Play-Store hero pop. */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_10%_110%,rgba(16,185,129,0.5),transparent_60%)] mix-blend-screen" />
-          <div className="absolute inset-x-0 bottom-0 p-6">
+          {/* Nothing here is clickable, so taps fall through to the photo. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6">
             <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur">
               {cat?.emoji} {cat?.label ?? trip.category}
             </span>

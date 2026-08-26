@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Expand } from "lucide-react";
 import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { resolvePlaceImage } from "@/lib/actions/place-image";
 import { PhotoLightbox, type LightboxImage } from "./PhotoLightbox";
 
 interface HeroPhotoProps {
@@ -15,6 +15,12 @@ interface HeroPhotoProps {
   // Category tile shown when the place has no photo at all.
   emoji: string;
   gradient: string;
+  // Look the place up on Wikipedia when it has no photo of its own. Detail
+  // pages render ONE place, so the lookup is cheap here — unlike a catalogue
+  // grid, where doing it per card would fire hundreds of requests.
+  preferWiki?: boolean;
+  // Nearby place/area, used to disambiguate a generic name in that lookup.
+  hint?: string | null;
 }
 
 // A place's hero image, which opens full-screen when tapped.
@@ -31,12 +37,38 @@ export function HeroPhoto({
   alt,
   emoji,
   gradient,
+  preferWiki = false,
+  hint,
 }: HeroPhotoProps) {
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
+  // The single photo actually being shown: the stored one, or a name-matched
+  // Wikipedia photo resolved below. Held here rather than inside PlaceImage so
+  // the lightbox can open the SAME picture the hero is displaying.
+  const [single, setSingle] = useState<string | null>(fallbackImageUrl ?? null);
+
+  useEffect(() => {
+    setSingle(fallbackImageUrl ?? null);
+  }, [fallbackImageUrl]);
+
+  useEffect(() => {
+    // Only when the place has nothing of its own to show.
+    if (images.length > 0 || fallbackImageUrl || !preferWiki) return;
+    let alive = true;
+    resolvePlaceImage(alt, hint ?? undefined)
+      .then((url) => {
+        if (alive && url) setSingle(url);
+      })
+      .catch(() => {
+        // Leave the gradient tile in place.
+      });
+    return () => {
+      alive = false;
+    };
+  }, [images.length, fallbackImageUrl, preferWiki, alt, hint]);
 
   const lightboxImages: LightboxImage[] =
-    images.length > 0 ? images : fallbackImageUrl ? [{ url: fallbackImageUrl }] : [];
+    images.length > 0 ? images : single ? [{ url: single }] : [];
   const canOpen = lightboxImages.length > 0;
 
   return (
@@ -48,18 +80,19 @@ export function HeroPhoto({
             alt={alt}
             className="h-full w-full"
           />
-        ) : fallbackImageUrl ? (
-          <Image
-            src={fallbackImageUrl}
+        ) : single ? (
+          // A plain <img>, not next/image: admin-supplied photos are stored as
+          // data URLs, which next/image refuses to load.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={single}
             alt={alt}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
+            className="h-full w-full object-cover"
+            onError={() => setSingle(null)}
           />
         ) : (
           <div className={`grid h-full w-full place-items-center bg-gradient-to-br ${gradient}`}>
-            <span className="text-9xl drop-shadow">{emoji}</span>
+            <span className="text-8xl drop-shadow sm:text-9xl">{emoji}</span>
           </div>
         )}
       </div>
