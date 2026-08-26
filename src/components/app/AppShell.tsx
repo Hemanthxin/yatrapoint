@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "./Sidebar";
+import { CursorHalo } from "./CursorHalo";
 import { Topbar } from "./Topbar";
 import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
@@ -38,6 +39,10 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
           Rexovi — a grid that scrolls with a long page reads as wallpaper
           rather than as a drafting surface. */}
       <span aria-hidden className="blueprint" />
+
+      {/* Ring that trails the pointer and swells over anything clickable.
+          Absent on touch devices and for reduced-motion users. */}
+      <CursorHalo />
 
       <Sidebar open={open} onClose={() => setOpen(false)} />
 
