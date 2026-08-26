@@ -321,7 +321,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
                       key={k}
                       type="button"
                       onClick={() => setVehicle(k)}
-                      className={`min-h-[44px] rounded-xl border px-2 py-1.5 text-sm transition active:scale-95 ${
+                      className={`min-h-[58px] rounded-xl border px-1 py-1.5 text-sm transition active:scale-95 ${
                         vehicle === k
                           ? "border-transparent bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -329,7 +329,13 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
                       aria-label={VEHICLES[k].label}
                       title={`${VEHICLES[k].label} · ₹${VEHICLES[k].costPerKm}/km`}
                     >
-                      <span className="text-lg">{VEHICLES[k].emoji}</span>
+                      {/* The name, not just the glyph: five vehicle emoji side by
+                          side are near-impossible to tell apart, and the label
+                          was only in a title/aria attribute where nobody sees it. */}
+                      <span className="block text-lg leading-none">{VEHICLES[k].emoji}</span>
+                      <span className="mt-1 block text-[10px] font-semibold leading-tight">
+                        {VEHICLES[k].label}
+                      </span>
                     </button>
                   ))}
                 </div>

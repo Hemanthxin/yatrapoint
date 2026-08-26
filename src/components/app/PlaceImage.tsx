@@ -40,6 +40,20 @@ export function PlaceImage({
   // 0 = primary photo, 1 = neutral fallback, 2 = gradient tile.
   const [stage, setStage] = useState(0);
 
+  // Adopt the new place when the props change.
+  //
+  // `src` is seeded from `storedSrc` ONCE, at mount. Whenever React reuses this
+  // component instance for a DIFFERENT place — paging a catalogue grid is the
+  // case that bites, since the grid renders the same number of cards in the
+  // same positions — the initialiser does not run again, so the name and the
+  // description updated while the photo stayed on the previous page's place.
+  // It looked like a caching problem and cleared on refresh, because a refresh
+  // remounts everything.
+  useEffect(() => {
+    setSrc(storedSrc || null);
+    setStage(0);
+  }, [storedSrc, name]);
+
   // Optional background upgrade to a name-matched Wikipedia photo (detail pages).
   useEffect(() => {
     if (storedSrc || !preferWiki) return;

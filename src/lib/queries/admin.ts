@@ -152,7 +152,7 @@ export async function listAdminPlaces(filter: PlacesFilter = {}): Promise<Places
       .select()
       .from(places)
       .where(cond)
-      .orderBy(desc(places.createdAt))
+      .orderBy(desc(places.createdAt), places.id)
       .limit(pageSize)
       .offset((page - 1) * pageSize);
 
@@ -191,7 +191,7 @@ export async function listRecentAdminPlaces(limit = 8): Promise<Destination[]> {
     const rows = await db
       .select()
       .from(places)
-      .orderBy(desc(places.createdAt))
+      .orderBy(desc(places.createdAt), places.id)
       .limit(limit);
     return rows.map(toDestination);
   } catch {

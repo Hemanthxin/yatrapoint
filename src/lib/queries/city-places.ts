@@ -41,7 +41,7 @@ export async function searchCityPlaces(query: string, limit = 12): Promise<CityP
         )
       )
     )
-    .orderBy(desc(places.popularity))
+    .orderBy(desc(places.popularity), places.id)
     .limit(limit);
   return rows.map(toCityPlace);
 }
@@ -59,7 +59,7 @@ export async function listCityPlacesByCategory(
     .select()
     .from(places)
     .where(and(isCityPlace, notPermanentlyClosed, inArray(places.category, cityCategories)))
-    .orderBy(desc(places.popularity))
+    .orderBy(desc(places.popularity), places.id)
     .limit(limit);
   return rows.map(toCityPlace);
 }
@@ -79,7 +79,7 @@ export async function listPopularCityPlaces(limit = 60): Promise<CityPlace[]> {
     .select()
     .from(places)
     .where(and(isCityPlace, notPermanentlyClosed))
-    .orderBy(desc(places.popularity))
+    .orderBy(desc(places.popularity), places.id)
     .limit(limit);
   return rows.map(toCityPlace);
 }
@@ -90,7 +90,7 @@ export async function listCityPlacesByKinds(kinds: string[], limit = 200): Promi
     .select()
     .from(places)
     .where(and(isCityPlace, notPermanentlyClosed, inArray(places.cityKind, kinds)))
-    .orderBy(desc(places.popularity))
+    .orderBy(desc(places.popularity), places.id)
     .limit(limit);
   return rows.map(toCityPlace);
 }

@@ -87,7 +87,7 @@ export async function listDestinations(
     .select()
     .from(places)
     .where(buildWhere(filters, districtOptions))
-    .orderBy(desc(places.popularity))
+    .orderBy(desc(places.popularity), places.id)
     .limit(filters.limit ?? 200)
     .offset(filters.offset ?? 0);
 
@@ -141,7 +141,7 @@ export async function listFavoritedDestinations(
         notPermanentlyClosed
       )
     )
-    .orderBy(desc(places.popularity));
+    .orderBy(desc(places.popularity), places.id);
   return rows.map(toDestination);
 }
 

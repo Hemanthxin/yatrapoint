@@ -39,7 +39,7 @@ export async function listNearby(
     .select()
     .from(places)
     .where(and(...where))
-    .orderBy(desc(places.popularity));
+    .orderBy(desc(places.popularity), places.id);
 
   const rows = await (filters.limit ? query.limit(filters.limit) : query);
   return rows.map(toNearbyDestination);
@@ -74,7 +74,7 @@ export async function searchNearby(query: string, limit = 12): Promise<NearbyDes
         )
       )
     )
-    .orderBy(desc(places.popularity))
+    .orderBy(desc(places.popularity), places.id)
     .limit(limit);
   return rows.map(toNearbyDestination);
 }
