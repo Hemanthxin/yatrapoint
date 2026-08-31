@@ -21,7 +21,7 @@ export const VEHICLES: Record<VehicleKind, VehicleProfile> = {
   small_car: { label: "Hatchback", costPerKm: 7, seats: 4, emoji: "🚗" }, // automobile
   sedan: { label: "Sedan", costPerKm: 9, seats: 4, emoji: "🚘" }, // oncoming automobile
   suv: { label: "SUV", costPerKm: 12, seats: 6, emoji: "🚙" }, // sport utility vehicle
-  cab: { label: "Taxi (Ola/Uber)", costPerKm: 18, seats: 4, emoji: "🚕" }, // taxi
+  cab: { label: "Taxi", costPerKm: 18, seats: 4, emoji: "🚕" }, // taxi
 };
 
 export interface BudgetInput {
