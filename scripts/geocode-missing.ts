@@ -75,26 +75,54 @@ interface Hit {
   lat: number;
   lng: number;
   via: string;
+  district: string | null;
+}
+
+// Nominatim's own name for the district containing the hit. This is how rows
+// imported from a list with NO district get one — asked of OpenStreetMap
+// rather than guessed from the name, which is the only way to get it right for
+// entries like "Oyster Rock" or "Jomlu Theertha".
+function districtFrom(address: Record<string, string> | undefined): string | null {
+  if (!address) return null;
+  const raw =
+    address.state_district ??
+    address.county ??
+    address.district ??
+    address.region ??
+    null;
+  if (!raw) return null;
+  // OSM writes "Bagalkot District", "Mysuru district" — drop the suffix.
+  return raw.replace(/\s+district$/i, "").trim() || null;
 }
 
 async function ask(q: string, state: string, via: string): Promise<Hit | null> {
   const url =
     "https://nominatim.openstreetmap.org/search?" +
-    new URLSearchParams({ q, format: "json", limit: "1", countrycodes: "in" }).toString();
+    new URLSearchParams({
+      q,
+      format: "json",
+      limit: "1",
+      countrycodes: "in",
+      addressdetails: "1",
+    }).toString();
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
       signal: AbortSignal.timeout(20_000),
     });
     if (!res.ok) return null;
-    const rows = (await res.json()) as Array<{ lat: string; lon: string }>;
+    const rows = (await res.json()) as Array<{
+      lat: string;
+      lon: string;
+      address?: Record<string, string>;
+    }>;
     if (!Array.isArray(rows) || rows.length === 0) return null;
     const lat = Number(rows[0].lat);
     const lng = Number(rows[0].lon);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
     const box = BBOX[state.toLowerCase()];
     if (box && (lat < box[0] || lat > box[1] || lng < box[2] || lng > box[3])) return null;
-    return { lat, lng, via };
+    return { lat, lng, via, district: districtFrom(rows[0].address) };
   } catch {
     return null;
   }
@@ -142,11 +170,15 @@ async function run() {
     const cleaned = cleanName(r.name);
     const head = headTerm(r.name);
 
+    // With no district there is nothing to narrow by, so the district-bearing
+    // variants collapse into the plain ones and are skipped below.
+    const withD = (s: string) => (d ? `${s}, ${d}, ${r.state}, India` : `${s}, ${r.state}, India`);
+
     const attempts: Array<[string, string]> = [
-      [`${r.name}, ${d}, ${r.state}, India`, "full"],
-      [`${cleaned}, ${d}, ${r.state}, India`, "cleaned"],
+      [withD(r.name), "full"],
+      [withD(cleaned), "cleaned"],
       [`${cleaned}, ${r.state}, India`, "cleaned/no-district"],
-      [`${head}, ${d}, ${r.state}, India`, "head"],
+      [withD(head), "head"],
     ];
 
     // Drop duplicates — for a simple name all four collapse to one query, and
@@ -163,13 +195,24 @@ async function run() {
     }
 
     if (hit) {
-      await db.execute(sql`
-        UPDATE places
-        SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}
-        WHERE slug = ${r.slug}
-      `);
+      // Only fill a district in, never overwrite one — a curated district
+      // beats whatever administrative unit OSM happens to name.
+      if (hit.district && !r.district) {
+        await db.execute(sql`
+          UPDATE places
+          SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}, district = ${hit.district}
+          WHERE slug = ${r.slug}
+        `);
+      } else {
+        await db.execute(sql`
+          UPDATE places
+          SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}
+          WHERE slug = ${r.slug}
+        `);
+      }
       located += 1;
-      console.log(`  [${n}/${rows.length}] ✓ ${r.name} → ${hit.lat.toFixed(4)},${hit.lng.toFixed(4)} (${hit.via})`);
+      const dTag = hit.district && !r.district ? ` ${hit.district}` : "";
+      console.log(`  [${n}/${rows.length}] ✓ ${r.name} → ${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}${dTag} (${hit.via})`);
     } else {
       console.log(`  [${n}/${rows.length}] ✗ ${r.name}`);
     }
