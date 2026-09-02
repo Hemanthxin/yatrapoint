@@ -3,56 +3,26 @@ import { db } from "@/lib/db";
 import { places, type Destination } from "@/lib/db/schema";
 import { toDestination } from "@/lib/queries/places";
 
-export interface CountBucket {
-  label: string;
-  total: number;
-}
-
 export interface AdminPlaceStats {
   totalPlaces: number;
   hiddenPlaces: number;
   visiblePlaces: number;
   averagePopularity: number;
-  byCategory: CountBucket[];
-  byState: CountBucket[];
-  byPlaceType: CountBucket[];
 }
 
 export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
   try {
-    const [totals, categoryRows, stateRows, typeRows] = await Promise.all([
-      db
-        .select({
-          total: sql<number>`count(*)::int`,
-          hidden: sql<number>`sum(case when ${places.isHidden} then 1 else 0 end)::int`,
-          visible: sql<number>`sum(case when ${places.isHidden} then 0 else 1 end)::int`,
-          avgPopularity: sql<number>`coalesce(round(avg(${places.popularity})), 0)::int`,
-        })
-        .from(places),
-      db
-        .select({
-          label: places.category,
-          total: sql<number>`count(*)::int`,
-        })
-        .from(places)
-        .groupBy(places.category),
-      db
-        .select({
-          // A place that isn't a catalogue destination has no state, so
-          // coalesce keeps the bucket label a plain string.
-          label: sql<string>`coalesce(${places.state}, 'Unspecified')`,
-          total: sql<number>`count(*)::int`,
-        })
-        .from(places)
-        .groupBy(sql`coalesce(${places.state}, 'Unspecified')`),
-      db
-        .select({
-          label: sql<string>`coalesce(${places.placeType}, 'Unspecified')`,
-          total: sql<number>`count(*)::int`,
-        })
-        .from(places)
-        .groupBy(sql`coalesce(${places.placeType}, 'Unspecified')`),
-    ]);
+    // Just the headline numbers. The by-category, by-state and by-place-type
+    // breakdowns were dropped from the dashboard, and with them three GROUP BY
+    // scans of the whole places table that ran on every admin page load.
+    const totals = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        hidden: sql<number>`sum(case when ${places.isHidden} then 1 else 0 end)::int`,
+        visible: sql<number>`sum(case when ${places.isHidden} then 0 else 1 end)::int`,
+        avgPopularity: sql<number>`coalesce(round(avg(${places.popularity})), 0)::int`,
+      })
+      .from(places);
 
     const total = totals[0]?.total ?? 0;
     const hidden = totals[0]?.hidden ?? 0;
@@ -64,9 +34,6 @@ export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
       hiddenPlaces: hidden,
       visiblePlaces: visible,
       averagePopularity,
-      byCategory: categoryRows.sort((a, b) => b.total - a.total),
-      byState: stateRows.sort((a, b) => b.total - a.total).slice(0, 8),
-      byPlaceType: typeRows.sort((a, b) => b.total - a.total).slice(0, 8),
     };
   } catch {
     return {
@@ -74,9 +41,6 @@ export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
       hiddenPlaces: 0,
       visiblePlaces: 0,
       averagePopularity: 0,
-      byCategory: [],
-      byState: [],
-      byPlaceType: [],
     };
   }
 }

@@ -127,11 +127,15 @@ export function slugify(s: string, max = 140): string {
 // "Bannerghatta Butterfly Park" must survive. A name only counts as a fragment
 // when stripping the descriptor leaves something that is ITSELF a known place.
 // See isFragment().
-// Only words that name a PART. `beach`, `museum`, `park`, `lake`, `island`,
-// `hill`, `cave`, `reserve`, `spring` and `harbour` were here and had to come
-// out: each of them names a place people visit in its own right, so the filter
-// was discarding Kanyakumari Beach, Chettinad Museum, Vaigai Dam Park and
-// Upper Bhavani Lake as though they were scenery attached to something else.
+// Only words that name a PART. Several had to come out because they name
+// somewhere people go in their own right, and the filter was throwing those
+// places away:
+//   beach, museum, park, lake, island, hill, cave, reserve, spring, harbour
+//     — Kanyakumari Beach, Chettinad Museum, Vaigai Dam Park, Upper Bhavani Lake
+//   backwaters, estuary
+//     — in Kerala the backwaters ARE the destination. Kumarakom Backwaters,
+//       Kuttanad Backwaters and Vaikom Backwaters are among the best-known
+//       places in the state and were all being discarded as scenery.
 // A museum beside a fort is a different visit from the fort.
 const FRAGMENT_WORDS = new Set([
   "sunrise", "sunset", "view", "gardens", "garden", "courtyard", "steps",
@@ -140,10 +144,10 @@ const FRAGMENT_WORDS = new Set([
   "bastion", "gate", "birding", "safari", "pond", "theatre", "sky",
   "streets", "street", "walk", "houses", "boulders", "quarter",
   "township", "campus", "courtyards", "platform", "mandapas", "chamber",
-  "remains", "wall", "walls", "shafts", "backwaters",
+  "remains", "wall", "walls", "shafts",
   "riverbank", "gorge", "entrance", "trailhead", "checkpoint", "zone",
-  "ghat", "ghats", "rooms", "viewpoints", "ramparts", "granaries",
-  "road", "tank", "estuary",
+  "ghats", "rooms", "viewpoints", "ramparts", "granaries",
+  "road", "tank",
 ]);
 
 /**
@@ -171,6 +175,9 @@ export function isFragment(
   // Mahal are not. Same for a rock garden or a rose garden.
   if (/\b(botanical|rose|rock|butterfly|deer|snake|theme|water)\s+(garden|gardens|park)\b/i.test(name))
     return null;
+  // An art gallery is a museum you visit, not the gallery running around the
+  // inside of a monument.
+  if (/\bart\s+galler(y|ies)\b/i.test(name)) return null;
 
   // The LAST word decides whether this is a fragment at all. Everything before
   // it is just how far we have to walk back to find the parent.

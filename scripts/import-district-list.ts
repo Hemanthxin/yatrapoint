@@ -60,6 +60,22 @@ async function loadData(state: string): Promise<DistrictPlaces[]> {
       const m = await import("./data/tamil-nadu-places");
       return m.TAMIL_NADU_PLACES;
     }
+    case "kerala": {
+      const m = await import("./data/kerala-places");
+      return m.KERALA_PLACES;
+    }
+    case "maharashtra": {
+      const m = await import("./data/maharashtra-places");
+      return m.MAHARASHTRA_PLACES;
+    }
+    case "andhra pradesh": {
+      const m = await import("./data/andhra-pradesh-places");
+      return m.ANDHRA_PRADESH_PLACES;
+    }
+    case "telangana": {
+      const m = await import("./data/telangana-places");
+      return m.TELANGANA_PLACES;
+    }
     default:
       throw new Error(`No dataset registered for state "${state}"`);
   }

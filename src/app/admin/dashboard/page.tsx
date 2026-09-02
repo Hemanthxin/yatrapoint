@@ -4,18 +4,14 @@ import {
   MapPinned,
   EyeOff,
   BarChart3,
-  Tag,
-  MapPin,
-  Users2,
-  Trophy,
   PlusCircle,
   ArrowUpRight,
 } from "lucide-react";
 
 import { auth } from "@/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { isAdminSession, ADMIN_ACCOUNTS } from "@/lib/admin";
-import { getAdminPlaceStats, listRecentAdminPlaces, listPlacesByAdmin } from "@/lib/queries/admin";
+import { isAdminSession } from "@/lib/admin";
+import { getAdminPlaceStats, listRecentAdminPlaces } from "@/lib/queries/admin";
 import { listAnnouncements } from "@/lib/actions/announcements";
 import { getHeroBannerImage } from "@/lib/actions/site-settings";
 import { AddPlaceForm } from "./AddPlaceForm";
@@ -27,27 +23,12 @@ export default async function AdminDashboardPage() {
   if (!session || !isAdminSession(session.user)) redirect("/admin-login");
 
   const u = session.user;
-  const [stats, recent, contributions, announcements, heroImageUrl] = await Promise.all([
+  const [stats, recent, announcements, heroImageUrl] = await Promise.all([
     getAdminPlaceStats(),
     listRecentAdminPlaces(8),
-    listPlacesByAdmin(),
     listAnnouncements(),
     getHeroBannerImage(),
   ]);
-
-  const byEmail = new Map(contributions.map((c) => [c.email.toLowerCase(), c]));
-  const adminRows: Array<{ name: string; email: string; total: number }> = ADMIN_ACCOUNTS.map((a) => ({
-    name: a.name as string,
-    email: a.email as string,
-    total: byEmail.get(a.email)?.total ?? 0,
-  }));
-  for (const c of contributions) {
-    if (!ADMIN_ACCOUNTS.some((a) => a.email === c.email.toLowerCase())) {
-      adminRows.push({ name: c.name, email: c.email, total: c.total });
-    }
-  }
-  adminRows.sort((a, b) => b.total - a.total);
-  const topTotal = Math.max(1, ...adminRows.map((r) => r.total));
 
   return (
     <AdminShell adminName={u.name || u.email || "Admin"} adminEmail={u.email}>
@@ -76,55 +57,8 @@ export default async function AdminDashboardPage() {
         <Kpi label="Avg popularity" value={stats.averagePopularity} icon={<BarChart3 className="h-5 w-5" />} tone="from-sky-500 to-cyan-600" />
       </section>
 
-      <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)]">
+      <section className="mt-6 grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)]">
         <div className="min-w-0 space-y-6">
-          {/* Per-admin leaderboard */}
-          <Panel title="Places added by each admin" subtitle="Contribution leaderboard" icon={<Users2 className="h-5 w-5 text-slate-400" />}>
-            <div className="space-y-4">
-              {adminRows.map((a, i) => (
-                <div key={a.email} className="flex items-center gap-3">
-                  <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-sm font-bold text-white shadow-md shadow-indigo-500/20 ${avatarTone(i)}`}>
-                    {a.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900">
-                        {a.name}
-                        {i === 0 && a.total > 0 && <Trophy className="h-3.5 w-3.5 text-amber-500" />}
-                      </p>
-                      <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-700">
-                        {a.total} {a.total === 1 ? "place" : "places"}
-                      </span>
-                    </div>
-                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
-                      <div
-                        className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 transition-all"
-                        style={{ width: `${Math.max(4, (a.total / topTotal) * 100)}%` }}
-                      />
-                    </div>
-                    <p className="mt-1 truncate text-xs text-slate-400">{a.email}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          {/* Analytics row */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <Panel title="By category" icon={<Tag className="h-5 w-5 text-slate-400" />}>
-              <BarList items={stats.byCategory} empty="No categories yet." />
-            </Panel>
-            <Panel title="By state" icon={<MapPin className="h-5 w-5 text-slate-400" />}>
-              <BarList items={stats.byState} empty="No state data yet." />
-            </Panel>
-          </div>
-
-          <Panel title="By place type" icon={<Layers3 className="h-5 w-5 text-slate-400" />}>
-            <div className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
-              <BarList items={stats.byPlaceType} empty="No type data yet." />
-            </div>
-          </Panel>
-
           {/* Recent places as a table */}
           <Panel title="Recent places" subtitle="Latest additions to the catalogue">
             {recent.length === 0 ? (
@@ -203,29 +137,10 @@ export default async function AdminDashboardPage() {
           </div>
           <HeroBannerManager initialImageUrl={heroImageUrl} />
           <AnnouncementsManager initial={announcements} />
-          <Panel title="Quick summary">
-            <div className="space-y-3 text-sm">
-              <SummaryRow label="Total places" value={stats.totalPlaces} />
-              <SummaryRow label="Visible" value={stats.visiblePlaces} />
-              <SummaryRow label="Hidden" value={stats.hiddenPlaces} />
-              <SummaryRow label="Admins contributing" value={adminRows.filter((a) => a.total > 0).length} />
-            </div>
-          </Panel>
         </div>
       </section>
     </AdminShell>
   );
-}
-
-function avatarTone(i: number): string {
-  const tones = [
-    "bg-gradient-to-br from-indigo-500 to-violet-600",
-    "bg-gradient-to-br from-blue-500 to-emerald-500",
-    "bg-gradient-to-br from-amber-500 to-orange-600",
-    "bg-gradient-to-br from-sky-500 to-cyan-600",
-    "bg-gradient-to-br from-rose-500 to-pink-600",
-  ];
-  return tones[i % tones.length];
 }
 
 function Kpi({ label, value, icon, tone }: { label: string; value: number | string; icon: React.ReactNode; tone: string }) {
@@ -268,31 +183,3 @@ function Panel({
   );
 }
 
-function BarList({ items, empty }: { items: { label: string; total: number }[]; empty: string }) {
-  if (items.length === 0) return <p className="text-sm text-slate-500">{empty}</p>;
-  const max = Math.max(1, ...items.map((i) => i.total));
-  return (
-    <div className="space-y-2.5">
-      {items.map((it) => (
-        <div key={it.label}>
-          <div className="flex items-center justify-between text-sm">
-            <span className="font-medium text-slate-700">{it.label}</span>
-            <span className="text-slate-400">{it.total}</span>
-          </div>
-          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100">
-            <div className="h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600" style={{ width: `${(it.total / max) * 100}%` }} />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function SummaryRow({ label, value }: { label: string; value: number | string }) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <span className="text-slate-600">{label}</span>
-       <span className="font-semibold text-slate-900">{value}</span>
-    </div>
-  );
-}
