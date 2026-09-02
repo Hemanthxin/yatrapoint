@@ -45,6 +45,11 @@ const USER_AGENT = "Saafera/1.0 (+https://saafera.com; catalogue geocoding)";
 const BBOX: Record<string, [number, number, number, number]> = {
   // [minLat, maxLat, minLng, maxLng]
   karnataka: [11.5, 19.0, 73.5, 79.0],
+  "tamil nadu": [8.0, 13.6, 76.2, 80.4],
+  kerala: [8.1, 12.9, 74.8, 77.5],
+  maharashtra: [15.6, 22.1, 72.6, 80.9],
+  "andhra pradesh": [12.6, 19.95, 76.7, 84.8],
+  telangana: [15.8, 19.95, 77.2, 81.4],
 };
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

@@ -45,8 +45,17 @@ export function nameKey(s: string): string {
 
 // Words that describe the ENTRY rather than identify the place, so they must
 // not be what makes two names look alike.
+//
+// "temple" and "fort" are deliberately NOT here. They were, and it made
+// containment matching catastrophic: "Vellore Fort" reduced to the single
+// token {vellore}, which is a subset of every place in Vellore, so one
+// catalogue row absorbed twenty-six distinct places — St John's Church, Oteri
+// Lake, the Clock Tower, the Government Museum — and they were silently
+// dropped from the import as "already present". The same happened to
+// Kumbakonam (10 temples) and Kodaikanal (11 attractions). These words are
+// part of a place's identity, not noise.
 const WEAK = new Set([
-  "area", "region", "circuit", "heritage", "temple", "fort", "the", "and",
+  "area", "region", "circuit", "heritage", "the", "and",
   "near", "nearby", "landscape", "landscapes", "village", "villages", "town",
   "city", "point", "group", "complex", "site", "access", "from", "side",
   "approach", "via", "of", "sri", "shri",
@@ -65,8 +74,32 @@ export function isSubsetOf(a: Set<string>, b: Set<string>): boolean {
   return a.size > 0 && [...a].every((t) => b.has(t));
 }
 
+/**
+ * Do these two names describe one place written at different lengths?
+ *
+ * Bare subset testing is far too eager on real data. Two guards make it safe:
+ *
+ *   - The shorter name needs at least TWO identifying words. One is not an
+ *     identity: {kumbakonam} is a subset of every temple in Kumbakonam.
+ *   - They may differ by at most one word. "Vellore Fort" and "Government
+ *     Museum Vellore Fort" are two words apart and are two different places;
+ *     "Vellore Fort" and "Vellore fort moat" are one apart and are not.
+ *
+ * The cost is recall: "Bull Temple" no longer matches "Bull Temple (Dodda
+ * Basavana Gudi)". That is the right way to be wrong here — an unmatched pair
+ * shows up as a visible duplicate that can be merged, whereas an over-match
+ * silently discards a real place and nobody ever finds out.
+ */
+export function containmentMatch(a: Set<string>, b: Set<string>): boolean {
+  const [small, large] = a.size <= b.size ? [a, b] : [b, a];
+  if (small.size < 2) return false;
+  if (large.size - small.size > 1) return false;
+  return isSubsetOf(small, large);
+}
+
 export function districtKey(s: string | null | undefined): string {
-  return canon(s ?? "").replace(/[^a-z0-9]+/g, " ").trim();
+  // "The Nilgiris" and "Nilgiris" are one district.
+  return canon(s ?? "").replace(/[^a-z0-9]+/g, " ").replace(/^the /, "").trim();
 }
 
 export function districtMatches(a: string, b: string | null | undefined): boolean {
@@ -94,17 +127,23 @@ export function slugify(s: string, max = 140): string {
 // "Bannerghatta Butterfly Park" must survive. A name only counts as a fragment
 // when stripping the descriptor leaves something that is ITSELF a known place.
 // See isFragment().
+// Only words that name a PART. `beach`, `museum`, `park`, `lake`, `island`,
+// `hill`, `cave`, `reserve`, `spring` and `harbour` were here and had to come
+// out: each of them names a place people visit in its own right, so the filter
+// was discarding Kanyakumari Beach, Chettinad Museum, Vaigai Dam Park and
+// Upper Bhavani Lake as though they were scenery attached to something else.
+// A museum beside a fort is a different visit from the fort.
 const FRAGMENT_WORDS = new Set([
   "sunrise", "sunset", "view", "gardens", "garden", "courtyard", "steps",
   "promenade", "trail", "trails", "gallery", "interior", "enclosure",
   "pavilion", "complex", "ruins", "basement", "summit", "hilltop", "moat",
-  "bastion", "gate", "birding", "safari", "tank", "pond", "theatre", "sky",
-  "streets", "street", "road", "walk", "houses", "boulders", "quarter",
+  "bastion", "gate", "birding", "safari", "pond", "theatre", "sky",
+  "streets", "street", "walk", "houses", "boulders", "quarter",
   "township", "campus", "courtyards", "platform", "mandapas", "chamber",
-  "remains", "wall", "walls", "shafts", "reserve", "backwaters", "estuary",
-  "riverbank", "gorge", "cave", "caves", "hill", "lake", "beach", "island",
-  "islands", "spring", "entrance", "trailhead", "checkpoint", "zone",
-  "harbour", "ghat", "ghats", "park", "museum", "rooms",
+  "remains", "wall", "walls", "shafts", "backwaters",
+  "riverbank", "gorge", "entrance", "trailhead", "checkpoint", "zone",
+  "ghat", "ghats", "rooms", "viewpoints", "ramparts", "granaries",
+  "road", "tank", "estuary",
 ]);
 
 /**
@@ -125,9 +164,26 @@ export function isFragment(
   isKnown: (candidate: string) => boolean
 ): string | null {
   const words = name.trim().split(/\s+/);
+  if (words.length < 2) return null;
+
+  // Some descriptors are part of a place-type name rather than a part of a
+  // place. A botanical garden is somewhere you go; the gardens around Lotus
+  // Mahal are not. Same for a rock garden or a rose garden.
+  if (/\b(botanical|rose|rock|butterfly|deer|snake|theme|water)\s+(garden|gardens|park)\b/i.test(name))
+    return null;
+
+  // The LAST word decides whether this is a fragment at all. Everything before
+  // it is just how far we have to walk back to find the parent.
+  //
+  // The check used to stop at the first word that was not itself a descriptor,
+  // which missed anything with a real noun in the middle: "Kamalapura lake
+  // sunset" and "Hampi museum courtyard" both walked one step, hit "lake" and
+  // "museum", and gave up — so a sunset and a courtyard were about to become
+  // places.
+  const last = words[words.length - 1].toLowerCase().replace(/[^a-z]/g, "");
+  if (!FRAGMENT_WORDS.has(last)) return null;
+
   for (let strip = 1; strip <= 3 && strip < words.length; strip += 1) {
-    const tail = words[words.length - strip].toLowerCase().replace(/[^a-z]/g, "");
-    if (!FRAGMENT_WORDS.has(tail)) break;
     const head = words.slice(0, words.length - strip).join(" ");
     if (head.length >= 3 && isKnown(head)) return head;
   }
