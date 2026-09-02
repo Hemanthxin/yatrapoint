@@ -12,6 +12,7 @@ import {
   Lightbulb,
   MapPin,
   Navigation,
+  Search,
   Share2,
   ShoppingBag,
   Ticket,
@@ -26,7 +27,8 @@ import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/ca
 import { formatKm, haversineKm } from "@/lib/geo";
 import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { FavoriteButton } from "@/components/app/FavoriteButton";
-import { NearbyList, useNearbyAmenities } from "./NearbyByCategory";
+import { AddToCartButton } from "@/components/app/AddToCartButton";
+import { NearbyList, useNearbyAmenities, type OsmPlace } from "./NearbyByCategory";
 
 type NearPlace = Destination & { distanceKm: number };
 
@@ -35,6 +37,9 @@ interface Props {
   gallery: GalleryImage[];
   nearby: NearPlace[];
   favored: boolean;
+  // Food and shopping already in our catalogue, read from the database on the
+  // server. Rendered immediately; the live OSM lookup only adds to these.
+  seededPoi?: { food: OsmPlace[]; shopping: OsmPlace[] };
 }
 
 const TABS: { id: TabId; label: string; sub?: string; icon: typeof Wallet }[] = [
@@ -62,7 +67,7 @@ function visitBudget(place: Destination): { low: number; high: number; level: st
   return { low, high, level, fill };
 }
 
-export function MobileDetail({ place, gallery, nearby, favored }: Props) {
+export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Props) {
   const [tab, setTab] = useState<TabId>("budget");
   const [aboutOpen, setAboutOpen] = useState(false);
 
@@ -74,7 +79,9 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
   const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
   const tripCost = (place.budgetPerDay ?? 0) * (place.recommendedDays ?? 1);
   // One lookup, shared by the teaser counts and both tab lists.
-  const near = useNearbyAmenities(lat, lng, hasCoords);
+  // Radius matches the seeded read on the server (5 km) so the teaser counts
+  // and the lists agree with each other.
+  const near = useNearbyAmenities(lat, lng, hasCoords, 5000, seededPoi);
 
   // Ticket tiers: the researched breakdown when a place has one, otherwise
   // assembled from the individual fee columns so a place with just an adult
@@ -129,8 +136,17 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/35" />
 
-        {/* Floating actions */}
+        {/* Floating actions — search, favourite and share ride on the photo,
+            with the menu on the opposite corner (rendered by AppShell, which
+            owns the sidebar). */}
         <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
+          <Link
+            href="/destinations"
+            aria-label="Search places"
+            className="grid h-10 w-10 place-items-center rounded-full bg-white/90 text-slate-700 shadow backdrop-blur active:scale-95"
+          >
+            <Search className="h-4 w-4" />
+          </Link>
           <button
             type="button"
             onClick={share}
@@ -161,7 +177,11 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
       {/* ── Sheet ── */}
       <div className="relative -mt-4 rounded-t-3xl bg-[color:var(--app-bg)] px-4 pt-3">
         {/* Tabs */}
-        <div className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto px-4 pb-3">
+        {/* All five tabs share the row width. They used to be fixed at 68px
+            each and horizontally scrollable, which came to ~388px — wider than
+            a 360–375px phone, so Vlogs sat off-screen and looked missing
+            unless you thought to swipe the row sideways. */}
+        <div className="flex gap-1 pb-3">
           {TABS.map((t) => {
             const Icon = t.icon;
             const active = tab === t.id;
@@ -171,7 +191,7 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
                 type="button"
                 onClick={() => setTab(t.id)}
                 aria-pressed={active}
-                className={`flex min-w-[68px] shrink-0 flex-col items-center gap-1 rounded-2xl px-3 py-2.5 text-[11px] font-bold transition active:scale-95 ${
+                className={`flex min-w-0 flex-1 basis-0 flex-col items-center gap-1 rounded-2xl px-1 py-2.5 text-[11px] font-bold transition active:scale-95 ${
                   active ? "bg-emerald-50 text-emerald-700" : "text-slate-500 hover:bg-slate-50"
                 }`}
               >
@@ -210,6 +230,29 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
               <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
               This live budget shows average cost for travel, food, shopping &amp; local transport.
             </p>
+
+            {/* The mobile screen had no way to add a place to the trip cart at
+                all — the action existed only on the desktop layout. */}
+            <div className="mt-4 space-y-2">
+              <AddToCartButton
+                className="w-full py-3 shadow-lg shadow-emerald-500/40"
+                label="Plan this trip"
+                item={{
+                  id: place.id,
+                  name: place.name,
+                  subtitle: [place.district, place.state].filter(Boolean).join(", "),
+                  href: `/destinations/${place.slug}`,
+                  kind: "destination",
+                  emoji: cat?.emoji ?? "📍",
+                }}
+              />
+              <Link
+                href={`/budget-planner?destination=${place.slug}`}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition active:scale-95"
+              >
+                Plan in budget planner
+              </Link>
+            </div>
           </section>
         )}
 
@@ -221,7 +264,7 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
             kind="food"
             loading={near.loading}
             error={near.error}
-            emptyLabel="No places to eat mapped within 2 km of here yet."
+            emptyLabel="No places to eat mapped within 5 km of here yet."
           />
         )}
 
@@ -233,7 +276,7 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
             kind="shopping"
             loading={near.loading}
             error={near.error}
-            emptyLabel="No shops or markets mapped within 2 km of here yet."
+            emptyLabel="No shops or markets mapped within 5 km of here yet."
           />
         )}
 
@@ -458,7 +501,7 @@ function Teaser({
           <span className="block text-sm font-bold text-slate-900">{title}</span>
           <span className="mt-0.5 block text-xs leading-relaxed text-slate-600">{body}</span>
           <span className="mt-1.5 block text-[11px] font-bold text-slate-500">
-            {count === null ? "Looking around…" : `${count} mapped within 2 km`}
+            {count === null ? "Looking around…" : `${count} mapped within 5 km`}
           </span>
         </span>
         <ChevronRight className="h-4 w-4 shrink-0 text-slate-400" />

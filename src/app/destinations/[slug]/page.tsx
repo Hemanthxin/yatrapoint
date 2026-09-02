@@ -22,6 +22,8 @@ import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { MobileDetail } from "./MobileDetail";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
+import { listNearbyPoi } from "@/lib/queries/nearby-poi";
+import { db } from "@/lib/db";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import {
   getDestinationBySlug,
@@ -51,10 +53,21 @@ export default async function DestinationPage({ params }: PageProps) {
 
   // Genuinely NEARBY places, nearest first — not the most popular places of the
   // same category anywhere in India, which is what this used to show (BUG-07).
-  const [relatedFiltered, favIds, gallery] = await Promise.all([
+  // Food and shopping come from our own catalogue, seeded from OpenStreetMap by
+  // scripts/seed-nearby-poi.ts. Reading them here rather than calling Overpass
+  // from the browser is what makes the Food and Shopping tabs work at all: the
+  // public mirrors are too slow and too rate-limited to answer a page render.
+  // A live lookup still runs client-side and merges in anything extra.
+  const poiLat = Number(destination.latitude);
+  const poiLng = Number(destination.longitude);
+
+  const [relatedFiltered, favIds, gallery, seededPoi] = await Promise.all([
     listDestinationsNear(destination, { radiusKm: 150, limit: 3 }),
     listFavoriteIds(u.id ?? ""),
     listGalleryImages(destination.id, IMAGE_SOURCE),
+    Number.isFinite(poiLat) && Number.isFinite(poiLng)
+      ? listNearbyPoi(db, poiLat, poiLng, 5)
+      : Promise.resolve({ food: [], shopping: [] }),
   ]);
 
   const cat = CATEGORY_BY_SLUG[destination.category as CategorySlug];
@@ -68,7 +81,7 @@ export default async function DestinationPage({ params }: PageProps) {
   const tripCost = destination.budgetPerDay * destination.recommendedDays;
 
   return (
-    <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+    <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image} immersive>
       {/* ── Mobile (< lg): bespoke place screen ── */}
       <div className="lg:hidden">
         <MobileDetail
@@ -76,6 +89,7 @@ export default async function DestinationPage({ params }: PageProps) {
           gallery={gallery}
           nearby={relatedFiltered}
           favored={favIds.has(destination.id)}
+          seededPoi={seededPoi}
         />
       </div>
 

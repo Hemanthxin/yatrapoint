@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader2, MapPin, Navigation, Trash2, ShoppingBag, Wallet, ExternalLink, Minus, Plus, Ticket, BedDouble } from "lucide-react";
 
 import { useCart, removeFromCart } from "@/lib/cart";
 import { useLocation } from "@/components/app/LocationContext";
 import { resolveTripStops, type TripStop } from "@/lib/actions/trip-cart";
 import { placeMapUrl } from "@/lib/maps";
+import { haversineKm } from "@/lib/geo";
 import { formatINR } from "@/lib/format";
 import { EmptyState } from "@/components/app/EmptyState";
 import { EmptyCartIllustration } from "@/components/illustrations";
@@ -72,10 +73,53 @@ export function CartPlanner() {
   }, [sig]);
 
   const origin = live.coords;
+
+  // ROUTE ORDER, not cart order.
+  //
+  // Stops used to appear in whatever order they were added, so the numbered
+  // badges, the map arcs and the Google Maps waypoint list all described a
+  // journey that zig-zagged across the state for no reason. They are now
+  // chained nearest-neighbour from the traveller's own location: start where
+  // you are, hop to the closest stop you have not visited, repeat.
+  //
+  // Nearest-neighbour is not the optimal tour — that is the travelling
+  // salesman problem — but it is O(n²) on a handful of stops, deterministic,
+  // and it always begins with the place closest to you, which is what makes
+  // the list read sensibly.
+  const orderedStops = useMemo(() => {
+    const all = stops ?? [];
+    const located = all.filter((s) => !s.unlocated);
+    const unlocated = all.filter((s) => s.unlocated);
+    if (located.length < 2) return [...located, ...unlocated];
+
+    const remaining = [...located];
+    const route: TripStop[] = [];
+    let cursor = { lat: origin.lat, lng: origin.lng };
+
+    while (remaining.length > 0) {
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      for (let i = 0; i < remaining.length; i += 1) {
+        const d = haversineKm(cursor, { lat: remaining[i].lat, lng: remaining[i].lng });
+        if (d < bestDist) {
+          bestDist = d;
+          bestIdx = i;
+        }
+      }
+      const [next] = remaining.splice(bestIdx, 1);
+      route.push(next);
+      cursor = { lat: next.lat, lng: next.lng };
+    }
+
+    // Stops we could not place on the map keep their cart order and sit at the
+    // end — they are not part of the route.
+    return [...route, ...unlocated];
+  }, [stops, origin.lat, origin.lng]);
+
   // Only stops with real coordinates go on the map or into the directions URL —
   // an unlocated stop used to be dropped silently upstream; now it stays in the
   // list (so it can be seen and removed) but must not drag a pin to 0°,0°.
-  const locatedStops = (stops ?? []).filter((s) => !s.unlocated);
+  const locatedStops = orderedStops.filter((s) => !s.unlocated);
   const mapStops = locatedStops.map((s) => ({ lat: s.lat, lng: s.lng, name: s.name }));
 
   const googleMapsUrl = (() => {
@@ -168,7 +212,7 @@ export function CartPlanner() {
             <h3 className="px-1 text-xs font-bold uppercase tracking-wide text-slate-400 lg:hidden">
               Saved stops
             </h3>
-            {stops.map((s, i) => (
+            {orderedStops.map((s, i) => (
               <motion.div
                 key={s.id}
                 initial={{ opacity: 0, rotate: i % 2 === 0 ? -8 : 8, scale: 0.85, x: i % 2 === 0 ? -20 : 20 }}

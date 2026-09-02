@@ -31,3 +31,4 @@ scripts/merge/merge-plan.md
 scripts/merge/needs-review.json
 scripts/merge/city-dupes.json
 scripts/merge/city-dupes.md
+.seed-nearby-poi.progress

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { CursorHalo } from "./CursorHalo";
 import { Topbar } from "./Topbar";
@@ -73,7 +73,7 @@ export function AppShell({ userLabel, userImage, location, immersive = false, ch
             aria-label="Open menu"
             className="fixed left-3 top-3 z-30 grid h-10 w-10 place-items-center rounded-full bg-black/45 text-white backdrop-blur transition active:scale-95 lg:hidden"
           >
-            <MoreHorizontal className="h-5 w-5" />
+            <Menu className="h-5 w-5" />
           </button>
         )}
 

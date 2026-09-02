@@ -27,7 +27,8 @@
     "db:fix-coords": "tsx scripts/fix-coords.ts",
     "db:geocode-missing": "tsx scripts/geocode-missing.ts",
     "db:fix-pins": "tsx scripts/fix-wrong-pins.ts",
-    "db:fix-district-pins": "tsx scripts/fix-district-pins.ts"
+    "db:fix-district-pins": "tsx scripts/fix-district-pins.ts",
+    "seed:nearby-poi": "tsx scripts/seed-nearby-poi.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.4",

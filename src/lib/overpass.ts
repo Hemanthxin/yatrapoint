@@ -15,9 +15,13 @@ const USER_AGENT =
 const ENDPOINTS: string[] = (() => {
   const envEndpoint = process.env.OVERPASS_URL;
   if (envEndpoint) return [envEndpoint];
+  // overpass.osm.ch is deliberately ABSENT. It is a Swiss regional extract,
+  // not a planet mirror: it answers any Indian query with HTTP 200 and an
+  // empty `elements` array, in ~700ms — faster than the mirrors that hold the
+  // data. While it was in this list it won every race, and every OSM-backed
+  // feature in the app silently showed nothing.
   return [
     "https://overpass-api.de/api/interpreter",
-    "https://overpass.osm.ch/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
     "https://overpass.private.coffee/api/interpreter",
     "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
@@ -71,16 +75,55 @@ async function raceOverpass<T = OverpassResponse>(
     }
   };
 
+  // Take the first mirror that answers WITH DATA, not merely the first that
+  // answers 2xx.
+  //
+  // Promise.any resolved on the first success, and one mirror
+  // (overpass.osm.ch) returns HTTP 200 with an empty `elements` array in about
+  // 700 ms — faster than the mirror that actually answers. It won every race,
+  // so every Overpass-backed feature in the app silently showed nothing: the
+  // Food and Shopping lists on a place, live places in Explore, the planner's
+  // live discovery, and the OSM half of "Near you". Nothing errored, because
+  // an empty result is a legitimate answer to "what is near here" — it just
+  // was not the truth.
+  //
+  // An empty response is still kept as a fallback, so a genuinely empty area
+  // resolves normally once every mirror has had its say.
+  const hasData = (d: unknown): boolean => {
+    const els = (d as { elements?: unknown[] } | null)?.elements;
+    return Array.isArray(els) ? els.length > 0 : true; // non-element payloads pass
+  };
+
   try {
-    const data = await Promise.any(ENDPOINTS.map(attempt));
-    master.abort(); // cancel the slower mirrors now that we have an answer
-    return data;
-  } catch (err) {
-    const errs =
-      err instanceof AggregateError
-        ? err.errors.map((e) => (e instanceof Error ? e.message : String(e)))
-        : [err instanceof Error ? err.message : String(err)];
-    throw new Error(`All Overpass mirrors failed: ${errs.join("; ")}`);
+    return await new Promise<T>((resolve, reject) => {
+      let pending = ENDPOINTS.length;
+      let empty: T | null = null;
+      const errors: string[] = [];
+
+      for (const endpoint of ENDPOINTS) {
+        attempt(endpoint).then(
+          (data) => {
+            if (hasData(data)) {
+              master.abort(); // cancel the slower mirrors
+              resolve(data);
+              return;
+            }
+            if (empty === null) empty = data;
+            if (--pending === 0) {
+              if (empty !== null) resolve(empty);
+              else reject(new Error(`All Overpass mirrors failed: ${errors.join("; ")}`));
+            }
+          },
+          (err) => {
+            errors.push(err instanceof Error ? err.message : String(err));
+            if (--pending === 0) {
+              if (empty !== null) resolve(empty);
+              else reject(new Error(`All Overpass mirrors failed: ${errors.join("; ")}`));
+            }
+          }
+        );
+      }
+    });
   } finally {
     if (signal) signal.removeEventListener("abort", onOuterAbort);
   }
