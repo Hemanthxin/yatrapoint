@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   Calendar,
@@ -205,12 +204,6 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
   const ctas = (
     <>
       <AddToCartButton className="w-full py-3 shadow-lg shadow-emerald-500/40" label="Plan a trip" item={cartItem} />
-      <Link
-        href={`/budget-planner?destination=${destination.slug}`}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"
-      >
-        Plan in budget planner
-      </Link>
       <a
         href={
           hasCoords

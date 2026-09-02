@@ -218,12 +218,6 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
                   emoji: cat?.emoji ?? "📍",
                 }}
               />
-              <Link
-                href={`/budget-planner?destination=${place.slug}`}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition active:scale-95"
-              >
-                Plan in budget planner
-              </Link>
             </div>
           </section>
         )}

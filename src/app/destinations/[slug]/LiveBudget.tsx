@@ -119,7 +119,7 @@ export function LiveBudget({
                 key={k}
                 type="button"
                 onClick={() => setVehicle(k)}
-                className={`min-h-[58px] rounded-xl border px-1 py-1.5 text-sm transition active:scale-95 ${
+                className={`flex min-h-[64px] min-w-0 flex-col items-center justify-center rounded-xl border px-0.5 py-1.5 transition active:scale-95 ${
                   vehicle === k
                     ? "border-transparent bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -128,9 +128,14 @@ export function LiveBudget({
                 title={`${VEHICLES[k].label} · ₹${VEHICLES[k].costPerKm}/km`}
               >
                 {/* The name, not just the glyph: five vehicle emoji side by
-                    side are near-impossible to tell apart. */}
-                <span className="block text-lg leading-none">{VEHICLES[k].emoji}</span>
-                <span className="mt-1 block text-[10px] font-semibold leading-tight">
+                    side are near-impossible to tell apart.
+
+                    The label WRAPS rather than running past the edge of its
+                    button. Five fixed cells across a phone leave roughly 50px
+                    each, and "Hatchback" is wider than that, so it was being
+                    cut off mid-word. */}
+                <span className="text-lg leading-none">{VEHICLES[k].emoji}</span>
+                <span className="mt-1 w-full break-words px-0.5 text-center text-[9px] font-semibold leading-[1.15]">
                   {VEHICLES[k].label}
                 </span>
               </button>
