@@ -19,6 +19,7 @@ import { DestinationCard } from "@/components/app/DestinationCard";
 import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
 import { HeroPhoto } from "@/components/app/HeroPhoto";
+import { MobileDetail } from "./MobileDetail";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
@@ -68,6 +69,18 @@ export default async function DestinationPage({ params }: PageProps) {
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+      {/* ── Mobile (< lg): bespoke place screen ── */}
+      <div className="lg:hidden">
+        <MobileDetail
+          place={destination}
+          gallery={gallery}
+          nearby={relatedFiltered}
+          favored={favIds.has(destination.id)}
+        />
+      </div>
+
+      {/* ── Desktop (≥ lg): the original layout, unchanged ── */}
+      <div className="hidden lg:block">
       <Reveal amount={0}>
       <BackButton fallback="/destinations" label="All destinations" />
 
@@ -222,6 +235,7 @@ export default async function DestinationPage({ params }: PageProps) {
         </section>
       )}
       </Reveal>
+      </div>
     </AppShell>
   );
 }
