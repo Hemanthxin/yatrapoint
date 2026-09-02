@@ -167,6 +167,7 @@ async function run() {
   }
 
   let located = 0;
+  let failed = 0;
   let n = 0;
 
   for (const r of rows) {
@@ -200,24 +201,35 @@ async function run() {
     }
 
     if (hit) {
-      // Only fill a district in, never overwrite one — a curated district
-      // beats whatever administrative unit OSM happens to name.
-      if (hit.district && !r.district) {
-        await db.execute(sql`
-          UPDATE places
-          SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}, district = ${hit.district}
-          WHERE slug = ${r.slug}
-        `);
-      } else {
-        await db.execute(sql`
-          UPDATE places
-          SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}
-          WHERE slug = ${r.slug}
-        `);
+      // The write is guarded because a run of several thousand rows WILL hit a
+      // dropped connection eventually: the first attempt at this died on an
+      // UND_ERR_SOCKET from the serverless driver after 549 successful rows,
+      // taking the whole run down. A failed row is simply left without
+      // coordinates and picked up by the next run, which is exactly what the
+      // resumable design is for.
+      try {
+        // Only fill a district in, never overwrite one — a curated district
+        // beats whatever administrative unit OSM happens to name.
+        if (hit.district && !r.district) {
+          await db.execute(sql`
+            UPDATE places
+            SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}, district = ${hit.district}
+            WHERE slug = ${r.slug}
+          `);
+        } else {
+          await db.execute(sql`
+            UPDATE places
+            SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}
+            WHERE slug = ${r.slug}
+          `);
+        }
+        located += 1;
+        const dTag = hit.district && !r.district ? ` ${hit.district}` : "";
+        console.log(`  [${n}/${rows.length}] ✓ ${r.name} → ${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}${dTag} (${hit.via})`);
+      } catch (e) {
+        failed += 1;
+        console.log(`  [${n}/${rows.length}] ! ${r.name} — save failed: ${e instanceof Error ? e.message.slice(0, 60) : e}`);
       }
-      located += 1;
-      const dTag = hit.district && !r.district ? ` ${hit.district}` : "";
-      console.log(`  [${n}/${rows.length}] ✓ ${r.name} → ${hit.lat.toFixed(4)},${hit.lng.toFixed(4)}${dTag} (${hit.via})`);
     } else {
       console.log(`  [${n}/${rows.length}] ✗ ${r.name}`);
     }

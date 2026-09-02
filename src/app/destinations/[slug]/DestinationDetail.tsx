@@ -32,6 +32,7 @@ import {
 } from "@/lib/catalog/categories";
 import type { Destination } from "@/lib/db/schema";
 import { placeDirectionsUrl, placeMapUrl } from "@/lib/maps";
+import { LiveBudget } from "./LiveBudget";
 
 // Leaflet uses window — must be client-only.
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
@@ -196,92 +197,10 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
     [drivingKm, vehicle, people, entryFeePerPerson, foodPerPerson]
   );
 
-  // Budget-only aside (used when the place has no coordinates to route to).
-  const budgetAside = (
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-emerald-500/5">
-      <div className="flex items-center gap-2">
-        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
-          <Wallet className="h-5 w-5" />
-        </div>
-        <p className="text-sm font-extrabold tracking-tight text-slate-900">Live budget</p>
-      </div>
-      <div className="mt-4 grid gap-3">
-        <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
-          Vehicle
-          <div className="mt-1 grid grid-cols-5 gap-1.5">
-            {(Object.keys(VEHICLES) as VehicleKind[]).map((k) => (
-              <button
-                key={k}
-                type="button"
-                onClick={() => setVehicle(k)}
-                className={`min-h-[58px] rounded-xl border px-1 py-1.5 text-sm transition active:scale-95 ${
-                  vehicle === k
-                    ? "border-transparent bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
-                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                }`}
-                aria-label={VEHICLES[k].label}
-                title={`${VEHICLES[k].label} · ₹${VEHICLES[k].costPerKm}/km`}
-              >
-                {/* The name, not just the glyph: five vehicle emoji side by
-                    side are near-impossible to tell apart, and the label was
-                    only in a title/aria attribute where nobody sees it. */}
-                <span className="block text-lg leading-none">{VEHICLES[k].emoji}</span>
-                <span className="mt-1 block text-[10px] font-semibold leading-tight">
-                  {VEHICLES[k].label}
-                </span>
-              </button>
-            ))}
-          </div>
-        </label>
-
-        {ticketOptions.length > 0 && (
-          <label className="block text-xs font-medium uppercase tracking-wide text-slate-500">
-            Ticket type
-            <select
-              value={ticketIdx}
-              onChange={(e) => setTicketIdx(Number(e.target.value))}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
-            >
-              {ticketOptions.map((opt, i) => (
-                <option key={i} value={i}>
-                  {opt.label} — {formatINR(opt.price)}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        <div className="grid grid-cols-2 gap-3">
-          <NumberField label="People" min={1} max={20} value={people} onChange={setPeople} />
-          <NumberField
-            label="Food / person"
-            min={0}
-            step={50}
-            value={foodPerPerson}
-            onChange={setFoodPerPerson}
-            prefix="₹"
-          />
-        </div>
-      </div>
-
-      <dl className="mt-5 grid gap-2 text-sm">
-        <Row label={`Fuel (${formatKm(budget.roundTripKm)} round trip)`} value={formatINR(budget.fuelTotal)} />
-        <Row label={`Entry × ${people}`} value={formatINR(budget.entryTotal)} />
-        <Row label="Food" value={formatINR(budget.foodTotal)} />
-        <Row label="Parking" value={formatINR(budget.parking)} />
-        <Row label={`Misc × ${people}`} value={formatINR(budget.miscTotal)} />
-        <div className="my-2 h-px bg-slate-200" />
-        <div className="flex items-center justify-between">
-          <dt className="text-base font-extrabold text-slate-900">Total</dt>
-          <dd className="text-2xl font-extrabold text-gradient">{formatINR(budget.total)}</dd>
-        </div>
-        <div className="flex items-center justify-between text-xs text-slate-500">
-          <dt>Per person</dt>
-          <dd className="font-semibold">{formatINR(budget.perPerson)}</dd>
-        </div>
-      </dl>
-    </div>
-  );
+  // The live budget panel is shared with the mobile place screen so both
+  // show the same numbers. The road distance is passed in because it has
+  // already been fetched here for the map and the timeline.
+  const budgetAside = <LiveBudget place={destination} drivingKm={drivingKm} />;
 
   const ctas = (
     <>

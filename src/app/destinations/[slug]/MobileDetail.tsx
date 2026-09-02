@@ -29,6 +29,7 @@ import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { FavoriteButton } from "@/components/app/FavoriteButton";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { NearbyList, useNearbyAmenities, type OsmPlace } from "./NearbyByCategory";
+import { LiveBudget } from "./LiveBudget";
 
 type NearPlace = Destination & { distanceKm: number };
 
@@ -51,29 +52,12 @@ const TABS: { id: TabId; label: string; sub?: string; icon: typeof Wallet }[] = 
 ];
 type TabId = "budget" | "food" | "shopping" | "nearby" | "vlogs";
 
-// What a single visit costs one person: the ticket, plus the share of a day's
-// mid-range spend that a visit actually consumes (food, local transport, small
-// purchases). `budgetPerDay` covers a whole day INCLUDING a bed, so using it
-// raw would price a two-hour palace visit like an overnight stay.
-function visitBudget(place: Destination): { low: number; high: number; level: string; fill: number } {
-  const perDay = place.budgetPerDay ?? 0;
-  const entry = place.entryFees ?? 0;
-  const low = Math.round((entry + perDay * 0.25) / 50) * 50;
-  const high = Math.round((entry + perDay * 0.45) / 50) * 50;
-  const mid = (low + high) / 2;
-  const level = mid < 600 ? "Budget-friendly" : mid < 1500 ? "Moderate" : "Premium";
-  // 0..1 across the three bands, for the gauge needle.
-  const fill = Math.max(0.08, Math.min(1, mid / 2500));
-  return { low, high, level, fill };
-}
-
 export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Props) {
   const [tab, setTab] = useState<TabId>("budget");
   const [aboutOpen, setAboutOpen] = useState(false);
 
   const cat = CATEGORY_BY_SLUG[place.category as CategorySlug];
   const gradient = CATEGORY_GRADIENT[place.category as CategorySlug] ?? "from-slate-400 to-slate-600";
-  const budget = useMemo(() => visitBudget(place), [place]);
   const lat = Number(place.latitude);
   const lng = Number(place.longitude);
   const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
@@ -205,30 +189,18 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
 
         {/* ── Budget ── */}
         {tab === "budget" && (
-          <section className="card p-4">
-            <p className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
-              <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
-                <Wallet className="h-4 w-4" />
-              </span>
-              Live Budget
-            </p>
-            <div className="mt-3 flex items-end justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-medium text-slate-500">
-                  Estimated budget for
-                  <br />
-                  <span className="font-bold text-slate-700">{place.name} visit</span>
-                </p>
-                <p className="mt-1.5 text-2xl font-extrabold tracking-tight text-emerald-700">
-                  {formatINR(budget.low)} – {formatINR(budget.high)}
-                </p>
-                <p className="text-[11px] font-medium text-slate-500">Per Person</p>
-              </div>
-              <Gauge fill={budget.fill} level={budget.level} />
-            </div>
+          <section>
+            {/* The real, itemised budget — the same component the desktop
+                layout uses, so both screens give the same answer. This tab
+                used to show a gauge and a wide "₹450 – ₹900" range, which was
+                a guess dressed up as a number: no vehicle, no party size, and
+                no idea how far away the place actually is. */}
+            <LiveBudget place={place} />
+
             <p className="mt-3 flex items-start gap-2 rounded-xl bg-emerald-50/70 p-3 text-[11px] leading-relaxed text-slate-600">
               <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
-              This live budget shows average cost for travel, food, shopping &amp; local transport.
+              Fuel is a return trip from your current location. Change the vehicle,
+              party size or food allowance and every line updates.
             </p>
 
             {/* The mobile screen had no way to add a place to the trip cart at
@@ -512,29 +484,6 @@ function Teaser({
 
 // Half-circle gauge. Pure SVG with a stroke-dashoffset, so there is no chart
 // library and nothing to hydrate.
-function Gauge({ fill, level }: { fill: number; level: string }) {
-  const R = 34;
-  const len = Math.PI * R; // half circumference
-  return (
-    <div className="shrink-0 text-center">
-      <svg viewBox="0 0 80 46" className="h-[46px] w-20" aria-hidden>
-        <path d={`M 6 40 A ${R} ${R} 0 0 1 74 40`} fill="none" stroke="var(--border)" strokeWidth="7" strokeLinecap="round" />
-        <path
-          d={`M 6 40 A ${R} ${R} 0 0 1 74 40`}
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth="7"
-          strokeLinecap="round"
-          strokeDasharray={len}
-          strokeDashoffset={len * (1 - fill)}
-        />
-      </svg>
-      <p className="-mt-1 text-sm font-extrabold text-emerald-700">{level}</p>
-      <p className="text-[10px] font-medium text-slate-500">Budget Level</p>
-    </div>
-  );
-}
-
 function Fact({
   icon,
   label,

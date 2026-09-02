@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   Layers3,
@@ -14,7 +15,6 @@ import { isAdminSession } from "@/lib/admin";
 import { getAdminPlaceStats, listRecentAdminPlaces } from "@/lib/queries/admin";
 import { listAnnouncements } from "@/lib/actions/announcements";
 import { getHeroBannerImage } from "@/lib/actions/site-settings";
-import { AddPlaceForm } from "./AddPlaceForm";
 import { AnnouncementsManager } from "./AnnouncementsManager";
 import { HeroBannerManager } from "./HeroBannerManager";
 
@@ -40,13 +40,15 @@ export default async function AdminDashboardPage() {
             Welcome back, {u.name || u.email}. Here&apos;s what&apos;s in the catalogue.
           </p>
         </div>
-        <a
-          href="#add-place"
+        {/* The inline add form is gone from this page; the button now goes to
+            the dedicated new-place page, which has the full field set. */}
+        <Link
+          href="/admin/places/new"
           className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/40 transition hover:scale-[1.02] active:scale-95 sm:w-auto"
         >
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <PlusCircle className="relative h-4 w-4" /> <span className="relative">Add a place</span>
-        </a>
+        </Link>
       </div>
 
       {/* KPI cards */}
@@ -132,9 +134,6 @@ export default async function AdminDashboardPage() {
 
         {/* Right column */}
         <div className="min-w-0 space-y-6">
-          <div id="add-place" className="scroll-mt-20">
-            <AddPlaceForm />
-          </div>
           <HeroBannerManager initialImageUrl={heroImageUrl} />
           <AnnouncementsManager initial={announcements} />
         </div>
