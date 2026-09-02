@@ -76,6 +76,26 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
   // One lookup, shared by the teaser counts and both tab lists.
   const near = useNearbyAmenities(lat, lng, hasCoords);
 
+  // Ticket tiers: the researched breakdown when a place has one, otherwise
+  // assembled from the individual fee columns so a place with just an adult
+  // and a child rate still shows both.
+  const tickets = useMemo<{ label: string; price: number }[]>(() => {
+    if (place.ticketOptions) {
+      try {
+        const parsed = JSON.parse(place.ticketOptions) as { label: string; price: number }[];
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {
+        /* fall through to the columns */
+      }
+    }
+    const rows: { label: string; price: number }[] = [];
+    if (place.entryFees > 0) rows.push({ label: "Adults (Indian)", price: place.entryFees });
+    if (place.entryFeesChild != null) rows.push({ label: "Children", price: place.entryFeesChild });
+    if (place.entryFeesForeigner != null) rows.push({ label: "Foreign nationals", price: place.entryFeesForeigner });
+    // A lone adult rate is already shown in the facts grid — no need to repeat it.
+    return rows.length > 1 ? rows : [];
+  }, [place.ticketOptions, place.entryFees, place.entryFeesChild, place.entryFeesForeigner]);
+
   async function share() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     const data = { title: place.name, text: `${place.name} — on Saafera`, url };
@@ -95,9 +115,9 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
   }
 
   return (
-    <div className="-mx-4 -mt-5 pb-4">
+    <div className="pb-4">
       {/* ── Hero ── */}
-      <div className="relative h-[19rem] w-full overflow-hidden">
+      <div className="relative h-[21rem] w-full overflow-hidden">
         <HeroPhoto
           images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
           fallbackImageUrl={place.imageUrl}
@@ -309,6 +329,28 @@ export function MobileDetail({ place, gallery, nearby, favored }: Props) {
               note={place.entryFees > 0 ? "(Indian)" : undefined}
             />
           </div>
+
+          {/* Full ticket breakdown when the place has one. A single "Entry Fee"
+              figure is wrong for most monuments — they price adults, children
+              and often foreigners differently, and a family planning a visit
+              needs all of it, not the adult rate alone. */}
+          {tickets.length > 0 && (
+            <div className="mt-3 border-t border-slate-100 pt-3">
+              <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                <Ticket className="h-3.5 w-3.5 text-emerald-600" /> Ticket pricing
+              </p>
+              <ul className="space-y-1">
+                {tickets.map((t) => (
+                  <li key={t.label} className="flex items-center justify-between gap-3 text-[13px]">
+                    <span className="text-slate-600">{t.label}</span>
+                    <span className="font-bold text-slate-900">
+                      {t.price > 0 ? formatINR(t.price) : "Free"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {place.openingTimings && (
             <p className="mt-3 flex items-center gap-1.5 text-[11px] font-medium text-slate-500">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MoreHorizontal } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { CursorHalo } from "./CursorHalo";
 import { Topbar } from "./Topbar";
@@ -13,10 +14,16 @@ interface AppShellProps {
   userLabel: string;
   userImage?: string | null;
   location?: string;
+  // Full-bleed mode for a place screen: on phones the news marquee, the top bar
+  // and the main padding all go, so the hero photo starts at the very top of
+  // the viewport. The menu survives as a floating button over the image —
+  // dropping the header outright would strand the traveller with no way out.
+  // Desktop is unaffected and keeps the full chrome.
+  immersive?: boolean;
   children: React.ReactNode;
 }
 
-export function AppShell({ userLabel, userImage, location, children }: AppShellProps) {
+export function AppShell({ userLabel, userImage, location, immersive = false, children }: AppShellProps) {
   const [open, setOpen] = useState(false);
 
   // overflow-x-CLIP, not hidden: `hidden` computes to `overflow: hidden auto`,
@@ -47,14 +54,41 @@ export function AppShell({ userLabel, userImage, location, children }: AppShellP
       <Sidebar open={open} onClose={() => setOpen(false)} />
 
       <div className="relative z-10 lg:pl-64">
-        <Marquee />
-        <Topbar
-          userLabel={userLabel}
-          userImage={userImage}
-          location={location}
-          onMenu={() => setOpen((v) => !v)}
-        />
-        <Reveal as="main" className="mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:px-8 lg:pb-10 2xl:px-10" amount={0}>
+        <div className={immersive ? "hidden lg:block" : undefined}>
+          <Marquee />
+          <Topbar
+            userLabel={userLabel}
+            userImage={userImage}
+            location={location}
+            onMenu={() => setOpen((v) => !v)}
+          />
+        </div>
+
+        {/* With the header gone on phones, the menu becomes a floating control
+            sitting on the photo itself. */}
+        {immersive && (
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open menu"
+            className="fixed left-3 top-3 z-30 grid h-10 w-10 place-items-center rounded-full bg-black/45 text-white backdrop-blur transition active:scale-95 lg:hidden"
+          >
+            <MoreHorizontal className="h-5 w-5" />
+          </button>
+        )}
+
+        <Reveal
+          as="main"
+          className={`mx-auto max-w-[1800px] pb-32 lg:pb-10 2xl:px-10 ${
+            // Full-bleed right up to the desktop breakpoint, since the mobile
+            // place screen is what renders below `lg` — padding returning at
+            // `md` would inset it on tablets while it is still the mobile view.
+            immersive
+              ? "px-0 py-0 lg:px-8 lg:py-8"
+              : "px-4 py-5 md:px-6 md:py-8 lg:px-8"
+          }`}
+          amount={0}
+        >
           {children}
         </Reveal>
       </div>
