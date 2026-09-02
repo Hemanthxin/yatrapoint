@@ -1,178 +1,185 @@
-// Backfill coordinates for catalogue places that have NONE (null / blank /
-// 0,0) — e.g. the ~325 imported "top places" across India that were seeded
-// without lat/lng, so their detail page can't draw a route.
-//
-// Only touches rows that are actually missing coordinates, so it never
-// overwrites good curated coordinates and is fast to re-run (it just skips
-// everything already fixed). Uses OpenStreetMap Nominatim with a Photon
-// (Komoot) fallback — both free, no key. Run with:
-//   npm run db:geocode-missing
+/**
+ * Fill in missing coordinates for catalogue places, using Nominatim (OSM).
+ *
+ * A place with no latitude/longitude is invisible to everything distance-based
+ * — "near you", the trip planner, the Food and Shopping tabs, the map. The
+ * Karnataka import added 193 places and could only locate 56 of them, because
+ * it asked Nominatim exactly one question per place and gave up.
+ *
+ * This asks several, narrowing from most to least specific:
+ *
+ *   1. "<name>, <district>, <state>, India"          — the original attempt
+ *   2. "<cleaned name>, <district>, <state>, India"  — descriptors removed
+ *   3. "<cleaned name>, <state>, India"              — district dropped
+ *   4. "<head term>, <district>, <state>, India"     — first clause only
+ *
+ * Cleaning matters because this list names entries, not map features:
+ * "Molakalmuru silk/weaving area" is the town of Molakalmuru, "Dargah and
+ * Bahmani heritage circuit" is a route rather than a point. Stripping the
+ * descriptive tail turns many of them into something OSM actually holds.
+ *
+ * A result outside the state's bounding box is rejected rather than stored —
+ * Nominatim will happily return a same-named place in another state, and a
+ * wrong coordinate is worse than none: it would put the place on the map in
+ * the wrong location and drag trip routes across the country.
+ *
+ *   npx tsx scripts/geocode-missing.ts                  # dry run
+ *   npx tsx scripts/geocode-missing.ts --write
+ *   npx tsx scripts/geocode-missing.ts --write --state Karnataka
+ */
 import { loadEnvConfig } from "@next/env";
+
 loadEnvConfig(process.cwd());
 
-const NOMINATIM = "https://nominatim.openstreetmap.org/search";
-const PHOTON = "https://photon.komoot.io/api/";
-const UA = "YatraPoint/1.0 (place coordinate backfill; admin@yatrapoint.local)";
+const WRITE = process.argv.includes("--write");
+const STATE_ARG = (() => {
+  const i = process.argv.indexOf("--state");
+  return i > -1 ? process.argv[i + 1] : "Karnataka";
+})();
+
+const DELAY_MS = 1100; // Nominatim policy: at most one request per second
+const USER_AGENT = "Saafera/1.0 (+https://saafera.com; catalogue geocoding)";
+
+// Rough bounding boxes, used to reject a confident answer about the wrong
+// place. Only states we actually geocode need an entry.
+const BBOX: Record<string, [number, number, number, number]> = {
+  // [minLat, maxLat, minLng, maxLng]
+  karnataka: [11.5, 19.0, 73.5, 79.0],
+};
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const round = (n: number) => Math.round(n * 1e6) / 1e6;
 
-type Hit = { lat: number; lng: number };
-type OnceResult = Hit | "rate" | null;
+// Descriptive tails that name the ENTRY rather than a mappable feature.
+const TAIL =
+  /\s*\b(area|region|circuit|precinct|landscape|landscapes|villages|village|zone|trails?|clusters?|corridor|approach|access\s+from\s+\w+\s+side|nearby)\b\s*$/i;
 
-// Rough India bounding box — reject any result that lands outside it.
-function inIndia(h: Hit): boolean {
-  return h.lat >= 6 && h.lat <= 36 && h.lng >= 67 && h.lng <= 98;
+function cleanName(name: string): string {
+  let n = name;
+  n = n.replace(/\s*\([^)]*\)\s*/g, " "); // drop parenthetical alternates
+  n = n.split("/")[0]; // "Molakalmuru silk/weaving area" → "Molakalmuru silk"
+  // Strip the descriptive tail repeatedly: "heritage circuit" is two words.
+  for (let i = 0; i < 3; i += 1) n = n.replace(TAIL, "");
+  return n.replace(/\s+/g, " ").trim();
 }
 
-async function nominatimOnce(query: string): Promise<OnceResult> {
+// The first meaningful clause — "Chennakeshava Temple, Somanathapura" is
+// better found as "Somanathapura", and "Kaiwara Tatayya memorial" as "Kaiwara".
+function headTerm(name: string): string {
+  const cleaned = cleanName(name);
+  const comma = cleaned.split(",");
+  if (comma.length > 1) return comma[comma.length - 1].trim();
+  return cleaned.split(/\s+/)[0];
+}
+
+interface Hit {
+  lat: number;
+  lng: number;
+  via: string;
+}
+
+async function ask(q: string, state: string, via: string): Promise<Hit | null> {
   const url =
-    `${NOMINATIM}?` +
-    new URLSearchParams({ format: "jsonv2", q: query, limit: "1", countrycodes: "in" }).toString();
+    "https://nominatim.openstreetmap.org/search?" +
+    new URLSearchParams({ q, format: "json", limit: "1", countrycodes: "in" }).toString();
   try {
-    const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "application/json" } });
-    if (res.status === 429 || res.status === 503) return "rate";
+    const res = await fetch(url, {
+      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+      signal: AbortSignal.timeout(20_000),
+    });
     if (!res.ok) return null;
     const rows = (await res.json()) as Array<{ lat: string; lon: string }>;
-    if (!rows[0]) return null;
+    if (!Array.isArray(rows) || rows.length === 0) return null;
     const lat = Number(rows[0].lat);
     const lng = Number(rows[0].lon);
-    if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
-    return { lat: round(lat), lng: round(lng) };
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    const box = BBOX[state.toLowerCase()];
+    if (box && (lat < box[0] || lat > box[1] || lng < box[2] || lng > box[3])) return null;
+    return { lat, lng, via };
   } catch {
-    return "rate";
+    return null;
   }
-}
-
-async function photonOnce(query: string): Promise<OnceResult> {
-  try {
-    const res = await fetch(`${PHOTON}?${new URLSearchParams({ q: query, limit: "1" })}`, {
-      headers: { "User-Agent": UA, Accept: "application/json" },
-    });
-    if (res.status === 429 || res.status === 503) return "rate";
-    if (!res.ok) return null;
-    const data = (await res.json()) as {
-      features?: Array<{ geometry?: { coordinates?: [number, number] } }>;
-    };
-    const c = data.features?.[0]?.geometry?.coordinates;
-    if (!c) return null;
-    const hit = { lat: round(c[1]), lng: round(c[0]) };
-    if (Number.isNaN(hit.lat) || Number.isNaN(hit.lng) || !inIndia(hit)) return null;
-    return hit;
-  } catch {
-    return "rate";
-  }
-}
-
-async function withRetry(fn: () => Promise<OnceResult>): Promise<Hit | null> {
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const r = await fn();
-    if (r === "rate") {
-      await sleep(2500 * (attempt + 1));
-      continue;
-    }
-    return r;
-  }
-  return null;
-}
-
-// Try each candidate query against Nominatim, then Photon, until one resolves.
-async function geocode(candidates: string[]): Promise<Hit | null> {
-  const seen = new Set<string>();
-  for (const raw of candidates) {
-    const q = raw.replace(/\s+/g, " ").trim();
-    if (!q || seen.has(q)) continue;
-    seen.add(q);
-
-    const nom = await withRetry(() => nominatimOnce(q));
-    if (nom && inIndia(nom)) return nom;
-
-    const pho = await withRetry(() => photonOnce(q));
-    if (pho) return pho;
-
-    await sleep(1000); // pace between candidates
-  }
-  return null;
-}
-
-// "Golden Temple (Harmandir Sahib)" → "Golden Temple"
-function baseName(name: string): string {
-  return name.split(/\s[—–-]\s|\s*\(/)[0].trim();
-}
-
-// A place needs coordinates when it has none, a blank string, a non-number, or
-// the bogus (0,0) point off the coast of Africa.
-function needsCoords(lat: string | null, lng: string | null): boolean {
-  if (lat == null || lng == null) return true;
-  if (String(lat).trim() === "" || String(lng).trim() === "") return true;
-  const a = Number(lat);
-  const b = Number(lng);
-  if (!Number.isFinite(a) || !Number.isFinite(b)) return true;
-  if (a === 0 && b === 0) return true;
-  return false;
 }
 
 async function run() {
   const { db } = await import("../src/lib/db");
-  const { destinations } = await import("../src/lib/db/schema");
-  const { eq } = await import("drizzle-orm");
+  const { sql } = await import("drizzle-orm");
 
-  const rows = await db
-    .select({
-      id: destinations.id,
-      name: destinations.name,
-      district: destinations.district,
-      state: destinations.state,
-      latitude: destinations.latitude,
-      longitude: destinations.longitude,
-    })
-    .from(destinations);
+  const res = await db.execute(sql`
+    SELECT slug, name, district, state
+    FROM places
+    WHERE (latitude IS NULL OR longitude IS NULL)
+      AND lower(coalesce(state, '')) = ${STATE_ARG.toLowerCase()}
+    ORDER BY district, name
+  `);
+  const rows = (res.rows ?? res) as Array<{
+    slug: string;
+    name: string;
+    district: string | null;
+    state: string;
+  }>;
 
-  const missing = rows.filter((r) => needsCoords(r.latitude, r.longitude));
-  console.log(
-    `Destinations: ${rows.length} total, ${missing.length} missing coordinates to backfill.\n`
-  );
+  console.log(`${STATE_ARG}: ${rows.length} places without coordinates`);
+  if (rows.length === 0) process.exit(0);
 
-  let updated = 0;
-  let failed = 0;
-  const stillMissing: string[] = [];
-
-  for (let i = 0; i < missing.length; i++) {
-    const r = missing[i];
-    const base = baseName(r.name);
-    const hit = await geocode([
-      [r.name, r.district, r.state, "India"].filter(Boolean).join(", "),
-      [base, r.district, r.state, "India"].filter(Boolean).join(", "),
-      [base, r.state, "India"].filter(Boolean).join(", "),
-      [base, "India"].join(", "),
-    ]);
-
-    const progress = `[${i + 1}/${missing.length}]`;
-    if (hit) {
-      await db
-        .update(destinations)
-        .set({ latitude: String(hit.lat), longitude: String(hit.lng) })
-        .where(eq(destinations.id, r.id));
-      updated++;
-      console.log(`  ${progress} ✓ ${r.name} (${r.state}) → ${hit.lat}, ${hit.lng}`);
-    } else {
-      failed++;
-      stillMissing.push(`${r.name} (${r.state})`);
-      console.log(`  ${progress} ✗ ${r.name} (${r.state})`);
+  if (!WRITE) {
+    console.log("\nWould try up to 4 Nominatim queries each, ~1.1s apart.");
+    console.log(`Estimated time: ~${Math.round((rows.length * 2.5 * 1.1) / 60)} min\n`);
+    for (const r of rows.slice(0, 20)) {
+      console.log(`  ${r.name}`);
+      console.log(`      cleaned: "${cleanName(r.name)}"   head: "${headTerm(r.name)}"`);
     }
-    await sleep(1200); // Nominatim usage policy: ~1 request/second.
+    if (rows.length > 20) console.log(`  … and ${rows.length - 20} more`);
+    console.log("\nDRY RUN — pass --write to geocode and save.");
+    process.exit(0);
   }
 
-  console.log(`\nDone. Updated ${updated}, still unmatched ${failed}.`);
-  if (stillMissing.length) {
-    console.log("\nStill missing (re-run to retry, or add coords by hand):");
-    for (const s of stillMissing) console.log(`  - ${s}`);
+  let located = 0;
+  let n = 0;
+
+  for (const r of rows) {
+    n += 1;
+    const d = r.district ?? "";
+    const cleaned = cleanName(r.name);
+    const head = headTerm(r.name);
+
+    const attempts: Array<[string, string]> = [
+      [`${r.name}, ${d}, ${r.state}, India`, "full"],
+      [`${cleaned}, ${d}, ${r.state}, India`, "cleaned"],
+      [`${cleaned}, ${r.state}, India`, "cleaned/no-district"],
+      [`${head}, ${d}, ${r.state}, India`, "head"],
+    ];
+
+    // Drop duplicates — for a simple name all four collapse to one query, and
+    // asking Nominatim the same thing four times would be rude and pointless.
+    const seen = new Set<string>();
+    let hit: Hit | null = null;
+
+    for (const [q, via] of attempts) {
+      if (seen.has(q)) continue;
+      seen.add(q);
+      hit = await ask(q, r.state, via);
+      await sleep(DELAY_MS);
+      if (hit) break;
+    }
+
+    if (hit) {
+      await db.execute(sql`
+        UPDATE places
+        SET latitude = ${String(hit.lat)}, longitude = ${String(hit.lng)}
+        WHERE slug = ${r.slug}
+      `);
+      located += 1;
+      console.log(`  [${n}/${rows.length}] ✓ ${r.name} → ${hit.lat.toFixed(4)},${hit.lng.toFixed(4)} (${hit.via})`);
+    } else {
+      console.log(`  [${n}/${rows.length}] ✗ ${r.name}`);
+    }
   }
+
+  console.log(`\nDone. Located ${located} of ${rows.length}.`);
+  process.exit(0);
 }
 
-run()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
