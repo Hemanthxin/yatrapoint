@@ -30,7 +30,8 @@
     "db:fix-district-pins": "tsx scripts/fix-district-pins.ts",
     "seed:nearby-poi": "tsx scripts/seed-nearby-poi.ts",
     "geocode": "tsx scripts/geocode-photon.ts --all --write && tsx scripts/geocode-missing.ts --write --state Karnataka && tsx scripts/geocode-missing.ts --write --state \"Tamil Nadu\" && tsx scripts/geocode-missing.ts --write --state Kerala && tsx scripts/geocode-missing.ts --write --state Maharashtra && tsx scripts/geocode-missing.ts --write --state \"Andhra Pradesh\" && tsx scripts/geocode-missing.ts --write --state Telangana",
-    "geocode:status": "tsx scripts/geocode-status.ts"
+    "geocode:status": "tsx scripts/geocode-status.ts",
+    "seed:poi": "tsx scripts/seed-nearby-poi.ts --write"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.4",
