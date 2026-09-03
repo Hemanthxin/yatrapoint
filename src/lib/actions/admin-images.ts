@@ -6,17 +6,48 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { places } from "@/lib/db/schema";
 import { isAdminSession } from "@/lib/admin";
-import { searchPlacesForImages, type AdminImageRow, type ImageSource } from "@/lib/queries/admin-images";
+import {
+  searchPlacesForImages,
+  listPlacesForImages,
+  listImageFacets,
+  type AdminImageRow,
+  type ImageSource,
+} from "@/lib/queries/admin-images";
 import { PLACE_KINDS, kindsOf } from "@/lib/queries/places";
 
 const MAX_IMAGE_BYTES = 2_000_000;
 
-// Thin server-action wrapper so the admin client component can search
-// without pulling the DB client into its bundle.
-export async function searchPlaceImages(query: string): Promise<AdminImageRow[]> {
+// Thin server-action wrappers so the admin client component can search and
+// filter without pulling the DB client into its bundle.
+export async function searchPlaceImages(
+  query: string,
+  filter: { state?: string; district?: string } = {}
+): Promise<AdminImageRow[]> {
   const session = await auth();
   if (!session || !isAdminSession(session.user)) return [];
-  return searchPlacesForImages(query);
+  return searchPlacesForImages(query, filter);
+}
+
+// Used when a state or district is chosen with no search term: show that
+// area's places that still need a photo, rather than an empty screen.
+export async function filterPlaceImages(filter: {
+  state?: string;
+  district?: string;
+  missingOnly?: boolean;
+}): Promise<AdminImageRow[]> {
+  const session = await auth();
+  if (!session || !isAdminSession(session.user)) return [];
+  return listPlacesForImages({ ...filter, missingOnly: filter.missingOnly ?? true }, 45);
+}
+
+// Districts depend on the chosen state, so the client asks for them when it
+// changes rather than shipping every district in the country up front.
+export async function placeImageFacets(
+  state?: string
+): Promise<{ states: string[]; districts: string[] }> {
+  const session = await auth();
+  if (!session || !isAdminSession(session.user)) return { states: [], districts: [] };
+  return listImageFacets(state);
 }
 
 export interface UpdatePlaceImageResult {
