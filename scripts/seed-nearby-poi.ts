@@ -101,7 +101,8 @@ async function run() {
 
   // 1. Anchors — every catalogue place a traveller can open, with coordinates.
   const anchorRes = await db.execute(sql`
-    SELECT latitude, longitude, coalesce(city, district, state) AS locality
+    SELECT latitude, longitude, name, popularity,
+           coalesce(city, district, state) AS locality
     FROM places
     WHERE latitude IS NOT NULL AND longitude IS NOT NULL
       AND kinds NOT LIKE '%city%'
@@ -110,28 +111,66 @@ async function run() {
   const anchors = (anchorRes.rows ?? anchorRes) as Array<{
     latitude: string;
     longitude: string;
+    name: string;
+    popularity: number;
     locality: string | null;
   }>;
 
   // 2. Collapse them onto the grid. The locality of the first anchor in a cell
   //    labels every POI we find there, so a seeded restaurant still says
   //    "Mysuru" rather than nothing.
-  const cells = new Map<string, string | null>();
+  //
+  //    Each cell also remembers its most popular anchor, which is what decides
+  //    the order below.
+  interface Cell {
+    locality: string | null;
+    topPopularity: number;
+    topName: string;
+  }
+  const cells = new Map<string, Cell>();
   for (const a of anchors) {
     const lat = Number(a.latitude);
     const lng = Number(a.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
     const key = cellKey(lat, lng);
-    if (!cells.has(key)) cells.set(key, a.locality);
+    const pop = Number(a.popularity) || 0;
+    const existing = cells.get(key);
+    if (!existing) {
+      cells.set(key, { locality: a.locality, topPopularity: pop, topName: a.name });
+    } else if (pop > existing.topPopularity) {
+      existing.topPopularity = pop;
+      existing.topName = a.name;
+      // The busiest place in the cell also gives the better locality label.
+      existing.locality = a.locality ?? existing.locality;
+    }
   }
 
   const done = loadProgress();
-  const todo = [...cells.keys()].filter((k) => !done.has(k)).slice(0, LIMIT);
+
+  // 3. MOST POPULAR FIRST.
+  //
+  // The grid used to be walked in whatever order the anchors came back from
+  // Postgres, which meant a cell containing Mysore Palace waited behind
+  // hundreds of cells whose only anchor is a roadside temple nobody opens.
+  // With the public Overpass mirrors refusing a large share of requests the
+  // full crawl runs to twenty-odd hours, so the order is the difference
+  // between the Food and Shopping tabs working on the places people actually
+  // visit and them working alphabetically.
+  const todo = [...cells.entries()]
+    .filter(([k]) => !done.has(k))
+    .sort((a, b) => b[1].topPopularity - a[1].topPopularity)
+    .map(([k]) => k)
+    .slice(0, LIMIT);
 
   console.log(`anchors: ${anchors.length}`);
   console.log(`grid cells occupied: ${cells.size} (cell ${CELL_DEG}°, radius ${RADIUS_M}m)`);
   console.log(`already done: ${done.size}   to fetch: ${todo.length}`);
   console.log(`estimated wall time: ~${Math.round((todo.length * (DELAY_MS + 6000)) / 60000)} min`);
+  console.log(`first cells, by the busiest place in each:`);
+  for (const k of todo.slice(0, 10)) {
+    const c = cells.get(k)!;
+    console.log(`   ${String(c.topPopularity).padStart(3)}  ${c.topName}  (${c.locality ?? "?"})`);
+  }
 
   if (!WRITE) {
     console.log("\nDRY RUN — pass --write to fetch and insert.");
@@ -150,7 +189,7 @@ async function run() {
   for (const key of todo) {
     cellNo += 1;
     const centre = cellCentre(key);
-    const locality = cells.get(key) ?? null;
+    const locality = cells.get(key)?.locality ?? null;
     const label = `[${cellNo}/${todo.length}] ${centre.lat.toFixed(3)},${centre.lng.toFixed(3)}`;
 
     // ONE CATEGORY PER REQUEST. Each category expands to two clauses (node and
