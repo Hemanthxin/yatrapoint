@@ -266,6 +266,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Everything below hits the DB and two flaky external services (Overpass,
+  // OSRM); an unhandled throw here (a DB hiccup, an edge case in the planner)
+  // used to crash the route with no server-side trace and an empty/HTML body,
+  // which the client could only report as a generic "Network error". Catch it,
+  // log it so it's actually debuggable, and tell the traveller something they
+  // can act on instead.
+  try {
+
   // Centre + radius that bound where we look for places. Everything except the
   // traveller's hand-picked (pinned) places must fall inside this radius, so the
   // km the user chose genuinely controls how far the trip ranges.
@@ -1074,4 +1082,15 @@ export async function POST(req: NextRequest) {
     geometry,
     legs: legsOut,
   });
+  } catch (err) {
+    console.error("[multi-stop/plan] plan generation failed:", err);
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Couldn't generate this plan — the place/route lookups timed out or failed. Try again, or with a smaller radius, shorter distance, or fewer stops.",
+      },
+      { status: 500 }
+    );
+  }
 }

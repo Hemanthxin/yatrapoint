@@ -285,31 +285,58 @@ export function LivePlan({
       // already exists — the backend treats this as a soft preference, so a
       // thin pool still falls back to a repeat rather than losing stops.
       const excludeIds = planRef.current?.stops.map((s) => s.id) ?? [];
-      const res = await fetch("/api/multi-stop/plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          start: { lat: start.lat, lng: start.lng },
-          searchCentre,
-          totalBudget: budget,
-          hours,
-          people,
-          vehicle,
-          categories: overpassCategories,
-          includePlaceIds: placeIds,
-          includeFood,
-          foodBudget,
-          maxStops,
-          searchRadiusKm: radiusKm,
-          minDistanceKm,
-          direction,
-          areaDistricts,
-          mode,
-          days,
-          excludeIds,
-        }),
-      });
-      const data: PlanResponse = await res.json();
+
+      // Split the actual network call from parsing its body: a real
+      // connectivity failure (offline, DNS, CORS) and a server that
+      // responded but timed out mid-request (a gateway 504 with an HTML/
+      // empty body, not JSON) look identical to a single catch-all, but
+      // need different, actionable copy — the first is "check your
+      // connection", the second is "this specific plan is too heavy".
+      let res: Response;
+      try {
+        res = await fetch("/api/multi-stop/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            start: { lat: start.lat, lng: start.lng },
+            searchCentre,
+            totalBudget: budget,
+            hours,
+            people,
+            vehicle,
+            categories: overpassCategories,
+            includePlaceIds: placeIds,
+            includeFood,
+            foodBudget,
+            maxStops,
+            searchRadiusKm: radiusKm,
+            minDistanceKm,
+            direction,
+            areaDistricts,
+            mode,
+            days,
+            excludeIds,
+          }),
+        });
+      } catch {
+        setError("Network error — check your connection and try again.");
+        setPlan(null);
+        return;
+      }
+
+      let data: PlanResponse;
+      try {
+        data = await res.json();
+      } catch {
+        setError(
+          res.status === 504
+            ? "This plan took too long to generate — try a smaller radius, shorter distance, or fewer stops."
+            : `Server error (${res.status || "unknown"}) — try again in a moment.`
+        );
+        setPlan(null);
+        return;
+      }
+
       if (!res.ok || !data.ok) {
         const detail = data.overpassError ? ` (live-places lookup: ${data.overpassError})` : "";
         setError((data.error || "Could not generate a plan.") + detail);
@@ -317,8 +344,6 @@ export function LivePlan({
         return;
       }
       setPlan(data);
-    } catch {
-      setError("Network error — try again.");
     } finally {
       setLoading(false);
     }
