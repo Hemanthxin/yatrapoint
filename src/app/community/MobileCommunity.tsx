@@ -5,6 +5,7 @@ import type { PostSocial, PostMediaItem } from "@/lib/queries/community";
 import type { CommunitySummary } from "@/lib/queries/communities";
 import { Feed } from "./Feed";
 import { CommunityTopBar } from "./CommunityTopBar";
+import { ReelsEntry } from "./ReelsEntry";
 
 interface Props {
   posts: CommunityPost[];
@@ -28,6 +29,10 @@ export function MobileCommunity({ posts, social, media, currentUserId, userName,
         <h1 className="text-xl font-extrabold tracking-tight text-[color:var(--text)]">Community</h1>
         <CommunityTopBar />
       </header>
+
+      {/* Named, tappable way into Reels — the top-bar icon alone wasn't
+          discoverable (BUG-11). */}
+      <ReelsEntry />
 
       {/* Compact desktop-rail equivalent: a horizontally-scrollable strip of
           trending communities, since the mockup this mirrors is itself a

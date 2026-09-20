@@ -208,6 +208,153 @@ body {
   background-color: var(--app-bg);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BLUEPRINT GRID
+   Ported from the Rexovi "Digital Workshop" design system (d:\Hemanth\pro,
+   app/globals.css `.blueprint`) — same 68px cell and the same radial mask, so
+   it reads identically: crisp near the top of the viewport, dissolving as it
+   falls away. Sits behind everything and never takes a pointer event.
+
+   The line colour is a token rather than a literal because Saafera has three
+   themes; a fixed hairline that works on the near-white canvas is invisible on
+   the dark one and far too loud on vibrant.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root { --grid-line: rgba(17, 24, 20, 0.055); }
+:root[data-theme="dark"] { --grid-line: rgba(232, 237, 243, 0.055); }
+:root[data-theme="vibrant"] { --grid-line: rgba(255, 255, 255, 0.07); }
+
+.blueprint {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 68px 68px;
+  -webkit-mask-image: radial-gradient(120% 80% at 50% 0%, #000 15%, transparent 78%);
+  mask-image: radial-gradient(120% 80% at 50% 0%, #000 15%, transparent 78%);
+}
+
+/* Scoped variant for a single section that wants its own grid (the app-wide
+   one is fixed to the viewport, so a section needs absolute positioning to
+   scroll with its own content). */
+.blueprint--local {
+  position: absolute;
+}
+
+/* The grid is decoration. Anyone who has asked for less motion/contrast still
+   gets it, but it should never fight the text on a high-contrast display. */
+@media (prefers-contrast: more) {
+  .blueprint { display: none; }
+}
+
+/* ── Registration ticks — the workshop signature ──────────────────────────
+   Corner brackets that draw themselves in on hover, as on Rexovi's cards.
+   ::before/::after, so no markup and no extra elements to lay out.
+
+   Two adaptations from the original, both forced by Saafera's cards:
+     • Inset 10px instead of sitting on the border at -1px. These cards are
+       rounded to 16-24px (Rexovi's are 6-16px), so a bracket on the edge would
+       float outside the curve, and the fifteen card layouts with
+       `overflow-hidden` would clip it away entirely.
+     • Invisible at rest rather than at 0.5 opacity. Many of these cards are
+       photo-topped, where a permanent mark over the image reads as a rendering
+       artifact rather than a deliberate one. On hover it is unmistakably
+       intentional. */
+.ticks,
+.card {
+  position: relative;
+}
+.ticks::before,
+.ticks::after,
+.card::before,
+.card::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--accent);
+  opacity: 0;
+  transition: opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+.ticks::before,
+.card::before {
+  top: 10px;
+  left: 10px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.ticks::after,
+.card::after {
+  bottom: 10px;
+  right: 10px;
+  border-left: 0;
+  border-top: 0;
+}
+.ticks:hover::before,
+.ticks:hover::after,
+.card:hover::before,
+.card:hover::after {
+  opacity: 0.85;
+}
+
+/* ── Text link with an underline that grows from the left ─────────────────
+   A background-size transition rather than a border, so the rule animates
+   without shifting a single pixel of text. */
+.tlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding-bottom: 2px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.34s cubic-bezier(0.22, 1, 0.36, 1), gap 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tlink:hover {
+  background-size: 100% 1px;
+  color: var(--accent);
+  gap: 0.65em;
+}
+
+/* ── Cursor halo ──────────────────────────────────────────────────────────
+   A thin ring trailing the pointer (see components/app/CursorHalo.tsx). Sits
+   above everything, eats no clicks, and is simply absent on touch devices and
+   for reduced-motion users. */
+.cursor-halo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 250;
+  width: 30px;
+  height: 30px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease,
+    border-color 0.3s ease;
+}
+.cursor-halo[data-on="true"] {
+  opacity: 1;
+}
+.cursor-halo[data-hot="true"] {
+  width: 46px;
+  height: 46px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: var(--accent);
+}
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-halo {
+    display: none;
+  }
+}
+
 /* The signature green aura — layered emerald glows on black. */
 :root[data-theme="dark"] .aurora-canvas {
   opacity: 1;

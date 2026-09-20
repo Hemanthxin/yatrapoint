@@ -15,9 +15,13 @@ const USER_AGENT =
 const ENDPOINTS: string[] = (() => {
   const envEndpoint = process.env.OVERPASS_URL;
   if (envEndpoint) return [envEndpoint];
+  // overpass.osm.ch is deliberately ABSENT. It is a Swiss regional extract,
+  // not a planet mirror: it answers any Indian query with HTTP 200 and an
+  // empty `elements` array, in ~700ms — faster than the mirrors that hold the
+  // data. While it was in this list it won every race, and every OSM-backed
+  // feature in the app silently showed nothing.
   return [
     "https://overpass-api.de/api/interpreter",
-    "https://overpass.osm.ch/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
     "https://overpass.private.coffee/api/interpreter",
     "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
@@ -71,16 +75,55 @@ async function raceOverpass<T = OverpassResponse>(
     }
   };
 
+  // Take the first mirror that answers WITH DATA, not merely the first that
+  // answers 2xx.
+  //
+  // Promise.any resolved on the first success, and one mirror
+  // (overpass.osm.ch) returns HTTP 200 with an empty `elements` array in about
+  // 700 ms — faster than the mirror that actually answers. It won every race,
+  // so every Overpass-backed feature in the app silently showed nothing: the
+  // Food and Shopping lists on a place, live places in Explore, the planner's
+  // live discovery, and the OSM half of "Near you". Nothing errored, because
+  // an empty result is a legitimate answer to "what is near here" — it just
+  // was not the truth.
+  //
+  // An empty response is still kept as a fallback, so a genuinely empty area
+  // resolves normally once every mirror has had its say.
+  const hasData = (d: unknown): boolean => {
+    const els = (d as { elements?: unknown[] } | null)?.elements;
+    return Array.isArray(els) ? els.length > 0 : true; // non-element payloads pass
+  };
+
   try {
-    const data = await Promise.any(ENDPOINTS.map(attempt));
-    master.abort(); // cancel the slower mirrors now that we have an answer
-    return data;
-  } catch (err) {
-    const errs =
-      err instanceof AggregateError
-        ? err.errors.map((e) => (e instanceof Error ? e.message : String(e)))
-        : [err instanceof Error ? err.message : String(err)];
-    throw new Error(`All Overpass mirrors failed: ${errs.join("; ")}`);
+    return await new Promise<T>((resolve, reject) => {
+      let pending = ENDPOINTS.length;
+      let empty: T | null = null;
+      const errors: string[] = [];
+
+      for (const endpoint of ENDPOINTS) {
+        attempt(endpoint).then(
+          (data) => {
+            if (hasData(data)) {
+              master.abort(); // cancel the slower mirrors
+              resolve(data);
+              return;
+            }
+            if (empty === null) empty = data;
+            if (--pending === 0) {
+              if (empty !== null) resolve(empty);
+              else reject(new Error(`All Overpass mirrors failed: ${errors.join("; ")}`));
+            }
+          },
+          (err) => {
+            errors.push(err instanceof Error ? err.message : String(err));
+            if (--pending === 0) {
+              if (empty !== null) resolve(empty);
+              else reject(new Error(`All Overpass mirrors failed: ${errors.join("; ")}`));
+            }
+          }
+        );
+      }
+    });
   } finally {
     if (signal) signal.removeEventListener("abort", onOuterAbort);
   }
@@ -223,7 +266,52 @@ export interface OverpassPlace {
     // actual amount when mapped, e.g. "20 INR" / "₹50".
     fee?: string;
     charge?: string;
+    // Photo signals (BUG-03). OSM contributors tag many notable places with a
+    // picture, and these particular tags point at freely-licensed material we
+    // may legally use: `image` is a direct URL, `wikimedia_commons` names a
+    // Commons file/category, and `wikipedia` is a "lang:Title" article
+    // reference. See placePhotoFromTags() below.
+    image?: string;
+    wikimediaCommons?: string;
+    wikipedia?: string;
   };
+  // A ready-to-use photo URL derived from the tags above, or null when the
+  // place carries no usable photo reference.
+  imageUrl: string | null;
+}
+
+// Turn OSM's photo tags into a URL we can render.
+//
+// BUG-03: live-API places always came back with no photo at all, so every one
+// of them fell through to a plain coloured tile. OSM's own tags are the
+// reliable, licence-safe source for these: Wikimedia Commons content is
+// freely licensed, and Special:FilePath resolves a file name to the image
+// (`width` asks Commons to serve a thumbnail rather than a full-size original).
+// A place with none of these tags still returns null — the caller then falls
+// back to a name-matched Wikipedia lookup, and finally to the gradient tile.
+export function placePhotoFromTags(tags: {
+  image?: string;
+  wikimediaCommons?: string;
+}): string | null {
+  // A direct image URL, but only over https and only from hosts that actually
+  // serve images — an http URL would be blocked as mixed content, and a link
+  // to some random page isn't a photo.
+  const direct = tags.image?.trim();
+  if (direct && /^https:\/\//i.test(direct) && /\.(jpe?g|png|webp|gif)(\?|$)/i.test(direct)) {
+    return direct;
+  }
+
+  // "File:Foo.jpg" (a single file) — a "Category:..." value names a gallery
+  // rather than one image, so it is not usable directly.
+  const commons = tags.wikimediaCommons?.trim();
+  if (commons && /^file:/i.test(commons)) {
+    const file = commons.replace(/^file:/i, "").trim();
+    if (file) {
+      return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=640`;
+    }
+  }
+
+  return null;
 }
 
 // Default radius for nearby queries.
@@ -351,27 +439,33 @@ export async function fetchOverpassPlaces(
     const detectedCat =
       categories.find((c) => matchesCategory(t, c)) ?? categories[0];
 
+    const placeTags = {
+      cuisine: t.cuisine,
+      openingHours: t.opening_hours,
+      website: t.website ?? t["contact:website"],
+      phone: t.phone ?? t["contact:phone"],
+      addrFull: [t["addr:housenumber"], t["addr:street"], t["addr:suburb"], t["addr:city"]]
+        .filter(Boolean)
+        .join(", ") || undefined,
+      wheelchair: t.wheelchair,
+      religion: t.religion,
+      operator: t.operator,
+      brand: t.brand,
+      fee: t.fee,
+      charge: t.charge,
+      image: t.image,
+      wikimediaCommons: t.wikimedia_commons,
+      wikipedia: t.wikipedia,
+    };
+
     places.push({
       osmId: `${el.type}/${el.id}`,
       name: t.name,
       category: detectedCat,
       lat,
       lng,
-      tags: {
-        cuisine: t.cuisine,
-        openingHours: t.opening_hours,
-        website: t.website ?? t["contact:website"],
-        phone: t.phone ?? t["contact:phone"],
-        addrFull: [t["addr:housenumber"], t["addr:street"], t["addr:suburb"], t["addr:city"]]
-          .filter(Boolean)
-          .join(", ") || undefined,
-        wheelchair: t.wheelchair,
-        religion: t.religion,
-        operator: t.operator,
-        brand: t.brand,
-        fee: t.fee,
-        charge: t.charge,
-      },
+      tags: placeTags,
+      imageUrl: placePhotoFromTags(placeTags),
     });
   }
 

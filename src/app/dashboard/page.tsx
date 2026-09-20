@@ -1,12 +1,10 @@
 import { redirect } from "next/navigation";
-import { desc } from "drizzle-orm";
 
 import { auth } from "@/auth";
-import { db } from "@/lib/db";
-import { cityPlaces } from "@/lib/db/schema";
 import { AppShell } from "@/components/app/AppShell";
 import { getDashboardStats, listUpcomingTrips } from "@/lib/queries/trip-plans";
 import { listDestinations } from "@/lib/queries/destinations";
+import { listPopularCityPlaces } from "@/lib/queries/city-places";
 import { getHeroBannerImage } from "@/lib/actions/site-settings";
 import { MobileDashboard } from "./MobileDashboard";
 import { DesktopDashboard } from "./DesktopDashboard";
@@ -25,7 +23,7 @@ export default async function DashboardPage() {
   // popular = top Karnataka destinations. Degrade gracefully if the DB times out
   // (Neon is serverless + far away) so a transient hiccup never 500s the page.
   const [citySeed, popularTrips, upcoming, heroImageUrl] = await Promise.all([
-    db.select().from(cityPlaces).orderBy(desc(cityPlaces.popularity)).limit(60).catch(() => []),
+    listPopularCityPlaces(60).catch(() => []),
     listDestinations({ state: "Karnataka", isHidden: false, limit: 8 }).catch(() => []),
     listUpcomingTrips(u.id ?? ""),
     getHeroBannerImage(),

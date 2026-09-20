@@ -15,6 +15,7 @@ export function StopImageGrid({
   fallbackImageUrl,
   emoji,
   gradient,
+  locationHint,
 }: {
   name: string;
   category: string;
@@ -22,6 +23,9 @@ export function StopImageGrid({
   fallbackImageUrl?: string | null;
   emoji: string;
   gradient: string;
+  // Nearby place/area name, used to disambiguate a generic place name when
+  // resolving a photo (e.g. two "Nataraja Temple"s in different towns).
+  locationHint?: string;
 }) {
   if (images.length === 0) {
     return (
@@ -29,11 +33,18 @@ export function StopImageGrid({
         <PlaceImage
           name={name}
           storedSrc={fallbackImageUrl}
+          hint={locationHint}
           category={category}
           emoji={emoji}
           gradient={gradient}
           className="h-full w-full"
           emojiClassName="text-4xl"
+          // BUG-03: a live-API stop with no photo used to show nothing but a
+          // coloured tile. A plan has a handful of stops (not the hundreds of
+          // cards a catalogue page renders), so resolving a real, name-matched
+          // Wikipedia photo per stop is affordable here and is the reliable,
+          // licence-safe image source the report asked for.
+          preferWiki
         />
       </div>
     );

@@ -14,12 +14,13 @@ import { BackButton } from "@/components/app/BackButton";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { cityPlaces } from "@/lib/db/schema";
+import { getCityPlaceBySlug } from "@/lib/queries/city-places";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
 import { Reveal } from "@/components/app/Reveal";
-import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { HeroPhoto } from "@/components/app/HeroPhoto";
+import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import { placeMapUrl } from "@/lib/maps";
@@ -36,14 +37,12 @@ export default async function CityPlacePage({ params }: PageProps) {
   const u = session.user;
   const { slug } = await params;
 
-  const [place] = await db
-    .select()
-    .from(cityPlaces)
-    .where(eq(cityPlaces.slug, slug))
-    .limit(1);
+  // Resolves the current slug or any the place was merged out of, so links
+  // minted before the catalogues were consolidated still work.
+  const place = await getCityPlaceBySlug(slug);
   if (!place) notFound();
 
-  const gallery = await listGalleryImages(place.id, "city");
+  const gallery = await listGalleryImages(place.id, IMAGE_SOURCE);
   const tags = place.tags?.split(",").map((t) => t.trim()).filter(Boolean) ?? [];
 
   return (
@@ -53,28 +52,26 @@ export default async function CityPlacePage({ params }: PageProps) {
       <LocationBanner />
 
       <article className="mt-4 overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        {/* Fixed-height hero, same size whichever image source fills it (gallery,
-            single stored photo, or none) — no layout jump between places. */}
-        <div className="relative h-72 overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 sm:h-80 md:h-96">
-          {gallery.length > 0 ? (
-            <div className="absolute inset-0">
-              <MediaCarousel
-                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
-                alt={place.name}
-                className="h-full w-full"
-              />
-            </div>
-          ) : place.imageUrl ? (
-            <div className="absolute inset-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={place.imageUrl} alt={place.name} className="h-full w-full object-cover" />
-            </div>
-          ) : (
-            <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-          )}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/85 via-emerald-800/35 to-transparent" />
-
-          <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+        {/* This hero only ever drew a photo when the place had a GALLERY — it
+            ignored the place's own stored photo entirely, so most city places
+            showed nothing but a flat green panel. It now shows the stored
+            photo, falls back to a name-matched Wikipedia one for the many
+            OpenStreetMap-sourced places that have no picture of their own, and
+            opens full screen when tapped. */}
+        <div className="relative min-h-[16rem] overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 sm:min-h-[18rem] md:p-8">
+          <HeroPhoto
+            images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
+            fallbackImageUrl={place.imageUrl}
+            alt={place.name}
+            emoji="📍"
+            gradient="from-emerald-500 via-emerald-600 to-teal-700"
+            preferWiki
+            hint={place.area ?? place.city}
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-800/40 to-transparent" />
+          <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+          {/* Nothing here is clickable, so taps fall through to the photo. */}
+          <div className="pointer-events-none relative flex h-full flex-col justify-end">
             <p className="text-xs font-bold uppercase tracking-wide text-white/90">
               ★ Curated · {place.kind}
             </p>
@@ -93,6 +90,7 @@ export default async function CityPlacePage({ params }: PageProps) {
           rating={place.googleRating}
           ratingCount={place.googleRatingCount}
           weeklyHoursJson={place.googleWeeklyHours}
+            businessStatus={place.googleBusinessStatus}
           className="mb-5"
         />
         <p className="text-sm leading-relaxed text-slate-700">

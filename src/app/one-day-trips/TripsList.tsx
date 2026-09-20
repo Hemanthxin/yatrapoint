@@ -12,19 +12,36 @@ import { RevealGrid } from "@/components/app/RevealGrid";
 
 interface TripsListProps {
   trips: NearbyDestination[];
+  baseCity?: string;
+  // Pre-selected distance band, from the `?within=` query param — lets other
+  // screens (e.g. the dashboard's distance chooser) link straight into a
+  // filtered list (BUG-16).
+  initialMaxDistance?: number;
 }
 
-export function TripsList({ trips }: TripsListProps) {
+export function TripsList({
+  trips,
+  baseCity = "Bangalore",
+  initialMaxDistance = 0,
+}: TripsListProps) {
   const { coords } = useLocation();
   const [category, setCategory] = useState<string>("");
-  const [maxDistance, setMaxDistance] = useState<number>(0);
+  const [maxDistance, setMaxDistance] = useState<number>(initialMaxDistance);
 
   const sorted = useMemo(() => sortByUserDistance(trips, coords), [trips, coords]);
+  // BUG-15: the km chips used to filter on `userDistanceKm` — the straight-line
+  // distance from the traveller's LIVE GPS. On a page of day trips FROM a base
+  // city that returns the wrong set for anyone who isn't standing in that city
+  // (and nothing at all from another city), which is exactly the reported
+  // "30/60/100/150 km do not return the expected places". The chips now filter
+  // on each trip's real curated driving distance from the base city, which is
+  // what the label means; the list is still SORTED by, and still shows,
+  // distance from you.
   const filtered = useMemo(
     () =>
       sorted.filter((d) => {
         if (category && d.category !== category) return false;
-        if (maxDistance > 0 && d.userDistanceKm > maxDistance) return false;
+        if (maxDistance > 0 && d.distanceKm > maxDistance) return false;
         return true;
       }),
     [sorted, category, maxDistance]
@@ -41,6 +58,7 @@ export function TripsList({ trips }: TripsListProps) {
           <select
             value={maxDistance}
             onChange={(e) => setMaxDistance(Number(e.target.value))}
+            aria-label={`Maximum distance from ${baseCity}`}
             className="min-h-[44px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
           >
             <option value={0}>Any distance</option>
@@ -49,6 +67,7 @@ export function TripsList({ trips }: TripsListProps) {
             <option value={100}>100 km</option>
             <option value={150}>150 km</option>
           </select>
+          <span className="hidden text-slate-400 sm:inline">of {baseCity}</span>
         </div>
       </div>
 

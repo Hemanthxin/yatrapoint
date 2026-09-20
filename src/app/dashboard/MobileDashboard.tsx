@@ -8,6 +8,7 @@ import {
   CalendarClock,
   Users,
   Sparkles,
+  Route,
 } from "lucide-react";
 
 import { formatINR } from "@/lib/format";
@@ -134,50 +135,43 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
         <NearbyPlaces seed={citySeed} />
       </Section>
 
-      {/* Popular rail */}
-      {popularTrips.length > 0 && (
-        <Section title="Popular trips" href="/destinations">
-          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
-            {popularTrips.map((t) => {
-              const cat = CATEGORY_BY_SLUG[t.category as CategorySlug];
-              const grad = CATEGORY_GRADIENT[t.category as CategorySlug] ?? "from-sky-400 to-emerald-500";
-              const total = t.budgetPerDay * t.recommendedDays;
-              return (
-                <Link
-                  key={t.id}
-                  href={`/destinations/${t.slug}`}
-                  className="relative h-44 w-60 shrink-0 overflow-hidden rounded-3xl shadow-sm active:scale-[0.98]"
-                >
-                  <PlaceImage
-                    name={t.name}
-                    storedSrc={t.imageUrl}
-                    hint={[t.district, t.state].filter(Boolean).join(", ")}
-                    category={t.category}
-                    emoji={cat?.emoji ?? "📍"}
-                    gradient={grad}
-                    className="absolute inset-0 h-full w-full"
-                    emojiClassName="text-5xl"
-                    preferWiki
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-                  <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-slate-700 backdrop-blur">
-                    {t.recommendedDays} {t.recommendedDays === 1 ? "Day" : "Days"}
-                  </span>
-                  <div className="absolute inset-x-0 bottom-0 p-3 text-white">
-                    <p className="truncate text-sm font-bold">{t.name}</p>
-                    <p className="text-xs text-white/85">
-                      from <span className="font-extrabold">{formatINR(total)}</span>
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </Section>
-      )}
+      {/* BUG-16: "Popular trips" is out for the initial phase — a popularity
+          rail said nothing about whether a trip was actually reachable. Browsing
+          by DISTANCE does, so this is now a distance (KM) chooser that opens the
+          one-day-trips list already filtered to that band. */}
+      <Section title="Trips by distance" href="/one-day-trips">
+        <p className="-mt-1 mb-2 text-[13px] font-medium text-slate-500">
+          How far do you want to go from Bangalore?
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {DISTANCE_OPTIONS.map((d) => (
+            <Link
+              key={d.km}
+              href={`/one-day-trips?within=${d.km}`}
+              className="group relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm active:scale-[0.98]"
+            >
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-70" />
+              <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
+                <Route className="h-5 w-5" />
+              </span>
+              <p className="text-sm font-bold text-slate-900">Within {d.km} km</p>
+              <p className="mt-0.5 text-[11px] text-slate-500">{d.sub}</p>
+            </Link>
+          ))}
+        </div>
+      </Section>
     </div>
   );
 }
+
+// The same bands the one-day-trips filter offers, so a tap here lands on a list
+// that is already filtered exactly the way the label promises.
+const DISTANCE_OPTIONS = [
+  { km: 30, sub: "Right around the city" },
+  { km: 60, sub: "An easy morning drive" },
+  { km: 100, sub: "A proper day out" },
+  { km: 150, sub: "Furthest for one day" },
+];
 
 function QuickAction({ href, icon, title, sub }: { href: string; icon: React.ReactNode; title: string; sub: string }) {
   return (

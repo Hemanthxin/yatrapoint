@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { isAdminSession } from "@/lib/admin";
-import { listPlacesMissingImages } from "@/lib/queries/admin-images";
+import { listPlacesMissingImages, listImageFacets } from "@/lib/queries/admin-images";
 import { fetchPlaceGalleriesBatch } from "@/lib/actions/admin-place-gallery";
 import { ImagesManager } from "./ImagesManager";
 
@@ -10,7 +10,7 @@ export default async function AdminImagesPage() {
   const session = await auth();
   if (!session || !isAdminSession(session.user)) redirect("/admin-login");
 
-  const missing = await listPlacesMissingImages(24);
+  const [missing, facets] = await Promise.all([listPlacesMissingImages(24), listImageFacets()]);
   const initialGalleries = await fetchPlaceGalleriesBatch(missing.map((r) => ({ id: r.id, source: r.source })));
   const u = session.user;
 
@@ -23,7 +23,11 @@ export default async function AdminImagesPage() {
           photo, and manage its photo gallery (up to 4 photos with captions) shown on trip-plan stop cards.
         </p>
       </div>
-      <ImagesManager initialMissing={missing} initialGalleries={initialGalleries} />
+      <ImagesManager
+        initialMissing={missing}
+        initialGalleries={initialGalleries}
+        initialStates={facets.states}
+      />
     </AdminShell>
   );
 }

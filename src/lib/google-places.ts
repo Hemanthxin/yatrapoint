@@ -47,6 +47,10 @@ export interface GooglePlaceStatus {
   rating: number | null;
   ratingCount: number | null;
   weeklyHours: WeeklyHours | null;
+  // "OPERATIONAL" | "CLOSED_TEMPORARILY" | "CLOSED_PERMANENTLY", or null when
+  // Google reports none. This is what lets the app stop showing
+  // permanently-closed places (BUG-01) — see src/lib/place-visibility.ts.
+  businessStatus: string | null;
 }
 
 interface GoogleOpeningHoursPeriod {
@@ -90,8 +94,10 @@ function parseWeeklyHours(periods: GoogleOpeningHoursPeriod[] | undefined): Week
   return hours.every((d) => d == null) ? null : hours;
 }
 
-// Field mask deliberately restricted to just rating/count/hours — no
-// photos/reviews/contact fields, to keep each call as cheap as possible.
+// Field mask deliberately restricted to rating/count/hours/businessStatus —
+// no photos/reviews/contact fields, to keep each call as cheap as possible.
+// businessStatus sits in the same (cheapest) SKU tier as the rest, so asking
+// for it adds no cost per call.
 export async function fetchGooglePlaceStatus(placeId: string): Promise<GooglePlaceStatus | null> {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) return null;
@@ -100,7 +106,7 @@ export async function fetchGooglePlaceStatus(placeId: string): Promise<GooglePla
     const res = await fetch(`${PLACES_BASE}/places/${placeId}`, {
       headers: {
         "X-Goog-Api-Key": key,
-        "X-Goog-FieldMask": "rating,userRatingCount,regularOpeningHours",
+        "X-Goog-FieldMask": "rating,userRatingCount,regularOpeningHours,businessStatus",
       },
       signal: AbortSignal.timeout(8000),
     });
@@ -109,11 +115,13 @@ export async function fetchGooglePlaceStatus(placeId: string): Promise<GooglePla
       rating?: number;
       userRatingCount?: number;
       regularOpeningHours?: { periods?: GoogleOpeningHoursPeriod[] };
+      businessStatus?: string;
     };
     return {
       rating: data.rating ?? null,
       ratingCount: data.userRatingCount ?? null,
       weeklyHours: parseWeeklyHours(data.regularOpeningHours?.periods),
+      businessStatus: data.businessStatus ?? null,
     };
   } catch {
     return null;

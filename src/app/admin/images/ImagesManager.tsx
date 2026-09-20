@@ -3,7 +3,12 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import { Search, Upload, Loader2, Check, ImageOff, Plus, X, ArrowUp, ArrowDown } from "lucide-react";
 import type { AdminImageRow, ImageSource } from "@/lib/queries/admin-images";
-import { searchPlaceImages, updatePlaceImage } from "@/lib/actions/admin-images";
+import {
+  searchPlaceImages,
+  filterPlaceImages,
+  placeImageFacets,
+  updatePlaceImage,
+} from "@/lib/actions/admin-images";
 import {
   addPlaceGalleryImage,
   deletePlaceGalleryImage,
@@ -15,14 +20,18 @@ import type { GalleryImage } from "@/lib/queries/place-gallery";
 import { MAX_GALLERY_IMAGES } from "@/lib/gallery-constants";
 import { resizeImageToDataUrl } from "@/lib/image-resize";
 
-const SOURCE_LABEL: Record<ImageSource, string> = {
+// A place can belong to several catalogues at once, so it gets one badge per
+// role rather than one CARD per role. Previously the same fort appeared as two
+// separate cards — a "Destination" with no photos beside a "One-day trip" with
+// four — because each catalogue was searched separately.
+const KIND_LABEL: Record<string, string> = {
   destination: "Destination",
-  nearby: "One-day trip",
+  "day-trip": "One-day trip",
   city: "City place",
 };
-const SOURCE_CHIP: Record<ImageSource, string> = {
+const KIND_CHIP: Record<string, string> = {
   destination: "bg-indigo-50 text-indigo-700",
-  nearby: "bg-amber-50 text-amber-700",
+  "day-trip": "bg-amber-50 text-amber-700",
   city: "bg-teal-50 text-teal-700",
 };
 
@@ -37,24 +46,56 @@ const resizeGalleryToDataUrl = (file: File) => resizeImageToDataUrl(file, { maxD
 export function ImagesManager({
   initialMissing,
   initialGalleries,
+  initialStates,
 }: {
   initialMissing: AdminImageRow[];
   initialGalleries: Record<string, GalleryImage[]>;
+  // Rendered on the server so the state dropdown is populated on first paint;
+  // districts arrive later, once a state is picked.
+  initialStates: string[];
 }) {
   const [query, setQuery] = useState("");
+  const [state, setState] = useState("");
+  const [district, setDistrict] = useState("");
+  const [facets, setFacets] = useState<{ states: string[]; districts: string[] }>({
+    states: initialStates,
+    districts: [],
+  });
   const [results, setResults] = useState<AdminImageRow[] | null>(null);
   const [searching, setSearching] = useState(false);
   const [galleries, setGalleries] = useState(initialGalleries);
 
+  // Districts are fetched per state — there are several hundred nationwide and
+  // the names repeat across states, so an unscoped list would be unusable.
+  useEffect(() => {
+    if (!state) {
+      setFacets((f) => ({ ...f, districts: [] }));
+      return;
+    }
+    let alive = true;
+    placeImageFacets(state).then((f) => {
+      if (alive) setFacets((prev) => ({ states: prev.states, districts: f.districts }));
+    });
+    return () => {
+      alive = false;
+    };
+  }, [state]);
+
+  // One effect drives the list, because a name search and an area filter are
+  // the same question asked two ways. With neither, the list falls back to the
+  // server-rendered worklist.
   useEffect(() => {
     const q = query.trim();
-    if (!q) {
+    if (!q && !state && !district) {
       setResults(null);
       return;
     }
     setSearching(true);
     const id = setTimeout(() => {
-      searchPlaceImages(q)
+      const load = q
+        ? searchPlaceImages(q, { state: state || undefined, district: district || undefined })
+        : filterPlaceImages({ state: state || undefined, district: district || undefined });
+      load
         .then((rows) => {
           setResults(rows);
           return fetchPlaceGalleriesBatch(rows.map((r) => ({ id: r.id, source: r.source })));
@@ -63,28 +104,80 @@ export function ImagesManager({
         .finally(() => setSearching(false));
     }, DEBOUNCE_MS);
     return () => clearTimeout(id);
-  }, [query]);
+  }, [query, state, district]);
 
   const showing = results ?? initialMissing;
   const isSearchMode = results !== null;
 
   return (
     <div>
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a place by name…"
-          className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-        />
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_180px_180px]">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search a place by name…"
+            className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+          />
+        </div>
+
+        {/* State and district. The catalogue runs to 20,000 places across a
+            dozen states, so narrowing by area is the only practical way to
+            work through one region's missing photos. */}
+        <select
+          value={state}
+          onChange={(e) => {
+            setState(e.target.value);
+            setDistrict(""); // a district from the old state means nothing here
+          }}
+          aria-label="Filter by state"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+        >
+          <option value="">All states</option>
+          {facets.states.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={district}
+          onChange={(e) => setDistrict(e.target.value)}
+          disabled={!state}
+          aria-label="Filter by district"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+        >
+          <option value="">{state ? "All districts" : "Pick a state first"}</option>
+          {facets.districts.map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {!isSearchMode && (
-        <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
-          Popular places still missing a photo
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          {isSearchMode
+            ? `${showing.length} match${showing.length === 1 ? "" : "es"}`
+            : "Places still missing a photo"}
+          {state ? ` · ${district || state}` : ""}
         </p>
-      )}
+        {(state || district) && (
+          <button
+            type="button"
+            onClick={() => {
+              setState("");
+              setDistrict("");
+            }}
+            className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200"
+          >
+            <X className="h-3 w-3" /> Clear filter
+          </button>
+        )}
+      </div>
 
       {searching ? (
         <div className="flex justify-center py-12">
@@ -92,7 +185,11 @@ export function ImagesManager({
         </div>
       ) : showing.length === 0 ? (
         <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center text-sm text-slate-500">
-          {isSearchMode ? "No places match that search." : "Nothing missing a photo right now — nice."}
+          {!isSearchMode
+            ? "Nothing missing a photo right now — nice."
+            : query.trim()
+            ? "No places match that search."
+            : `Every place in ${district || state} already has a photo.`}
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -166,8 +263,15 @@ function Row({
             <ImageOff className="h-8 w-8" />
           </div>
         )}
-        <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${SOURCE_CHIP[row.source]}`}>
-          {SOURCE_LABEL[row.source]}
+        <span className="absolute left-2 top-2 flex flex-wrap gap-1">
+          {row.kinds.map((k) => (
+            <span
+              key={k}
+              className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${KIND_CHIP[k] ?? "bg-slate-100 text-slate-700"}`}
+            >
+              {KIND_LABEL[k] ?? k}
+            </span>
+          ))}
         </span>
         {busy && (
           <div className="absolute inset-0 grid place-items-center bg-white/70">

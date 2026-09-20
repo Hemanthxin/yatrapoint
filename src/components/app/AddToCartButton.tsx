@@ -32,7 +32,9 @@ export function AddToCartButton({
         e.preventDefault();
         e.stopPropagation();
         const nowAdded = toggleCart(item);
-        if (nowAdded) showToast("Trip added to cart", "🧳");
+        // Name the place in the toast. "Trip added to cart" left you guessing
+        // which of the three things you just tapped actually went in.
+        if (nowAdded) showToast(`${item.name} added to cart`, "🧳");
       }}
       aria-pressed={added}
       className={`inline-flex items-center justify-center gap-1.5 rounded-2xl px-3 py-2 text-sm font-bold transition active:scale-95 ${

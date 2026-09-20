@@ -15,6 +15,7 @@ import {
 import type { CityPlace } from "@/lib/db/schema";
 import { useLocation } from "@/components/app/LocationContext";
 import { sortByUserDistance } from "@/lib/nearby-utils";
+import { PlaceDeduper, SOURCE_PRIORITY } from "@/lib/place-dedup";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
@@ -36,6 +37,9 @@ interface OverpassPlaceClient {
     phone?: string;
     addrFull?: string;
   };
+  // Freely-licensed photo derived from the place's own OSM tags, when it has
+  // one (BUG-03). Null for the many places nobody has photographed yet.
+  imageUrl?: string | null;
 }
 
 // User-facing category groups + Overpass categories they query.
@@ -231,16 +235,18 @@ export function ExploreClient({ seed }: ExploreClientProps) {
       userDistanceKm: o.userDistanceKm,
     }));
 
-    // Dedup: drop OSM entries that are within ~110 m of a seed entry.
-    const finalList: Array<(typeof sorted)[number] | (typeof opSorted)[number]> = [
-      ...sorted,
-    ];
-    for (const o of opSorted) {
-      const collide = sorted.find(
-        (s) => Math.abs(s.lat - o.lat) < 0.001 && Math.abs(s.lng - o.lng) < 0.001
-      );
-      if (!collide) finalList.push(o);
-    }
+    // Dedup with the app-wide rule (BUG-01). The old test only compared
+    // coordinates to ~110 m, so the SAME place mapped by OSM a few hundred
+    // metres from its curated row — or under a slightly different name —
+    // showed up twice, once as "Curated" and once as "Live". Source priority
+    // keeps the curated row, which is the one with the photo and the in-app
+    // detail page (BUG-02).
+    const deduper = new PlaceDeduper<
+      ((typeof sorted)[number] | (typeof opSorted)[number]) & { name: string }
+    >((item) => (item.kind === "seed" ? SOURCE_PRIORITY.city : SOURCE_PRIORITY.osm));
+    for (const s of sorted) deduper.add({ ...s, name: s.seed.name });
+    for (const o of opSorted) deduper.add({ ...o, name: o.osm.name });
+    const finalList = deduper.items;
     finalList.sort((a, b) => a.userDistanceKm - b.userDistanceKm);
 
     // Keep only places WITHIN the chosen radius — "within 8 km" means 8 km.
@@ -385,6 +391,7 @@ function SeedCard({
           rating={place.googleRating}
           ratingCount={place.googleRatingCount}
           weeklyHoursJson={place.googleWeeklyHours}
+            businessStatus={place.googleBusinessStatus}
           className="mt-2"
         />
         <p className="mt-2 line-clamp-2 text-sm text-slate-700">{place.shortDescription}</p>
@@ -446,7 +453,23 @@ function OsmCard({
   const groupSlug = OVERPASS_TO_GROUP[place.category] ?? "heritage";
   const group = GROUPS.find((g) => g.slug === groupSlug);
   return (
-    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      {/* BUG-03: live API places rendered as text-only cards next to curated
+          ones that had photos. When OSM carries a freely-licensed picture for
+          the place we show it; otherwise this is the same category-coloured
+          tile the curated cards fall back to, so the two now look alike. */}
+      <div className="relative h-36 w-full shrink-0 bg-slate-100">
+        <PlaceImage
+          name={place.name}
+          storedSrc={place.imageUrl}
+          category={place.category}
+          emoji={group?.emoji ?? "📍"}
+          gradient={GROUP_GRADIENT[groupSlug] ?? "from-emerald-400 to-teal-600"}
+          className="absolute inset-0 h-full w-full"
+          emojiClassName="text-4xl"
+        />
+      </div>
+      <div className="flex flex-col p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
@@ -503,6 +526,7 @@ function OsmCard({
             Site <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
           </a>
         )}
+      </div>
       </div>
     </article>
   );

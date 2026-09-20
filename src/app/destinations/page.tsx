@@ -13,8 +13,10 @@ import {
   listFavoriteIds,
   listStates,
 } from "@/lib/queries/destinations";
-import { searchCityPlaces, listCityPlacesByCategory } from "@/lib/queries/city-places";
-import { searchNearby, listNearby } from "@/lib/queries/nearby";
+import { listCityPlacesByCategory } from "@/lib/queries/city-places";
+import { listNearby } from "@/lib/queries/nearby";
+import { db } from "@/lib/db";
+import { searchPlaces, toDestination } from "@/lib/queries/places";
 import { CATEGORIES, type CategorySlug } from "@/lib/catalog/categories";
 import { ResponsiveSwitch } from "@/components/app/ResponsiveSwitch";
 import { MobileDestinations } from "./MobileDestinations";
@@ -57,37 +59,43 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
       maxBudget && Number.isFinite(maxBudget) ? maxBudget : undefined,
   };
 
-  // Neither a text search nor a category filter should be limited to the main
-  // destinations catalogue — Bengaluru city places and one-day-trip spots live
-  // in separate tables, so we pull matches from those too and show them as
-  // supplementary sections below. Text search wins when both are present.
   const q = sp.q?.trim();
-  const cityMatchesPromise = q
-    ? searchCityPlaces(q, 12)
-    : validCat
-      ? listCityPlacesByCategory(validCat, 12)
-      : Promise.resolve([]);
-  const nearbyMatchesPromise = q
-    ? searchNearby(q, 12)
-    : validCat
-      ? listNearby({ category: validCat, limit: 12 })
-      : Promise.resolve([]);
 
-  const [items, total, states, districts, favIds, cityMatches, nearbyMatches] = await Promise.all([
-    listDestinations({
-      ...destinationFilters,
-      limit: PAGE_SIZE,
-      offset: (page - 1) * PAGE_SIZE,
-    }),
-    countDestinations(destinationFilters),
-    listStates(),
-    listDistricts(sp.state),
-    listFavoriteIds(u.id ?? ""),
-    cityMatchesPromise,
-    nearbyMatchesPromise,
-  ]);
+  // A TEXT SEARCH is answered by one ranked query over the whole catalogue.
+  //
+  // It used to be three separate `%q%` lookups — destinations, city places and
+  // day trips — each ordered by popularity and rendered as its own section. So
+  // a search for "Mysore" split the city's own attractions across three lists,
+  // ordered by how popular each was rather than how well it matched, and missed
+  // everything filed under the "Mysuru" spelling. One list, ranked by
+  // relevance, is both simpler and what a traveller expects.
+  const searchResults = q ? await searchPlaces(db, q, { limit: PAGE_SIZE }) : [];
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  // A CATEGORY filter still pulls the supplementary sections, which are useful
+  // when browsing rather than searching.
+  const cityMatchesPromise = !q && validCat ? listCityPlacesByCategory(validCat, 12) : Promise.resolve([]);
+  const nearbyMatchesPromise = !q && validCat ? listNearby({ category: validCat, limit: 12 }) : Promise.resolve([]);
+
+  const [browseItems, browseTotal, states, districts, favIds, cityMatches, nearbyMatches] =
+    await Promise.all([
+      q
+        ? Promise.resolve([])
+        : listDestinations({
+            ...destinationFilters,
+            limit: PAGE_SIZE,
+            offset: (page - 1) * PAGE_SIZE,
+          }),
+      q ? Promise.resolve(0) : countDestinations(destinationFilters),
+      listStates(),
+      listDistricts(sp.state),
+      listFavoriteIds(u.id ?? ""),
+      cityMatchesPromise,
+      nearbyMatchesPromise,
+    ]);
+
+  const items = q ? searchResults.map((r) => toDestination(r.place)) : browseItems;
+  const total = q ? searchResults.length : browseTotal;
+  const totalPages = q ? 1 : Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   // Category quick-filters — the old "Trips by Places" browse, folded into the
   // State page so every kind of trip is reachable from one place. Changing a

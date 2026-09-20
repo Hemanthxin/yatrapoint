@@ -1,5 +1,4 @@
 import { notFound, redirect } from "next/navigation";
-import Image from "next/image";
 import {
   Calendar,
   MapPin,
@@ -19,12 +18,16 @@ import { LocationBanner } from "@/components/app/LocationBanner";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
-import { MediaCarousel } from "@/app/community/MediaCarousel";
+import { HeroPhoto } from "@/components/app/HeroPhoto";
+import { MobileDetail } from "./MobileDetail";
+import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
+import { listNearbyPoi } from "@/lib/queries/nearby-poi";
+import { db } from "@/lib/db";
 import { PlaceStatusBadgesFull } from "@/components/app/PlaceStatusBadges";
 import {
   getDestinationBySlug,
-  listDestinations,
+  listDestinationsNear,
   listFavoriteIds,
 } from "@/lib/queries/destinations";
 import { formatINR, formatBestMonths, formatDays } from "@/lib/format";
@@ -48,15 +51,24 @@ export default async function DestinationPage({ params }: PageProps) {
   const destination = await getDestinationBySlug(slug);
   if (!destination) notFound();
 
-  const [related, favIds, gallery] = await Promise.all([
-    listDestinations({
-      category: destination.category,
-      limit: 4,
-    }),
+  // Genuinely NEARBY places, nearest first — not the most popular places of the
+  // same category anywhere in India, which is what this used to show (BUG-07).
+  // Food and shopping come from our own catalogue, seeded from OpenStreetMap by
+  // scripts/seed-nearby-poi.ts. Reading them here rather than calling Overpass
+  // from the browser is what makes the Food and Shopping tabs work at all: the
+  // public mirrors are too slow and too rate-limited to answer a page render.
+  // A live lookup still runs client-side and merges in anything extra.
+  const poiLat = Number(destination.latitude);
+  const poiLng = Number(destination.longitude);
+
+  const [relatedFiltered, favIds, gallery, seededPoi] = await Promise.all([
+    listDestinationsNear(destination, { radiusKm: 150, limit: 3 }),
     listFavoriteIds(u.id ?? ""),
-    listGalleryImages(destination.id, "destination"),
+    listGalleryImages(destination.id, IMAGE_SOURCE),
+    Number.isFinite(poiLat) && Number.isFinite(poiLng)
+      ? listNearbyPoi(db, poiLat, poiLng, 5)
+      : Promise.resolve({ food: [], shopping: [] }),
   ]);
-  const relatedFiltered = related.filter((d) => d.id !== destination.id).slice(0, 3);
 
   const cat = CATEGORY_BY_SLUG[destination.category as CategorySlug];
   const gradient =
@@ -69,36 +81,34 @@ export default async function DestinationPage({ params }: PageProps) {
   const tripCost = destination.budgetPerDay * destination.recommendedDays;
 
   return (
-    <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
+    <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image} immersive>
+      {/* ── Mobile (< lg): bespoke place screen ── */}
+      <div className="lg:hidden">
+        <MobileDetail
+          place={destination}
+          gallery={gallery}
+          nearby={relatedFiltered}
+          favored={favIds.has(destination.id)}
+          seededPoi={seededPoi}
+        />
+      </div>
+
+      {/* ── Desktop (≥ lg): the original layout, unchanged ── */}
+      <div className="hidden lg:block">
       <Reveal amount={0}>
       <BackButton fallback="/destinations" label="All destinations" />
 
       <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
         <div className="relative h-72 sm:h-80 md:h-96">
-          {gallery.length > 0 ? (
-            <div className="absolute inset-0">
-              <MediaCarousel
-                media={gallery.map((g) => ({ url: g.url, kind: "image" }))}
-                alt={destination.name}
-                className="h-full w-full"
-              />
-            </div>
-          ) : destination.imageUrl ? (
-            <Image
-              src={destination.imageUrl}
-              alt={destination.name}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-          ) : (
-            <div
-              className={`relative grid h-full w-full place-items-center bg-gradient-to-br ${gradient}`}
-            >
-              <span className="text-9xl drop-shadow">{cat?.emoji ?? "📍"}</span>
-            </div>
-          )}
+          <HeroPhoto
+            images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
+            fallbackImageUrl={destination.imageUrl}
+            alt={destination.name}
+            emoji={cat?.emoji ?? "📍"}
+            gradient={gradient}
+            preferWiki
+            hint={[destination.district, destination.state].filter(Boolean).join(", ")}
+          />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
           <div className="absolute right-4 top-4">
@@ -109,7 +119,10 @@ export default async function DestinationPage({ params }: PageProps) {
             />
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+          {/* pointer-events-none so a tap on the title area still reaches the
+              photo underneath and opens it — this block covers the lower half
+              of the hero and holds nothing clickable. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${chip}`}
@@ -139,6 +152,7 @@ export default async function DestinationPage({ params }: PageProps) {
             rating={destination.googleRating}
             ratingCount={destination.googleRatingCount}
             weeklyHoursJson={destination.googleWeeklyHours}
+            businessStatus={destination.googleBusinessStatus}
             className="mb-5"
           />
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">About</h2>
@@ -217,9 +231,12 @@ export default async function DestinationPage({ params }: PageProps) {
 
       {relatedFiltered.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-xl font-extrabold tracking-tight text-slate-900">
-            More {cat?.label ?? "places"} like this
+          <h2 className="mb-1 text-xl font-extrabold tracking-tight text-slate-900">
+            Nearby places
           </h2>
+          <p className="mb-4 text-sm text-slate-500">
+            Other places close to {destination.name}, nearest first.
+          </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3">
             {relatedFiltered.map((d) => (
               <DestinationCard
@@ -232,6 +249,7 @@ export default async function DestinationPage({ params }: PageProps) {
         </section>
       )}
       </Reveal>
+      </div>
     </AppShell>
   );
 }

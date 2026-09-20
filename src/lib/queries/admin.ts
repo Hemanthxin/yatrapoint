@@ -1,55 +1,28 @@
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { destinations, type Destination } from "@/lib/db/schema";
-
-export interface CountBucket {
-  label: string;
-  total: number;
-}
+import { places, type Destination } from "@/lib/db/schema";
+import { toDestination } from "@/lib/queries/places";
 
 export interface AdminPlaceStats {
   totalPlaces: number;
   hiddenPlaces: number;
   visiblePlaces: number;
   averagePopularity: number;
-  byCategory: CountBucket[];
-  byState: CountBucket[];
-  byPlaceType: CountBucket[];
 }
 
 export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
   try {
-    const [totals, categoryRows, stateRows, typeRows] = await Promise.all([
-      db
-        .select({
-          total: sql<number>`count(*)::int`,
-          hidden: sql<number>`sum(case when ${destinations.isHidden} then 1 else 0 end)::int`,
-          visible: sql<number>`sum(case when ${destinations.isHidden} then 0 else 1 end)::int`,
-          avgPopularity: sql<number>`coalesce(round(avg(${destinations.popularity})), 0)::int`,
-        })
-        .from(destinations),
-      db
-        .select({
-          label: destinations.category,
-          total: sql<number>`count(*)::int`,
-        })
-        .from(destinations)
-        .groupBy(destinations.category),
-      db
-        .select({
-          label: destinations.state,
-          total: sql<number>`count(*)::int`,
-        })
-        .from(destinations)
-        .groupBy(destinations.state),
-      db
-        .select({
-          label: sql<string>`coalesce(${destinations.placeType}, 'Unspecified')`,
-          total: sql<number>`count(*)::int`,
-        })
-        .from(destinations)
-        .groupBy(sql`coalesce(${destinations.placeType}, 'Unspecified')`),
-    ]);
+    // Just the headline numbers. The by-category, by-state and by-place-type
+    // breakdowns were dropped from the dashboard, and with them three GROUP BY
+    // scans of the whole places table that ran on every admin page load.
+    const totals = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        hidden: sql<number>`sum(case when ${places.isHidden} then 1 else 0 end)::int`,
+        visible: sql<number>`sum(case when ${places.isHidden} then 0 else 1 end)::int`,
+        avgPopularity: sql<number>`coalesce(round(avg(${places.popularity})), 0)::int`,
+      })
+      .from(places);
 
     const total = totals[0]?.total ?? 0;
     const hidden = totals[0]?.hidden ?? 0;
@@ -61,9 +34,6 @@ export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
       hiddenPlaces: hidden,
       visiblePlaces: visible,
       averagePopularity,
-      byCategory: categoryRows.sort((a, b) => b.total - a.total),
-      byState: stateRows.sort((a, b) => b.total - a.total).slice(0, 8),
-      byPlaceType: typeRows.sort((a, b) => b.total - a.total).slice(0, 8),
     };
   } catch {
     return {
@@ -71,9 +41,6 @@ export async function getAdminPlaceStats(): Promise<AdminPlaceStats> {
       hiddenPlaces: 0,
       visiblePlaces: 0,
       averagePopularity: 0,
-      byCategory: [],
-      byState: [],
-      byPlaceType: [],
     };
   }
 }
@@ -89,12 +56,12 @@ export async function listPlacesByAdmin(): Promise<AdminContribution[]> {
   try {
     const rows = await db
       .select({
-        email: sql<string>`coalesce(${destinations.addedByEmail}, 'unknown')`,
-        name: sql<string>`coalesce(max(${destinations.addedByName}), 'Unknown')`,
+        email: sql<string>`coalesce(${places.addedByEmail}, 'unknown')`,
+        name: sql<string>`coalesce(max(${places.addedByName}), 'Unknown')`,
         total: sql<number>`count(*)::int`,
       })
-      .from(destinations)
-      .groupBy(sql`coalesce(${destinations.addedByEmail}, 'unknown')`);
+      .from(places)
+      .groupBy(sql`coalesce(${places.addedByEmail}, 'unknown')`);
     return rows
       .filter((r) => r.email !== "unknown")
       .sort((a, b) => b.total - a.total);
@@ -129,31 +96,31 @@ export async function listAdminPlaces(filter: PlacesFilter = {}): Promise<Places
       const term = `%${filter.q.trim()}%`;
       where.push(
         or(
-          ilike(destinations.name, term),
-          ilike(destinations.district, term),
-          ilike(destinations.shortDescription, term)
+          ilike(places.name, term),
+          ilike(places.district, term),
+          ilike(places.shortDescription, term)
         )!
       );
     }
-    if (filter.state) where.push(eq(destinations.state, filter.state));
-    if (filter.category) where.push(eq(destinations.category, filter.category));
+    if (filter.state) where.push(eq(places.state, filter.state));
+    if (filter.category) where.push(eq(places.category, filter.category));
     const cond = where.length ? and(...where) : undefined;
 
     const [countRow] = await db
       .select({ c: sql<number>`count(*)::int` })
-      .from(destinations)
+      .from(places)
       .where(cond);
     const total = countRow?.c ?? 0;
 
     const rows = await db
       .select()
-      .from(destinations)
+      .from(places)
       .where(cond)
-      .orderBy(desc(destinations.createdAt))
+      .orderBy(desc(places.createdAt), places.id)
       .limit(pageSize)
       .offset((page - 1) * pageSize);
 
-    return { rows, total, page, pageSize, pages: Math.max(1, Math.ceil(total / pageSize)) };
+    return { rows: rows.map(toDestination), total, page, pageSize, pages: Math.max(1, Math.ceil(total / pageSize)) };
   } catch {
     return { rows: [], total: 0, page, pageSize, pages: 1 };
   }
@@ -161,8 +128,8 @@ export async function listAdminPlaces(filter: PlacesFilter = {}): Promise<Places
 
 export async function getAdminPlace(id: string): Promise<Destination | null> {
   try {
-    const [row] = await db.select().from(destinations).where(eq(destinations.id, id)).limit(1);
-    return row ?? null;
+    const [row] = await db.select().from(places).where(eq(places.id, id)).limit(1);
+    return row ? toDestination(row) : null;
   } catch {
     return null;
   }
@@ -171,12 +138,12 @@ export async function getAdminPlace(id: string): Promise<Destination | null> {
 export async function placeFacets(): Promise<{ states: string[]; categories: string[] }> {
   try {
     const [states, categories] = await Promise.all([
-      db.selectDistinct({ v: destinations.state }).from(destinations).orderBy(destinations.state),
-      db.selectDistinct({ v: destinations.category }).from(destinations).orderBy(destinations.category),
+      db.selectDistinct({ v: places.state }).from(places).orderBy(places.state),
+      db.selectDistinct({ v: places.category }).from(places).orderBy(places.category),
     ]);
     return {
-      states: states.map((r) => r.v).filter(Boolean),
-      categories: categories.map((r) => r.v).filter(Boolean),
+      states: states.map((r) => r.v).filter((v): v is string => !!v),
+      categories: categories.map((r) => r.v).filter((v): v is string => !!v),
     };
   } catch {
     return { states: [], categories: [] };
@@ -185,11 +152,12 @@ export async function placeFacets(): Promise<{ states: string[]; categories: str
 
 export async function listRecentAdminPlaces(limit = 8): Promise<Destination[]> {
   try {
-    return await db
+    const rows = await db
       .select()
-      .from(destinations)
-      .orderBy(desc(destinations.createdAt))
+      .from(places)
+      .orderBy(desc(places.createdAt), places.id)
       .limit(limit);
+    return rows.map(toDestination);
   } catch {
     return [];
   }

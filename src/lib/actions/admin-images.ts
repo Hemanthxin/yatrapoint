@@ -4,18 +4,50 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { destinations, nearbyDestinations, cityPlaces } from "@/lib/db/schema";
+import { places } from "@/lib/db/schema";
 import { isAdminSession } from "@/lib/admin";
-import { searchPlacesForImages, type AdminImageRow, type ImageSource } from "@/lib/queries/admin-images";
+import {
+  searchPlacesForImages,
+  listPlacesForImages,
+  listImageFacets,
+  type AdminImageRow,
+  type ImageSource,
+} from "@/lib/queries/admin-images";
+import { PLACE_KINDS, kindsOf } from "@/lib/queries/places";
 
 const MAX_IMAGE_BYTES = 2_000_000;
 
-// Thin server-action wrapper so the admin client component can search
-// without pulling the DB client into its bundle.
-export async function searchPlaceImages(query: string): Promise<AdminImageRow[]> {
+// Thin server-action wrappers so the admin client component can search and
+// filter without pulling the DB client into its bundle.
+export async function searchPlaceImages(
+  query: string,
+  filter: { state?: string; district?: string } = {}
+): Promise<AdminImageRow[]> {
   const session = await auth();
   if (!session || !isAdminSession(session.user)) return [];
-  return searchPlacesForImages(query);
+  return searchPlacesForImages(query, filter);
+}
+
+// Used when a state or district is chosen with no search term: show that
+// area's places that still need a photo, rather than an empty screen.
+export async function filterPlaceImages(filter: {
+  state?: string;
+  district?: string;
+  missingOnly?: boolean;
+}): Promise<AdminImageRow[]> {
+  const session = await auth();
+  if (!session || !isAdminSession(session.user)) return [];
+  return listPlacesForImages({ ...filter, missingOnly: filter.missingOnly ?? true }, 45);
+}
+
+// Districts depend on the chosen state, so the client asks for them when it
+// changes rather than shipping every district in the country up front.
+export async function placeImageFacets(
+  state?: string
+): Promise<{ states: string[]; districts: string[] }> {
+  const session = await auth();
+  if (!session || !isAdminSession(session.user)) return { states: [], districts: [] };
+  return listImageFacets(state);
 }
 
 export interface UpdatePlaceImageResult {
@@ -23,12 +55,11 @@ export interface UpdatePlaceImageResult {
   error?: string;
 }
 
-// One lightweight, table-agnostic action: set/replace the photo for a place
-// in whichever catalogue it lives in (destinations / nearby_destinations /
-// city_places), then revalidate everywhere that place's image is shown on
-// the public site.
+// Set or replace the photo for a place. There is one row per place now, so
+// this is a single update — and a photo added here shows up on every screen
+// that place appears on, instead of only the catalogue whose copy was edited.
 export async function updatePlaceImage(
-  source: ImageSource,
+  _source: ImageSource,
   id: string,
   imageUrl: string
 ): Promise<UpdatePlaceImageResult> {
@@ -39,31 +70,25 @@ export async function updatePlaceImage(
   }
 
   try {
-    if (source === "destination") {
-      const [row] = await db
-        .update(destinations)
-        .set({ imageUrl })
-        .where(eq(destinations.id, id))
-        .returning({ slug: destinations.slug });
-      if (!row) return { ok: false, error: "Place not found." };
+    const [row] = await db
+      .update(places)
+      .set({ imageUrl })
+      .where(eq(places.id, id))
+      .returning({ slug: places.slug, kinds: places.kinds });
+    if (!row) return { ok: false, error: "Place not found." };
+
+    // Revalidate every route this place is reachable through — a place can be
+    // a destination AND a day trip AND a city listing at once.
+    const kinds = kindsOf(row);
+    if (kinds.includes(PLACE_KINDS.destination)) {
       revalidatePath("/destinations");
       revalidatePath(`/destinations/${row.slug}`);
-    } else if (source === "nearby") {
-      const [row] = await db
-        .update(nearbyDestinations)
-        .set({ imageUrl })
-        .where(eq(nearbyDestinations.id, id))
-        .returning({ slug: nearbyDestinations.slug });
-      if (!row) return { ok: false, error: "Place not found." };
+    }
+    if (kinds.includes(PLACE_KINDS.dayTrip)) {
       revalidatePath("/one-day-trips");
       revalidatePath(`/one-day-trips/${row.slug}`);
-    } else {
-      const [row] = await db
-        .update(cityPlaces)
-        .set({ imageUrl })
-        .where(eq(cityPlaces.id, id))
-        .returning({ slug: cityPlaces.slug });
-      if (!row) return { ok: false, error: "Place not found." };
+    }
+    if (kinds.includes(PLACE_KINDS.city)) {
       revalidatePath("/explore-bangalore");
       revalidatePath(`/explore-bangalore/${row.slug}`);
     }

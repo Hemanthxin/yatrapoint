@@ -61,7 +61,10 @@ export interface Candidate {
   // When true, the traveller hand-picked this exact place — the planner pulls
   // it in ahead of auto-discovered candidates (budget/time permitting).
   pinned?: boolean;
-  // Stored photo (curated catalogue rows only — live Overpass places have none).
+  // Stored photo. Curated catalogue rows carry an admin-set photo; live
+  // Overpass places now carry one too when OSM tags a freely-licensed image
+  // for them (BUG-03). Null/undefined = no photo from the data itself, and the
+  // UI falls back to a Wikipedia lookup, then a gradient tile.
   imageUrl?: string | null;
   // Google-synced weekly hours (raw JSON string, catalogue rows only — see
   // src/lib/actions/admin-place-sync.ts). Undefined/null = not synced yet;
@@ -109,6 +112,10 @@ export function candidateFromOverpass(p: OverpassPlace): Candidate {
     lng: p.lng,
     idealMinutes: def.idealMinutes,
     foodCostPerPerson: def.foodCostPerPerson,
+    // A photo from OSM's own freely-licensed tags when the place has one, so a
+    // live-API stop isn't automatically photo-less (BUG-03). Null here just
+    // means the UI falls through to its Wikipedia lookup / gradient tile.
+    imageUrl: p.imageUrl,
     meta: { osmId: p.osmId, tags: p.tags },
   };
 }

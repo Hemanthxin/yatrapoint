@@ -3,6 +3,7 @@ import { CalendarClock, MapPin, Sparkles, Clock } from "lucide-react";
 import { formatFestivalDate, daysUntil, festivalSlug, type FestivalOccurrence } from "@/lib/festivals";
 import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
+import { SuggestFestivalForm } from "./SuggestFestivalForm";
 
 const festSlug = festivalSlug;
 
@@ -59,6 +60,11 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
             </h1>
           </div>
         </div>
+      </Reveal>
+
+      {/* Anyone can put a local festival forward for review (BUG-10). */}
+      <Reveal amount={0}>
+        <SuggestFestivalForm />
       </Reveal>
 
       {/* This month rail */}

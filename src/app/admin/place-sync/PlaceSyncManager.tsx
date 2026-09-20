@@ -22,11 +22,7 @@ export function PlaceSyncManager({ initialCoverage }: { initialCoverage: SyncCov
       // counters locally using the batch result as a reasonable estimate;
       // a page refresh shows the exact server-side counts.
       if (result.ok && coverage) {
-        setCoverage({
-          destinations: coverage.destinations,
-          cityPlaces: coverage.cityPlaces,
-          nearbyDestinations: coverage.nearbyDestinations,
-        });
+        setCoverage({ places: coverage.places });
       }
     } finally {
       setBusy(false);
@@ -36,10 +32,11 @@ export function PlaceSyncManager({ initialCoverage }: { initialCoverage: SyncCov
   return (
     <div>
       {coverage && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <CoverageCard label="Destinations" total={coverage.destinations.total} synced={coverage.destinations.synced} />
-          <CoverageCard label="City places" total={coverage.cityPlaces.total} synced={coverage.cityPlaces.synced} />
-          <CoverageCard label="One-day trips" total={coverage.nearbyDestinations.total} synced={coverage.nearbyDestinations.synced} />
+        <div className="grid grid-cols-1 gap-3">
+          {/* One catalogue, one figure. This was three cards, one per table —
+              and a place present in two of them was counted (and billed to
+              Google) twice. */}
+          <CoverageCard label="Places" total={coverage.places.total} synced={coverage.places.synced} />
         </div>
       )}
 

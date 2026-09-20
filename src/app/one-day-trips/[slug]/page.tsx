@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { getNearbyBySlug } from "@/lib/queries/nearby";
+import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { TripDetail } from "./TripDetail";
 
@@ -20,7 +21,7 @@ export default async function NearbyDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const trip = await getNearbyBySlug(slug);
   if (!trip) notFound();
-  const gallery = await listGalleryImages(trip.id, "nearby");
+  const gallery = await listGalleryImages(trip.id, IMAGE_SOURCE);
 
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
