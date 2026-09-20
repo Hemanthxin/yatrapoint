@@ -437,8 +437,34 @@ export async function POST(req: NextRequest) {
     return ops.find((c) => wantedCats.includes(c)) ?? ops[0] ?? null;
   };
 
+  // Narrow columns only — the unified `places` table now holds every state's
+  // catalogue in one place (thousands of rows), each with several long text
+  // fields (description, ticketOptions, visitorGuidelines, highlights, tags,
+  // bestMonths, bookingUrl) that this loop never reads. A plain `select()`
+  // pulled all of them for every row nationwide (nothing here bounds by
+  // radius/district at the SQL level — that's done in JS below via
+  // `withinReach`/`matchesArea`), which grew past Neon's 64MB response cap
+  // and failed the whole plan. Selecting only the fields actually used below
+  // keeps the same rows and the same filtering, just far fewer bytes per row.
   const catalogueRows = await db
-    .select()
+    .select({
+      id: places.id,
+      slug: places.slug,
+      name: places.name,
+      kinds: places.kinds,
+      category: places.category,
+      latitude: places.latitude,
+      longitude: places.longitude,
+      district: places.district,
+      cityKind: places.cityKind,
+      popularity: places.popularity,
+      entryFeePerPerson: places.entryFeePerPerson,
+      idealHoursAtPlace: places.idealHoursAtPlace,
+      idealMinutesAtPlace: places.idealMinutesAtPlace,
+      avgCostForTwo: places.avgCostForTwo,
+      imageUrl: places.imageUrl,
+      googleWeeklyHours: places.googleWeeklyHours,
+    })
     .from(places)
     .where(and(notPermanentlyClosed, eq(places.isHidden, false)));
 
