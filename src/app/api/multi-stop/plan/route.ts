@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { places } from "@/lib/db/schema";
@@ -437,15 +437,22 @@ export async function POST(req: NextRequest) {
     return ops.find((c) => wantedCats.includes(c)) ?? ops[0] ?? null;
   };
 
-  // Narrow columns only — the unified `places` table now holds every state's
-  // catalogue in one place (thousands of rows), each with several long text
-  // fields (description, ticketOptions, visitorGuidelines, highlights, tags,
-  // bestMonths, bookingUrl) that this loop never reads. A plain `select()`
-  // pulled all of them for every row nationwide (nothing here bounds by
-  // radius/district at the SQL level — that's done in JS below via
-  // `withinReach`/`matchesArea`), which grew past Neon's 64MB response cap
-  // and failed the whole plan. Selecting only the fields actually used below
-  // keeps the same rows and the same filtering, just far fewer bytes per row.
+  // Narrow columns AND a SQL-side bounding box. The unified `places` table
+  // holds every state's catalogue in one place (thousands of rows), each with
+  // several long text fields (description, ticketOptions, visitorGuidelines,
+  // highlights, tags, bestMonths, bookingUrl) that this loop never reads.
+  // Selecting only the columns actually used below already cut the bytes per
+  // row a lot, but with no geographic filter at the SQL level it still pulled
+  // EVERY non-hidden, non-closed row in the whole country on every request —
+  // still enough to blow past Neon's 64MB response cap and fail the plan with
+  // a NeonDbError (507 "response is too large") once the catalogue grew.
+  // Every catalogue candidate must fall within `withinRadius` (radiusKm of
+  // searchCentre) regardless of district/direction — see `withinReach` below —
+  // so a generous lat/lng bounding box around searchCentre is a safe SQL-side
+  // prefilter (same rows survive, far fewer bytes fetched); the exact
+  // haversine/radius/district checks in JS below still apply on top of it.
+  const dLatDeg = radiusKm / 111;
+  const dLngDeg = radiusKm / (111 * Math.max(0.2, Math.cos((searchCentre.lat * Math.PI) / 180)));
   const catalogueRows = await db
     .select({
       id: places.id,
@@ -466,7 +473,14 @@ export async function POST(req: NextRequest) {
       googleWeeklyHours: places.googleWeeklyHours,
     })
     .from(places)
-    .where(and(notPermanentlyClosed, eq(places.isHidden, false)));
+    .where(
+      and(
+        notPermanentlyClosed,
+        eq(places.isHidden, false),
+        sql`${places.latitude}::float8 BETWEEN ${searchCentre.lat - dLatDeg} AND ${searchCentre.lat + dLatDeg}`,
+        sql`${places.longitude}::float8 BETWEEN ${searchCentre.lng - dLngDeg} AND ${searchCentre.lng + dLngDeg}`
+      )
+    );
 
   const catalogueCandidates: Candidate[] = [];
   for (const p of catalogueRows) {
