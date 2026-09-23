@@ -377,19 +377,27 @@ async function answerDistanceQuestion(a: string, b: string): Promise<string | nu
   return `${to.row.name} is roughly ${Math.round(straight)} km from ${from.row.name} in a straight line — about ${Math.round(roadEstimate)} km by road.`;
 }
 
-async function answerNearbyToPlace(name: string, origin: LatLng | null, budgetInr: number | null): Promise<string | null> {
+async function answerNearbyToPlace(
+  name: string,
+  origin: LatLng | null,
+  budgetInr: number | null,
+  category: string | null
+): Promise<string | null> {
   const anchor = await findOnePlace(name);
   if (!anchor?.strong) return null;
   const anchorCoords = placeCoords(anchor.row);
   if (!anchorCoords) return `I have ${anchor.row.name} in the catalogue but no coordinates for it, so I can't find what's nearby.`;
 
   const candidates = await findPlaces({
+    category,
     excludeName: anchor.row.name,
     near: { origin: anchorCoords, radiusKm: 60 },
     limit: 30,
   });
   // The box above is a generous SQL-side prefilter; trim its corners to the
-  // real 60 km circle before showing results.
+  // real 60 km circle. Distance here is always relative to the ANCHOR place,
+  // never the traveller — "near Mysore Palace" means near the palace, not
+  // near wherever the traveller happens to be standing.
   let ranked = rankPlaces(candidates, anchorCoords).filter((p) => p.distanceKm != null && p.distanceKm <= 60);
   ranked.sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity));
 
@@ -397,12 +405,15 @@ async function answerNearbyToPlace(name: string, origin: LatLng | null, budgetIn
     return `I couldn't find other catalogued places within range of ${anchor.row.name}.`;
   }
 
-  // Re-rank by real distance/cost from the TRAVELLER, not the anchor, when we
-  // know where they are — "nearby X" still needs to be reachable for them.
-  if (origin) ranked = rankPlaces(ranked, origin);
   const notes: string[] = [];
   if (budgetInr != null) {
-    const applied = applyBudget(ranked, budgetInr, !!origin);
+    // Affordability is judged from the TRAVELLER's real location (if known),
+    // but the anchor-relative distance shown to them is left untouched.
+    const travelCostByName = new Map(
+      (origin ? rankPlaces(ranked, origin) : ranked).map((p) => [p.name, p.travelCostInr])
+    );
+    const withRealCost = ranked.map((p) => ({ ...p, travelCostInr: travelCostByName.get(p.name) ?? null }));
+    const applied = applyBudget(withRealCost, budgetInr, !!origin);
     ranked = applied.ranked;
     if (applied.note) notes.push(applied.note);
   }
@@ -730,6 +741,16 @@ const ABOUT_SAAFERA = [
   "Saafera doesn't book flights, hotels or cars, and doesn't take payments — it's a planning tool, not a booking service.",
 ].join("\n\n");
 
+const HELP_MESSAGE = [
+  "Here's what you can ask me:",
+  '- Places to visit: "best places to visit in Coorg", "hidden waterfalls near Bengaluru", "temples in Karnataka"',
+  '- Budget & location: "which places can I visit with ₹5,000", "what\'s near me", "places within 30 km"',
+  '- A specific place: "tell me about Hampi", "entry fee for Mysore Palace", "how far is Coorg from Bengaluru"',
+  '- Your trips: "my trip plans"',
+  '- Festivals: "festivals this month"',
+  '- The app itself: "how does the budget planner work", "how do I save a trip"',
+].join("\n");
+
 // The real answer to "how does Saafera handle duplicates/clustering/closures/
 // etc." — every mechanism named here actually exists in the catalogue.
 const DATA_MODEL_EXPLANATION =
@@ -751,10 +772,11 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
     return "You're welcome! Anything else about your trip or the app?";
   }
 
+  if (q === "help" || q === "?" || /\b(what can i ask|what should i ask|what can you help)\b/.test(q)) {
+    return HELP_MESSAGE;
+  }
   if (
-    q === "help" ||
-    q === "?" ||
-    /\b(what is saafera|what's saafera|about saafera|what does saafera do|what is this app|what is this platform|who are you|what can (you|the saafera assistant) (do|help)|what can you help|what do you do|what should i ask|what can i ask)\b/.test(
+    /\b(what is saafera|what's saafera|about saafera|what does saafera do|what is this app|what is this platform|who are you|what can (you|the saafera assistant) (do|help)|what do you do)\b/.test(
       q
     )
   ) {
@@ -812,16 +834,27 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
     }
   }
 
-  // "What's nearby X?" / "places around X" — only when X resolves to a
-  // specific attraction, not a district/state (that's the place-finder below).
-  const nearbyMatch = q.match(/(?:nearby places?|places?|attractions?)\s+(?:around|near)\s+(.+?)[?.!]*$/i);
-  if (nearbyMatch) {
-    try {
-      const budgetInr = parseBudgetInr(q);
-      const answer = await answerNearbyToPlace(nearbyMatch[1].trim(), ctx.origin, budgetInr);
-      if (answer) return answer;
-    } catch {
-      /* fall through */
+  // "...near X" / "...around X" anywhere in the question (not just right
+  // after the word "places") — e.g. "best places to visit near Mysore
+  // Palace". Only treated as a specific attraction if X actually resolves
+  // strongly to one via the catalogue's own search ranking; otherwise it
+  // falls through to the area-based place-finder below (extractArea() picks
+  // up the same "near X" text as a district/city/state match instead). The
+  // category, if any, is detected from the text BEFORE "near/around" only —
+  // so "near Mysore Palace" can't have its own name ("...palace") misread as
+  // a request for Heritage-category places.
+  const nearIdx = q.search(/\b(?:near|around)\s+/i);
+  if (nearIdx !== -1) {
+    const nearTarget = q.slice(nearIdx).replace(/^(?:near|around)\s+/i, "").replace(/[?.!]+$/, "").trim();
+    if (nearTarget.length >= 3) {
+      try {
+        const budgetInr = parseBudgetInr(q);
+        const category = detectCategory(q.slice(0, nearIdx));
+        const answer = await answerNearbyToPlace(nearTarget, ctx.origin, budgetInr, category);
+        if (answer) return answer;
+      } catch {
+        /* fall through to the area-based place-finder */
+      }
     }
   }
 
