@@ -70,68 +70,112 @@ export function SaaferaAssistant() {
 
   return (
     <>
+      {/* Launcher — pulsing glow ring (same language as the mobile dock's Plan
+          button) plus a small "live" status dot so it reads as an active AI
+          core, not a static icon. */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close Saafera Assistant" : "Chat with the Saafera Assistant"}
-        className="fixed bottom-24 right-4 z-40 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/40 transition active:scale-95 lg:bottom-6 lg:right-6"
+        className="fixed bottom-24 right-4 z-40 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
       >
         <span aria-hidden className="sheen-overlay animate-sheen" />
-        {open ? <X className="relative h-6 w-6" /> : <MessageCircle className="relative h-6 w-6" />}
+        {open ? (
+          <X className="relative h-6 w-6" />
+        ) : (
+          <>
+            <MessageCircle className="relative h-6 w-6" />
+            <span
+              aria-hidden
+              className="absolute right-1.5 top-1.5 h-2.5 w-2.5 animate-pulse rounded-full bg-teal-300 ring-2 ring-white"
+            />
+          </>
+        )}
       </button>
 
       {open && (
-        <div className="fixed inset-x-4 bottom-40 z-40 flex max-h-[65vh] flex-col overflow-hidden rounded-3xl border border-white/60 glass-strong shadow-[0_18px_50px_-12px_rgba(2,6,23,0.4)] sm:inset-x-auto sm:right-6 sm:w-96 lg:bottom-24">
-          <div className="flex items-center gap-2 border-b border-white/40 px-4 py-3">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-white">
-              <Sparkles className="h-4 w-4" />
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-slate-900">Saafera Assistant</p>
-              <p className="text-xs text-slate-500">Trip advice &amp; app help</p>
-            </div>
-          </div>
-
-          <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-                    m.role === "user" ? "bg-emerald-600 text-white" : "bg-white/85 text-slate-800"
-                  }`}
-                >
-                  {m.content || (sending && i === messages.length - 1 ? "…" : "")}
-                </div>
+        // Thin animated gradient border (padding wrapper trick) around the
+        // glass panel — a shifting emerald→teal hairline is the one detail
+        // that most reads as "AI" rather than a plain support-chat widget.
+        <div className="fixed inset-x-4 bottom-40 z-40 origin-bottom-right animate-pop rounded-[26px] bg-gradient-to-br from-emerald-400 via-teal-300 to-emerald-500 bg-[length:200%_200%] p-[1.5px] shadow-[0_18px_60px_-12px_rgba(2,6,23,0.45)] sm:inset-x-auto sm:right-6 sm:w-96 lg:bottom-24 animate-gradient">
+          <div className="flex max-h-[65vh] flex-col overflow-hidden rounded-[24px] glass-strong">
+            <div className="relative flex items-center gap-2.5 overflow-hidden border-b border-white/40 px-4 py-3">
+              <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-teal-400/10 to-transparent" />
+              <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-md shadow-emerald-500/40 animate-breathe">
+                <Sparkles className="h-4 w-4" />
+              </span>
+              <div className="relative min-w-0">
+                <p className="truncate bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-sm font-extrabold text-transparent">
+                  Saafera Assistant
+                </p>
+                <p className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                  <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                  Online — trip advice &amp; app help
+                </p>
               </div>
-            ))}
-          </div>
+            </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void send();
-            }}
-            className="flex items-center gap-2 border-t border-white/40 p-3"
-          >
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about a trip, a place, or the app…"
-              className="min-w-0 flex-1 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 outline-none focus:border-emerald-400"
-              disabled={sending}
-            />
-            <button
-              type="submit"
-              disabled={sending || !input.trim()}
-              aria-label="Send"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition disabled:opacity-40"
+            <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
+              {messages.map((m, i) => {
+                const isLast = i === messages.length - 1;
+                const isTyping = sending && isLast && m.role === "assistant" && !m.content;
+                return (
+                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    {isTyping ? (
+                      <TypingIndicator />
+                    ) : (
+                      <div
+                        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+                          m.role === "user"
+                            ? "bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/30"
+                            : "border border-emerald-100/70 bg-gradient-to-br from-white/95 to-emerald-50/60 text-slate-800"
+                        }`}
+                      >
+                        {m.content}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void send();
+              }}
+              className="flex items-center gap-2 border-t border-white/40 p-3"
             >
-              <Send className="h-4 w-4" />
-            </button>
-          </form>
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about a trip, a place, or the app…"
+                className="min-w-0 flex-1 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/15"
+                disabled={sending}
+              />
+              <button
+                type="submit"
+                disabled={sending || !input.trim()}
+                aria-label="Send"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 disabled:opacity-40"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
+          </div>
         </div>
       )}
     </>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-1 rounded-2xl border border-emerald-100/70 bg-gradient-to-br from-white/95 to-emerald-50/60 px-4 py-3">
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.3s]" />
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]" />
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500" />
+    </div>
   );
 }
 
