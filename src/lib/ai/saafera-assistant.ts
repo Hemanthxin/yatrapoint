@@ -723,6 +723,13 @@ const PLACE_FINDER_WORDS = [
 ];
 const FESTIVAL_WORDS = ["festival", "fair", "dasara", "ugadi", "deepavali", "diwali", "ganesh chaturthi", "jatre"];
 
+const ABOUT_SAAFERA = [
+  "Saafera is a budget travel planning app for trips in India. The core feature is the Budget Planner: give it a starting point, budget, hours/days, number of travellers, a vehicle, a search radius and the kinds of places you want, and it builds a real day-plan — which places to visit and in what order, real driving distances/times, entry fees and food cost, and a full cost breakdown.",
+  "It also has a catalogue of thousands of curated Destinations across India, Trip Cart and Trip History to save places and plans, Favourites, a Community feed, and a Festivals calendar.",
+  "I'm the Saafera Assistant, built into the app — I can look up real places by category/area/season/budget/location, tell you about a specific destination, check on your saved trips, and answer how-to questions about the app.",
+  "Saafera doesn't book flights, hotels or cars, and doesn't take payments — it's a planning tool, not a booking service.",
+].join("\n\n");
+
 // The real answer to "how does Saafera handle duplicates/clustering/closures/
 // etc." — every mechanism named here actually exists in the catalogue.
 const DATA_MODEL_EXPLANATION =
@@ -742,6 +749,16 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
   }
   if (THANKS_WORDS.some((w) => q.includes(w))) {
     return "You're welcome! Anything else about your trip or the app?";
+  }
+
+  if (
+    q === "help" ||
+    q === "?" ||
+    /\b(what is saafera|what's saafera|about saafera|what does saafera do|what is this app|what is this platform|who are you|what can (you|the saafera assistant) (do|help)|what can you help|what do you do|what should i ask|what can i ask)\b/.test(
+      q
+    )
+  ) {
+    return ABOUT_SAAFERA;
   }
 
   if (TRIP_PLAN_WORDS.some((w) => q.includes(w))) {
