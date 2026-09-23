@@ -9,6 +9,7 @@ import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
 import { ToastHost } from "./ToastHost";
 import { Reveal } from "./Reveal";
+import { SaaferaAssistant } from "./SaaferaAssistant";
 
 interface AppShellProps {
   userLabel: string;
@@ -98,6 +99,9 @@ export function AppShell({ userLabel, userImage, location, immersive = false, ch
 
       {/* App-wide transient popups (e.g. "Trip added to cart"). */}
       <ToastHost />
+
+      {/* Globally accessible AI chat — trip advice + app help. */}
+      <SaaferaAssistant />
     </div>
   );
 }
