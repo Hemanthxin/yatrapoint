@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { useLocation } from "./LocationContext";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -23,11 +24,19 @@ export function SaaferaAssistant() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const { status, coords, request } = useLocation();
 
   useEffect(() => {
     if (!open) return;
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
+
+  // Ask for live location as soon as the traveller opens the chat — so a
+  // "near me" / "from my location" question asked right after has a real fix
+  // to work with instead of silently ignoring it.
+  useEffect(() => {
+    if (open && status === "idle") request();
+  }, [open, status, request]);
 
   async function send() {
     const text = input.trim();
@@ -41,7 +50,10 @@ export function SaaferaAssistant() {
       const res = await fetch("/api/assistant/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({
+          messages: history,
+          location: status === "granted" ? { lat: coords.lat, lng: coords.lng } : null,
+        }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.reply) {

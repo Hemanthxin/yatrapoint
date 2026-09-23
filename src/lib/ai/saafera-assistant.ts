@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { places } from "@/lib/db/schema";
 import { visibleWhere } from "@/lib/queries/places";
 import { listUserTripPlans, type TripPlanWithItems } from "@/lib/queries/trip-plans";
+import { haversineKm, type LatLng } from "@/lib/geo";
+import { isBengaluru, travelCostFor } from "@/lib/transport";
 
 // The Saafera Assistant answers from two sources only, never a generative
 // model: (1) this hard-coded, accurate description of what the app actually
@@ -38,6 +40,27 @@ function detectCategory(question: string): string | null {
   return null;
 }
 
+// "5k", "₹5000", "rs 5,000", "5000 rupees", "budget of 5000" — only matches an
+// explicit money mention, never a bare number, so "5 best places" isn't
+// mistaken for a ₹5 budget.
+function parseBudgetInr(question: string): number | null {
+  const patterns = [
+    /₹\s*([\d,]+(?:\.\d+)?)\s*(k)?/i,
+    /\brs\.?\s*([\d,]+(?:\.\d+)?)\s*(k)?/i,
+    /\bbudget(?:\s+of)?\s+(?:₹|rs\.?)?\s*([\d,]+(?:\.\d+)?)\s*(k)?/i,
+    /\b([\d,]+(?:\.\d+)?)\s*(?:rupees|inr)\b/i,
+    /\b([\d,]+(?:\.\d+)?)\s*k\b/i,
+  ];
+  for (const re of patterns) {
+    const m = question.match(re);
+    if (!m) continue;
+    const num = parseFloat(m[1].replace(/,/g, ""));
+    if (!Number.isFinite(num) || num <= 0) continue;
+    return m[2] ? num * 1000 : num;
+  }
+  return null;
+}
+
 interface SeasonalPlace {
   name: string;
   district: string | null;
@@ -46,10 +69,33 @@ interface SeasonalPlace {
   shortDescription: string;
   entryFeePerPerson: number;
   googleRating: number | null;
+  latitude: string | null;
+  longitude: string | null;
 }
 
-async function findSeasonalPlaces(category: string | null, limit = 5): Promise<SeasonalPlace[]> {
+interface RankedPlace extends SeasonalPlace {
+  distanceKm: number | null;
+  // Cheapest realistic round-trip fare (bus or train, whichever is lower),
+  // using the same per-km rates as the real Budget Planner — null when we
+  // don't know the traveller's location.
+  travelCostInr: number | null;
+}
+
+const FOOD_RESERVE_PER_DAY = 350; // matches the planner's own meals estimate
+
+async function findSeasonalPlaces(category: string | null, limit = 8): Promise<SeasonalPlace[]> {
   const monthAbbr = MONTH_ABBR[new Date().getMonth()];
+  const columns = {
+    name: places.name,
+    district: places.district,
+    state: places.state,
+    category: places.category,
+    shortDescription: places.shortDescription,
+    entryFeePerPerson: places.entryFeePerPerson,
+    googleRating: places.googleRating,
+    latitude: places.latitude,
+    longitude: places.longitude,
+  };
   const conditions = [
     eq(places.isHidden, false),
     sql`${places.bestMonths} IS NOT NULL AND ${places.bestMonths} LIKE ${"%" + monthAbbr + "%"}`,
@@ -57,15 +103,7 @@ async function findSeasonalPlaces(category: string | null, limit = 5): Promise<S
   if (category) conditions.push(eq(places.category, category));
 
   const rows = await db
-    .select({
-      name: places.name,
-      district: places.district,
-      state: places.state,
-      category: places.category,
-      shortDescription: places.shortDescription,
-      entryFeePerPerson: places.entryFeePerPerson,
-      googleRating: places.googleRating,
-    })
+    .select(columns)
     .from(places)
     .where(visibleWhere(...conditions))
     .orderBy(sql`${places.googleRating} DESC NULLS LAST`, sql`${places.popularity} DESC`)
@@ -76,42 +114,97 @@ async function findSeasonalPlaces(category: string | null, limit = 5): Promise<S
   // Nothing curated for this month/category combo — fall back to popular
   // places overall (still real data) rather than an empty answer.
   return db
-    .select({
-      name: places.name,
-      district: places.district,
-      state: places.state,
-      category: places.category,
-      shortDescription: places.shortDescription,
-      entryFeePerPerson: places.entryFeePerPerson,
-      googleRating: places.googleRating,
-    })
+    .select(columns)
     .from(places)
     .where(visibleWhere(eq(places.isHidden, false), category ? eq(places.category, category) : undefined))
     .orderBy(sql`${places.popularity} DESC`)
     .limit(limit);
 }
 
-function formatSeasonalPlace(p: SeasonalPlace): string {
-  const location = [p.district, p.state].filter(Boolean).join(", ");
-  const rating = p.googleRating ? ` (★${p.googleRating.toFixed(1)})` : "";
-  const fee = p.entryFeePerPerson > 0 ? `, entry ₹${p.entryFeePerPerson}/person` : ", free entry";
-  return `- **${p.name}**${rating}${location ? ` — ${location}` : ""}${fee}. ${p.shortDescription}`;
+// Cheapest of bus/train per-person fare for the round trip, using the exact
+// same fare-per-km data the Budget Planner itself uses — never a made-up
+// number. Reused here so a place a traveller genuinely can't afford to reach
+// is never suggested.
+function estimateRoundTripCost(origin: LatLng, dest: LatLng): { distanceKm: number; costInr: number } {
+  const distanceKm = haversineKm(origin, dest);
+  const roundTripKm = distanceKm * 2;
+  const inBlr = isBengaluru(origin);
+  const bus = travelCostFor("bus", "small_car", roundTripKm, 1, inBlr).cost;
+  const train = travelCostFor("train", "small_car", roundTripKm, 1, inBlr).cost;
+  return { distanceKm, costInr: Math.min(bus, train) };
 }
 
-async function answerSeasonalQuestion(question: string): Promise<string> {
-  const category = detectCategory(question);
-  const monthName = new Date().toLocaleDateString("en-IN", { month: "long" });
-  const places_ = await findSeasonalPlaces(category);
+function rankPlaces(rows: SeasonalPlace[], origin: LatLng | null): RankedPlace[] {
+  return rows.map((p) => {
+    const lat = p.latitude ? Number(p.latitude) : NaN;
+    const lng = p.longitude ? Number(p.longitude) : NaN;
+    if (!origin || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return { ...p, distanceKm: null, travelCostInr: null };
+    }
+    const { distanceKm, costInr } = estimateRoundTripCost(origin, { lat, lng });
+    return { ...p, distanceKm, travelCostInr: costInr };
+  });
+}
 
-  if (places_.length === 0) {
+function formatSeasonalPlace(p: RankedPlace): string {
+  const location = [p.district, p.state].filter(Boolean).join(", ");
+  const rating = p.googleRating ? ` (★${p.googleRating.toFixed(1)})` : "";
+  const fee = p.entryFeePerPerson > 0 ? `entry ₹${p.entryFeePerPerson}/person` : "free entry";
+  const distance = p.distanceKm != null ? `, ~${Math.round(p.distanceKm)} km from you` : "";
+  const travel =
+    p.travelCostInr != null ? `, ~₹${p.travelCostInr.toLocaleString("en-IN")} round trip by bus/train` : "";
+  return `- **${p.name}**${rating}${location ? ` — ${location}` : ""}${distance}, ${fee}${travel}. ${p.shortDescription}`;
+}
+
+async function answerSeasonalQuestion(question: string, origin: LatLng | null): Promise<string> {
+  const category = detectCategory(question);
+  const budgetInr = parseBudgetInr(question);
+  const monthName = new Date().toLocaleDateString("en-IN", { month: "long" });
+
+  const rows = await findSeasonalPlaces(category);
+  if (rows.length === 0) {
     return "I couldn't find any places matching that in Saafera's catalogue yet — try browsing Destinations or asking about a different category.";
   }
 
-  const heading = category
-    ? `Good ${category.toLowerCase()} picks for ${monthName}, from Saafera's catalogue:`
-    : `Places rated best to visit right now (${monthName}), from Saafera's catalogue:`;
+  let ranked = rankPlaces(rows, origin);
+  const notes: string[] = [];
 
-  return [heading, "", ...places_.map(formatSeasonalPlace)].join("\n");
+  if (budgetInr != null) {
+    if (origin) {
+      const affordable = ranked.filter(
+        (p) => p.travelCostInr == null || p.travelCostInr + p.entryFeePerPerson + FOOD_RESERVE_PER_DAY <= budgetInr
+      );
+      if (affordable.length > 0) {
+        ranked = affordable;
+        // Nearest/cheapest first — the point of stating a tight budget.
+        ranked.sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity));
+      } else {
+        notes.push(
+          `Nothing in this month's picks fits a ₹${budgetInr.toLocaleString("en-IN")} budget from your location (round-trip travel alone would cost more) — showing the cheapest-to-reach options instead so you can see how much you'd need.`
+        );
+        ranked.sort((a, b) => (a.travelCostInr ?? Infinity) - (b.travelCostInr ?? Infinity));
+      }
+    } else {
+      // No location — can only screen by entry fee, not real travel cost.
+      ranked = ranked.filter((p) => p.entryFeePerPerson <= budgetInr);
+      notes.push(
+        "I don't have your live location yet (allow location access in your browser), so this doesn't account for travel cost to get there — only entry fees."
+      );
+      if (ranked.length === 0) ranked = rankPlaces(rows, origin);
+    }
+  } else if (origin) {
+    // Location known, no stated budget — nearest first is still the most
+    // actionable ordering.
+    ranked.sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity));
+  }
+
+  ranked = ranked.slice(0, 5);
+
+  const heading = category
+    ? `Good ${category.toLowerCase()} picks for ${monthName}${budgetInr ? ` within ₹${budgetInr.toLocaleString("en-IN")}` : ""}:`
+    : `Places rated best to visit right now (${monthName})${budgetInr ? `, within ₹${budgetInr.toLocaleString("en-IN")}` : ""}:`;
+
+  return [...notes, heading, "", ...ranked.map(formatSeasonalPlace)].filter(Boolean).join("\n");
 }
 
 function summarizeTripPlans(plans: TripPlanWithItems[]): string {
@@ -179,10 +272,12 @@ const TRIP_PLAN_WORDS = ["my trip", "my plan", "upcoming trip", "saved trip", "m
 const SEASONAL_WORDS = [
   "best place", "best time", "climate", "weather", "season", "visit now",
   "recommend", "suggest", "which place", "where should i go", "where to go", "this month",
+  "place to visit", "places to visit", "where to visit", "what can i visit", "budget of",
 ];
 
 export interface AssistantContext {
   userId: string | null;
+  origin: LatLng | null;
 }
 
 export async function answerAssistantQuestion(rawQuestion: string, ctx: AssistantContext): Promise<string> {
@@ -208,7 +303,7 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
 
   if (SEASONAL_WORDS.some((w) => q.includes(w))) {
     try {
-      return await answerSeasonalQuestion(q);
+      return await answerSeasonalQuestion(q, ctx.origin);
     } catch {
       return "I couldn't look up seasonal picks just now — try again in a moment.";
     }
