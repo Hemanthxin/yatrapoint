@@ -125,13 +125,13 @@ export function SaaferaAssistant() {
                       <TypingIndicator />
                     ) : (
                       <div
-                        className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+                        className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                           m.role === "user"
                             ? "bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/30"
                             : "border border-emerald-100/70 bg-gradient-to-br from-white/95 to-emerald-50/60 text-slate-800"
                         }`}
                       >
-                        {m.content}
+                        <FormattedText text={m.content} />
                       </div>
                     )}
                   </div>
@@ -166,6 +166,39 @@ export function SaaferaAssistant() {
         </div>
       )}
     </>
+  );
+}
+
+// Replies use light markup (**bold**, "- " bullets, `code`) — render it as
+// real bold text and tidy bullet rows instead of showing the raw symbols.
+function FormattedText({ text }: { text: string }) {
+  const lines = text.replace(/`/g, "").split("\n");
+  return (
+    <div className="space-y-1.5">
+      {lines.map((line, i) => {
+        if (!line.trim()) return <div key={i} className="h-1" />;
+        const bullet = line.startsWith("- ");
+        const body = bullet ? line.slice(2) : line;
+        return (
+          <div key={i} className={bullet ? "flex gap-2" : undefined}>
+            {bullet && <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />}
+            <span className="min-w-0">{renderInline(body)}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function renderInline(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") && part.length > 4 ? (
+      <strong key={i} className="font-semibold">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    )
   );
 }
 

@@ -428,39 +428,36 @@ async function answerNearbyToPlace(
 // category/duration instead of an invented verdict).
 // ---------------------------------------------------------------------------
 
-const DOSSIER_STRIP = [
-  /^tell me about\s+/i,
-  /^what('?s| is| are)\s+/i,
-  /^how (far|long|much)\s+(is|are|does it take (to explore|for))?\s*/i,
-  /^is\s+/i,
-  /^are\s+/i,
-  /^the entry fee(s)? for\s+/i,
-  /^entry fee(s)? for\s+/i,
-  /^the best time to visit\s+/i,
-  /^best time to visit\s+/i,
-  /^the main attractions (in|at)\s+/i,
-  /^main attractions (in|at)\s+/i,
-  /^opening (hours|timings) (of|for)\s+/i,
-  /^timings (of|for)\s+/i,
-  /^suitable for a family trip\s*/i,
-];
+// Words that carry the question's intent, not the place's name. Removing them
+// leaves the place name behind however the traveller phrased it ("mysore
+// palace where it is located", "give me briefly about mysore palace", ...).
+const QUESTION_WORDS = new Set([
+  "a", "an", "the", "is", "are", "was", "were", "it", "its", "this", "that", "of", "in", "at", "on", "to", "for", "from", "with", "and", "or",
+  "what", "whats", "where", "when", "which", "who", "whom", "how", "why", "tell", "give", "show", "me", "us", "please", "pls", "can", "could", "you", "i", "we",
+  "about", "briefly", "brief", "short", "shortly", "detail", "details", "detailed", "info", "information", "explain", "describe", "description", "know", "want", "need",
+  "located", "location", "situated", "address", "find", "reach", "there", "here", "do", "does", "did", "have", "has",
+  "entry", "fee", "fees", "ticket", "tickets", "price", "cost", "timing", "timings", "time", "open", "opening", "close", "closing", "hours", "visit", "visiting",
+  "best", "famous", "history", "special", "attractions", "suitable", "family", "trip", "long", "take", "explore", "far", "distance",
+]);
 
-function stripQuestionScaffolding(q: string): string {
-  let s = q.trim().replace(/[?.!]+$/, "");
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const re of DOSSIER_STRIP) {
-      const next = s.replace(re, "");
-      if (next !== s) {
-        s = next.trim();
-        changed = true;
-      }
+function dossierCandidates(q: string): string[] {
+  const tokens = q
+    .toLowerCase()
+    .replace(/[?.!,]+/g, " ")
+    .split(/\s+/)
+    .filter((t) => t && !QUESTION_WORDS.has(t));
+  if (tokens.length === 0) return [];
+  // Longest contiguous run of name words first, then shorter windows, capped so
+  // a garbled question can't trigger a pile of searches.
+  const out: string[] = [];
+  const n = Math.min(tokens.length, 5);
+  for (let len = n; len >= 1 && out.length < 6; len--) {
+    for (let i = 0; i + len <= tokens.length && out.length < 6; i++) {
+      const phrase = tokens.slice(i, i + len).join(" ");
+      if (phrase.length >= 4 && !out.includes(phrase)) out.push(phrase);
     }
   }
-  return s
-    .replace(/\s+(suitable for a family trip|for a family trip)$/i, "")
-    .trim();
+  return out;
 }
 
 function humanBestMonths(bestMonths: string | null): string | null {
@@ -473,10 +470,15 @@ function humanBestMonths(bestMonths: string | null): string | null {
 }
 
 async function answerPlaceDossier(question: string): Promise<string | null> {
-  const candidate = stripQuestionScaffolding(question);
-  if (candidate.length < 3) return null;
-  const results = await searchPlaces(db, candidate, { limit: 1 });
-  if (results.length === 0 || results[0].score < 70) return null;
+  let results: Awaited<ReturnType<typeof searchPlaces>> = [];
+  for (const candidate of dossierCandidates(question)) {
+    const found = await searchPlaces(db, candidate, { limit: 1 });
+    if (found.length > 0 && found[0].score >= 70) {
+      results = found;
+      break;
+    }
+  }
+  if (results.length === 0) return null;
   const p = results[0].place;
 
   const location = [p.district, p.state].filter(Boolean).join(", ");
@@ -494,7 +496,9 @@ async function answerPlaceDossier(question: string): Promise<string | null> {
     : null;
   const bestMonths = humanBestMonths(p.bestMonths);
 
+  const where = [p.area, p.city, p.district, p.state].filter((v, i, a) => v && a.indexOf(v) === i).join(", ");
   const lines = [`**${p.name}**${location ? ` — ${location}` : ""}`, p.shortDescription, ""];
+  if (where) lines.push(`- Location: ${where}`);
   lines.push(`- Category: ${p.category}`);
   lines.push(`- Entry: ${fee}`);
   if (p.openingTimings) lines.push(`- Timings: ${p.openingTimings}`);
