@@ -183,13 +183,25 @@ export async function listDestinationsNear(
       .map((d) => ({ ...d, distanceKm: 0 }));
   }
 
-  // The destination catalogue is small (a few hundred rows nationwide), so a
-  // whole-table read plus an exact distance sort is cheaper and far more
-  // accurate than a bounding-box SQL approximation.
+  // The catalogue is no longer small (thousands of rows nationwide, each with
+  // long text columns), and a whole-table read blew past Neon's 64 MB response
+  // cap (HTTP 507) and crashed every place page. A lat/lng bounding box in SQL
+  // keeps only rows near the anchor; the exact haversine filter and sort below
+  // still apply on top, so results are unchanged.
+  const dLatDeg = radiusKm / 111;
+  const dLngDeg = radiusKm / (111 * Math.max(0.2, Math.cos((lat * Math.PI) / 180)));
   const rows = await db
     .select()
     .from(places)
-    .where(and(isDestination, notPermanentlyClosed));
+    .where(
+      and(
+        isDestination,
+        notPermanentlyClosed,
+        sql`${places.latitude}::float8 BETWEEN ${lat - dLatDeg} AND ${lat + dLatDeg}`,
+        sql`${places.longitude}::float8 BETWEEN ${lng - dLngDeg} AND ${lng + dLngDeg}`
+      )
+    )
+    .limit(400);
 
   const near = rows
     .map(toDestination)
