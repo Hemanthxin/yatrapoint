@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import {
   Calendar,
   CalendarDays,
@@ -24,12 +25,25 @@ import type { Destination } from "@/lib/db/schema";
 import type { GalleryImage } from "@/lib/queries/place-gallery";
 import { formatINR, formatBestMonths, formatDays } from "@/lib/format";
 import { CATEGORY_BY_SLUG, CATEGORY_GRADIENT, type CategorySlug } from "@/lib/catalog/categories";
-import { formatKm, haversineKm } from "@/lib/geo";
+import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
+import { fetchDrivingRoute, type RouteResult } from "@/lib/routing";
+import { placeDirectionsUrl } from "@/lib/maps";
+import { useLocation } from "@/components/app/LocationContext";
 import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { FavoriteButton } from "@/components/app/FavoriteButton";
 import { AddToCartButton } from "@/components/app/AddToCartButton";
 import { NearbyList, useNearbyAmenities, type OsmPlace } from "./NearbyByCategory";
 import { LiveBudget } from "./LiveBudget";
+
+// Leaflet needs window, so the map is client-only.
+const TripMap = dynamic(() => import("@/components/map/TripMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-[260px] place-items-center rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
+      Loading map…
+    </div>
+  ),
+});
 
 type NearPlace = Destination & { distanceKm: number };
 
@@ -66,6 +80,32 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
   // Radius matches the seeded read on the server (5 km) so the teaser counts
   // and the lists agree with each other.
   const near = useNearbyAmenities(lat, lng, hasCoords, 5000, seededPoi);
+
+  // Distance from the traveller's live location: the real road route when the
+  // routing service answers, otherwise straight-line with a detour factor.
+  const { coords, status, isFallback, request } = useLocation();
+  const destPoint = useMemo(() => ({ lat, lng }), [lat, lng]);
+  const [route, setRoute] = useState<RouteResult | null>(null);
+  const [routeLoading, setRouteLoading] = useState(false);
+
+  useEffect(() => {
+    if (status === "idle") request();
+  }, [status, request]);
+
+  useEffect(() => {
+    if (!hasCoords) return;
+    const ctrl = new AbortController();
+    setRouteLoading(true);
+    fetchDrivingRoute(coords, destPoint, ctrl.signal)
+      .then((r) => setRoute(r))
+      .catch(() => setRoute(null))
+      .finally(() => setRouteLoading(false));
+    return () => ctrl.abort();
+  }, [coords, destPoint, hasCoords]);
+
+  const straightKm = hasCoords ? haversineKm(coords, destPoint) : 0;
+  const drivingKm = route?.distanceKm ?? straightKm * 1.3;
+  const drivingMins = route?.durationMinutes ?? Math.round((drivingKm / 40) * 60);
 
   // Ticket tiers: the researched breakdown when a place has one, otherwise
   // assembled from the individual fee columns so a place with just an adult
@@ -155,6 +195,12 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
             <MapPin className="h-3.5 w-3.5 shrink-0" />
             {[place.district, place.state].filter(Boolean).join(", ")}
           </p>
+          {hasCoords && !isFallback && (
+            <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-500/90 px-2.5 py-1 text-[11px] font-bold text-white">
+              <Navigation className="h-3 w-3" />
+              {routeLoading && !route ? "Measuring distance…" : `${formatKm(drivingKm)} from you`}
+            </p>
+          )}
         </div>
       </div>
 
@@ -305,6 +351,65 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
               </a>
             ))}
           </div>
+        )}
+
+        {/* ── Map + distance from the traveller's live location ── */}
+        {hasCoords && (
+          <section className="card mt-3 overflow-hidden p-4">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <span className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
+                  <Navigation className="h-4 w-4" />
+                </span>
+                Route from you
+              </span>
+              <a
+                href={placeDirectionsUrl(
+                  { name: place.name, district: place.district, state: place.state, latitude: place.latitude, longitude: place.longitude },
+                  isFallback ? null : coords
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs font-bold text-emerald-700 active:scale-95"
+              >
+                Directions <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+
+            <div className="mb-3 grid grid-cols-3 gap-2">
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-2.5">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">By road</p>
+                <p className="mt-0.5 text-[13px] font-extrabold text-slate-900">
+                  {routeLoading && !route ? "…" : formatKm(drivingKm)}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-2.5">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Drive time</p>
+                <p className="mt-0.5 text-[13px] font-extrabold text-slate-900">
+                  {routeLoading && !route ? "…" : formatMinutes(drivingMins)}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-2.5">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Straight line</p>
+                <p className="mt-0.5 text-[13px] font-extrabold text-slate-900">{formatKm(straightKm)}</p>
+              </div>
+            </div>
+
+            <TripMap
+              origin={coords}
+              destination={destPoint}
+              destinationName={place.name}
+              route={route?.geometry}
+              height={260}
+            />
+            <p className="mt-2 text-[11px] text-slate-500">
+              {isFallback
+                ? "Allow location access to measure from where you are — showing distance from Bengaluru for now."
+                : route
+                ? "Distance and time are for the driving route from your live location."
+                : "Route service unavailable — showing an estimate from your live location."}
+            </p>
+          </section>
         )}
 
         {/* ── About (always shown, under the tab panel) ── */}
