@@ -215,7 +215,41 @@ export function toDestination(p: Place): Destination {
   };
 }
 
-export function toNearbyDestination(p: Place): NearbyDestination {
+// Only the columns toNearbyDestination actually reads — lets a hot caller
+// (listNearby) project just these instead of every column on `places`
+// (including several long, unused text fields like ticketOptions/
+// visitorGuidelines/tags), the same fix already applied to the multi-stop
+// planner and destination-detail queries for the same reason.
+export type NearbyDestinationSource = Pick<
+  Place,
+  | "id"
+  | "slug"
+  | "name"
+  | "baseCity"
+  | "category"
+  | "description"
+  | "shortDescription"
+  | "imageUrl"
+  | "distanceKm"
+  | "drivingMinutes"
+  | "entryFeePerPerson"
+  | "idealHoursAtPlace"
+  | "bestStartTime"
+  | "highlights"
+  | "latitude"
+  | "longitude"
+  | "popularity"
+  | "bookingUrl"
+  | "googlePlaceId"
+  | "googleRating"
+  | "googleRatingCount"
+  | "googleWeeklyHours"
+  | "googleBusinessStatus"
+  | "googleSyncedAt"
+  | "createdAt"
+>;
+
+export function toNearbyDestination(p: NearbyDestinationSource): NearbyDestination {
   return {
     id: p.id,
     slug: p.slug,

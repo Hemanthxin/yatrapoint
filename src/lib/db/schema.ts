@@ -697,6 +697,14 @@ export const places = pgTable(
     categoryIdx: index("places_category_idx").on(table.category),
     popularityIdx: index("places_popularity_idx").on(table.popularity),
     baseCityIdx: index("places_base_city_idx").on(table.baseCity),
+    cityIdx: index("places_city_idx").on(table.city),
+    cityKindIdx: index("places_city_kind_idx").on(table.cityKind),
+    // Almost every hot query filters by `notPermanentlyClosed` (isHidden=false
+    // AND googleBusinessStatus <> 'CLOSED_PERMANENTLY') as its first predicate
+    // — this composite index matches that pair directly instead of leaving
+    // Postgres to sequential-scan for it. Run `npm run db:push` after pulling
+    // this change to actually create it on the database.
+    visibleIdx: index("places_visible_idx").on(table.isHidden, table.googleBusinessStatus),
   })
 );
 export type Place = typeof places.$inferSelect;

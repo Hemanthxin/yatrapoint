@@ -7,7 +7,41 @@ import {
   notPermanentlyClosed,
   slugMatches,
   toNearbyDestination,
+  type NearbyDestinationSource,
 } from "@/lib/queries/places";
+
+// Only the columns toNearbyDestination reads — see NearbyDestinationSource.
+// listNearby is called with no limit on every visit to /one-day-trips (the
+// page fetches the traveller's whole base-city list once and filters by
+// distance band client-side), so trimming bytes-per-row here matters even
+// though we can't cap the row count without breaking that client-side filter.
+const NEARBY_COLUMNS = {
+  id: places.id,
+  slug: places.slug,
+  name: places.name,
+  baseCity: places.baseCity,
+  category: places.category,
+  description: places.description,
+  shortDescription: places.shortDescription,
+  imageUrl: places.imageUrl,
+  distanceKm: places.distanceKm,
+  drivingMinutes: places.drivingMinutes,
+  entryFeePerPerson: places.entryFeePerPerson,
+  idealHoursAtPlace: places.idealHoursAtPlace,
+  bestStartTime: places.bestStartTime,
+  highlights: places.highlights,
+  latitude: places.latitude,
+  longitude: places.longitude,
+  popularity: places.popularity,
+  bookingUrl: places.bookingUrl,
+  googlePlaceId: places.googlePlaceId,
+  googleRating: places.googleRating,
+  googleRatingCount: places.googleRatingCount,
+  googleWeeklyHours: places.googleWeeklyHours,
+  googleBusinessStatus: places.googleBusinessStatus,
+  googleSyncedAt: places.googleSyncedAt,
+  createdAt: places.createdAt,
+} satisfies Record<keyof NearbyDestinationSource, unknown>;
 
 // One-day trips, read from the unified `places` table (rows whose `kinds`
 // include "day-trip") and returned in the original NearbyDestination shape.
@@ -36,7 +70,7 @@ export async function listNearby(
   }
 
   const query = db
-    .select()
+    .select(NEARBY_COLUMNS)
     .from(places)
     .where(and(...where))
     .orderBy(desc(places.popularity), places.id);

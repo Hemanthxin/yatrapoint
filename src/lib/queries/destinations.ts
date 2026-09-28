@@ -78,15 +78,15 @@ function buildWhere(filters: DestinationFilters, districtOptions?: string[]) {
 }
 
 export async function listDestinations(
-  filters: DestinationFilters = {}
+  filters: DestinationFilters = {},
+  districtOptions?: string[]
 ): Promise<Destination[]> {
-  const districtOptions = filters.district
-    ? await districtSpellings(filters.district, filters.state)
-    : undefined;
+  const resolvedDistrictOptions =
+    districtOptions ?? (filters.district ? await districtSpellings(filters.district, filters.state) : undefined);
   const rows = await db
     .select()
     .from(places)
-    .where(buildWhere(filters, districtOptions))
+    .where(buildWhere(filters, resolvedDistrictOptions))
     .orderBy(desc(places.popularity), places.id)
     .limit(filters.limit ?? 200)
     .offset(filters.offset ?? 0);
@@ -95,17 +95,27 @@ export async function listDestinations(
 }
 
 // Total count matching the same filters as `listDestinations`, for pagination.
+// Accepts a pre-resolved `districtOptions` (see `resolveDistrictOptions`) so a
+// caller running this alongside `listDestinations` for the same filters — the
+// page always does — doesn't scan the catalogue twice for the same spellings.
 export async function countDestinations(
-  filters: DestinationFilters = {}
+  filters: DestinationFilters = {},
+  districtOptions?: string[]
 ): Promise<number> {
-  const districtOptions = filters.district
-    ? await districtSpellings(filters.district, filters.state)
-    : undefined;
+  const resolvedDistrictOptions =
+    districtOptions ?? (filters.district ? await districtSpellings(filters.district, filters.state) : undefined);
   const [row] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(places)
-    .where(buildWhere(filters, districtOptions));
+    .where(buildWhere(filters, resolvedDistrictOptions));
   return row?.count ?? 0;
+}
+
+// Resolve a district filter's spellings ONCE, to pass into both
+// `listDestinations` and `countDestinations` for the same request instead of
+// each re-running the same catalogue-wide scan.
+export async function resolveDistrictOptions(filters: Pick<DestinationFilters, "district" | "state">): Promise<string[] | undefined> {
+  return filters.district ? districtSpellings(filters.district, filters.state) : undefined;
 }
 
 export async function getDestinationBySlug(slug: string) {

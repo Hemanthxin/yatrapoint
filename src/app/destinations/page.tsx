@@ -12,6 +12,7 @@ import {
   listDistricts,
   listFavoriteIds,
   listStates,
+  resolveDistrictOptions,
 } from "@/lib/queries/destinations";
 import { listCityPlacesByCategory } from "@/lib/queries/city-places";
 import { listNearby } from "@/lib/queries/nearby";
@@ -75,17 +76,24 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
   // when browsing rather than searching.
   const cityMatchesPromise = !q && validCat ? listCityPlacesByCategory(validCat, 12) : Promise.resolve([]);
   const nearbyMatchesPromise = !q && validCat ? listNearby({ category: validCat, limit: 12 }) : Promise.resolve([]);
+  // Resolved once and handed to both listDestinations and countDestinations
+  // below — each used to independently re-scan the catalogue for the same
+  // district's alternate spellings.
+  const districtOptions = q ? undefined : await resolveDistrictOptions(destinationFilters);
 
   const [browseItems, browseTotal, states, districts, favIds, cityMatches, nearbyMatches] =
     await Promise.all([
       q
         ? Promise.resolve([])
-        : listDestinations({
-            ...destinationFilters,
-            limit: PAGE_SIZE,
-            offset: (page - 1) * PAGE_SIZE,
-          }),
-      q ? Promise.resolve(0) : countDestinations(destinationFilters),
+        : listDestinations(
+            {
+              ...destinationFilters,
+              limit: PAGE_SIZE,
+              offset: (page - 1) * PAGE_SIZE,
+            },
+            districtOptions
+          ),
+      q ? Promise.resolve(0) : countDestinations(destinationFilters, districtOptions),
       listStates(),
       listDistricts(sp.state),
       listFavoriteIds(u.id ?? ""),
