@@ -482,18 +482,32 @@ input[type="number"] {
   }
   .card-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px -18px rgba(17, 24, 20, 0.18);
+    box-shadow:
+      0 2px 4px rgba(17, 24, 20, 0.06),
+      0 20px 40px -20px color-mix(in srgb, var(--accent) 40%, rgba(17, 24, 20, 0.4));
     border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
   }
 
-  /* Minimalist card — flat white, a single hairline border, whisper shadow. */
+  /* Premium-minimalist card — still flat white with a hairline border (the
+     considered "calm, lots of whitespace" direction above), but with a touch
+     more depth than a whisper shadow: a tight contact shadow plus a soft,
+     wide ambient one gives real cards on a real travel app the quiet
+     "sits above the page" feel of a premium product shot, without tipping
+     into the loud glow this codebase's own comments deliberately moved away
+     from. `color-mix` with `--accent` keeps the ambient tint on-brand and
+     automatically correct across the light/dark/vibrant themes below —
+     no per-theme override needed here. */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 1rem;
-    box-shadow: 0 1px 2px rgba(17, 24, 20, 0.04);
+    box-shadow:
+      0 1px 2px rgba(17, 24, 20, 0.05),
+      0 12px 28px -20px color-mix(in srgb, var(--accent) 35%, rgba(17, 24, 20, 0.35));
   }
-  /* Primary action — solid forest green, flat, no glow. */
+  /* Primary action — solid brand colour with a soft on-brand lift instead of
+     flat-and-inert; a premium CTA should read as clickable before the cursor
+     ever arrives. */
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -503,10 +517,18 @@ input[type="number"] {
     background-color: var(--accent);
     color: #fff;
     font-weight: 600;
-    transition: background-color 0.15s ease, transform 0.12s ease;
+    box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--accent) 60%, transparent);
+    transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
   }
-  .btn-primary:hover { background-color: var(--accent-2); }
+  .btn-primary:hover {
+    background-color: var(--accent-2);
+    box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
   .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled {
+    box-shadow: none;
+    opacity: 0.6;
+  }
   .btn-secondary {
     display: inline-flex;
     align-items: center;
@@ -517,10 +539,56 @@ input[type="number"] {
     color: var(--text-soft);
     font-weight: 600;
     border: 1px solid var(--border);
-    transition: background-color 0.15s ease, transform 0.12s ease;
+    transition: background-color 0.15s ease, transform 0.12s ease, border-color 0.15s ease;
   }
-  .btn-secondary:hover { background: var(--surface-2); }
+  .btn-secondary:hover {
+    background: var(--surface-2);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  }
   .btn-secondary:active { transform: scale(0.98); }
+
+  /* Form control — every page that already writes className="input" (admin
+     forms, the Group Trip Planner) was relying on a class THAT DID NOT EXIST
+     anywhere in this stylesheet; those fields were rendering as bare,
+     unstyled native inputs. Matches the .card/.btn-primary language: same
+     radius, same border/surface tokens, an on-brand focus ring using the
+     theme's own --ring token (already defined per-theme above, including the
+     dark-theme !important override further up this file). */
+  .input {
+    display: block;
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .input::placeholder {
+    color: var(--muted);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--ring);
+  }
+  .input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  /* Give a bare <select class="input"> its own chevron — resetting
+     `appearance` removes the browser's, and this is the one place `.input`
+     is applied to a non-<input> element in the codebase. */
+  select.input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%237c857f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.25rem;
+  }
 
   /* Chrome — clean, near-solid white with a light blur. Minimalism favours a
      quiet, almost-opaque bar over a heavy frosted-glass effect. */
