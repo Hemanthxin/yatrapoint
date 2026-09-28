@@ -86,7 +86,11 @@ function parseBudgetInr(question: string): number | null {
     /\brs\.?\s*([\d,]+(?:\.\d+)?)\s*(k)?/i,
     /\bbudget(?:\s+of)?\s+(?:₹|rs\.?)?\s*([\d,]+(?:\.\d+)?)\s*(k)?/i,
     /\b([\d,]+(?:\.\d+)?)\s*(?:rupees|inr)\b/i,
-    /\b([\d,]+(?:\.\d+)?)\s*k\b/i,
+    // Bare "5k" with no ₹/rs/"budget of" cue — "k" must be its own capture
+    // group here too, or `m[2]` is undefined and the ×1000 multiplier never
+    // applies (this exact bug shipped once already: "I have 5k" was read as
+    // a ₹5 budget).
+    /\b([\d,]+(?:\.\d+)?)\s*(k)\b/i,
   ];
   for (const re of patterns) {
     const m = question.match(re);
@@ -481,6 +485,13 @@ const QUESTION_WORDS = new Set([
 function dossierCandidates(q: string): string[] {
   const tokens = q
     .toLowerCase()
+    // Apostrophes first: "what's" -> "whats" (a QUESTION_WORDS entry) rather
+    // than surviving as its own token. Without this, "what's the entry fee?"
+    // left "what's" as the only candidate — which is not a question word by
+    // itself — and it went on to match a real place literally named "What's
+    // In a Name", answering a totally unrelated cafe's details with total
+    // confidence. A caught-live bug, not a hypothetical.
+    .replace(/['’]/g, "")
     .replace(/[?.!,]+/g, " ")
     .split(/\s+/)
     .filter((t) => t && !QUESTION_WORDS.has(t));
@@ -775,6 +786,14 @@ const PLACE_FINDER_WORDS = [
   "heritage places in", "pilgrimage places in", "wildlife destinations in", "adventure places in",
 ];
 const FESTIVAL_WORDS = ["festival", "fair", "dasara", "ugadi", "deepavali", "diwali", "ganesh chaturthi", "jatre"];
+// Signals a short question is asking for ONE MORE fact about a place rather
+// than naming a new one — used only to decide whether a subject-less
+// question should fall back to whatever place is already in context.
+const ATTRIBUTE_FOLLOWUP_WORDS = [
+  "entry fee", "fee", "fees", "ticket", "timing", "timings", "opening hour", "opening time",
+  "is it open", "when does it open", "when does it close", "best time", "how long", "duration",
+  "rating", "reviews", "category", "where is it", "located",
+];
 
 const ABOUT_SAAFERA = [
   "Saafera is a budget travel planning app for trips in India. The core feature is the Budget Planner: give it a starting point, budget, hours/days, number of travellers, a vehicle, a search radius and the kinds of places you want, and it builds a real day-plan — which places to visit and in what order, real driving distances/times, entry fees and food cost, and a full cost breakdown.",
@@ -1015,12 +1034,27 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
 
   // Last resort: does this look like a question about ONE specific place?
   // Try the question as typed first, then with any pronoun resolved against
-  // context, so "what's the entry fee?" right after discussing a place works.
+  // context ("how far is it from Mysuru?").
   try {
     const dossier = (await answerPlaceDossier(q)) ?? (qResolved !== q ? await answerPlaceDossier(qResolved) : null);
     if (dossier) return reply(dossier.text, { place: dossier.place, suggestions: placeSuggestions(dossier.place) });
   } catch {
-    /* fall through to the generic help message */
+    /* fall through */
+  }
+
+  // A short, subject-less attribute question — "what's the entry fee?", "is
+  // it open now?", "best time to visit?" — has nothing of its own for
+  // dossierCandidates to search on, so the two attempts above both come back
+  // empty. Rather than surface the generic fallback (or worse, risk a stray
+  // leftover token spuriously matching an unrelated place), answer directly
+  // about whatever place is already in context.
+  if (ctx.contextPlace && ATTRIBUTE_FOLLOWUP_WORDS.some((w) => q.includes(w))) {
+    try {
+      const dossier = await answerPlaceDossier(ctx.contextPlace);
+      if (dossier) return reply(dossier.text, { place: dossier.place, suggestions: placeSuggestions(dossier.place) });
+    } catch {
+      /* fall through to the generic help message */
+    }
   }
 
   return reply("I didn't quite catch that — here's what tends to work well:", {
