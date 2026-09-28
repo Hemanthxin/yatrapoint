@@ -25,7 +25,12 @@ export default async function CommunityGroupPage({ params }: PageProps) {
   const community = await getCommunityBySlug(slug);
   if (!community) notFound();
 
-  const membership = await getMembership(community.id, u.id ?? "");
+  // Both only need `community.id`, which is already known — run them
+  // together instead of one after the other.
+  const [membership, posts] = await Promise.all([
+    getMembership(community.id, u.id ?? ""),
+    listPublishedPosts(60, community.id),
+  ]);
   const status: MembershipStatus = !membership
     ? "none"
     : membership.role === "owner"
@@ -34,7 +39,6 @@ export default async function CommunityGroupPage({ params }: PageProps) {
         ? "approved"
         : "pending";
 
-  const posts = await listPublishedPosts(60, community.id);
   const [social, media, authorCounts, pendingRequests] = await Promise.all([
     getFeedSocial(posts.map((p) => p.id), u.id ?? ""),
     getPostsMedia(posts.map((p) => p.id)),

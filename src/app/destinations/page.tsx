@@ -70,7 +70,14 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
   // ordered by how popular each was rather than how well it matched, and missed
   // everything filed under the "Mysuru" spelling. One list, ranked by
   // relevance, is both simpler and what a traveller expects.
-  const searchResults = q ? await searchPlaces(db, q, { limit: PAGE_SIZE }) : [];
+  //
+  // Every query below is started immediately (not awaited yet) and only
+  // awaited where its value is actually needed, so they all run concurrently
+  // — a live measurement against the real database showed each Neon
+  // round-trip costs ~200ms+ even for a trivial query, so turning what should
+  // be N parallel round-trips into N sequential ones is exactly the kind of
+  // change that makes a page feel slow.
+  const searchResultsPromise = q ? searchPlaces(db, q, { limit: PAGE_SIZE }) : Promise.resolve([]);
 
   // A CATEGORY filter still pulls the supplementary sections, which are useful
   // when browsing rather than searching.
@@ -78,22 +85,27 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
   const nearbyMatchesPromise = !q && validCat ? listNearby({ category: validCat, limit: 12 }) : Promise.resolve([]);
   // Resolved once and handed to both listDestinations and countDestinations
   // below — each used to independently re-scan the catalogue for the same
-  // district's alternate spellings.
-  const districtOptions = q ? undefined : await resolveDistrictOptions(destinationFilters);
+  // district's alternate spellings. Started here, awaited only inside the two
+  // promises that need it, so it runs alongside everything else rather than
+  // blocking the start of this whole batch.
+  const districtOptionsPromise = q ? Promise.resolve(undefined) : resolveDistrictOptions(destinationFilters);
 
-  const [browseItems, browseTotal, states, districts, favIds, cityMatches, nearbyMatches] =
+  const [searchResults, browseItems, browseTotal, states, districts, favIds, cityMatches, nearbyMatches] =
     await Promise.all([
+      searchResultsPromise,
       q
         ? Promise.resolve([])
-        : listDestinations(
-            {
-              ...destinationFilters,
-              limit: PAGE_SIZE,
-              offset: (page - 1) * PAGE_SIZE,
-            },
-            districtOptions
+        : districtOptionsPromise.then((districtOptions) =>
+            listDestinations(
+              {
+                ...destinationFilters,
+                limit: PAGE_SIZE,
+                offset: (page - 1) * PAGE_SIZE,
+              },
+              districtOptions
+            )
           ),
-      q ? Promise.resolve(0) : countDestinations(destinationFilters, districtOptions),
+      q ? Promise.resolve(0) : districtOptionsPromise.then((districtOptions) => countDestinations(destinationFilters, districtOptions)),
       listStates(),
       listDistricts(sp.state),
       listFavoriteIds(u.id ?? ""),

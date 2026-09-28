@@ -16,13 +16,16 @@ export default async function DashboardPage() {
   const displayName = u.name || u.email || u.phone || "Traveller";
   const firstName = displayName.split(" ")[0] || displayName;
 
-  const stats = await getDashboardStats(u.id ?? "");
-
   // `citySeed` = a popularity slice of curated city places for the FIRST paint;
   // <NearbyPlaces> then pulls the real nearest ones for the user's location.
   // popular = top Karnataka destinations. Degrade gracefully if the DB times out
   // (Neon is serverless + far away) so a transient hiccup never 500s the page.
-  const [citySeed, popularTrips, upcoming, heroImageUrl] = await Promise.all([
+  // `stats` used to be awaited on its own line before this batch even though
+  // nothing here depends on it — on the very first page after login, that's a
+  // whole extra Neon round-trip (measured at 200ms+ each) added to every load
+  // for no reason. It's independent, so it belongs in the same Promise.all.
+  const [stats, citySeed, popularTrips, upcoming, heroImageUrl] = await Promise.all([
+    getDashboardStats(u.id ?? ""),
     listPopularCityPlaces(60).catch(() => []),
     listDestinations({ state: "Karnataka", isHidden: false, limit: 8 }).catch(() => []),
     listUpcomingTrips(u.id ?? ""),

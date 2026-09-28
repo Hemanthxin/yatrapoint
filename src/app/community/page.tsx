@@ -25,15 +25,21 @@ export default async function CommunityPage() {
   if (!session?.user) redirect("/");
   const u = session.user;
 
-  const posts = await listPublishedPosts(60);
-  const [social, media, followCounts, stats, trending, topContributors, authorCounts] = await Promise.all([
-    getFeedSocial(posts.map((p) => p.id), u.id ?? ""),
-    getPostsMedia(posts.map((p) => p.id)),
+  // Started immediately, awaited only by the three queries below that
+  // genuinely need the post list first (their ids) — the other four don't
+  // depend on `posts` at all, so they run alongside it instead of waiting for
+  // it to land first (each Neon round-trip measured at 200ms+, so serializing
+  // independent queries adds up fast on a page this central).
+  const postsPromise = listPublishedPosts(60);
+  const [posts, social, media, followCounts, stats, trending, topContributors, authorCounts] = await Promise.all([
+    postsPromise,
+    postsPromise.then((posts) => getFeedSocial(posts.map((p) => p.id), u.id ?? "")),
+    postsPromise.then((posts) => getPostsMedia(posts.map((p) => p.id))),
     getFollowCounts(u.id ?? ""),
     getCommunityStats(),
     getTrendingCommunities(3),
     getTopContributors(4),
-    getAuthorPostCounts([...new Set(posts.map((p) => p.userId))]),
+    postsPromise.then((posts) => getAuthorPostCounts([...new Set(posts.map((p) => p.userId))])),
   ]);
   const authorTiers: Record<string, string> = {};
   for (const [userId, count] of Object.entries(authorCounts)) {
