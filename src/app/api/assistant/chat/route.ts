@@ -14,7 +14,11 @@ interface IncomingMessage {
 // @/lib/ai/saafera-assistant), so a reply can never invent a feature or a
 // place that doesn't exist.
 export async function POST(req: NextRequest) {
-  let raw: { messages?: IncomingMessage[]; location?: { lat?: unknown; lng?: unknown } | null };
+  let raw: {
+    messages?: IncomingMessage[];
+    location?: { lat?: unknown; lng?: unknown } | null;
+    contextPlace?: unknown;
+  };
   try {
     raw = await req.json();
   } catch {
@@ -35,12 +39,14 @@ export async function POST(req: NextRequest) {
   const origin = typeof lat === "number" && typeof lng === "number" && Number.isFinite(lat) && Number.isFinite(lng)
     ? { lat, lng }
     : null;
+  const contextPlace = typeof raw.contextPlace === "string" && raw.contextPlace.trim() ? raw.contextPlace.trim() : null;
 
   const session = await auth();
-  const reply = await answerAssistantQuestion(lastUser.content.slice(0, 2000), {
+  const result = await answerAssistantQuestion(lastUser.content.slice(0, 2000), {
     userId: session?.user?.id ?? null,
     origin,
+    contextPlace,
   });
 
-  return NextResponse.json({ reply });
+  return NextResponse.json(result);
 }

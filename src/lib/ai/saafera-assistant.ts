@@ -291,7 +291,12 @@ function applyBudget(ranked: RankedPlace[], budgetInr: number, hasOrigin: boolea
 // combinations of these).
 // ---------------------------------------------------------------------------
 
-async function answerPlaceFinder(question: string, origin: LatLng | null): Promise<string> {
+interface ListAnswer {
+  text: string;
+  topPlace: string | null;
+}
+
+async function answerPlaceFinder(question: string, origin: LatLng | null): Promise<ListAnswer> {
   const category = detectCategory(question);
   const keyword = category ? null : detectKeyword(question);
   const areaText = extractArea(question);
@@ -313,7 +318,10 @@ async function answerPlaceFinder(question: string, origin: LatLng | null): Promi
     rows = await findPlaces({ category, monthAbbrs, keyword, preferHidden, limit: 8 });
   }
   if (rows.length === 0) {
-    return "I couldn't find a specific match for that in Saafera's catalogue — try browsing Destinations directly, or ask more generally (e.g. \"best temples in Karnataka\").";
+    return {
+      text: "I couldn't find a specific match for that in Saafera's catalogue — try browsing Destinations directly, or ask more generally (e.g. \"best temples in Karnataka\").",
+      topPlace: null,
+    };
   }
 
   let ranked = rankPlaces(rows, origin);
@@ -338,7 +346,10 @@ async function answerPlaceFinder(question: string, origin: LatLng | null): Promi
   const budgetSuffix = budgetInr ? `, within ₹${budgetInr.toLocaleString("en-IN")}` : "";
   const heading = `${subject === "top" ? "Places" : `${subject.charAt(0).toUpperCase()}${subject.slice(1)} places`} rated well${where}${when}${budgetSuffix}:`;
 
-  return [...notes, heading, "", ...ranked.map(formatPlace)].filter(Boolean).join("\n");
+  return {
+    text: [...notes, heading, "", ...ranked.map(formatPlace)].filter(Boolean).join("\n"),
+    topPlace: ranked[0]?.name ?? null,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -366,7 +377,12 @@ async function findOnePlace(name: string): Promise<{ row: PlaceRow; strong: bool
   };
 }
 
-async function answerDistanceQuestion(a: string, b: string): Promise<string | null> {
+interface PlaceAnswer {
+  text: string;
+  place: string;
+}
+
+async function answerDistanceQuestion(a: string, b: string): Promise<PlaceAnswer | null> {
   const [from, to] = await Promise.all([findOnePlace(a), findOnePlace(b)]);
   if (!from?.strong || !to?.strong) return null;
   const fromCoords = placeCoords(from.row);
@@ -374,7 +390,21 @@ async function answerDistanceQuestion(a: string, b: string): Promise<string | nu
   if (!fromCoords || !toCoords) return null;
   const straight = haversineKm(fromCoords, toCoords);
   const roadEstimate = straight * 1.25; // same road-vs-straight-line factor used by the trip planner
-  return `${to.row.name} is roughly ${Math.round(straight)} km from ${from.row.name} in a straight line — about ${Math.round(roadEstimate)} km by road.`;
+  return {
+    text: `${to.row.name} is roughly ${Math.round(straight)} km from ${from.row.name} in a straight line — about ${Math.round(roadEstimate)} km by road.`,
+    place: from.row.name,
+  };
+}
+
+// "How far is it from me?" — distance from the traveller's real live location
+// to a place already established by context, using the same road-vs-straight-
+// line factor as everywhere else.
+function answerDistanceFromMe(place: PlaceRow, origin: LatLng): string | null {
+  const coords = placeCoords(place);
+  if (!coords) return null;
+  const straight = haversineKm(origin, coords);
+  const road = straight * 1.25;
+  return `${place.name} is about ${Math.round(straight)} km from you in a straight line — roughly ${Math.round(road)} km by road.`;
 }
 
 async function answerNearbyToPlace(
@@ -382,11 +412,16 @@ async function answerNearbyToPlace(
   origin: LatLng | null,
   budgetInr: number | null,
   category: string | null
-): Promise<string | null> {
+): Promise<PlaceAnswer | null> {
   const anchor = await findOnePlace(name);
   if (!anchor?.strong) return null;
   const anchorCoords = placeCoords(anchor.row);
-  if (!anchorCoords) return `I have ${anchor.row.name} in the catalogue but no coordinates for it, so I can't find what's nearby.`;
+  if (!anchorCoords) {
+    return {
+      text: `I have ${anchor.row.name} in the catalogue but no coordinates for it, so I can't find what's nearby.`,
+      place: anchor.row.name,
+    };
+  }
 
   const candidates = await findPlaces({
     category,
@@ -402,7 +437,7 @@ async function answerNearbyToPlace(
   ranked.sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity));
 
   if (ranked.length === 0) {
-    return `I couldn't find other catalogued places within range of ${anchor.row.name}.`;
+    return { text: `I couldn't find other catalogued places within range of ${anchor.row.name}.`, place: anchor.row.name };
   }
 
   const notes: string[] = [];
@@ -419,7 +454,10 @@ async function answerNearbyToPlace(
   }
   ranked = ranked.slice(0, 5);
 
-  return [...notes, `Places near ${anchor.row.name}:`, "", ...ranked.map(formatPlace)].filter(Boolean).join("\n");
+  return {
+    text: [...notes, `Places near ${anchor.row.name}:`, "", ...ranked.map(formatPlace)].filter(Boolean).join("\n"),
+    place: anchor.row.name,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -469,7 +507,7 @@ function humanBestMonths(bestMonths: string | null): string | null {
     .join(", ");
 }
 
-async function answerPlaceDossier(question: string): Promise<string | null> {
+async function answerPlaceDossier(question: string): Promise<PlaceAnswer | null> {
   let results: Awaited<ReturnType<typeof searchPlaces>> = [];
   for (const candidate of dossierCandidates(question)) {
     const found = await searchPlaces(db, candidate, { limit: 1 });
@@ -507,7 +545,7 @@ async function answerPlaceDossier(question: string): Promise<string | null> {
   if (rating) lines.push(`- Google rating: ${rating}`);
   if (p.googleBusinessStatus === "CLOSED_TEMPORARILY") lines.push(`- ⚠ Currently showing as temporarily closed on Google.`);
 
-  return lines.join("\n");
+  return { text: lines.join("\n"), place: p.name };
 }
 
 // ---------------------------------------------------------------------------
@@ -763,45 +801,109 @@ const DATA_MODEL_EXPLANATION =
 export interface AssistantContext {
   userId: string | null;
   origin: LatLng | null;
+  // The place the last turn was about (a dossier, a distance answer, a
+  // nearby-to-X lookup) — lets a short follow-up like "what's the entry fee?"
+  // or "what's nearby?" work without repeating the name.
+  contextPlace: string | null;
 }
 
-export async function answerAssistantQuestion(rawQuestion: string, ctx: AssistantContext): Promise<string> {
+export interface AssistantReply {
+  reply: string;
+  // The place THIS turn resolved to, for the client to remember and send back
+  // as `contextPlace` on the next turn. Null when the answer wasn't about one
+  // specific place (a list, an FAQ, etc.) — a list is ambiguous to refer back
+  // to with "it", so context is deliberately dropped rather than guessed.
+  place: string | null;
+  // Tappable follow-up questions, chosen so every one of them is guaranteed to
+  // resolve to a real answer if sent as-is.
+  suggestions: string[];
+}
+
+function reply(text: string, opts: { place?: string | null; suggestions?: string[] } = {}): AssistantReply {
+  return { reply: text, place: opts.place ?? null, suggestions: opts.suggestions ?? [] };
+}
+
+const SUGG_DISCOVER = "Best places to visit this month";
+const SUGG_NEARME = "What's near me?";
+const SUGG_TRIPS = "My trip plans";
+const SUGG_FEST = "Festivals this month";
+
+function placeSuggestions(name: string): string[] {
+  return [`What's near ${name}?`, "How far is it from me?"];
+}
+
+// Swap a trailing pronoun for the place the conversation is already about, so
+// "how far is it from Bengaluru" or "what's the entry fee for that place"
+// resolves without the traveller repeating the name.
+const PRONOUN_RE = /\b(it|this place|that place|this destination|that destination|there)\b/gi;
+function resolvePronouns(text: string, place: string | null): string {
+  if (!place) return text;
+  return text.replace(PRONOUN_RE, place);
+}
+
+export async function answerAssistantQuestion(rawQuestion: string, ctx: AssistantContext): Promise<AssistantReply> {
   const q = rawQuestion.trim().toLowerCase();
-  if (!q) return "Ask me something about planning a trip, or how to use Saafera.";
+  if (!q) return reply("Ask me something about planning a trip, or how to use Saafera.", { suggestions: [SUGG_DISCOVER, SUGG_NEARME] });
 
   if (GREETING_WORDS.some((w) => q === w || q.startsWith(w + " ") || q.startsWith(w + "!"))) {
-    return "Hi! I can tell you how to use Saafera, look up your saved trips, or suggest real places to visit based on the season, budget or your location. What do you need?";
+    return reply(
+      "Hey! I can look up real places by season, budget or location, check on your saved trips, or explain how anything in the app works. What are you planning?",
+      { suggestions: [SUGG_DISCOVER, SUGG_NEARME, SUGG_TRIPS, SUGG_FEST] }
+    );
   }
   if (THANKS_WORDS.some((w) => q.includes(w))) {
-    return "You're welcome! Anything else about your trip or the app?";
+    return reply("Anytime! Anything else about your trip or the app?", { suggestions: [SUGG_DISCOVER, SUGG_NEARME] });
   }
 
   if (q === "help" || q === "?" || /\b(what can i ask|what should i ask|what can you help)\b/.test(q)) {
-    return HELP_MESSAGE;
+    return reply(HELP_MESSAGE, { suggestions: [SUGG_DISCOVER, SUGG_NEARME, SUGG_TRIPS, SUGG_FEST] });
   }
   if (
     /\b(what is saafera|what's saafera|about saafera|what does saafera do|what is this app|what is this platform|who are you|what can (you|the saafera assistant) (do|help)|what do you do)\b/.test(
       q
     )
   ) {
-    return ABOUT_SAAFERA;
+    return reply(ABOUT_SAAFERA, { suggestions: [SUGG_DISCOVER, SUGG_NEARME, SUGG_TRIPS] });
   }
 
   if (TRIP_PLAN_WORDS.some((w) => q.includes(w))) {
-    if (!ctx.userId) return "You're not signed in, so I can't see personal trip plans — sign in to save and check on trips.";
+    if (!ctx.userId) {
+      return reply("You're not signed in, so I can't see personal trip plans — sign in to save and check on trips.", {
+        suggestions: [SUGG_DISCOVER],
+      });
+    }
     try {
-      return summarizeTripPlans(await listUserTripPlans(ctx.userId));
+      return reply(summarizeTripPlans(await listUserTripPlans(ctx.userId)), { suggestions: [SUGG_DISCOVER, SUGG_NEARME] });
     } catch {
-      return "I couldn't load your trip plans just now — try again in a moment.";
+      return reply("I couldn't load your trip plans just now — try again in a moment.");
+    }
+  }
+
+  const qResolved = resolvePronouns(q, ctx.contextPlace);
+
+  // "How far is it from me?" — distance from the traveller's OWN location to
+  // whatever place is still in context, not place-to-place.
+  if (ctx.contextPlace && /\b(from me|from here)\b/.test(q) && /\b(how far|distance)\b/.test(q)) {
+    if (!ctx.origin) {
+      return reply("I don't have your live location yet — allow location access in your browser, then ask again.", {
+        place: ctx.contextPlace,
+      });
+    }
+    try {
+      const found = await findOnePlace(ctx.contextPlace);
+      const text = found ? answerDistanceFromMe(found.row, ctx.origin) : null;
+      if (text) return reply(text, { place: ctx.contextPlace, suggestions: placeSuggestions(ctx.contextPlace) });
+    } catch {
+      /* fall through */
     }
   }
 
   // "How far is X from Y?"
-  const distanceMatch = q.match(/how far (?:is|are)\s+(.+?)\s+from\s+(.+?)[?.!]*$/i);
+  const distanceMatch = qResolved.match(/how far (?:is|are)\s+(.+?)\s+from\s+(.+?)[?.!]*$/i);
   if (distanceMatch) {
     try {
       const answer = await answerDistanceQuestion(distanceMatch[1].trim(), distanceMatch[2].trim());
-      if (answer) return answer;
+      if (answer) return reply(answer.text, { place: answer.place, suggestions: placeSuggestions(answer.place) });
     } catch {
       /* fall through to other intents */
     }
@@ -813,7 +915,9 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
   const withinKmMatch = q.match(/within\s+(\d+)\s*km/i);
   if (/\b(near me|around me|close to me|my (current )?location|closest to my current location)\b/.test(q) || withinKmMatch) {
     if (!ctx.origin) {
-      return "I don't have your live location yet — allow location access in your browser (open the chat again after granting it), then ask me this again.";
+      return reply(
+        "I don't have your live location yet — allow location access in your browser (open the chat again after granting it), then ask me this again."
+      );
     }
     try {
       const radiusKm = withinKmMatch ? Math.min(500, Math.max(1, Number(withinKmMatch[1]))) : 50;
@@ -830,11 +934,15 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
       }
       ranked = ranked.slice(0, 5);
       if (ranked.length === 0) {
-        return `I couldn't find catalogued places within ${radiusKm} km of your location.`;
+        return reply(`I couldn't find catalogued places within ${radiusKm} km of your location.`, { suggestions: [SUGG_DISCOVER] });
       }
-      return [...notes, `Places within ${radiusKm} km of you:`, "", ...ranked.map(formatPlace)].filter(Boolean).join("\n");
+      const top = ranked[0].name;
+      return reply([...notes, `Places within ${radiusKm} km of you:`, "", ...ranked.map(formatPlace)].filter(Boolean).join("\n"), {
+        place: top,
+        suggestions: [`Tell me about ${top}`, SUGG_FEST],
+      });
     } catch {
-      return "I couldn't look up nearby places just now — try again in a moment.";
+      return reply("I couldn't look up nearby places just now — try again in a moment.");
     }
   }
 
@@ -847,15 +955,26 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
   // category, if any, is detected from the text BEFORE "near/around" only —
   // so "near Mysore Palace" can't have its own name ("...palace") misread as
   // a request for Heritage-category places.
-  const nearIdx = q.search(/\b(?:near|around)\s+/i);
+  const nearIdx = qResolved.search(/\b(?:near|around)\s+/i);
+  if (nearIdx === -1 && ctx.contextPlace && /\b(nearby|around here|close by)\b/.test(q)) {
+    // No explicit target, but the conversation is already about a place —
+    // "what's nearby?" right after asking about Hampi means nearby Hampi.
+    try {
+      const budgetInr = parseBudgetInr(q);
+      const answer = await answerNearbyToPlace(ctx.contextPlace, ctx.origin, budgetInr, null);
+      if (answer) return reply(answer.text, { place: answer.place, suggestions: placeSuggestions(answer.place) });
+    } catch {
+      /* fall through */
+    }
+  }
   if (nearIdx !== -1) {
-    const nearTarget = q.slice(nearIdx).replace(/^(?:near|around)\s+/i, "").replace(/[?.!]+$/, "").trim();
+    const nearTarget = qResolved.slice(nearIdx).replace(/^(?:near|around)\s+/i, "").replace(/[?.!]+$/, "").trim();
     if (nearTarget.length >= 3) {
       try {
         const budgetInr = parseBudgetInr(q);
-        const category = detectCategory(q.slice(0, nearIdx));
+        const category = detectCategory(qResolved.slice(0, nearIdx));
         const answer = await answerNearbyToPlace(nearTarget, ctx.origin, budgetInr, category);
-        if (answer) return answer;
+        if (answer) return reply(answer.text, { place: answer.place, suggestions: placeSuggestions(answer.place) });
       } catch {
         /* fall through to the area-based place-finder */
       }
@@ -866,39 +985,45 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
   // questions about the catalogue's own data model. Answered from the real
   // mechanisms in this codebase, not a guess.
   if (/^how (should|does|do you|would you)\s+(saafera\s+)?(handle|identify|store|decide|prevent|rank|distinguish|represent|verify|choose|calculate|select|explain)/.test(q)) {
-    return DATA_MODEL_EXPLANATION;
+    return reply(DATA_MODEL_EXPLANATION);
   }
 
   if (FESTIVAL_WORDS.some((w) => q.includes(w))) {
     try {
-      return await answerFestivalQuestion(q);
+      return reply(await answerFestivalQuestion(q), { suggestions: [SUGG_DISCOVER, SUGG_NEARME] });
     } catch {
-      return "I couldn't look up festivals just now — try again in a moment.";
+      return reply("I couldn't look up festivals just now — try again in a moment.");
     }
   }
 
   if (PLACE_FINDER_WORDS.some((w) => q.includes(w))) {
     try {
-      return await answerPlaceFinder(q, ctx.origin);
+      const answer = await answerPlaceFinder(q, ctx.origin);
+      const suggestions = answer.topPlace ? [`Tell me about ${answer.topPlace}`, SUGG_NEARME] : [SUGG_NEARME, SUGG_FEST];
+      return reply(answer.text, { place: answer.topPlace, suggestions });
     } catch {
-      return "I couldn't look up places just now — try again in a moment.";
+      return reply("I couldn't look up places just now — try again in a moment.");
     }
   }
 
   for (const tip of STATIC_TIPS) {
-    if (tip.words.some((w) => q.includes(w))) return tip.answer;
+    if (tip.words.some((w) => q.includes(w))) return reply(tip.answer);
   }
 
   const faq = FAQ.find((entry) => entry.keywords.some((k) => q.includes(k)));
-  if (faq) return faq.answer;
+  if (faq) return reply(faq.answer);
 
   // Last resort: does this look like a question about ONE specific place?
+  // Try the question as typed first, then with any pronoun resolved against
+  // context, so "what's the entry fee?" right after discussing a place works.
   try {
-    const dossier = await answerPlaceDossier(q);
-    if (dossier) return dossier;
+    const dossier = (await answerPlaceDossier(q)) ?? (qResolved !== q ? await answerPlaceDossier(qResolved) : null);
+    if (dossier) return reply(dossier.text, { place: dossier.place, suggestions: placeSuggestions(dossier.place) });
   } catch {
     /* fall through to the generic help message */
   }
 
-  return "I can help with: how to use Saafera (Budget Planner, Trip Cart, Favourites, Community, Trip History), suggesting real places by season/budget/location, festivals, or details on a specific place — try \"best places to visit in December\", \"tell me about Hampi\", or \"how does the budget planner work\".";
+  return reply("I didn't quite catch that — here's what tends to work well:", {
+    suggestions: [SUGG_DISCOVER, SUGG_NEARME, "Tell me about Hampi", SUGG_TRIPS],
+  });
 }
