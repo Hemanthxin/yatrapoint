@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { Home, Compass, Wallet, Users, Menu, type LucideIcon } from "lucide-react";
+import { PlanChooserSheet } from "./PlanChooserSheet";
 
 interface Tab {
   href: string;
@@ -22,6 +24,7 @@ const RIGHT: Tab[] = [{ href: "/community", label: "Community", icon: Users }];
 export function MobileNav({ onMenu }: { onMenu: () => void }) {
   const path = usePathname();
   const isActive = (href: string) => path === href || path.startsWith(href + "/");
+  const [chooserOpen, setChooserOpen] = useState(false);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-30 lg:hidden">
@@ -36,9 +39,12 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
           <TabLink key={t.href} tab={t} active={isActive(t.href)} />
         ))}
 
-        {/* Raised center Plan button */}
-        <Link
-          href="/budget-planner"
+        {/* Raised center Plan button — opens a chooser instead of deep-linking
+            straight to the Budget Planner, since there are now two ways to
+            plan a trip (automatic vs. the collaborative Group Trip Planner). */}
+        <button
+          type="button"
+          onClick={() => setChooserOpen(true)}
           aria-label="Plan a trip"
           className="relative -mt-9 flex flex-col items-center"
         >
@@ -47,7 +53,7 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
             <Wallet className="relative h-6 w-6" strokeWidth={2.2} />
           </span>
           <span className="mt-1 text-[11px] font-bold text-emerald-700">Plan</span>
-        </Link>
+        </button>
 
         {RIGHT.map((t) => (
           <TabLink key={t.href} tab={t} active={isActive(t.href)} />
@@ -62,6 +68,8 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
           <span className="text-[10px] font-semibold">More</span>
         </button>
       </nav>
+
+      <PlanChooserSheet open={chooserOpen} onClose={() => setChooserOpen(false)} />
     </div>
   );
 }

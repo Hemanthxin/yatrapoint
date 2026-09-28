@@ -29,6 +29,7 @@ const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/destinations", label: "Tourist Places", icon: Flag },
   { href: "/budget-planner", label: "Trip Planner", icon: Wallet },
+  { href: "/group-trip", label: "Group Trip Planner", icon: Users },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
   { href: "/community", label: "Community", icon: Users },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },

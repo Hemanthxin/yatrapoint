@@ -7,6 +7,7 @@ import {
   real,
   text,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 import { createId } from "@/lib/utils/id";
@@ -248,6 +249,121 @@ export const tripPlanItems = pgTable(
     pk: primaryKey({ columns: [t.tripPlanId, t.destinationId] }),
   })
 );
+
+// --- Group Trip Planner ---
+// A collaborative counterpart to the solo tripPlans above: an admin creates
+// the trip, friends join via a short link/code, everyone suggests and votes
+// on real catalogue places, and the admin finalizes which ones make the cut
+// before Saafera generates a real day-by-day itinerary + budget for the
+// group. `placeId` points at the unified `places` table (not the legacy
+// `destinations` table tripPlanItems still uses above) since that's what
+// every current place lookup (searchPlaces, listDestinations) actually reads.
+export const groupTrips = pgTable(
+  "group_trips",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    joinCode: varchar("join_code", { length: 12 }).notNull().unique(),
+    name: varchar("name", { length: 140 }).notNull(),
+    creatorId: text("creator_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    startLabel: varchar("start_label", { length: 200 }).notNull(),
+    startLatitude: varchar("start_latitude", { length: 20 }),
+    startLongitude: varchar("start_longitude", { length: 20 }),
+    destinationState: varchar("destination_state", { length: 80 }).notNull(),
+    destinationDistrict: varchar("destination_district", { length: 80 }),
+    // Display label for the destination, e.g. "Coorg, Karnataka".
+    destinationLabel: varchar("destination_label", { length: 200 }).notNull(),
+    startDate: varchar("start_date", { length: 10 }), // "YYYY-MM-DD"
+    endDate: varchar("end_date", { length: 10 }),
+    days: integer("days").default(1).notNull(),
+    travellers: integer("travellers").notNull(),
+    totalBudget: integer("total_budget").notNull(),
+    vehicle: varchar("vehicle", { length: 20 }).notNull(), // a VehicleKind — cost-model input only, never a booking
+    status: varchar("status", { length: 20 }).default("planning").notNull(), // "planning" | "finalized"
+    // JSON-serialized GeneratedItinerary (stop order, route geometry, cost
+    // breakdown) — the same "stringify into a text column" convention used
+    // for ticketOptions/legacySlugs on `places` below.
+    itineraryJson: text("itinerary_json"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    joinCodeIdx: index("group_trips_join_code_idx").on(table.joinCode),
+    creatorIdx: index("group_trips_creator_idx").on(table.creatorId),
+  })
+);
+export type GroupTrip = typeof groupTrips.$inferSelect;
+
+// One row per (trip, user). No "pending" state — with a link-based join
+// there's nothing to pre-register an invitee against, so a member exists
+// only once they've actually joined.
+export const groupTripMembers = pgTable(
+  "group_trip_members",
+  {
+    groupTripId: text("group_trip_id")
+      .notNull()
+      .references(() => groupTrips.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    role: varchar("role", { length: 20 }).default("member").notNull(), // "admin" | "member"
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.groupTripId, table.userId] }),
+    userIdx: index("group_trip_members_user_idx").on(table.userId),
+  })
+);
+export type GroupTripMember = typeof groupTripMembers.$inferSelect;
+
+// A place suggested for the trip by some member. `status` moves from
+// "suggested" to "confirmed"/"rejected" only via the admin's decision — never
+// implied purely by vote counts, so the itinerary always reflects an explicit
+// human decision.
+export const groupTripPlaces = pgTable(
+  "group_trip_places",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    groupTripId: text("group_trip_id")
+      .notNull()
+      .references(() => groupTrips.id, { onDelete: "cascade" }),
+    placeId: text("place_id")
+      .notNull()
+      .references(() => places.id, { onDelete: "cascade" }),
+    suggestedByUserId: text("suggested_by_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: varchar("status", { length: 20 }).default("suggested").notNull(), // "suggested" | "confirmed" | "rejected"
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    // A place can only be suggested once per trip — a second member who wants
+    // the same place votes on the existing suggestion instead of duplicating it.
+    uniquePerTrip: unique("group_trip_places_unique").on(table.groupTripId, table.placeId),
+    tripIdx: index("group_trip_places_trip_idx").on(table.groupTripId),
+  })
+);
+export type GroupTripPlace = typeof groupTripPlaces.$inferSelect;
+
+// One vote per (suggestion, user) — same upsert-by-composite-key idiom as
+// communityReactions below.
+export const groupTripVotes = pgTable(
+  "group_trip_votes",
+  {
+    groupTripPlaceId: text("group_trip_place_id")
+      .notNull()
+      .references(() => groupTripPlaces.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    value: varchar("value", { length: 20 }).notNull(), // "interested" | "mustVisit" | "notInterested"
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.groupTripPlaceId, table.userId] }),
+  })
+);
+export type GroupTripVote = typeof groupTripVotes.$inferSelect;
 
 export const favorites = pgTable(
   "favorites",
