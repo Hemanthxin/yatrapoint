@@ -27,6 +27,8 @@ import { Reveal } from "@/components/app/Reveal";
 import { RevealGrid } from "@/components/app/RevealGrid";
 import { HeroSlideshow } from "@/components/app/HeroSlideshow";
 import { CountUp } from "@/components/app/CountUp";
+import { TiltCard } from "@/components/app/TiltCard";
+import { Brand3DHero } from "@/components/app/dashboard/Brand3DHero";
 
 interface Props {
   stats: DashboardStats;
@@ -60,14 +62,27 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
     { label: "Saved Places", value: stats.placesExplored, format: (n: number) => Math.round(n).toString().padStart(2, "0"), href: "/destinations", icon: <Bookmark className="h-5 w-5" />, tone },
     { label: "Total Saved", value: stats.totalSaved, format: formatINR, href: "/budget-planner", icon: <Heart className="h-5 w-5" />, tone },
   ];
+  // Orbits the 3D logo in the hero — a preview of the same numbers the grid
+  // below shows in full, just surfaced as a first, unmissable glance.
+  const heroOrbitStats = [
+    { icon: Briefcase, value: Math.round(stats.tripsPlanned).toString().padStart(2, "0"), label: "Trips planned", href: "/one-day-trips" },
+    { icon: Binoculars, value: Math.round(stats.placesExplored).toString(), label: "Places explored", href: "/destinations" },
+    { icon: CalendarClock, value: "New", label: "Festivals & events", href: "/festivals" },
+    { icon: Users, value: "Join", label: "Community", href: "/community" },
+  ];
 
   return (
     <div className="space-y-6">
     <div className="flex flex-col gap-6 xl:flex-row">
       {/* MAIN COLUMN */}
       <div className="min-w-0 flex-1 space-y-6">
-        {/* Featured hero */}
-        <Reveal as="section" className="relative h-72 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-80" amount={0}>
+        {/* Featured hero — the Saafera mark floats as a 3D coin on the right,
+            spinning and receding into the scene as you scroll past it. */}
+        <Reveal
+          as="section"
+          className="relative h-80 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-96 xl:h-[26rem]"
+          amount={0}
+        >
           <HeroSlideshow
             images={heroSlides}
             alt="Scenic travel destinations"
@@ -75,51 +90,57 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
           />
           {/* Dark scrim so white text sits comfortably over the photo — still
               image renders at full opacity, the fade just clears sooner. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/55 via-45% to-transparent" />
-          <div className="relative flex h-full max-w-lg flex-col justify-center p-10">
-            <p className="inline-flex w-max items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-200 backdrop-blur-sm">
-              <MapPin className="h-3 w-3" /> Featured Destination
-            </p>
-            <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-white drop-shadow-sm">
-              Explore Karnataka,
-              <br />
-              <span className="italic text-emerald-300">Create Memories</span>
-            </h1>
-            <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-emerald-50/80 drop-shadow-sm">
-              Smart trips. Budget friendly.
-              <br />
-              Unforgettable memories.
-            </p>
-            <Link href="/budget-planner" className="btn-primary mt-4 w-max px-6 py-2.5 text-sm">
-              Explore Now <ArrowRight className="h-4 w-4" />
-            </Link>
-            <div className="mt-4 flex gap-1.5">
-              {heroSlides.map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === heroSlide ? "w-6 bg-white" : "w-1.5 bg-white/40"
-                  }`}
-                />
-              ))}
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/55 via-45% to-emerald-950/20" />
+          <div className="relative flex h-full items-center justify-between gap-6 p-10">
+            <div className="flex max-w-lg shrink-0 flex-col justify-center">
+              <p className="inline-flex w-max items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-200 backdrop-blur-sm">
+                <MapPin className="h-3 w-3" /> Featured Destination
+              </p>
+              <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-white drop-shadow-sm">
+                Explore Karnataka,
+                <br />
+                <span className="italic text-emerald-300">Create Memories</span>
+              </h1>
+              <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-emerald-50/80 drop-shadow-sm">
+                Smart trips. Budget friendly.
+                <br />
+                Unforgettable memories.
+              </p>
+              <Link href="/budget-planner" className="btn-primary mt-4 w-max px-6 py-2.5 text-sm">
+                Explore Now <ArrowRight className="h-4 w-4" />
+              </Link>
+              <div className="mt-4 flex gap-1.5">
+                {heroSlides.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all duration-500 ${
+                      i === heroSlide ? "w-6 bg-white" : "w-1.5 bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
+            <Brand3DHero stats={heroOrbitStats} className="hidden h-full w-72 shrink-0 xl:block" />
           </div>
           <LeafSprig className="pointer-events-none absolute bottom-3 right-4 h-24 w-24 rotate-12 text-white/20" />
         </Reveal>
 
-        {/* Feature tiles */}
-        <RevealGrid className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {/* Feature tiles — flip in with a 3D tilt instead of a flat fade,
+            and tilt toward the pointer on hover for a tactile, premium feel. */}
+        <RevealGrid className="grid grid-cols-2 gap-4 sm:grid-cols-4" style={{ perspective: 1000 }}>
           {features.map((f) => (
-            <Reveal key={f.title}>
-              <Link
-                href={f.href}
-                className="card-hover group relative block h-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 pr-8 shadow-sm"
-              >
-                <div className={`mb-3 grid h-11 w-11 place-items-center rounded-xl ${f.tone}`}>{f.icon}</div>
-                <p className="font-serif text-base font-semibold tracking-tight text-slate-900">{f.title}</p>
-                <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
-                <ChevronRight className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
-              </Link>
+            <Reveal key={f.title} direction="flip">
+              <TiltCard max={7} className="h-full">
+                <Link
+                  href={f.href}
+                  className="card-hover group relative block h-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 pr-8 shadow-sm"
+                >
+                  <div className={`mb-3 grid h-11 w-11 place-items-center rounded-xl ${f.tone}`}>{f.icon}</div>
+                  <p className="font-serif text-base font-semibold tracking-tight text-slate-900">{f.title}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
+                  <ChevronRight className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                </Link>
+              </TiltCard>
             </Reveal>
           ))}
         </RevealGrid>
@@ -127,17 +148,19 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
         {/* Trips Planned stats */}
         <section>
           <SectionHeader title="Trips Planned" href="/one-day-trips" />
-          <RevealGrid className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <RevealGrid className="grid grid-cols-2 gap-4 sm:grid-cols-4" style={{ perspective: 1000 }}>
             {statCards.map((s) => (
-              <Reveal key={s.label}>
-                <Link
-                  href={s.href}
-                  className="card-hover block h-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-sm"
-                >
-                  <div className={`mb-2.5 grid h-11 w-11 place-items-center rounded-xl ${s.tone}`}>{s.icon}</div>
-                  <CountUp value={s.value} format={s.format} className="block truncate font-serif text-2xl font-semibold text-slate-900" />
-                  <p className="text-xs font-medium text-slate-500">{s.label}</p>
-                </Link>
+              <Reveal key={s.label} direction="flip">
+                <TiltCard max={7} className="h-full">
+                  <Link
+                    href={s.href}
+                    className="card-hover block h-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5 shadow-sm"
+                  >
+                    <div className={`mb-2.5 grid h-11 w-11 place-items-center rounded-xl ${s.tone}`}>{s.icon}</div>
+                    <CountUp value={s.value} format={s.format} className="block truncate font-serif text-2xl font-semibold text-slate-900" />
+                    <p className="text-xs font-medium text-slate-500">{s.label}</p>
+                  </Link>
+                </TiltCard>
               </Reveal>
             ))}
           </RevealGrid>

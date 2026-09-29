@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   MapPin,
@@ -39,16 +41,31 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
     <div className="space-y-6 pb-4">
       {/* Greeting (search lives in the top bar) */}
       <Reveal amount={0}>
-        <p className="flex items-center gap-1.5 text-[13px] font-bold text-[color:var(--highlight)]">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--highlight)]" />
-          Namaste 🙏
-        </p>
-        <AnimatedWords
-          as="h1"
-          text={`Hey ${firstName}`}
-          className="text-3xl font-black tracking-tight text-slate-900"
-        />
-        <p className="mt-0.5 text-[13px] font-medium text-slate-500">Where are we headed today?</p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="flex items-center gap-1.5 text-[13px] font-bold text-[color:var(--highlight)]">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--highlight)]" />
+              Namaste 🙏
+            </p>
+            <AnimatedWords
+              as="h1"
+              text={`Hey ${firstName}`}
+              className="text-3xl font-black tracking-tight text-slate-900"
+            />
+            <p className="mt-0.5 text-[13px] font-medium text-slate-500">Where are we headed today?</p>
+          </div>
+          {/* A small 3D flip-in of the Saafera mark — a quieter cousin of the
+              desktop hero's scroll-driven coin, sized for a compact phone header. */}
+          <motion.div
+            initial={{ opacity: 0, rotateY: -90, scale: 0.7 }}
+            animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{ perspective: 600 }}
+            className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-white p-1.5 shadow-lg shadow-emerald-900/10 ring-1 ring-[color:var(--border)]"
+          >
+            <Image src="/saafera-logo.jpg" alt="Saafera" fill sizes="56px" className="object-contain" />
+          </motion.div>
+        </div>
       </Reveal>
 
       {/* Live weather for the traveller's location */}

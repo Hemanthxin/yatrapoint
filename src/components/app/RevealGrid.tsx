@@ -12,6 +12,7 @@ import {
 
 interface RevealGridProps {
   className?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
 }
 
@@ -30,7 +31,7 @@ interface RevealGridProps {
 // A child that already sets its own `direction` or `delay` (e.g. festival
 // cards with a hand-tuned stagger) keeps it — this only fills in what isn't
 // already specified.
-export function RevealGrid({ className, children }: RevealGridProps) {
+export function RevealGrid({ className, style, children }: RevealGridProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState(1);
 
@@ -55,7 +56,7 @@ export function RevealGrid({ className, children }: RevealGridProps) {
   }>[];
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} style={style}>
       {items.map((child, i) => {
         const col = i % effectiveColumns;
         const row = Math.floor(i / effectiveColumns);
