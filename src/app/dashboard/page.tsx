@@ -8,6 +8,7 @@ import { listPopularCityPlaces } from "@/lib/queries/city-places";
 import { getHeroBannerImage } from "@/lib/actions/site-settings";
 import { MobileDashboard } from "./MobileDashboard";
 import { DesktopDashboard } from "./DesktopDashboard";
+import { DashboardIntro } from "@/components/app/dashboard/DashboardIntro";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -34,6 +35,7 @@ export default async function DashboardPage() {
 
   return (
     <AppShell userLabel={displayName} userImage={u.image}>
+      <DashboardIntro />
       {/* ── Mobile (< lg): bespoke app UI ── */}
       <div className="lg:hidden">
         <MobileDashboard

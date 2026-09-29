@@ -407,6 +407,17 @@ body {
   border-radius: 0.6rem;
   box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.18);
 }
+/* Same plate treatment for the dashboard's 3D logo medallion — it uses its
+   own class (not `bg-white`) precisely so the generic `.bg-white → surface`
+   remap above never touches it: the jpeg's baked-in white margin has to stay
+   white in every theme, or the card would go dark while the logo square
+   inside it stayed a mismatched white patch. */
+.logo-plate {
+  background-color: #ffffff;
+}
+:root[data-theme="dark"] .logo-plate {
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.18);
+}
 
 /* Soft tint backgrounds (icon tiles, badges, chips) → dark, hue-preserving so
    they still read as green / amber / rose accents on black instead of glowing

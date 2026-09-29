@@ -74,7 +74,7 @@ export function Brand3DHero({ stats, className = "" }: Brand3DHeroProps) {
               aria-hidden
               className="absolute -inset-3 rounded-[2.25rem] bg-gradient-to-br from-emerald-400 via-teal-300 to-emerald-600 opacity-70 blur-md"
             />
-            <div className="relative h-48 w-48 overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl shadow-emerald-950/40 ring-1 ring-white/40 sm:h-56 sm:w-56">
+            <div className="logo-plate relative h-48 w-48 overflow-hidden rounded-[2rem] p-3 shadow-2xl shadow-emerald-950/40 ring-1 ring-white/40 sm:h-56 sm:w-56">
               <Image
                 src="/saafera-logo.jpg"
                 alt="Saafera"

@@ -61,7 +61,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
             animate={{ opacity: 1, rotateY: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             style={{ perspective: 600 }}
-            className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-white p-1.5 shadow-lg shadow-emerald-900/10 ring-1 ring-[color:var(--border)]"
+            className="logo-plate relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl p-1.5 shadow-lg shadow-emerald-900/10 ring-1 ring-[color:var(--border)]"
           >
             <Image src="/saafera-logo.jpg" alt="Saafera" fill sizes="56px" className="object-contain" />
           </motion.div>
