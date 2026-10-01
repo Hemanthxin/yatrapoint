@@ -6,9 +6,13 @@ import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
 import { AuthCard } from "@/components/AuthCard";
 import { TrustStrip } from "@/components/TrustStrip";
+import { StatsCounterStrip } from "@/components/StatsCounterStrip";
 import { MobileLogin } from "@/components/MobileLogin";
 import { LoginSwitch } from "@/components/LoginSwitch";
 import { ParallaxStage } from "@/components/ParallaxStage";
+import { countDestinations, listStates } from "@/lib/queries/destinations";
+import { FESTIVALS } from "@/lib/festivals";
+import { CATEGORIES } from "@/lib/catalog/categories";
 
 export default async function HomePage() {
   const session = await auth();
@@ -16,6 +20,13 @@ export default async function HomePage() {
   if (session?.user) redirect("/dashboard");
 
   const googleClientId = process.env.AUTH_GOOGLE_ID;
+  // Real catalogue counts for the stats strip below — never a made-up
+  // marketing figure. Degrades to 0 (the strip still renders fine) rather
+  // than 500ing the whole landing page if the DB has a hiccup.
+  const [placesCount, statesList] = await Promise.all([
+    countDestinations().catch(() => 0),
+    listStates().catch(() => [] as string[]),
+  ]);
 
   return (
     <LoginSwitch
@@ -32,6 +43,12 @@ export default async function HomePage() {
               </div>
             </section>
             <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 md:px-12">
+              <StatsCounterStrip
+                places={placesCount}
+                states={statesList.length}
+                festivals={FESTIVALS.length}
+                categories={CATEGORIES.length}
+              />
               <TrustStrip />
             </section>
           </main>
