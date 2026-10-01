@@ -34,7 +34,7 @@ export function ParticleField({ count = 26 }: { count?: number }) {
       {particles.map((p, i) => (
         <motion.span
           key={i}
-          className="absolute rounded-full bg-cyan-200"
+          className="absolute rounded-full bg-emerald-200"
           style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size }}
           animate={{
             y: [0, -p.drift, 0],

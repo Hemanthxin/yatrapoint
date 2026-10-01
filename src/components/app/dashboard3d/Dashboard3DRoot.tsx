@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { Wallet, Binoculars, Briefcase, MapPinned, CloudSun } from "lucide-react";
 
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
@@ -41,7 +42,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
         icon: Wallet,
         value: formatINR(stats.totalBudget),
         position: [16, 22, 1],
-        color: "#60a5fa",
+        color: "#34d399",
         href: "/budget-planner",
         renderDeepDive: () => (
           <div className="space-y-3">
@@ -57,7 +58,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
         icon: Binoculars,
         value: String(stats.placesExplored),
         position: [84, 18, 2],
-        color: "#22d3ee",
+        color: "#2dd4bf",
         href: "/destinations",
         renderDeepDive: () => (
           <p className="text-sm leading-relaxed text-white/70">
@@ -73,7 +74,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
         icon: Briefcase,
         value: upcoming.length ? `${upcoming.length} planned` : "None yet",
         position: [12, 78, -1],
-        color: "#818cf8",
+        color: "#4ade80",
         href: "/one-day-trips",
         renderDeepDive: () =>
           upcoming.length === 0 ? (
@@ -97,7 +98,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
         icon: MapPinned,
         value: nearby.length ? `${nearby.length} curated` : "Explore",
         position: [87, 82, 0],
-        color: "#38bdf8",
+        color: "#6ee7b7",
         href: "/explore-bangalore",
         renderDeepDive: () =>
           nearby.length === 0 ? (
@@ -118,7 +119,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
         icon: CloudSun,
         value: "Live",
         position: [50, 83, -2],
-        color: "#67e8f9",
+        color: "#86efac",
         href: "/dashboard",
         renderDeepDive: () => <WeatherDeepDive />,
       },
@@ -150,15 +151,32 @@ function Dashboard3DInner({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div
-      className="relative h-full w-full overflow-hidden"
-      style={{ background: "radial-gradient(120% 100% at 50% 0%, #0b1220 0%, #05070d 60%, #020306 100%)" }}
-    >
+    <div className="relative h-full w-full overflow-hidden bg-black">
+      {/* Background scene image — a dark scrim on top keeps every panel and
+          line of text legible over it regardless of how bright any one part
+          of the photo is. */}
+      <Image
+        src="/dashboard-spatial-bg.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 100% at 50% 30%, rgba(3,10,6,0.45) 0%, rgba(2,8,5,0.78) 65%, rgba(1,4,2,0.94) 100%)",
+        }}
+      />
+
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} forceOverlay />
 
       {/* Greeting — plain HTML, outside the 3D scene, always crisp. */}
       <div className="pointer-events-none absolute left-6 top-6 z-20 lg:left-10 lg:top-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200/70">Saafera · Spatial</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/70">Saafera · Spatial</p>
         <h1 className="mt-1 text-2xl font-bold text-white lg:text-3xl">Welcome back, {firstName}</h1>
       </div>
 

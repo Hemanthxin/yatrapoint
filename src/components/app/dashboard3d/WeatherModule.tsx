@@ -62,7 +62,7 @@ export function WeatherDeepDive() {
 function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex flex-col items-center gap-1 rounded-xl bg-white/5 p-3">
-      <span className="text-cyan-300">{icon}</span>
+      <span className="text-emerald-300">{icon}</span>
       <span className="text-[10px] font-medium text-white/50">{label}</span>
       <span className="text-xs font-bold text-white">{value}</span>
     </div>
