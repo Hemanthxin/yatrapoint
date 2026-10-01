@@ -170,7 +170,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
   return (
     <div>
       {/* Bold hero profile banner */}
-      <section className="bleed mb-6 overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-sky-600 p-6 shadow-lg shadow-blue-500/30 sm:rounded-3xl">
+      <section className="bleed mb-6 overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 p-6 shadow-lg shadow-emerald-500/30 sm:rounded-3xl">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
           {/* Avatar in a gradient ring + camera overlay */}
           <div className="relative shrink-0">
@@ -183,7 +183,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
                   className="h-24 w-24 rounded-full object-cover sm:h-28 sm:w-28"
                 />
               ) : (
-                <div className="grid h-24 w-24 place-items-center rounded-full bg-white/90 text-4xl font-extrabold text-blue-700 sm:h-28 sm:w-28">
+                <div className="grid h-24 w-24 place-items-center rounded-full bg-white/90 text-4xl font-extrabold text-emerald-700 sm:h-28 sm:w-28">
                   {initialChar}
                 </div>
               )}
@@ -193,7 +193,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
               onClick={() => fileRef.current?.click()}
               disabled={avatarUploading}
               aria-label="Change profile photo"
-              className="absolute bottom-0 right-0 grid h-11 w-11 place-items-center rounded-full border-2 border-white bg-white text-blue-600 shadow-lg transition hover:scale-105 active:scale-95 disabled:opacity-70"
+              className="absolute bottom-0 right-0 grid h-11 w-11 place-items-center rounded-full border-2 border-white bg-white text-emerald-600 shadow-lg transition hover:scale-105 active:scale-95 disabled:opacity-70"
             >
               {avatarUploading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -216,17 +216,17 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
               {display}
             </h1>
             {usernameValue.trim() || initial.username ? (
-              <p className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-blue-50/90">
+              <p className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-emerald-50/90">
                 <AtSign className="h-3.5 w-3.5" />
                 {usernameValue.trim() || initial.username}
               </p>
             ) : (
-              <p className="mt-1 text-sm font-medium text-blue-50/70">
+              <p className="mt-1 text-sm font-medium text-emerald-50/70">
                 Set a username below
               </p>
             )}
             {(bioValue.trim() || initial.bio) && (
-              <p className="mt-2 whitespace-pre-line text-sm font-medium leading-relaxed text-blue-50/90">
+              <p className="mt-2 whitespace-pre-line text-sm font-medium leading-relaxed text-emerald-50/90">
                 {bioValue.trim() || initial.bio}
               </p>
             )}
@@ -248,7 +248,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
       {/* Edit profile card */}
       <section className="card-hover rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
-          <span className="text-gradient-brand">Edit profile</span>
+          <span className="text-gradient">Edit profile</span>
         </h2>
         <p className="mt-1 text-xs text-slate-500">
           Phone is linked via OTP and can&apos;t be changed here.
@@ -262,7 +262,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
             <input
               {...register("name")}
               placeholder="Vinay Sri Hari"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
             />
             {errors.name && <Err msg={errors.name.message ?? ""} />}
           </Field>
@@ -276,7 +276,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-9 pr-4 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-9 pr-4 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
               />
             </div>
             {errors.username && <Err msg={errors.username.message ?? ""} />}
@@ -291,7 +291,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
               rows={3}
               maxLength={300}
               placeholder="Tell fellow travellers about yourself…"
-              className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+              className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
             />
             <div className="mt-1 flex items-center justify-between">
               {errors.bio ? <Err msg={errors.bio.message ?? ""} /> : <span />}
@@ -310,7 +310,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
               type="email"
               {...register("email")}
               placeholder="you@example.com"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
             />
             {errors.email && <Err msg={errors.email.message ?? ""} />}
           </Field>
@@ -330,7 +330,7 @@ export function ProfileForm({ initial, phone, stats }: ProfileFormProps) {
             <button
               type="submit"
               disabled={isPending || !isDirty}
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               {savedAt && !isDirty ? (
                 <Check className="h-4 w-4" />
@@ -363,7 +363,7 @@ function Stat({
       <span className="text-xl font-extrabold leading-none text-white">
         {value}
       </span>
-      <span className="mt-1 text-[11px] font-bold uppercase tracking-wide text-blue-50/80">
+      <span className="mt-1 text-[11px] font-bold uppercase tracking-wide text-emerald-50/80">
         {label}
       </span>
     </div>

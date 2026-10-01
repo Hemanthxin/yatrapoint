@@ -75,7 +75,7 @@ export function SearchView({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search people, places, #hashtags…"
-            className="w-full rounded-full border border-[color:var(--border)] bg-[color:var(--surface-2)] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-400 focus:bg-[color:var(--surface)] focus:ring-2 focus:ring-blue-500/20"
+            className="w-full rounded-full border border-[color:var(--border)] bg-[color:var(--surface-2)] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-emerald-400 focus:bg-[color:var(--surface)] focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
       </header>
@@ -92,7 +92,7 @@ export function SearchView({
           />
         ) : isPending && posts === null ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+            <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
           </div>
         ) : (
           <div className="space-y-5">
@@ -108,7 +108,7 @@ export function SearchView({
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={u.image} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover" />
                       ) : (
-                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-blue-600 text-base font-bold text-white">
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-emerald-600 text-base font-bold text-white">
                           {u.name.charAt(0).toUpperCase()}
                         </span>
                       )}

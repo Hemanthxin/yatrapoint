@@ -12,7 +12,7 @@ export function TrustStrip() {
     <div className="card grid grid-cols-2 gap-5 p-6 lg:grid-cols-4">
       {ITEMS.map(({ icon: Icon, title, body }) => (
         <div key={title} className="flex items-center gap-3">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-blue-100 text-blue-700">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
             <Icon className="h-5 w-5" strokeWidth={1.9} />
           </span>
           <div className="min-w-0">

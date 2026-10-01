@@ -53,7 +53,7 @@ export function PendingRequests({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={r.image} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
               ) : (
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-xs font-bold text-white">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-xs font-bold text-white">
                   {r.name.charAt(0).toUpperCase()}
                 </span>
               )}
@@ -63,7 +63,7 @@ export function PendingRequests({
                 onClick={() => approve(r.userId)}
                 disabled={busy}
                 aria-label="Approve"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700 active:scale-90 disabled:opacity-50"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
               >
                 {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               </button>

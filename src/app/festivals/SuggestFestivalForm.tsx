@@ -76,7 +76,7 @@ export function SuggestFestivalForm() {
       </div>
 
       {done ? (
-        <div className="flex items-start gap-2 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+        <div className="flex items-start gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
           <Check className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
             <p className="font-bold">Thanks — sent for review.</p>

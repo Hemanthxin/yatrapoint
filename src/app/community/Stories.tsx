@@ -70,7 +70,7 @@ export function Stories({
           onClick={onOpenComposer}
           className="flex shrink-0 flex-col items-center gap-1.5"
         >
-          <span className="grid h-16 w-16 place-items-center rounded-full border-2 border-dashed border-blue-300 bg-blue-50 text-blue-600">
+          <span className="grid h-16 w-16 place-items-center rounded-full border-2 border-dashed border-emerald-300 bg-emerald-50 text-emerald-600">
             <Plus className="h-6 w-6" />
           </span>
           <span className="max-w-[4.5rem] truncate text-[11px] font-semibold text-slate-500">Share</span>
@@ -91,7 +91,7 @@ export function Stories({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={a.image} alt="" className="h-14 w-14 rounded-full object-cover" />
                   ) : (
-                    <span className="grid h-14 w-14 place-items-center rounded-full bg-blue-600 text-lg font-bold text-white">
+                    <span className="grid h-14 w-14 place-items-center rounded-full bg-emerald-600 text-lg font-bold text-white">
                       {a.name.charAt(0).toUpperCase()}
                     </span>
                   )}

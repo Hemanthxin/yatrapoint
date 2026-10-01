@@ -53,7 +53,7 @@ export function TripActions({
         disabled={pending}
         className={`inline-flex items-center gap-1.5 rounded-2xl border px-4 py-2.5 text-sm font-bold transition active:scale-95 ${
           saved
-            ? "border-blue-300 bg-blue-50 text-blue-700"
+            ? "border-emerald-300 bg-emerald-50 text-emerald-700"
             : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
         }`}
       >
@@ -65,7 +65,7 @@ export function TripActions({
         onClick={onShare}
         className="inline-flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
       >
-        {copied ? <Check className="h-4 w-4 text-blue-600" /> : <Share2 className="h-4 w-4" />}
+        {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
         {copied ? "Link copied" : "Share"}
       </button>
     </div>

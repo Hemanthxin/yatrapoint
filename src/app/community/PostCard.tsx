@@ -68,7 +68,7 @@ function Caption({ text }: { text: string }) {
           <Link
             key={i}
             href={`/community/search?tag=${encodeURIComponent(p.tag)}`}
-            className="font-semibold text-blue-700 hover:underline"
+            className="font-semibold text-emerald-700 hover:underline"
           >
             {p.text}
           </Link>
@@ -410,7 +410,7 @@ export function PostCard({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={post.authorImage} alt="" className="h-10 w-10 rounded-full object-cover ring-1 ring-[color:var(--border)]" />
           ) : (
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-blue-600 text-sm font-bold text-white">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
               {initial}
             </div>
           )}
@@ -421,7 +421,7 @@ export function PostCard({
               {post.authorName ?? "Traveller"}
             </Link>
             {tier && (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700">
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
                 <Award className="h-3 w-3" /> {tier}
               </span>
             )}
@@ -451,7 +451,7 @@ export function PostCard({
             href={`/community/messages/${post.userId}`}
             aria-label={`Message ${post.authorName ?? "this traveller"}`}
             title={`Message ${post.authorName ?? "this traveller"}`}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-slate-500 transition hover:bg-blue-50 hover:text-blue-700 active:scale-90"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 active:scale-90"
           >
             <MessageCircle className="h-5 w-5" />
           </Link>
@@ -556,7 +556,7 @@ export function PostCard({
             value={eTitle}
             onChange={(e) => setETitle(e.target.value)}
             placeholder="Place name"
-            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
 
           <div className="flex items-center gap-1">
@@ -584,14 +584,14 @@ export function PostCard({
             onChange={(e) => setEDesc(e.target.value)}
             rows={3}
             placeholder="Write your review…"
-            className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
 
           <input
             value={eLocation}
             onChange={(e) => setELocation(e.target.value)}
             placeholder="Area / city (optional)"
-            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
 
           <div className="flex items-center gap-2 pt-1">
@@ -643,7 +643,7 @@ export function PostCard({
               <MessageCircle className="h-6 w-6 text-slate-800 hover:text-slate-500" />
             </button>
             <button onClick={share} aria-label="Share" className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
-              {copied ? <Check className="h-6 w-6 text-blue-600" /> : <Share2 className="h-6 w-6 text-slate-800 hover:text-slate-500" />}
+              {copied ? <Check className="h-6 w-6 text-emerald-600" /> : <Share2 className="h-6 w-6 text-slate-800 hover:text-slate-500" />}
             </button>
             <button onClick={toggleSave} aria-label="Save" className="ml-auto grid h-11 w-11 place-items-center rounded-full transition hover:bg-slate-50 active:scale-90">
               <Bookmark className={`h-6 w-6 ${saved ? "fill-slate-900 text-slate-900" : "text-slate-800 hover:text-slate-500"}`} />
@@ -695,13 +695,13 @@ export function PostCard({
                       isGrid ? "px-2.5" : "px-3"
                     } ${
                       active
-                        ? "border-transparent bg-blue-600 text-white"
-                        : "border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-50"
+                        ? "border-transparent bg-emerald-600 text-white"
+                        : "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50"
                     }`}
                   >
                     <span>{r.emoji}</span>
                     {r.label}
-                    {n > 0 && <span className={active ? "text-white/80" : "text-blue-500/70"}>{n}</span>}
+                    {n > 0 && <span className={active ? "text-white/80" : "text-emerald-500/70"}>{n}</span>}
                   </button>
                 );
               })}
@@ -710,9 +710,9 @@ export function PostCard({
                   href={`https://www.google.com/maps?q=${post.latitude},${post.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-blue-200 bg-blue-50/50 px-2.5 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-50 active:scale-95"
+                  className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50/50 px-2.5 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 active:scale-95"
                 >
-                  <MapPin className="h-3.5 w-3.5 text-blue-600" /> Map
+                  <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Map
                 </a>
               )}
             </div>
@@ -732,7 +732,7 @@ export function PostCard({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover" />
                   ) : (
-                    <div className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700">
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
                       {userName.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -743,12 +743,12 @@ export function PostCard({
                       if (e.key === "Enter") submitComment();
                     }}
                     placeholder="Add a comment…"
-                    className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                    className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
                   />
                   <button
                     onClick={submitComment}
                     disabled={posting || !text.trim()}
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700 active:scale-90 disabled:opacity-50"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
                   >
                     {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </button>

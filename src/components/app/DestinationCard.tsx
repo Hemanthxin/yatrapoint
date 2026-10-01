@@ -96,7 +96,7 @@ export function DestinationCard({ destination, favored, direction, delay }: Dest
         </div>
 
         <AddToCartButton
-          className="mt-auto w-full py-2.5 shadow-lg shadow-blue-500/40"
+          className="mt-auto w-full py-2.5 shadow-lg shadow-emerald-500/40"
           label="Plan a trip"
           item={{
             id: `dest-${destination.id}`,

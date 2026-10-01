@@ -12,7 +12,6 @@ import {
 } from "react";
 import { ArrowLeft, ArrowRight, Pencil, Smartphone } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { LEGACY_AUTH_STYLE } from "@/lib/legacy-auth-theme";
 
 interface OtpCardProps {
   phone: string;
@@ -158,7 +157,7 @@ export function OtpCard({ phone, initialExpiresInSeconds }: OtpCardProps) {
   }
 
   return (
-    <div className="relative w-full max-w-md animate-fadeUp" style={LEGACY_AUTH_STYLE}>
+    <div className="relative w-full max-w-md animate-fadeUp">
       {/* Glowing emerald aura */}
       <div
         aria-hidden

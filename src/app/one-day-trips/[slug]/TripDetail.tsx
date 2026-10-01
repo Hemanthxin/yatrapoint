@@ -120,13 +120,13 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
         when: depart,
         title: "Depart",
         body: `From ${isFallback ? "Bangalore (fallback)" : "your location"}`,
-        dot: "bg-gradient-to-br from-blue-500 to-sky-600 ring-blue-100",
+        dot: "bg-gradient-to-br from-emerald-500 to-green-600 ring-emerald-100",
       },
       {
         when: arrive,
         title: `Arrive at ${trip.name}`,
         body: `${formatKm(drivingKm)} · ${formatMinutes(drivingMins)} driving`,
-        dot: "bg-gradient-to-br from-blue-500 to-sky-600 ring-blue-100",
+        dot: "bg-gradient-to-br from-emerald-500 to-green-600 ring-emerald-100",
       },
       {
         when: leave,
@@ -167,7 +167,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
   return (
     <Reveal className="mt-4" amount={0}>
       {/* Hero — full-bleed on mobile */}
-      <section className="bleed overflow-hidden rounded-none shadow-lg shadow-blue-500/10 md:rounded-3xl md:border md:border-slate-200">
+      <section className="bleed overflow-hidden rounded-none shadow-lg shadow-emerald-500/10 md:rounded-3xl md:border md:border-slate-200">
         <div
           className={`relative grid h-56 w-full place-items-center overflow-hidden bg-gradient-to-br ${gradient} sm:h-64 md:h-72`}
         >
@@ -215,9 +215,9 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
               {highlights.map((h) => (
                 <span
                   key={h}
-                  className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+                  className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
                 >
-                  <Sparkles className="h-3 w-3 text-blue-600" />
+                  <Sparkles className="h-3 w-3 text-emerald-600" />
                   {h.trim()}
                 </span>
               ))}
@@ -228,7 +228,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
               href={trip.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:scale-[1.02] active:scale-95"
+              className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
             >
               <Ticket className="h-4 w-4" /> Book tickets
               <ExternalLink className="h-3.5 w-3.5" />
@@ -244,15 +244,15 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
             <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Route</h2>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
               <Pill
-                icon={<Navigation className="h-3.5 w-3.5 text-blue-600" />}
+                icon={<Navigation className="h-3.5 w-3.5 text-emerald-600" />}
                 label={routeLoading ? "Fetching route…" : `${formatKm(drivingKm)} driving`}
               />
               <Pill
-                icon={<Clock className="h-3.5 w-3.5 text-blue-600" />}
+                icon={<Clock className="h-3.5 w-3.5 text-emerald-600" />}
                 label={`${formatMinutes(drivingMins)} one-way`}
               />
               <Pill
-                icon={<Sparkles className="h-3.5 w-3.5 text-blue-600" />}
+                icon={<Sparkles className="h-3.5 w-3.5 text-emerald-600" />}
                 label={`Straight-line ${formatKm(straightKm)}`}
               />
             </div>
@@ -270,7 +270,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
 
           <div className="mt-6">
             <div className="mb-3 flex items-center gap-2">
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
                 <Calendar className="h-4 w-4" />
               </span>
               <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Timeline</h2>
@@ -278,11 +278,11 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
                 type="time"
                 value={departureTime}
                 onChange={(e) => setDepartureTime(e.target.value)}
-                className="ml-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                className="ml-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
               />
               <span className="text-xs text-slate-400">Depart at</span>
             </div>
-            <ol className="relative space-y-4 border-l-2 border-blue-100 pl-5">
+            <ol className="relative space-y-4 border-l-2 border-emerald-100 pl-5">
               {timeline.map((t, i) => (
                 <li key={i} className="relative">
                   <span
@@ -303,9 +303,9 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
 
         {/* Budget + start trip */}
         <aside className="space-y-4">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-blue-500/5">
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-emerald-500/5">
             <div className="flex items-center gap-2">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
                 <Wallet className="h-5 w-5" />
               </div>
               <p className="text-sm font-extrabold tracking-tight text-slate-900">
@@ -323,7 +323,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
                       onClick={() => setVehicle(k)}
                       className={`min-h-[58px] rounded-xl border px-1 py-1.5 text-sm transition active:scale-95 ${
                         vehicle === k
-                          ? "border-transparent bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30"
+                          ? "border-transparent bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
                           : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                       }`}
                       aria-label={VEHICLES[k].label}
@@ -369,7 +369,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
               <div className="my-2 h-px bg-slate-200" />
               <div className="flex items-center justify-between">
                 <dt className="text-base font-extrabold text-slate-900">Total</dt>
-                <dd className="text-2xl font-extrabold text-gradient-brand">
+                <dd className="text-2xl font-extrabold text-gradient">
                   {formatINR(budget.total)}
                 </dd>
               </div>
@@ -381,7 +381,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
           </div>
 
           <AddToCartButton
-            className="w-full py-3 shadow-lg shadow-blue-500/40"
+            className="w-full py-3 shadow-lg shadow-emerald-500/40"
             label="Plan a trip"
             item={{
               id: `nearby-${trip.id}`,
@@ -394,7 +394,7 @@ export function TripDetail({ trip, gallery = [] }: TripDetailProps) {
           />
           <Link
             href={`/one-day-trips/${trip.slug}/live`}
-            className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95"
+            className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative flex items-center gap-2">

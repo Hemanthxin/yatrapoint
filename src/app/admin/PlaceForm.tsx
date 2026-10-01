@@ -295,7 +295,7 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
         >
-          <MapPin className="h-4 w-4 text-blue-600" /> Select on Google Maps
+          <MapPin className="h-4 w-4 text-emerald-600" /> Select on Google Maps
           <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
         </a>
 
@@ -342,7 +342,7 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
             href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:underline"
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:underline"
           >
             <MapPin className="h-3.5 w-3.5" /> Preview {form.latitude}, {form.longitude} on the map
           </a>
@@ -383,7 +383,7 @@ export function PlaceForm({ mode, placeId, initial, initialPhoto, redirectTo }: 
 
       {error && <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
       {done && (
-        <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
           {isEdit ? "Changes saved." : (<>Place added. Slug: <span className="font-semibold">{done}</span></>)}
         </div>
       )}

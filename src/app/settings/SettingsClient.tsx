@@ -76,7 +76,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
   return (
     <Reveal className="mx-auto max-w-2xl space-y-6">
       <header className="flex items-center gap-3">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Cog className="h-6 w-6" />
         </span>
         <div>
@@ -92,7 +92,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
       {/* Profile */}
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
-          <UserRound className="h-4 w-4 text-blue-600" /> Profile
+          <UserRound className="h-4 w-4 text-emerald-600" /> Profile
         </h2>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -104,7 +104,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_var(--ring)]"
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_var(--ring)]"
             />
           </label>
           <label className="block">
@@ -119,7 +119,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
                 placeholder="yourhandle"
                 autoCapitalize="none"
                 spellCheck={false}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-9 pr-4 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_var(--ring)]"
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-9 pr-4 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_var(--ring)]"
               />
             </div>
           </label>
@@ -133,7 +133,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
               rows={3}
               maxLength={300}
               placeholder="Tell fellow travellers about yourself…"
-              className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_var(--ring)]"
+              className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_var(--ring)]"
             />
           </label>
           <label className="block">
@@ -165,7 +165,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
             type="button"
             onClick={save}
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
           >
             {saved ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
             {pending ? "Saving…" : saved ? "Saved" : "Save changes"}
@@ -182,7 +182,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
       {/* About & Support */}
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
-          <Info className="h-4 w-4 text-blue-600" /> About &amp; Support
+          <Info className="h-4 w-4 text-emerald-600" /> About &amp; Support
         </h2>
         <div className="mt-3 divide-y divide-slate-100">
           <SettingLink href="/about" icon={Info} label="About Saafera" desc="What the app does & how it works" />
@@ -195,7 +195,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
       {/* Account */}
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
-          <ShieldCheck className="h-4 w-4 text-blue-600" /> Account
+          <ShieldCheck className="h-4 w-4 text-emerald-600" /> Account
         </h2>
         <div className="mt-3 divide-y divide-slate-100">
           <Link
@@ -310,7 +310,7 @@ function SettingLink({
 }) {
   return (
     <Link href={href} className="flex items-center gap-3 py-3 transition hover:opacity-80">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-100 text-blue-700">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
         <Icon className="h-4 w-4" />
       </span>
       <span className="min-w-0 flex-1">

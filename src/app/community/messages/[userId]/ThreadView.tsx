@@ -107,7 +107,7 @@ export function ThreadView({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={otherUserImage} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
         ) : (
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-sm font-bold text-white">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
             {otherUserName.charAt(0).toUpperCase()}
           </span>
         )}
@@ -129,7 +129,7 @@ export function ThreadView({
                 <div
                   className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${
                     mine
-                      ? "rounded-br-sm bg-blue-600 text-white"
+                      ? "rounded-br-sm bg-emerald-600 text-white"
                       : "rounded-bl-sm bg-[color:var(--surface-2)] text-[color:var(--text)]"
                   }`}
                 >
@@ -151,13 +151,13 @@ export function ThreadView({
             if (e.key === "Enter") submit();
           }}
           placeholder="Message…"
-          className="min-w-0 flex-1 rounded-full border border-[color:var(--border)] bg-[color:var(--surface-2)] px-4 py-2.5 text-sm outline-none focus:border-blue-400 focus:bg-[color:var(--surface)] focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          className="min-w-0 flex-1 rounded-full border border-[color:var(--border)] bg-[color:var(--surface-2)] px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:bg-[color:var(--surface)] focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
         <button
           onClick={submit}
           disabled={sending || !text.trim()}
           aria-label="Send"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700 active:scale-90 disabled:opacity-50"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
         >
           {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </button>

@@ -16,7 +16,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/dashboard"
-          className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.03] active:scale-95"
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
         >
           <Home className="h-4 w-4" /> Back to dashboard
         </Link>

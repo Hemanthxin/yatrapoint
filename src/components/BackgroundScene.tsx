@@ -37,7 +37,7 @@ export function BackgroundScene() {
       {/* Cinematic darkening so the headline + login card stay readable */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/75" />
       {/* Green brand wash from the bottom for warmth */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-950/60 via-transparent to-sky-900/40" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/60 via-transparent to-green-900/40" />
 
       {/* Slow-drifting glow orbs — a living background instead of a static
           image. Large, gentle, looping travel; never distracts from the
@@ -47,7 +47,7 @@ export function BackgroundScene() {
       <ParallaxLayer depth={-30} className="pointer-events-none absolute -left-24 top-1/4">
         <motion.div
           aria-hidden
-          className="h-72 w-72 rounded-full bg-sky-400/25 blur-3xl"
+          className="h-72 w-72 rounded-full bg-green-400/25 blur-3xl"
           animate={{ x: [0, 40, -10, 0], y: [0, -30, 20, 0], scale: [1, 1.15, 0.95, 1] }}
           transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -55,7 +55,7 @@ export function BackgroundScene() {
       <ParallaxLayer depth={40} className="pointer-events-none absolute -right-20 bottom-10">
         <motion.div
           aria-hidden
-          className="h-80 w-80 rounded-full bg-blue-400/20 blur-3xl"
+          className="h-80 w-80 rounded-full bg-emerald-400/20 blur-3xl"
           animate={{ x: [0, -35, 15, 0], y: [0, 25, -20, 0], scale: [1, 0.9, 1.1, 1] }}
           transition={{ duration: 26, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />

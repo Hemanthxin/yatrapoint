@@ -36,9 +36,9 @@ export function ToastHost() {
         <div
           key={t.id}
           role="status"
-          className="pointer-events-auto flex animate-pop items-center gap-2.5 rounded-2xl border border-blue-200 bg-white/95 px-4 py-3 text-sm font-semibold text-slate-800 shadow-[0_18px_50px_-12px_rgba(2,6,23,0.35)] backdrop-blur"
+          className="pointer-events-auto flex animate-pop items-center gap-2.5 rounded-2xl border border-emerald-200 bg-white/95 px-4 py-3 text-sm font-semibold text-slate-800 shadow-[0_18px_50px_-12px_rgba(2,6,23,0.35)] backdrop-blur"
         >
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-blue-100 text-blue-600">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600">
             {t.emoji ? (
               <span className="text-base leading-none">{t.emoji}</span>
             ) : (

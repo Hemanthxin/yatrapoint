@@ -67,13 +67,13 @@ export function MobileDestinations({
       {/* Bold header */}
       <Reveal as="header" amount={0}>
         <p className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-500">
-          <Compass className="h-4 w-4 text-blue-600" /> Explore India
+          <Compass className="h-4 w-4 text-emerald-600" /> Explore India
         </p>
         <h1 className="mt-0.5 text-3xl font-extrabold tracking-tight text-slate-900">
           Tourist Places
         </h1>
         <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-500">
-          <MapPin className="h-3.5 w-3.5 text-blue-600" />
+          <MapPin className="h-3.5 w-3.5 text-emerald-600" />
           {total} {total === 1 ? "place" : "places"} matching your filters
         </p>
       </Reveal>
@@ -84,7 +84,7 @@ export function MobileDestinations({
           href={catHref(undefined)}
           className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
             !validCat
-              ? "border-transparent bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30"
+              ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
               : "border-slate-200 bg-white text-slate-600"
           }`}
         >
@@ -98,7 +98,7 @@ export function MobileDestinations({
               href={catHref(c.slug)}
               className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
                 on
-                  ? "border-transparent bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30"
+                  ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                   : "border-slate-200 bg-white text-slate-600"
               }`}
             >
@@ -112,7 +112,7 @@ export function MobileDestinations({
       {/* Reused Filters — labelled for the mobile context */}
       <Reveal amount={0}>
         <p className="mb-2 flex items-center gap-1.5 text-[13px] font-bold text-slate-700">
-          <SlidersHorizontal className="h-4 w-4 text-blue-600" /> Refine
+          <SlidersHorizontal className="h-4 w-4 text-emerald-600" /> Refine
         </p>
         <Filters
           states={states}
@@ -131,7 +131,7 @@ export function MobileDestinations({
       {/* Feed of place cards */}
       {items.length === 0 && cityMatches.length === 0 && nearbyMatches.length === 0 ? (
         <Reveal className="mt-4 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-          <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-blue-100 text-3xl">
+          <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-emerald-100 text-3xl">
             🧭
           </div>
           <p className="mt-3 text-base font-bold text-slate-800">Nothing here yet</p>
@@ -140,7 +140,7 @@ export function MobileDestinations({
           </p>
           <Link
             href="/destinations"
-            className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/40 active:scale-95"
+            className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 active:scale-95"
           >
             Reset filters
           </Link>

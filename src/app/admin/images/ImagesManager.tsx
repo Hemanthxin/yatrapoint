@@ -279,7 +279,7 @@ function Row({
           </div>
         )}
         {saved && !busy && (
-          <div className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-white">
+          <div className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-white">
             <Check className="h-3.5 w-3.5" />
           </div>
         )}

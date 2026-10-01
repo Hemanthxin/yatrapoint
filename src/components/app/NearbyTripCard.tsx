@@ -38,7 +38,7 @@ export function NearbyTripCard({ destination, userDistanceKm, direction, delay }
       as="article"
       direction={direction}
       delay={delay}
-      className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-blue-500/5"
+      className="card-hover group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-emerald-500/5"
     >
       <Link href={`/one-day-trips/${destination.slug}`} className="relative block h-44 w-full overflow-hidden">
         {/* The card used to paint a flat gradient + emoji here, so a trip with
@@ -95,17 +95,17 @@ export function NearbyTripCard({ destination, userDistanceKm, direction, delay }
 
         <div className="mt-auto flex items-center justify-between gap-2 text-xs font-medium text-slate-600">
           <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
-            <Clock className="h-3.5 w-3.5 text-blue-600" />
+            <Clock className="h-3.5 w-3.5 text-emerald-600" />
             {formatMinutes(totalMinutes)}
           </span>
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${
               destination.entryFeePerPerson > 0
                 ? "bg-slate-100 text-slate-700"
-                : "bg-blue-50 text-blue-700"
+                : "bg-emerald-50 text-emerald-700"
             }`}
           >
-            <Wallet className="h-3.5 w-3.5 text-blue-600" />
+            <Wallet className="h-3.5 w-3.5 text-emerald-600" />
             {destination.entryFeePerPerson > 0
               ? `${formatINR(destination.entryFeePerPerson)} entry`
               : "Free entry"}

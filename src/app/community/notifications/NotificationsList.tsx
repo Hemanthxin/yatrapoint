@@ -23,13 +23,13 @@ import { NoDataIllustration } from "@/components/illustrations";
 
 const ICONS: Record<string, { icon: typeof Heart; className: string }> = {
   love: { icon: Heart, className: "text-rose-500" },
-  wantToGo: { icon: WantToGoIcon, className: "text-blue-600" },
-  beenThere: { icon: CheckCircle2, className: "text-blue-600" },
+  wantToGo: { icon: WantToGoIcon, className: "text-emerald-600" },
+  beenThere: { icon: CheckCircle2, className: "text-emerald-600" },
   comment: { icon: MessageCircle, className: "text-slate-700" },
-  follow: { icon: UserPlus, className: "text-blue-600" },
-  message: { icon: MessageCircle, className: "text-blue-600" },
-  communityJoinRequest: { icon: Users, className: "text-blue-600" },
-  communityJoinApproved: { icon: Check, className: "text-blue-600" },
+  follow: { icon: UserPlus, className: "text-emerald-600" },
+  message: { icon: MessageCircle, className: "text-emerald-600" },
+  communityJoinRequest: { icon: Users, className: "text-emerald-600" },
+  communityJoinApproved: { icon: Check, className: "text-emerald-600" },
 };
 
 function actionText(n: NotificationRow): string {
@@ -84,7 +84,7 @@ function JoinRequestActions({
         type="button"
         onClick={() => resolve("approve")}
         disabled={isPending}
-        className="grid h-9 w-9 place-items-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700 active:scale-90 disabled:opacity-50"
+        className="grid h-9 w-9 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-700 active:scale-90 disabled:opacity-50"
         aria-label="Approve"
       >
         {isPending && action === "approve" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
@@ -130,7 +130,7 @@ export function NotificationsList({ notifications: initial }: { notifications: N
             type="button"
             onClick={markAllRead}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-50 active:scale-95 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50 active:scale-95 disabled:opacity-50"
           >
             <CheckCheck className="h-3.5 w-3.5" /> Mark all read
           </button>
@@ -155,7 +155,7 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={n.actorImage} alt="" className="h-11 w-11 rounded-full object-cover" />
                   ) : (
-                    <span className="grid h-11 w-11 place-items-center rounded-full bg-blue-600 text-sm font-bold text-white">
+                    <span className="grid h-11 w-11 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white">
                       {n.actorName?.charAt(0).toUpperCase() ?? "T"}
                     </span>
                   )}
@@ -177,7 +177,7 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                 return (
                   <li
                     key={n.id}
-                    className="flex items-center gap-3 rounded-2xl bg-blue-50/60 p-3"
+                    className="flex items-center gap-3 rounded-2xl bg-emerald-50/60 p-3"
                   >
                     {avatar}
                     {text}
@@ -203,7 +203,7 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                   <Link
                     href={href}
                     className={`flex items-center gap-3 rounded-2xl p-3 transition hover:bg-[color:var(--surface-2)] ${
-                      n.read ? "" : "bg-blue-50/60"
+                      n.read ? "" : "bg-emerald-50/60"
                     }`}
                   >
                     {avatar}
@@ -212,7 +212,7 @@ export function NotificationsList({ notifications: initial }: { notifications: N
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={n.postPhotoUrl} alt="" className="h-11 w-11 shrink-0 rounded-lg object-cover" />
                     )}
-                    {!n.read && <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
+                    {!n.read && <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />}
                   </Link>
                 </li>
               );

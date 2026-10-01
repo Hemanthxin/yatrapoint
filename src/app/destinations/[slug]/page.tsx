@@ -186,7 +186,7 @@ export default async function DestinationPage({ params }: PageProps) {
           {(destination.entryFeesForeigner != null || destination.entryFeesChild != null) && (
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-slate-500">
               <span className="inline-flex items-center gap-1">
-                <Wallet className="h-3.5 w-3.5 text-blue-600" />
+                <Wallet className="h-3.5 w-3.5 text-emerald-600" />
                 Entry fee — Indian: {destination.entryFees === 0 ? "Free" : formatINR(destination.entryFees)}
               </span>
               {destination.entryFeesForeigner != null && (
@@ -203,7 +203,7 @@ export default async function DestinationPage({ params }: PageProps) {
               href={destination.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:scale-[1.02] active:scale-95"
+              className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
             >
               <Ticket className="h-4 w-4" /> Book tickets
               <ExternalLink className="h-3.5 w-3.5" />
@@ -265,7 +265,7 @@ function Stat({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="mt-0.5 grid h-7 w-7 place-items-center rounded-full bg-blue-100 text-blue-700">
+      <div className="mt-0.5 grid h-7 w-7 place-items-center rounded-full bg-emerald-100 text-emerald-700">
         {icon}
       </div>
       <div>

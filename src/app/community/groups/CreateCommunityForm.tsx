@@ -60,7 +60,7 @@ export function CreateCommunityForm({ onClose }: { onClose: () => void }) {
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={busy}
-          className="flex h-36 w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-600 disabled:opacity-60"
+          className="flex h-36 w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600 disabled:opacity-60"
         >
           {busy ? <Loader2 className="h-6 w-6 animate-spin" /> : <Camera className="h-6 w-6" />}
           <span className="text-sm font-medium">Add a cover photo (optional)</span>
@@ -72,7 +72,7 @@ export function CreateCommunityForm({ onClose }: { onClose: () => void }) {
         value={name}
         onChange={(e) => setName(e.target.value.slice(0, 120))}
         placeholder="Community name (e.g. Coorg Travellers)"
-        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
       />
 
       <textarea
@@ -80,7 +80,7 @@ export function CreateCommunityForm({ onClose }: { onClose: () => void }) {
         onChange={(e) => setDescription(e.target.value.slice(0, 500))}
         rows={3}
         placeholder="What's this community about?"
-        className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+        className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
       />
 
       {error && <p className="text-sm text-red-600">{error}</p>}

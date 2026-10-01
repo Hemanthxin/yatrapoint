@@ -14,9 +14,9 @@ interface CurrentFilters {
 }
 
 const inputCls =
-  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100";
 const selectCls =
-  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100";
 
 export function Filters({
   cities,
@@ -82,7 +82,7 @@ export function Filters({
     >
       {/* Search */}
       <div className="group relative min-w-0 flex-1 sm:min-w-[220px]">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-blue-600" />
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-emerald-600" />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -170,7 +170,7 @@ export function Filters({
       {/* Apply */}
       <button
         type="submit"
-        className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.03] active:scale-95"
+        className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
       >
         Apply
       </button>

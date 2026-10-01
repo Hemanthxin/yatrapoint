@@ -89,7 +89,7 @@ export default async function AboutPage() {
           <p>
             Have feedback, found a wrong detail, or want to suggest a place? We'd love to
             hear from you at{" "}
-            <a href="mailto:support@saafera.app" className="font-semibold text-blue-700 hover:underline">
+            <a href="mailto:support@saafera.app" className="font-semibold text-emerald-700 hover:underline">
               support@saafera.app
             </a>
             .

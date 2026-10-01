@@ -80,13 +80,13 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
       {/* Tablet / desktop: inline search. On phones it collapses to an icon
           (below) that expands into a full-width bar. */}
       <form onSubmit={onSearch} className="group relative hidden flex-1 md:block lg:max-w-xl">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-blue-600" />
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-emerald-600" />
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search places, trips…"
-          className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+          className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
         />
       </form>
 
@@ -104,7 +104,7 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search places, trips…"
-              className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+              className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
             />
           </div>
           <button
@@ -145,7 +145,7 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
           >
             <ShoppingBag className="h-5 w-5" />
             {cart.length > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white ring-2 ring-white">
+              <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-emerald-600 px-1 text-[10px] font-bold text-white ring-2 ring-white">
                 {cart.length}
               </span>
             )}
@@ -171,7 +171,7 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
                   <ul className="max-h-72 overflow-y-auto no-scrollbar">
                     {cart.map((it) => (
                       <li key={it.id} className="flex items-center gap-2 px-3 py-2 hover:bg-white/60">
-                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-blue-100 text-base">
+                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-emerald-100 text-base">
                           {it.emoji ?? "📍"}
                         </span>
                         <div className="min-w-0 flex-1">
@@ -214,8 +214,8 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-blue-500 ring-2 ring-white">
-              <span className="absolute inset-0 animate-ping rounded-full bg-blue-400" />
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white">
+              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400" />
             </span>
           </button>
           {openNotif && (
@@ -231,7 +231,7 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
                       onClick={() => setOpenNotif(false)}
                       className="flex items-start gap-2 px-4 py-3 text-sm hover:bg-slate-50"
                     >
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
                       <span className="flex-1 text-slate-700">{n.title}</span>
                       <span className="text-xs text-slate-400">{n.time}</span>
                     </Link>
@@ -251,12 +251,12 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
             }}
             className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-white/70 active:scale-95"
           >
-            <span className="grid place-items-center rounded-full bg-gradient-to-br from-blue-500 to-sky-600 p-[2px] shadow-sm shadow-blue-500/40">
+            <span className="grid place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 p-[2px] shadow-sm shadow-emerald-500/40">
               {userImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover ring-2 ring-white" />
               ) : (
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-white text-sm font-bold text-blue-700">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-white text-sm font-bold text-emerald-700">
                   {firstName.charAt(0).toUpperCase()}
                 </span>
               )}

@@ -58,17 +58,17 @@ export default async function CityPlacePage({ params }: PageProps) {
             photo, falls back to a name-matched Wikipedia one for the many
             OpenStreetMap-sourced places that have no picture of their own, and
             opens full screen when tapped. */}
-        <div className="relative min-h-[16rem] overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-sky-700 p-6 sm:min-h-[18rem] md:p-8">
+        <div className="relative min-h-[16rem] overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-6 sm:min-h-[18rem] md:p-8">
           <HeroPhoto
             images={gallery.map((g) => ({ url: g.url, caption: g.caption }))}
             fallbackImageUrl={place.imageUrl}
             alt={place.name}
             emoji="📍"
-            gradient="from-blue-500 via-blue-600 to-sky-700"
+            gradient="from-emerald-500 via-emerald-600 to-teal-700"
             preferWiki
             hint={place.area ?? place.city}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-800/40 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-emerald-900/80 via-emerald-800/40 to-transparent" />
           <span aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
           {/* Nothing here is clickable, so taps fall through to the photo. */}
           <div className="pointer-events-none relative flex h-full flex-col justify-end">
@@ -135,7 +135,7 @@ export default async function CityPlacePage({ params }: PageProps) {
             {tags.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
+                className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
               >
                 <Tag className="h-3 w-3" />
                 {t}
@@ -150,7 +150,7 @@ export default async function CityPlacePage({ params }: PageProps) {
               href={place.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-11 items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-4 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:scale-[1.02] active:scale-95"
+              className="inline-flex h-11 items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95"
             >
               <Ticket className="h-4 w-4" /> Book tickets <ExternalLink className="h-3.5 w-3.5" />
             </a>
@@ -165,7 +165,7 @@ export default async function CityPlacePage({ params }: PageProps) {
           </a>
           <Link
             href="/budget-planner"
-            className="relative inline-flex h-11 items-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95"
+            className="relative inline-flex h-11 items-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative">Build a trip including this</span>
@@ -200,7 +200,7 @@ function Fact({
 }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-blue-600">
+      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-600">
         {icon}
         {label}
       </div>

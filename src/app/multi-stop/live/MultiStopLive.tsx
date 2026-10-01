@@ -212,7 +212,7 @@ export function MultiStopLive() {
         </p>
         <Link
           href="/budget-planner"
-          className="mt-4 inline-flex rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
+          className="mt-4 inline-flex rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600"
         >
           Go to planner
         </Link>
@@ -234,7 +234,7 @@ export function MultiStopLive() {
           trail={trail}
         />
         {phase === "tracking" && (
-          <div className="absolute left-3 top-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-blue-500/90 px-3 py-1 text-xs font-bold text-white shadow-lg backdrop-blur">
+          <div className="absolute left-3 top-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-bold text-white shadow-lg backdrop-blur">
             <span className="block h-2 w-2 animate-pulse rounded-full bg-white" />
             Live
           </div>
@@ -257,7 +257,7 @@ export function MultiStopLive() {
           </h2>
           <div className="mt-2 h-1.5 rounded-full bg-white/10">
             <div
-              className="h-1.5 rounded-full bg-blue-500 transition-all"
+              className="h-1.5 rounded-full bg-emerald-500 transition-all"
               style={{
                 width: `${(visited.size / plan.stops.length) * 100}%`,
               }}
@@ -266,16 +266,16 @@ export function MultiStopLive() {
         </header>
 
         {nextStop ? (
-          <div className="rounded-xl border border-blue-400/30 bg-blue-500/10 p-3">
-            <p className="text-xs uppercase tracking-wide text-blue-300">
+          <div className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3">
+            <p className="text-xs uppercase tracking-wide text-emerald-300">
               Stop {nextIdx + 1} · Heading to
             </p>
             <p className="font-semibold text-white">{nextStop.name}</p>
-            <p className="text-xs text-blue-200/80">{nextStop.category}</p>
+            <p className="text-xs text-emerald-200/80">{nextStop.category}</p>
             <button
               type="button"
               onClick={markVisited}
-              className="mt-2 inline-flex items-center gap-1 rounded-lg border border-blue-300/40 bg-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-200 hover:bg-blue-500/30"
+              className="mt-2 inline-flex items-center gap-1 rounded-lg border border-emerald-300/40 bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/30"
             >
               <Check className="h-3 w-3" /> I&apos;m here — mark visited
             </button>
@@ -335,7 +335,7 @@ export function MultiStopLive() {
                   key={s.id}
                   className={`flex items-center gap-2 rounded-lg px-2 py-1 ${
                     active
-                      ? "bg-blue-500/20 text-blue-100"
+                      ? "bg-emerald-500/20 text-emerald-100"
                       : done
                       ? "text-slate-400 line-through"
                       : "text-slate-200"
@@ -344,7 +344,7 @@ export function MultiStopLive() {
                   <span
                     className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-xs font-bold ${
                       done
-                        ? "bg-blue-500 text-white"
+                        ? "bg-emerald-500 text-white"
                         : active
                         ? "bg-amber-500 text-white"
                         : "bg-white/10 text-slate-200"
@@ -388,7 +388,7 @@ export function MultiStopLive() {
               type="button"
               onClick={start}
               disabled={status === "denied"}
-              className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 py-3 text-sm font-bold shadow-lg shadow-blue-500/30 transition hover:from-blue-600 hover:to-blue-700 disabled:opacity-50"
+              className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-sm font-bold shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50"
             >
               <Play className="h-4 w-4 fill-current" /> Start trip
             </button>
@@ -416,7 +416,7 @@ export function MultiStopLive() {
               <button
                 type="button"
                 onClick={resume}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-500 py-3 text-sm font-bold text-white transition hover:bg-blue-600"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 py-3 text-sm font-bold text-white transition hover:bg-emerald-600"
               >
                 <Play className="h-4 w-4 fill-current" /> Resume
               </button>

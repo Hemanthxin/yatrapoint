@@ -59,7 +59,7 @@ export function TripsList({
             value={maxDistance}
             onChange={(e) => setMaxDistance(Number(e.target.value))}
             aria-label={`Maximum distance from ${baseCity}`}
-            className="min-h-[44px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+            className="min-h-[44px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
           >
             <option value={0}>Any distance</option>
             <option value={30}>30 km</option>
@@ -123,7 +123,7 @@ function Chip({
       onClick={onClick}
       className={`min-h-[44px] shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition active:scale-95 ${
         active
-          ? "bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30"
+          ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
           : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >

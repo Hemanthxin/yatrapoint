@@ -734,9 +734,9 @@ export function LivePlan({
   return (
     <Reveal id="live-plan" className="mt-8 space-y-5 scroll-mt-20" amount={0}>
       {/* Live location banner + regenerate */}
-      <section className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3">
-        <span className="flex items-center gap-2 text-sm font-medium text-blue-900">
-          <LocateFixed className={`h-5 w-5 ${isFallback ? "text-amber-500" : "text-blue-600"}`} />
+      <section className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+        <span className="flex items-center gap-2 text-sm font-medium text-emerald-900">
+          <LocateFixed className={`h-5 w-5 ${isFallback ? "text-amber-500" : "text-emerald-600"}`} />
           {originOverride
             ? `Exploring ${originOverride.label ?? "your chosen area"} — starting from your location`
             : status === "granted"
@@ -747,15 +747,15 @@ export function LivePlan({
             ? "Location blocked — using Bengaluru centre"
             : "Using Bengaluru centre"}
           {accuracyMeters ? (
-            <span className="text-xs font-normal text-blue-700/70">(±{Math.round(accuracyMeters)} m)</span>
+            <span className="text-xs font-normal text-emerald-700/70">(±{Math.round(accuracyMeters)} m)</span>
           ) : null}
         </span>
-        <span className="flex items-center gap-3 text-xs text-blue-800/70">
+        <span className="flex items-center gap-3 text-xs text-emerald-800/70">
           {coords.lat.toFixed(4)}, {coords.lng.toFixed(4)}
           {isFallback && status !== "prompting" && (
             <button
               onClick={() => request()}
-              className="inline-flex min-h-[36px] items-center rounded-full border border-blue-300 bg-white px-3.5 py-1.5 font-semibold text-blue-700 transition hover:bg-blue-100 active:scale-95"
+              className="inline-flex min-h-[36px] items-center rounded-full border border-emerald-300 bg-white px-3.5 py-1.5 font-semibold text-emerald-700 transition hover:bg-emerald-100 active:scale-95"
             >
               Use my location
             </button>
@@ -763,7 +763,7 @@ export function LivePlan({
           <button
             onClick={generate}
             disabled={loading}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-blue-600 px-3.5 py-1.5 font-semibold text-white transition hover:bg-blue-700 active:scale-95 disabled:opacity-60"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 font-semibold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
           >
             {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
             Regenerate
@@ -791,7 +791,7 @@ export function LivePlan({
           )}
           <section className="animate-pop overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
             {/* Summary total — bold Play-Store gradient hero */}
-            <div className="relative overflow-hidden bg-blue-600 p-5 shadow-lg shadow-blue-500/20 sm:p-6">
+            <div className="relative overflow-hidden bg-emerald-600 p-5 shadow-lg shadow-emerald-500/20 sm:p-6">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_90%_-10%,rgba(255,255,255,0.3),transparent_55%)]" />
               <span aria-hidden className="sheen-overlay animate-sheen" />
               <div className="relative flex flex-wrap items-end justify-between gap-3">
@@ -824,7 +824,7 @@ export function LivePlan({
                 const stay = plan.totals.stayTotal ?? 0;
                 const total = Math.max(1, plan.totals.fuelTotal + plan.totals.entryFeesTotal + plan.totals.foodTotal + stay);
                 const rows = [
-                  { label: plan.travelLabel || "Travel", value: plan.totals.fuelTotal, bar: "bg-gradient-to-r from-blue-400 to-blue-600" },
+                  { label: plan.travelLabel || "Travel", value: plan.totals.fuelTotal, bar: "bg-gradient-to-r from-emerald-400 to-emerald-600" },
                   { label: "Entry fees", value: plan.totals.entryFeesTotal, bar: "bg-gradient-to-r from-sky-400 to-sky-600" },
                   { label: "Food", value: plan.totals.foodTotal, bar: "bg-gradient-to-r from-amber-400 to-amber-600" },
                   ...(stay > 0
@@ -862,7 +862,7 @@ export function LivePlan({
           {plan.trainInfo && (plan.trainInfo.board || plan.trainInfo.dest) && (
             <Reveal as="section" className="card-hover overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
-                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-500/30">
+                <span className="grid h-9 w-9 place-items-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-500/30">
                   <TrainFront className="h-4 w-4" />
                 </span>
                 Your train journey
@@ -882,7 +882,7 @@ export function LivePlan({
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex items-center justify-between gap-3 overflow-hidden rounded-3xl bg-blue-600 p-5 text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.01] active:scale-[0.99]"
+            className="group relative flex items-center justify-between gap-3 overflow-hidden rounded-3xl bg-emerald-600 p-5 text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-[0.99]"
           >
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <span className="relative flex items-center gap-3">
@@ -910,11 +910,11 @@ export function LivePlan({
                   >
                     {shared ? (
                       <>
-                        <Check className="h-4 w-4 text-blue-600" /> Copied!
+                        <Check className="h-4 w-4 text-emerald-600" /> Copied!
                       </>
                     ) : (
                       <>
-                        <Share2 className="h-4 w-4 text-blue-600" /> Share
+                        <Share2 className="h-4 w-4 text-emerald-600" /> Share
                       </>
                     )}
                   </button>
@@ -922,17 +922,17 @@ export function LivePlan({
                     onClick={saveTrip}
                     className={`inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
                       saved
-                        ? "border-blue-200 bg-blue-50 text-blue-700"
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                         : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
                     {saved ? (
                       <>
-                        <BookmarkCheck className="h-4 w-4 text-blue-600" /> Saved
+                        <BookmarkCheck className="h-4 w-4 text-emerald-600" /> Saved
                       </>
                     ) : (
                       <>
-                        <Bookmark className="h-4 w-4 text-blue-600" /> Save trip
+                        <Bookmark className="h-4 w-4 text-emerald-600" /> Save trip
                       </>
                     )}
                   </button>
@@ -942,7 +942,7 @@ export function LivePlan({
                     rel="noopener noreferrer"
                     className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 active:scale-95"
                   >
-                    <Navigation className="h-4 w-4 text-blue-600" /> Open in Google Maps
+                    <Navigation className="h-4 w-4 text-emerald-600" /> Open in Google Maps
                   </a>
                   <button
                     onClick={() => {
@@ -964,7 +964,7 @@ export function LivePlan({
                       );
                       router.push("/multi-stop/live");
                     }}
-                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl bg-blue-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
                   >
                     <Play className="h-4 w-4 fill-current" /> Start live tracking
                   </button>
@@ -982,7 +982,7 @@ export function LivePlan({
                       aria-pressed={on}
                       className={`inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold transition active:scale-95 ${
                         on
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                          ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
                           : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                       }`}
                     >
@@ -1054,7 +1054,7 @@ export function LivePlan({
                 <div key={d}>
                   {days > 1 && (
                     <div className="mb-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-blue-500/30">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
                         Day {d + 1}
                       </span>
                       <span className="text-xs font-medium text-slate-500">
@@ -1085,18 +1085,18 @@ export function LivePlan({
                   <div className="flex items-start gap-4">
                     {/* Avatar node — sits on the connecting line, forming a journey path. */}
                     <div className="flex w-16 shrink-0 flex-col items-center">
-                      <div className="relative h-16 w-16 overflow-hidden rounded-full ring-4 ring-white shadow-lg shadow-blue-900/10">
+                      <div className="relative h-16 w-16 overflow-hidden rounded-full ring-4 ring-white shadow-lg shadow-emerald-900/10">
                         <PlaceImage
                           name={s.name}
                           storedSrc={s.imageUrl}
                           category={s.category}
                           emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
-                          gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-blue-400 to-sky-600"}
+                          gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
                           className="absolute inset-0 h-full w-full"
                           emojiClassName="text-2xl"
                         />
                       </div>
-                      <span className="-mt-3 grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-[11px] font-bold text-white shadow-md shadow-blue-500/30 ring-2 ring-white">
+                      <span className="-mt-3 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-2 ring-white">
                         {i + 1}
                       </span>
                     </div>
@@ -1104,7 +1104,7 @@ export function LivePlan({
                     <div className="card-hover min-w-0 flex-1 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-[11px] font-bold uppercase tracking-wide text-blue-600">Stop {i + 1}</p>
+                          <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
                           <h3 className="truncate font-extrabold tracking-tight text-slate-900">{s.name}</h3>
                           <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
                           <PlaceStatusBadgesCompact
@@ -1116,7 +1116,7 @@ export function LivePlan({
                           />
                         </div>
                         <div className="text-right text-xs text-slate-600">
-                          <p className="font-bold text-blue-700">
+                          <p className="font-bold text-emerald-700">
                             {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
                           </p>
                           <p className="font-semibold text-slate-900">Stay {formatMinutes(s.idealMinutes)}</p>
@@ -1139,7 +1139,7 @@ export function LivePlan({
                           href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex min-h-[32px] items-center rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-800 transition hover:bg-blue-200 active:scale-95"
+                          className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-800 transition hover:bg-emerald-200 active:scale-95"
                         >
                           Nearby Restaurants →
                         </a>
@@ -1187,7 +1187,7 @@ export function LivePlan({
                         fallbackImageUrl={s.imageUrl}
                         locationHint={originOverride?.label}
                         emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
-                        gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-blue-400 to-sky-600"}
+                        gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
                       />
 
                       {swapIndex === i && (
@@ -1226,7 +1226,7 @@ export function LivePlan({
                                     storedSrc={alt.imageUrl}
                                     category={alt.category}
                                     emoji={CATEGORY_EMOJI[alt.category] ?? "📍"}
-                                    gradient={CATEGORY_TILE_GRADIENT[alt.category] ?? "from-blue-400 to-sky-600"}
+                                    gradient={CATEGORY_TILE_GRADIENT[alt.category] ?? "from-emerald-400 to-teal-600"}
                                     className="absolute inset-0 h-full w-full"
                                     emojiClassName="text-sm"
                                   />
@@ -1292,7 +1292,7 @@ export function LivePlan({
                           href={plan.staySuggestion.bookUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-blue-600 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-blue-500/30 transition hover:scale-[1.03] active:scale-95"
+                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-emerald-600 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
                         >
                           <BedDouble className="h-3.5 w-3.5" /> Book
                         </a>
@@ -1313,8 +1313,8 @@ export function LivePlan({
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-center sm:text-left">
-      <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-blue-700 sm:justify-start">
-        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-blue-100 text-blue-700">{icon}</span>
+      <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-emerald-700 sm:justify-start">
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-emerald-100 text-emerald-700">{icon}</span>
         <span className="truncate">{label}</span>
       </div>
       <p className="mt-1 text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{value}</p>
@@ -1333,12 +1333,12 @@ function Chip({ children }: { children: React.ReactNode }) {
 function Connector({ distanceKm, minutes }: { distanceKm: number; minutes: number }) {
   return (
     <li className="flex flex-col items-center py-1.5" aria-hidden>
-      <div className="h-5 w-0.5 bg-gradient-to-b from-blue-300 to-blue-200" />
-      <span className="my-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-700 shadow-sm">
+      <div className="h-5 w-0.5 bg-gradient-to-b from-emerald-300 to-emerald-200" />
+      <span className="my-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700 shadow-sm">
         <Car className="h-3 w-3" /> {formatKm(distanceKm)} · {formatMinutes(minutes)}
       </span>
-      <ChevronDown className="h-4 w-4 animate-bounce text-blue-300" />
-      <div className="h-5 w-0.5 bg-gradient-to-b from-blue-200 to-transparent" />
+      <ChevronDown className="h-4 w-4 animate-bounce text-emerald-300" />
+      <div className="h-5 w-0.5 bg-gradient-to-b from-emerald-200 to-transparent" />
     </li>
   );
 }
@@ -1365,7 +1365,7 @@ function StationCard({
   station: { name: string; km: number; lat: number; lng: number; halt: boolean } | null;
   tone: "emerald" | "rose";
 }) {
-  const dot = tone === "emerald" ? "bg-blue-600" : "bg-slate-400";
+  const dot = tone === "emerald" ? "bg-emerald-600" : "bg-slate-400";
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
       <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
@@ -1383,7 +1383,7 @@ function StationCard({
               href={placeMapUrl({ name: station.name, latitude: station.lat, longitude: station.lng })}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-semibold text-blue-700 hover:underline"
+              className="inline-flex items-center gap-1 font-semibold text-emerald-700 hover:underline"
             >
               <MapPin className="h-3 w-3" /> Map
             </a>

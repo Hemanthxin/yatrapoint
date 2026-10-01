@@ -276,7 +276,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search nearby places…"
-              className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-3 text-[15px] outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] lg:py-2.5 lg:pl-10 lg:text-sm"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-3 text-[15px] outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] lg:py-2.5 lg:pl-10 lg:text-sm"
             />
           </div>
           <div className="flex items-center gap-2 text-sm">
@@ -284,7 +284,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
             <select
               value={radiusKm}
               onChange={(e) => setRadiusKm(Number(e.target.value))}
-              className="min-h-[44px] flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] lg:min-h-0 lg:flex-none lg:py-2.5"
+              className="min-h-[44px] flex-1 rounded-2xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] lg:min-h-0 lg:flex-none lg:py-2.5"
             >
               <option value={2}>2 km</option>
               <option value={5}>5 km</option>
@@ -307,7 +307,7 @@ export function ExploreClient({ seed }: ExploreClientProps) {
             onClick={() => setGroup(g.slug)}
             className={`inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 lg:min-h-[40px] lg:px-3.5 ${
               group === g.slug
-                ? "border-transparent bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30"
+                ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -361,7 +361,7 @@ function SeedCard({
   const groupSlug = SEED_KIND_TO_GROUP[place.kind] ?? "heritage";
   const group = GROUPS.find((g) => g.slug === groupSlug);
   return (
-    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm lg:border-blue-100 lg:bg-blue-50/50">
+    <article className="card-hover flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm lg:border-emerald-100 lg:bg-emerald-50/50">
       <div className="relative h-36 w-full shrink-0 bg-slate-100">
         <PlaceImage
           name={place.name}
@@ -369,7 +369,7 @@ function SeedCard({
           hint={place.area ?? place.city}
           category={place.kind}
           emoji={group?.emoji ?? "📍"}
-          gradient={GROUP_GRADIENT[groupSlug] ?? "from-blue-400 to-sky-600"}
+          gradient={GROUP_GRADIENT[groupSlug] ?? "from-emerald-400 to-teal-600"}
           className="absolute inset-0 h-full w-full"
           emojiClassName="text-4xl"
         />
@@ -377,13 +377,13 @@ function SeedCard({
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
+            <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
               ★ Curated · {place.kind}
             </p>
             <p className="mt-0.5 text-[15px] font-extrabold tracking-tight text-slate-900 lg:text-base">{place.name}</p>
             <p className="text-xs font-medium text-slate-500">{place.area ?? place.city}</p>
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
             <Navigation className="h-3 w-3" /> {formatKm(userDistanceKm)}
           </span>
         </div>
@@ -425,7 +425,7 @@ function SeedCard({
         <div className="mt-3 flex flex-wrap gap-2">
           <Link
             href={`/explore-bangalore/${place.slug}`}
-            className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-blue-500 to-sky-600 px-5 text-sm font-bold text-white shadow-md shadow-blue-500/30 transition hover:scale-[1.03] active:scale-95 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
+            className="inline-flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95 lg:h-9 lg:min-h-0 lg:px-4 lg:text-xs"
           >
             Details
           </Link>
@@ -464,7 +464,7 @@ function OsmCard({
           storedSrc={place.imageUrl}
           category={place.category}
           emoji={group?.emoji ?? "📍"}
-          gradient={GROUP_GRADIENT[groupSlug] ?? "from-blue-400 to-sky-600"}
+          gradient={GROUP_GRADIENT[groupSlug] ?? "from-emerald-400 to-teal-600"}
           className="absolute inset-0 h-full w-full"
           emojiClassName="text-4xl"
         />
@@ -504,7 +504,7 @@ function OsmCard({
           href={placeMapUrl({ name: place.name, area: place.tags.addrFull, latitude: place.lat, longitude: place.lng })}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 px-5 text-sm font-bold text-white shadow-md shadow-blue-500/30 transition active:scale-95 lg:h-9 lg:min-h-0 lg:bg-none lg:bg-slate-100 lg:px-4 lg:text-xs lg:font-semibold lg:text-slate-700 lg:shadow-none lg:hover:bg-slate-200"
+          className="inline-flex min-h-[44px] items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition active:scale-95 lg:h-9 lg:min-h-0 lg:bg-none lg:bg-slate-100 lg:px-4 lg:text-xs lg:font-semibold lg:text-slate-700 lg:shadow-none lg:hover:bg-slate-200"
         >
           Map <ExternalLink className="h-3.5 w-3.5 lg:h-3 lg:w-3" />
         </a>

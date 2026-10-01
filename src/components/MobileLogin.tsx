@@ -24,7 +24,6 @@ import { loginSchema, signupSchema } from "@/lib/validators";
 import { Modal } from "@/components/app/Modal";
 import { PrivacyPolicyContent } from "@/components/legal/PrivacyPolicyContent";
 import { TermsOfServiceContent } from "@/components/legal/TermsOfServiceContent";
-import { LEGACY_AUTH_STYLE } from "@/lib/legacy-auth-theme";
 
 // Google Identity Services typing (shared with the desktop AuthCard).
 declare global {
@@ -191,7 +190,7 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
   }, [gisLoaded, googleClientId, router, mode]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden" style={{ ...LEGACY_AUTH_STYLE, background: "var(--app-bg)" }}>
+    <main className="relative min-h-screen overflow-hidden" style={{ background: "var(--app-bg)" }}>
       {/* Hero photo banner — full width, fading cleanly into the cream canvas
           so nothing overlaps the heading below. */}
       <motion.div

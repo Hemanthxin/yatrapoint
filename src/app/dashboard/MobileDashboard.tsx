@@ -61,7 +61,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
             animate={{ opacity: 1, rotateY: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             style={{ perspective: 600 }}
-            className="logo-plate relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl p-1.5 shadow-lg shadow-blue-900/10 ring-1 ring-[color:var(--border)]"
+            className="logo-plate relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl p-1.5 shadow-lg shadow-emerald-900/10 ring-1 ring-[color:var(--border)]"
           >
             <Image src="/saafera-logo.jpg" alt="Saafera" fill sizes="56px" className="object-contain" />
           </motion.div>
@@ -85,7 +85,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
               <span
                 className={`grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br ${
                   CATEGORY_GRADIENT[c.slug as CategorySlug]
-                } text-3xl shadow-lg shadow-blue-500/10`}
+                } text-3xl shadow-lg shadow-emerald-500/10`}
               >
                 {c.emoji}
               </span>
@@ -99,7 +99,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
       {featured && (
         <Link
           href={`/destinations/${featured.slug}`}
-          className="animate-fadeUp relative block h-56 overflow-hidden rounded-3xl shadow-xl shadow-blue-500/10"
+          className="animate-fadeUp relative block h-56 overflow-hidden rounded-3xl shadow-xl shadow-emerald-500/10"
         >
           <PlaceImage
             name={featured.name}
@@ -107,14 +107,14 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
             hint={[featured.district, featured.state].filter(Boolean).join(", ")}
             category={featured.category}
             emoji={featuredCat?.emoji ?? "📍"}
-            gradient={CATEGORY_GRADIENT[featured.category as CategorySlug] ?? "from-sky-400 to-blue-500"}
+            gradient={CATEGORY_GRADIENT[featured.category as CategorySlug] ?? "from-sky-400 to-emerald-500"}
             className="absolute inset-0 h-full w-full"
             emojiClassName="text-6xl"
             preferWiki
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
           <span className="absolute left-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-700 backdrop-blur">
-            <Sparkles className="h-3 w-3 text-blue-600" /> Featured
+            <Sparkles className="h-3 w-3 text-emerald-600" /> Featured
           </span>
           <div className="absolute inset-x-0 bottom-0 p-4 text-white">
             <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80">
@@ -125,7 +125,7 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
               <MapPin className="h-3 w-3" /> {featured.district ? `${featured.district}, ` : ""}
               {featured.state}
             </p>
-            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 px-4 py-2 text-xs font-bold shadow-lg shadow-blue-500/40">
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2 text-xs font-bold shadow-lg shadow-emerald-500/40">
               Plan this trip <ArrowRight className="h-3.5 w-3.5" />
             </span>
           </div>
@@ -167,8 +167,8 @@ export function MobileDashboard({ firstName, stats, citySeed, popularTrips }: Pr
               href={`/one-day-trips?within=${d.km}`}
               className="group relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm active:scale-[0.98]"
             >
-              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-sky-600 opacity-70" />
-              <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-blue-100 text-blue-700">
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-70" />
+              <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
                 <Route className="h-5 w-5" />
               </span>
               <p className="text-sm font-bold text-slate-900">Within {d.km} km</p>
@@ -196,8 +196,8 @@ function QuickAction({ href, icon, title, sub }: { href: string; icon: React.Rea
       href={href}
       className="group relative overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-sm active:scale-[0.98]"
     >
-      <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-sky-600 opacity-70" />
-      <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-blue-100 text-blue-700">
+      <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600 opacity-70" />
+      <span className="mb-2 grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
         {icon}
       </span>
       <p className="text-sm font-bold text-slate-900">{title}</p>
@@ -217,7 +217,7 @@ function StatPill({
 }) {
   return (
     <div className="flex min-w-[7.5rem] shrink-0 items-center gap-2.5 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] px-4 py-3 shadow-sm">
-      <span aria-hidden className="h-8 w-1 rounded-full bg-gradient-to-b from-blue-500 to-sky-600" />
+      <span aria-hidden className="h-8 w-1 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
       <div>
         <CountUp value={value} format={format} className="block text-lg font-black text-slate-900" />
         <p className="text-[11px] font-medium text-slate-500">{label}</p>
@@ -231,10 +231,10 @@ function Section({ title, href, children }: { title: string; href: string; child
     <Reveal as="section">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-black tracking-tight text-slate-900">
-          <span aria-hidden className="h-4 w-1.5 rounded-full bg-gradient-to-b from-blue-500 to-sky-600" />
+          <span aria-hidden className="h-4 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
           {title}
         </h2>
-        <Link href={href} className="text-sm font-bold text-blue-700">
+        <Link href={href} className="text-sm font-bold text-emerald-700">
           See all →
         </Link>
       </div>

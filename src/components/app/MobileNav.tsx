@@ -48,11 +48,11 @@ export function MobileNav({ onMenu }: { onMenu: () => void }) {
           aria-label="Plan a trip"
           className="relative -mt-9 flex flex-col items-center"
         >
-          <span className="relative grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500 to-sky-600 text-white ring-[5px] ring-slate-50 shadow-lg shadow-blue-500/40 animate-glow transition active:scale-95">
+          <span className="relative grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-white ring-[5px] ring-slate-50 shadow-lg shadow-emerald-500/40 animate-glow transition active:scale-95">
             <span aria-hidden className="sheen-overlay animate-sheen" />
             <Wallet className="relative h-6 w-6" strokeWidth={2.2} />
           </span>
-          <span className="mt-1 text-[11px] font-bold text-blue-700">Plan</span>
+          <span className="mt-1 text-[11px] font-bold text-emerald-700">Plan</span>
         </button>
 
         {RIGHT.map((t) => (
@@ -83,15 +83,15 @@ function TabLink({ tab, active }: { tab: Tab; active: boolean }) {
     >
       <span
         aria-hidden
-        className={`absolute top-1.5 h-9 w-12 rounded-2xl bg-gradient-to-b from-blue-100 to-blue-50 transition-all duration-300 ${
+        className={`absolute top-1.5 h-9 w-12 rounded-2xl bg-gradient-to-b from-emerald-100 to-emerald-50 transition-all duration-300 ${
           active ? "scale-100 opacity-100" : "scale-50 opacity-0"
         }`}
       />
       <Icon
-        className={`relative h-5 w-5 transition-all duration-300 group-active:scale-90 ${active ? "-translate-y-0.5 text-blue-600" : "text-slate-400"}`}
+        className={`relative h-5 w-5 transition-all duration-300 group-active:scale-90 ${active ? "-translate-y-0.5 text-emerald-600" : "text-slate-400"}`}
         strokeWidth={active ? 2.5 : 1.9}
       />
-      <span className={`relative text-[10px] font-semibold ${active ? "text-blue-700" : "text-slate-400"}`}>
+      <span className={`relative text-[10px] font-semibold ${active ? "text-emerald-700" : "text-slate-400"}`}>
         {tab.label}
       </span>
     </Link>

@@ -30,7 +30,7 @@ export function PageHero({
   subtitle,
   icon: Icon,
   stats,
-  gradient = "from-blue-700 via-blue-600 to-sky-700",
+  gradient = "from-emerald-700 via-emerald-600 to-teal-700",
   backgroundImage,
   action,
   className = "",
@@ -39,7 +39,7 @@ export function PageHero({
     <Reveal
       amount={0}
       y={16}
-      className={`relative mb-10 overflow-hidden rounded-[2rem] px-10 py-12 text-white shadow-xl shadow-blue-900/15 ${
+      className={`relative mb-10 overflow-hidden rounded-[2rem] px-10 py-12 text-white shadow-xl shadow-emerald-900/15 ${
         backgroundImage ? "bg-slate-900" : `bg-gradient-to-br ${gradient}`
       } ${className}`}
     >

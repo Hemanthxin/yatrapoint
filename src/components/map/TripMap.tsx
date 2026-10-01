@@ -425,7 +425,7 @@ export default function TripMap({
           title={following ? "Following you — tap or move the map to stop" : "Follow my location"}
           className={`grid h-11 w-11 place-items-center rounded-full border shadow-lg transition active:scale-95 ${
             following
-              ? "border-blue-500 bg-blue-500 text-white"
+              ? "border-emerald-500 bg-emerald-500 text-white"
               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           }`}
         >

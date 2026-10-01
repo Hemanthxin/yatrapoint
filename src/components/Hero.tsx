@@ -16,7 +16,7 @@ export function Hero() {
         <motion.div
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="grid h-12 w-12 place-items-center rounded-2xl border border-white/20 bg-white/10 text-sky-200 shadow-lg backdrop-blur-md"
+          className="grid h-12 w-12 place-items-center rounded-2xl border border-white/20 bg-white/10 text-emerald-200 shadow-lg backdrop-blur-md"
         >
           <Plane className="h-5 w-5 -rotate-45" />
         </motion.div>
@@ -25,7 +25,7 @@ export function Hero() {
         <motion.div
           animate={{ y: [0, 12, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/20 bg-white/10 text-blue-200 shadow-lg backdrop-blur-md"
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/20 bg-white/10 text-green-200 shadow-lg backdrop-blur-md"
         >
           <Mountain className="h-5 w-5" />
         </motion.div>
@@ -137,7 +137,7 @@ function Feature({
       whileHover={{ y: -3 }}
       className="flex flex-col items-start gap-2 text-sm"
     >
-      <div className="grid h-11 w-11 place-items-center rounded-2xl border border-white/20 bg-white/10 text-brand-green shadow-lg shadow-blue-500/10 backdrop-blur-md transition hover:scale-105 hover:border-blue-400/40">
+      <div className="grid h-11 w-11 place-items-center rounded-2xl border border-white/20 bg-white/10 text-brand-green shadow-lg shadow-emerald-500/10 backdrop-blur-md transition hover:scale-105 hover:border-emerald-400/40">
         {icon}
       </div>
       <p className="font-semibold text-white">{title}</p>

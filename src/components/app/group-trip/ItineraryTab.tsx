@@ -61,13 +61,13 @@ export function ItineraryTab({
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm font-extrabold text-slate-900">Trip totals</p>
           <span className="flex items-center gap-1 text-xs font-semibold text-slate-500">
-            <MapPin className="h-3.5 w-3.5 text-blue-600" /> {formatKm(itinerary.totalDistanceKm)}
-            <Clock className="ml-2 h-3.5 w-3.5 text-blue-600" /> {formatMinutes(itinerary.totalDurationMinutes)}
+            <MapPin className="h-3.5 w-3.5 text-emerald-600" /> {formatKm(itinerary.totalDistanceKm)}
+            <Clock className="ml-2 h-3.5 w-3.5 text-emerald-600" /> {formatMinutes(itinerary.totalDurationMinutes)}
           </span>
         </div>
-        <div className="rounded-xl bg-blue-50 p-3 text-center">
-          <p className="text-2xl font-extrabold text-blue-700">{formatINR(itinerary.cost.total)}</p>
-          <p className="text-xs font-semibold text-blue-600">{formatINR(itinerary.cost.perPersonCost)} / person</p>
+        <div className="rounded-xl bg-emerald-50 p-3 text-center">
+          <p className="text-2xl font-extrabold text-emerald-700">{formatINR(itinerary.cost.total)}</p>
+          <p className="text-xs font-semibold text-emerald-600">{formatINR(itinerary.cost.perPersonCost)} / person</p>
         </div>
         <div className="divide-y divide-slate-100 text-sm">
           <CostRow icon={<Fuel className="h-4 w-4" />} label={`Fuel (${trip.vehicle})`} value={itinerary.cost.fuelTotal} />
@@ -80,10 +80,10 @@ export function ItineraryTab({
         {itinerary.days.map((d) => (
           <div key={d.day} className="card p-4">
             <p className="mb-3 text-sm font-extrabold text-slate-900">Day {d.day}</p>
-            <ol className="relative space-y-3 border-l-2 border-blue-100 pl-4">
+            <ol className="relative space-y-3 border-l-2 border-emerald-100 pl-4">
               {d.stops.map((s) => (
                 <li key={s.placeId} className="relative">
-                  <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 border-white bg-blue-500" />
+                  <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
                   <p className="text-sm font-bold text-slate-900">{s.name}</p>
                   <p className="text-xs text-slate-500">
                     {s.arrivalKmFromPrev > 0 && `${formatKm(s.arrivalKmFromPrev)} · ${formatMinutes(s.arrivalMinutesFromPrev)} drive · `}
@@ -108,7 +108,7 @@ function CostRow({ icon, label, value }: { icon: React.ReactNode; label: string;
   return (
     <div className="flex items-center justify-between gap-2 py-2">
       <span className="flex items-center gap-2 text-slate-600">
-        <span className="text-blue-600">{icon}</span> {label}
+        <span className="text-emerald-600">{icon}</span> {label}
       </span>
       <span className="font-bold text-slate-900">{formatINR(value)}</span>
     </div>

@@ -39,7 +39,7 @@ export function JoinButton({
     );
   if (status === "approved")
     return (
-      <span className={`inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 ${className}`}>
+      <span className={`inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 ${className}`}>
         <Check className="h-3.5 w-3.5" /> Member
       </span>
     );

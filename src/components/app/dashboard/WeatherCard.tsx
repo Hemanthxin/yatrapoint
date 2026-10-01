@@ -47,7 +47,7 @@ function describe(code: number): { label: string; Icon: LucideIcon } {
 }
 
 function aqiTone(aqi: number): string {
-  if (aqi <= 50) return "text-blue-600";
+  if (aqi <= 50) return "text-emerald-600";
   if (aqi <= 100) return "text-amber-600";
   return "text-rose-600";
 }
@@ -121,12 +121,12 @@ export function WeatherCard() {
       {/* Soft sky wash so the weather card reads distinct from the others. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-100/60 via-transparent to-blue-100/50"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-100/60 via-transparent to-emerald-100/50"
       />
       <div className="relative">
         <div className="flex items-start justify-between">
           <p className="flex items-center gap-1.5 text-sm font-bold text-slate-900">
-            <MapPin className="h-3.5 w-3.5 text-blue-600" /> {place}
+            <MapPin className="h-3.5 w-3.5 text-emerald-600" /> {place}
           </p>
           <MoreHorizontal className="h-4 w-4 text-slate-300" />
         </div>
@@ -151,7 +151,7 @@ export function WeatherCard() {
                 </p>
                 <p className="text-xs text-slate-500">Feels like {weather.feels}°</p>
               </div>
-              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-white/70 text-blue-600 shadow-inner ring-1 ring-white/60">
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-white/70 text-emerald-600 shadow-inner ring-1 ring-white/60">
                 <Icon className="h-9 w-9" strokeWidth={1.6} />
               </span>
             </div>
@@ -186,7 +186,7 @@ function Metric({
 }) {
   return (
     <div className="flex flex-col items-center gap-1">
-      <span className="text-blue-600">{icon}</span>
+      <span className="text-emerald-600">{icon}</span>
       <span className="text-[11px] font-medium text-slate-500">{label}</span>
       <span className={`text-xs font-bold ${tone ?? "text-slate-800"}`}>{value}</span>
     </div>

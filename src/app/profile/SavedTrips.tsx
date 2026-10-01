@@ -60,7 +60,7 @@ export function SavedTrips({ dbPlans, hasDbPlans }: { dbPlans: ReactNode; hasDbP
         </p>
         <Link
           href="/budget-planner"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
         >
           Plan your first trip
         </Link>
@@ -92,19 +92,19 @@ export function SavedTrips({ dbPlans, hasDbPlans }: { dbPlans: ReactNode; hasDbP
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
               {typeof t.totals?.cost === "number" && (
                 <span className="inline-flex items-center gap-1">
-                  <Wallet className="h-3.5 w-3.5 text-blue-600" />
+                  <Wallet className="h-3.5 w-3.5 text-emerald-600" />
                   {formatINR(t.totals.cost)}
                 </span>
               )}
               {t.days ? (
                 <span className="inline-flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-blue-600" />
+                  <Calendar className="h-3.5 w-3.5 text-emerald-600" />
                   {t.days} {t.days === 1 ? "day" : "days"}
                 </span>
               ) : null}
               {t.people ? (
                 <span className="inline-flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-blue-600" />
+                  <Users className="h-3.5 w-3.5 text-emerald-600" />
                   {t.people}
                 </span>
               ) : null}
@@ -122,7 +122,7 @@ export function SavedTrips({ dbPlans, hasDbPlans }: { dbPlans: ReactNode; hasDbP
             {t.stops.map((s, i) => (
               <li key={s.id} className="flex items-center justify-between gap-3 px-5 py-3 text-sm">
                 <span className="flex items-center gap-2 font-medium text-slate-900">
-                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-blue-100 text-[11px] font-bold text-blue-700">
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700">
                     {i + 1}
                   </span>
                   {s.name}
@@ -131,7 +131,7 @@ export function SavedTrips({ dbPlans, hasDbPlans }: { dbPlans: ReactNode; hasDbP
                   href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-700 hover:underline"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:underline"
                 >
                   <MapPin className="h-3 w-3" /> Map
                 </a>
@@ -145,7 +145,7 @@ export function SavedTrips({ dbPlans, hasDbPlans }: { dbPlans: ReactNode; hasDbP
                 href={t.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:scale-[1.01] active:scale-95"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.01] active:scale-95"
               >
                 <Navigation className="h-4 w-4" /> Open route in Google Maps
               </a>

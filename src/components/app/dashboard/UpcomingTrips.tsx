@@ -5,7 +5,7 @@ import { TravelersIllustration } from "@/components/illustrations";
 // A trip whose status isn't "draft" counts as Confirmed; drafts are Pending.
 function badge(status: string): { label: string; cls: string } {
   return status && status !== "draft"
-    ? { label: "Confirmed", cls: "bg-blue-100 text-blue-700" }
+    ? { label: "Confirmed", cls: "bg-emerald-100 text-emerald-700" }
     : { label: "Pending", cls: "bg-amber-100 text-amber-700" };
 }
 
@@ -23,7 +23,7 @@ export function UpcomingTrips({ trips }: { trips: UpcomingTrip[] }) {
     <div className="card p-5">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-sm font-bold text-slate-900">Upcoming Trips</p>
-        <Link href="/profile" className="text-xs font-bold text-blue-700 hover:underline">
+        <Link href="/profile" className="text-xs font-bold text-emerald-700 hover:underline">
           View all →
         </Link>
       </div>
@@ -40,7 +40,7 @@ export function UpcomingTrips({ trips }: { trips: UpcomingTrip[] }) {
             const b = badge(t.status);
             return (
               <li key={t.id} className="flex items-center gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-400 via-blue-500 to-sky-700 text-base shadow-sm">
+                <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-700 text-base shadow-sm">
                   🏞️
                 </span>
                 <div className="min-w-0 flex-1">

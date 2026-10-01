@@ -53,14 +53,14 @@ export default async function LongTripDetailPage({ params }: PageProps) {
         <BackButton fallback={`/budget-planner/long-trips/${encodeURIComponent(state)}`} />
 
         <header className="mt-3">
-          <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+          <p className="text-xs font-bold uppercase tracking-wide text-emerald-600">
             {trip.baseCity} → {state}
           </p>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             {trip.title}
           </h1>
           <p className="mt-1 flex items-center gap-1 text-sm font-medium text-slate-500">
-            <MapPin className="h-4 w-4 shrink-0 text-blue-600" /> {trip.destinationSummary}
+            <MapPin className="h-4 w-4 shrink-0 text-emerald-600" /> {trip.destinationSummary}
           </p>
         </header>
 
@@ -94,7 +94,7 @@ export default async function LongTripDetailPage({ params }: PageProps) {
             <div className="my-2 h-px bg-slate-200" />
             <div className="flex items-center justify-between">
               <dt className="text-base font-extrabold text-slate-900">Total</dt>
-              <dd className="text-xl font-extrabold text-gradient-brand">{formatINR(budget.total)}</dd>
+              <dd className="text-xl font-extrabold text-gradient">{formatINR(budget.total)}</dd>
             </div>
           </dl>
         </section>
@@ -105,14 +105,14 @@ export default async function LongTripDetailPage({ params }: PageProps) {
           <ol className="mt-4 space-y-5">
             {itinerary.map((d) => (
               <li key={d.day} className="relative pl-8">
-                <span className="absolute left-0 top-0 grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-sky-600 text-xs font-bold text-white">
+                <span className="absolute left-0 top-0 grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white">
                   {d.day}
                 </span>
                 <p className="text-sm font-extrabold text-slate-800">Day {d.day}</p>
                 <ul className="mt-1.5 space-y-1">
                   {d.items.map((item, i) => (
                     <li key={i} className="flex items-start gap-1.5 text-sm text-slate-600">
-                      <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-500" />
+                      <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
                       {item}
                     </li>
                   ))}
@@ -126,7 +126,7 @@ export default async function LongTripDetailPage({ params }: PageProps) {
           href={mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.01] active:scale-95"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95"
         >
           Open full route in Google Maps <ExternalLink className="h-4 w-4" />
         </a>
@@ -142,7 +142,7 @@ export default async function LongTripDetailPage({ params }: PageProps) {
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-start gap-2.5">
-      <div className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-blue-600 shadow-sm">
+      <div className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-emerald-600 shadow-sm">
         {icon}
       </div>
       <div className="min-w-0">

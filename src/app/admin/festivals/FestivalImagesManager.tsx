@@ -70,7 +70,7 @@ function Row({ festival, initialImageUrl }: { festival: Festival; initialImageUr
 
   return (
     <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      <div className="relative h-36 w-full bg-gradient-to-br from-blue-50 via-white to-sky-50">
+      <div className="relative h-36 w-full bg-gradient-to-br from-emerald-50 via-white to-teal-50">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={imageUrl} alt={festival.name} className="h-full w-full object-cover" />
@@ -79,11 +79,11 @@ function Row({ festival, initialImageUrl }: { festival: Festival; initialImageUr
         )}
         {busy && (
           <div className="absolute inset-0 grid place-items-center bg-white/70">
-            <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+            <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
           </div>
         )}
         {saved && !busy && (
-          <div className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-white">
+          <div className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-white">
             <Check className="h-3.5 w-3.5" />
           </div>
         )}

@@ -69,10 +69,10 @@ export default async function FestivalsPage() {
               key={f.name}
               direction="flip"
               className={`card-hover flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm ${
-                isNext ? "border-blue-300 ring-2 ring-blue-200" : "border-slate-200"
+                isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
               }`}
             >
-              <div className="relative flex h-32 items-center justify-between overflow-hidden border-b border-blue-100/60 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-4">
+              <div className="relative flex h-32 items-center justify-between overflow-hidden border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
                 {image && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={image} alt={f.name} className="absolute inset-0 h-full w-full object-cover" />
@@ -91,7 +91,7 @@ export default async function FestivalsPage() {
                   {formatFestivalDate(f.nextISO)}
                 </span>
                 {isNext && (
-                  <PulseBadge className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-blue-500 to-sky-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-blue-500/40">
+                  <PulseBadge className="absolute -bottom-2 left-4 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-md shadow-emerald-500/40">
                     Up next{d != null && d >= 0 ? ` · ${d === 0 ? "today" : d === 1 ? "tomorrow" : `${d} days`}` : ""}
                   </PulseBadge>
                 )}

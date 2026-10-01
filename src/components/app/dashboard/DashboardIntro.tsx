@@ -81,7 +81,7 @@ export function DashboardIntro() {
               expanding away across the ground plane, not a flat 2D pulse. */}
           <motion.span
             aria-hidden
-            className="pointer-events-none absolute h-32 w-32 rounded-full border-2 border-blue-400/70"
+            className="pointer-events-none absolute h-32 w-32 rounded-full border-2 border-emerald-400/70"
             style={{ rotateX: 72, transformStyle: "preserve-3d" }}
             initial={{ scale: 0.4, opacity: 0 }}
             animate={
@@ -93,7 +93,7 @@ export function DashboardIntro() {
           {/* Glow burst */}
           <motion.span
             aria-hidden
-            className="pointer-events-none absolute h-20 w-20 rounded-full bg-gradient-to-br from-blue-400 via-sky-300 to-blue-500 blur-xl"
+            className="pointer-events-none absolute h-20 w-20 rounded-full bg-gradient-to-br from-emerald-400 via-teal-300 to-emerald-500 blur-xl"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={
               phase === "explode" ? { scale: 9, opacity: [0, 0.8, 0] } : { scale: 1, opacity: 0.4 }
@@ -106,7 +106,7 @@ export function DashboardIntro() {
             <motion.span
               key={i}
               aria-hidden
-              className="pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-blue-300 shadow-[0_0_6px_2px_rgba(52,211,153,0.6)]"
+              className="pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-emerald-300 shadow-[0_0_6px_2px_rgba(52,211,153,0.6)]"
               style={{ transformStyle: "preserve-3d" }}
               initial={{ x: 0, y: 0, z: 0, opacity: 1, scale: 1 }}
               animate={{ x: s.x, y: s.y, z: s.z, opacity: 0, scale: 0.3, rotate: s.rotate }}
@@ -118,7 +118,7 @@ export function DashboardIntro() {
               camera on Z, then fades — a genuine 3D detonation rather than a
               flat scale-and-fade. */}
           <motion.div
-            className="logo-plate relative h-24 w-24 overflow-hidden rounded-[1.5rem] p-2.5 shadow-2xl shadow-blue-950/40 ring-1 ring-white/40"
+            className="logo-plate relative h-24 w-24 overflow-hidden rounded-[1.5rem] p-2.5 shadow-2xl shadow-emerald-950/40 ring-1 ring-white/40"
             style={{ transformStyle: "preserve-3d" }}
             initial={{ scale: 0.5, opacity: 0, rotateX: -20, rotateY: -30, z: -80 }}
             animate={

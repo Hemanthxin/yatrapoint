@@ -20,7 +20,6 @@ import { loginSchema, signupSchema } from "@/lib/validators";
 import { Modal } from "@/components/app/Modal";
 import { PrivacyPolicyContent } from "@/components/legal/PrivacyPolicyContent";
 import { TermsOfServiceContent } from "@/components/legal/TermsOfServiceContent";
-import { LEGACY_AUTH_STYLE } from "@/lib/legacy-auth-theme";
 
 declare global {
   interface Window {
@@ -192,7 +191,6 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="relative w-full max-w-md"
-      style={LEGACY_AUTH_STYLE}
     >
       {/* Glow aura */}
       <div

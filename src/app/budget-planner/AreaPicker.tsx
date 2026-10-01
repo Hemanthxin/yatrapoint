@@ -136,7 +136,7 @@ export function AreaPicker({ value, onChange }: Props) {
         <select
           value={value.state}
           onChange={(e) => pickState(e.target.value)}
-          className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         >
           <option value="">Select a state…</option>
           {INDIA_STATES.map((s) => (
@@ -213,7 +213,7 @@ export function AreaPicker({ value, onChange }: Props) {
                     onChange={(e) =>
                       set({ talukDistrict: e.target.value, taluks: [], districts: e.target.value ? [e.target.value] : [] })
                     }
-                    className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                    className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
                   >
                     <option value="">Select a district…</option>
                     {districts.map((d) => (
@@ -258,7 +258,7 @@ export function AreaPicker({ value, onChange }: Props) {
                     value={placeQuery}
                     onChange={(e) => setPlaceQuery(e.target.value)}
                     placeholder="Search places by name…"
-                    className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                    className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
                   />
                 </div>
                 <div className="max-h-64 space-y-1.5 overflow-auto rounded-xl border border-slate-100 p-1.5">
@@ -272,12 +272,12 @@ export function AreaPicker({ value, onChange }: Props) {
                         type="button"
                         onClick={() => togglePlace(p.id)}
                         className={`flex min-h-[52px] w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left text-sm transition ${
-                          on ? "bg-blue-50 text-blue-900" : "text-slate-700 hover:bg-slate-50"
+                          on ? "bg-emerald-50 text-emerald-900" : "text-slate-700 hover:bg-slate-50"
                         }`}
                       >
                         <span
                           className={`grid h-4 w-4 shrink-0 place-items-center rounded border ${
-                            on ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
+                            on ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300"
                           }`}
                         >
                           {on && "✓"}
@@ -305,7 +305,7 @@ export function AreaPicker({ value, onChange }: Props) {
                   )}
                 </div>
                 {value.placeIds.length > 0 && (
-                  <p className="mt-1.5 text-xs font-medium text-blue-700">
+                  <p className="mt-1.5 text-xs font-medium text-emerald-700">
                     {value.placeIds.length} place{value.placeIds.length > 1 ? "s" : ""} selected
                   </p>
                 )}
@@ -323,7 +323,7 @@ function Label({ step, title, hint }: { step?: string; title: string; hint?: str
     <div className="mb-2">
       <p className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
         {step && (
-          <span className="grid h-5 w-5 place-items-center rounded-full bg-blue-600 text-[11px] font-bold text-white shadow-sm shadow-blue-500/30">
+          <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-sm shadow-emerald-500/30">
             {step}
           </span>
         )}
@@ -351,11 +351,11 @@ function ScopeCard({
       onClick={onClick}
       className={`min-h-[60px] rounded-2xl border px-3.5 py-3 text-left transition active:scale-[0.98] ${
         active
-          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-          : "border-slate-200 hover:border-blue-300 hover:bg-slate-50"
+          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
+          : "border-slate-200 hover:border-emerald-300 hover:bg-slate-50"
       }`}
     >
-      <p className={`text-sm font-bold ${active ? "text-blue-800" : "text-slate-800"}`}>{title}</p>
+      <p className={`text-sm font-bold ${active ? "text-emerald-800" : "text-slate-800"}`}>{title}</p>
       <p className="mt-0.5 text-xs text-slate-500">{desc}</p>
     </button>
   );
@@ -381,7 +381,7 @@ function CheckGrid({
             onClick={() => onToggle(it)}
             className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
               on
-                ? "border-transparent bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
             }`}
           >

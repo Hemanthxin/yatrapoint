@@ -181,7 +181,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
           href={catHref(undefined)}
           className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
             !validCat
-              ? "border-transparent bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30"
+              ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
               : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
           }`}
         >
@@ -195,7 +195,7 @@ export default async function DestinationsPage({ searchParams }: PageProps) {
               href={catHref(c.slug)}
               className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-95 ${
                 on
-                  ? "border-transparent bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30"
+                  ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-500/30"
                   : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >

@@ -46,7 +46,7 @@ export function GroupsDirectory({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search communities…"
-            className="w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] py-3 pl-11 pr-4 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="w-full rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] py-3 pl-11 pr-4 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </div>
         <button type="button" onClick={() => setCreateOpen(true)} className="btn-primary shrink-0 rounded-xl px-5 py-3 text-sm">
@@ -65,12 +65,12 @@ export function GroupsDirectory({
           {visible.map((c) => (
             <div key={c.id} className="card card-hover overflow-hidden">
               <Link href={`/community/groups/${c.slug}`} className="block">
-                <div className="relative h-28 w-full bg-blue-100">
+                <div className="relative h-28 w-full bg-emerald-100">
                   {c.coverImage ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.coverImage} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-500 to-sky-600 text-white">
+                    <div className="grid h-full w-full place-items-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
                       <Users className="h-8 w-8" />
                     </div>
                   )}

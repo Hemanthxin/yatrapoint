@@ -41,7 +41,7 @@ export function ProfileTabs({ counts, posts, trips, saved }: ProfileTabsProps) {
               {active && (
                 <motion.span
                   layoutId="profile-tab-pill"
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500 to-sky-600 shadow-md shadow-blue-500/30"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 shadow-md shadow-emerald-500/30"
                   transition={{ type: "spring", stiffness: 500, damping: 32 }}
                 />
               )}

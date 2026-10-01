@@ -84,7 +84,7 @@ export function Filters({ states, districts, hideCategory = false, initial }: Fi
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search places, states, vibes…"
-              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
             />
           </div>
         </div>
@@ -97,7 +97,7 @@ export function Filters({ states, districts, hideCategory = false, initial }: Fi
             <select
               value={initial.category ?? ""}
               onChange={(e) => setParam("category", e.target.value || undefined)}
-              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
             >
               <option value="">All categories</option>
               {CATEGORIES.map((c) => (
@@ -116,7 +116,7 @@ export function Filters({ states, districts, hideCategory = false, initial }: Fi
           <select
             value={initial.state ?? ""}
             onChange={(e) => setState(e.target.value || undefined)}
-            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           >
             <option value="">All states</option>
             {states.map((s) => (
@@ -135,7 +135,7 @@ export function Filters({ states, districts, hideCategory = false, initial }: Fi
             value={initial.district ?? ""}
             onChange={(e) => setParam("district", e.target.value || undefined)}
             disabled={districts.length === 0}
-            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)] disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
           >
             <option value="">All districts</option>
             {districts.map((d) => (
@@ -153,7 +153,7 @@ export function Filters({ states, districts, hideCategory = false, initial }: Fi
           <select
             value={initial.maxBudget ?? ""}
             onChange={(e) => setParam("maxBudget", e.target.value || undefined)}
-            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 px-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           >
             <option value="">Any budget</option>
             <option value="1500">Under ₹1,500</option>
@@ -167,7 +167,7 @@ export function Filters({ states, districts, hideCategory = false, initial }: Fi
         <button
           type="submit"
           disabled={isPending}
-          className="group relative min-h-[44px] overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
+          className="group relative min-h-[44px] overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
         >
           {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
           <span className="relative">{isPending ? "…" : "Search"}</span>

@@ -185,7 +185,7 @@ export function Feed({
               aria-pressed={active}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
                 active
-                  ? "border-transparent bg-blue-600 text-white"
+                  ? "border-transparent bg-emerald-600 text-white"
                   : "border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:bg-[color:var(--surface-2)] hover:text-[color:var(--text)]"
               }`}
             >
@@ -208,7 +208,7 @@ export function Feed({
                 aria-pressed={active}
                 className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold tracking-tight transition active:scale-95 ${
                   active
-                    ? "bg-blue-600 text-white"
+                    ? "bg-emerald-600 text-white"
                     : "text-[color:var(--muted)] hover:bg-[color:var(--surface-2)] hover:text-[color:var(--text)]"
                 }`}
               >
