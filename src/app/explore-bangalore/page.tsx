@@ -28,11 +28,11 @@ export default async function ExploreBangalorePage() {
 
       {/* Mobile (< lg): app-style hero header */}
       <Reveal as="header" className="lg:hidden mb-4">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
           <Sparkles className="h-3 w-3" /> Near you
         </span>
         <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900">
-          Explore <span className="text-gradient">Bengaluru</span>
+          Explore <span className="text-gradient-brand">Bengaluru</span>
         </h1>
         <p className="mt-0.5 text-xs font-medium text-slate-500">
           Places near you, sorted by distance.

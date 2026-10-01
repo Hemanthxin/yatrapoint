@@ -159,13 +159,13 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
         when: depart,
         title: "Depart",
         body: `From ${isFallback ? "Bangalore (fallback)" : "your location"}`,
-        dot: "bg-gradient-to-br from-emerald-500 to-green-600 ring-emerald-100",
+        dot: "bg-gradient-to-br from-blue-500 to-sky-600 ring-blue-100",
       },
       {
         when: arrive,
         title: `Arrive at ${destination.name}`,
         body: `${formatKm(drivingKm)} · ${formatMinutes(drivingMins)} driving`,
-        dot: "bg-gradient-to-br from-emerald-500 to-green-600 ring-emerald-100",
+        dot: "bg-gradient-to-br from-blue-500 to-sky-600 ring-blue-100",
       },
       {
         when: leave,
@@ -203,7 +203,7 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
 
   const ctas = (
     <>
-      <AddToCartButton className="w-full py-3 shadow-lg shadow-emerald-500/40" label="Plan a trip" item={cartItem} />
+      <AddToCartButton className="w-full py-3 shadow-lg shadow-blue-500/40" label="Plan a trip" item={cartItem} />
       <a
         href={
           hasCoords
@@ -246,15 +246,15 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
           <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Route</h2>
           <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
             <Pill
-              icon={<Navigation className="h-3.5 w-3.5 text-emerald-600" />}
+              icon={<Navigation className="h-3.5 w-3.5 text-blue-600" />}
               label={routeLoading ? "Fetching route…" : `${formatKm(drivingKm)} driving`}
             />
             <Pill
-              icon={<Clock className="h-3.5 w-3.5 text-emerald-600" />}
+              icon={<Clock className="h-3.5 w-3.5 text-blue-600" />}
               label={`${formatMinutes(drivingMins)} one-way`}
             />
             <Pill
-              icon={<Sparkles className="h-3.5 w-3.5 text-emerald-600" />}
+              icon={<Sparkles className="h-3.5 w-3.5 text-blue-600" />}
               label={`Straight-line ${formatKm(straightKm)}`}
             />
           </div>
@@ -270,7 +270,7 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
 
         <div className="mt-6">
           <div className="mb-3 flex items-center gap-2">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
               <Calendar className="h-4 w-4" />
             </span>
             <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Timeline</h2>
@@ -278,11 +278,11 @@ export function DestinationDetail({ destination }: DestinationDetailProps) {
               type="time"
               value={departureTime}
               onChange={(e) => setDepartureTime(e.target.value)}
-              className="ml-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              className="ml-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
             <span className="text-xs text-slate-400">Depart at</span>
           </div>
-          <ol className="relative space-y-4 border-l-2 border-emerald-100 pl-5">
+          <ol className="relative space-y-4 border-l-2 border-blue-100 pl-5">
             {timeline.map((t, i) => (
               <li key={i} className="relative">
                 <span

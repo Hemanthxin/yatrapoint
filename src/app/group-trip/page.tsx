@@ -57,7 +57,7 @@ export default async function GroupTripListPage() {
                 </div>
                 <span
                   className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
-                    t.status === "finalized" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                    t.status === "finalized" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"
                   }`}
                 >
                   {t.status === "finalized" ? "Finalized" : "Planning"}
@@ -65,16 +65,16 @@ export default async function GroupTripListPage() {
               </div>
               <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600">
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-emerald-600" /> {t.days} day{t.days > 1 ? "s" : ""}
+                  <Calendar className="h-3.5 w-3.5 text-blue-600" /> {t.days} day{t.days > 1 ? "s" : ""}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-emerald-600" /> {t.travellers} people
+                  <Users className="h-3.5 w-3.5 text-blue-600" /> {t.travellers} people
                 </span>
                 <span className="flex items-center gap-1">
-                  <Wallet className="h-3.5 w-3.5 text-emerald-600" /> {formatINR(t.totalBudget)}
+                  <Wallet className="h-3.5 w-3.5 text-blue-600" /> {formatINR(t.totalBudget)}
                 </span>
               </div>
-              <span className="mt-1 flex items-center gap-1 text-xs font-bold text-emerald-700">
+              <span className="mt-1 flex items-center gap-1 text-xs font-bold text-blue-700">
                 Open trip <ChevronRight className="h-3.5 w-3.5" />
               </span>
             </Link>

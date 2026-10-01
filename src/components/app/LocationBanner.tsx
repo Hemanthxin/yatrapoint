@@ -31,13 +31,13 @@ export function LocationBanner({
       <div className="space-y-2">
         <div
           className={`flex flex-wrap items-center justify-between gap-2 rounded-2xl border px-4 py-3 text-sm ${
-            isCoarse ? "border-amber-200 bg-amber-50" : "border-emerald-200 bg-emerald-50"
+            isCoarse ? "border-amber-200 bg-amber-50" : "border-blue-200 bg-blue-50"
           }`}
         >
-          <span className={`inline-flex flex-wrap items-center gap-2 font-semibold ${isCoarse ? "text-amber-900" : "text-emerald-800"}`}>
+          <span className={`inline-flex flex-wrap items-center gap-2 font-semibold ${isCoarse ? "text-amber-900" : "text-blue-800"}`}>
             <span
               className={`grid h-7 w-7 place-items-center rounded-full ${
-                isCoarse ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+                isCoarse ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"
               }`}
             >
               <MapPin className="h-4 w-4" />
@@ -48,7 +48,7 @@ export function LocationBanner({
               ? "Using your selected location"
               : "Using your live location"}
             {loc.accuracyMeters && (
-              <span className={`text-xs font-medium ${isCoarse ? "text-amber-700/80" : "text-emerald-700/70"}`}>
+              <span className={`text-xs font-medium ${isCoarse ? "text-amber-700/80" : "text-blue-700/70"}`}>
                 (±{Math.round(loc.accuracyMeters)} m)
               </span>
             )}
@@ -61,7 +61,7 @@ export function LocationBanner({
             )}
             <span
               className={`rounded-full px-2.5 py-1 text-xs font-medium ${
-                isCoarse ? "bg-amber-100/70 text-amber-700/80" : "bg-emerald-100/70 text-emerald-700/80"
+                isCoarse ? "bg-amber-100/70 text-amber-700/80" : "bg-blue-100/70 text-blue-700/80"
               }`}
             >
               {loc.placeName ?? `${loc.coords.lat.toFixed(4)}, ${loc.coords.lng.toFixed(4)}`}
@@ -72,7 +72,7 @@ export function LocationBanner({
               className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold transition active:scale-95 ${
                 isCoarse
                   ? "border-amber-300 bg-white text-amber-900 hover:bg-amber-100"
-                  : "border-emerald-300 bg-white text-emerald-800 hover:bg-emerald-100"
+                  : "border-blue-300 bg-white text-blue-800 hover:bg-blue-100"
               }`}
             >
               <Pencil className="h-3 w-3" /> {pickerOpen ? "Cancel" : "Set manually"}
@@ -99,7 +99,7 @@ export function LocationBanner({
   if (loc.status === "prompting") {
     return (
       <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600">
-        <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />
+        <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
         Requesting your location…
       </div>
     );
@@ -189,13 +189,13 @@ function LocationSearchPanel({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search your area, e.g. Indiranagar, Bangalore"
-            className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none focus:border-emerald-500"
+            className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none focus:border-blue-500"
           />
         </div>
         <button
           type="submit"
           disabled={searching}
-          className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+          className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
         >
           {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
           Find
@@ -211,7 +211,7 @@ function LocationSearchPanel({
               onClick={() => onPick(r.lat, r.lng)}
               className="flex w-full items-start gap-2 border-b border-slate-100 px-3 py-2 text-left text-sm last:border-0 hover:bg-slate-50"
             >
-              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-600" />
               <span className="truncate">{r.label}</span>
             </button>
           ))}

@@ -21,7 +21,7 @@ export function ShareJourneyCard() {
         aria-hidden
         className="absolute inset-0 -z-10 h-full w-full object-cover object-right"
       />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-tr from-emerald-950/90 via-emerald-900/75 to-emerald-800/45" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-tr from-blue-950/90 via-blue-900/75 to-blue-800/45" />
 
       <h2 className="text-sm font-bold drop-shadow">Share Your Journey</h2>
       <p className="mt-1 text-xs leading-relaxed text-white/85 drop-shadow">
@@ -34,7 +34,7 @@ export function ShareJourneyCard() {
         <button
           type="button"
           onClick={() => window.dispatchEvent(new CustomEvent("yatra:open-composer"))}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-bold text-emerald-800 shadow-sm transition hover:bg-emerald-50 active:scale-95"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-bold text-blue-800 shadow-sm transition hover:bg-blue-50 active:scale-95"
         >
           <Plus className="h-3.5 w-3.5" /> Add post
         </button>

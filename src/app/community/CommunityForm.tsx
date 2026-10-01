@@ -148,7 +148,7 @@ export function CommunityForm({
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
-            <span className="text-gradient">Create a post</span>
+            <span className="text-gradient-brand">Create a post</span>
           </h2>
           <p className="mb-3 text-xs font-medium text-slate-500">Share a place — photo, review &amp; rating. Goes live instantly.</p>
         </div>
@@ -188,7 +188,7 @@ export function CommunityForm({
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="grid h-32 w-32 shrink-0 place-items-center rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-emerald-400 hover:text-emerald-600"
+              className="grid h-32 w-32 shrink-0 place-items-center rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-blue-400 hover:text-blue-600"
             >
               <Camera className="h-6 w-6" />
             </button>
@@ -200,7 +200,7 @@ export function CommunityForm({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={mediaBusy}
-            className="flex h-32 flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600 disabled:opacity-60"
+            className="flex h-32 flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-600 disabled:opacity-60"
           >
             {mediaBusy ? <Loader2 className="h-7 w-7 animate-spin" /> : <Camera className="h-7 w-7" />}
             <span className="text-sm font-medium">Add photos</span>
@@ -209,7 +209,7 @@ export function CommunityForm({
             type="button"
             onClick={() => videoRef.current?.click()}
             disabled={mediaBusy}
-            className="flex h-32 flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-600 disabled:opacity-60"
+            className="flex h-32 flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 transition hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-600 disabled:opacity-60"
           >
             <Clapperboard className="h-7 w-7" />
             <span className="text-sm font-medium">Add a video</span>
@@ -231,7 +231,7 @@ export function CommunityForm({
               onClick={() => setPostType(t.id)}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
                 active
-                  ? "border-transparent bg-emerald-600 text-white"
+                  ? "border-transparent bg-blue-600 text-white"
                   : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -246,7 +246,7 @@ export function CommunityForm({
         value={title}
         onChange={(e) => setTitle(e.target.value.slice(0, 80))}
         placeholder="Place name (e.g. Abbey Falls, Coorg)"
-        className="mb-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+        className="mb-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
       />
 
       {/* Rating */}
@@ -277,7 +277,7 @@ export function CommunityForm({
           onChange={(e) => setDescription(e.target.value.slice(0, 1000))}
           rows={3}
           placeholder="Write your review… what's special about this place?"
-          className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 pb-6 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 pb-6 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
         <span
           className={`pointer-events-none absolute bottom-2 right-3 text-[11px] font-medium ${
@@ -295,7 +295,7 @@ export function CommunityForm({
           onClick={addLiveLocation}
           className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border px-4 py-2.5 text-sm font-semibold transition active:scale-95 ${
             coords
-              ? "border-emerald-600 bg-emerald-600 text-white"
+              ? "border-blue-600 bg-blue-600 text-white"
               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           }`}
         >
@@ -306,7 +306,7 @@ export function CommunityForm({
           value={locationName}
           onChange={(e) => setLocationName(e.target.value)}
           placeholder="Area / city (optional)"
-          className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+          className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
         />
       </div>
 

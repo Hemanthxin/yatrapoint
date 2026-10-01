@@ -92,7 +92,7 @@ export function PrivacyPolicyContent() {
       <InfoSection title="Contact us">
         <p>
           Questions about privacy? Email{" "}
-          <a href="mailto:privacy@saafera.app" className="font-semibold text-emerald-700 hover:underline">
+          <a href="mailto:privacy@saafera.app" className="font-semibold text-blue-700 hover:underline">
             privacy@saafera.app
           </a>
           .

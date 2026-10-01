@@ -46,7 +46,7 @@ export function ExploreGrid({
               key={post.id}
               type="button"
               onClick={() => setActiveId(post.id)}
-              className="group relative block aspect-square w-full overflow-hidden rounded-xl bg-slate-100 focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+              className="group relative block aspect-square w-full overflow-hidden rounded-xl bg-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-500/20"
             >
               {post.photoUrl ? (
                 isVideo ? (
@@ -60,7 +60,7 @@ export function ExploreGrid({
                   />
                 )
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-emerald-700 p-2 text-center">
+                <div className="flex h-full w-full items-center justify-center bg-blue-700 p-2 text-center">
                   <span className="line-clamp-3 text-xs font-bold text-white">{post.title}</span>
                 </div>
               )}

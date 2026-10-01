@@ -60,7 +60,7 @@ export function SuggestionsQueue({ initial }: { initial: FestivalSuggestion[] })
                 type="button"
                 onClick={() => decide(s.id, "approved")}
                 disabled={busyId === s.id}
-                className="inline-flex min-h-[40px] items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white transition hover:bg-emerald-700 active:scale-95 disabled:opacity-60"
+                className="inline-flex min-h-[40px] items-center gap-1.5 rounded-xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700 active:scale-95 disabled:opacity-60"
               >
                 {busyId === s.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                 Approve

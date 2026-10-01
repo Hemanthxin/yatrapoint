@@ -44,7 +44,7 @@ export function MembersTab({
         </p>
         <Link
           href={`/group-trip/${trip.joinCode}/invite`}
-          className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100"
+          className="flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-100"
         >
           <UserPlus className="h-3.5 w-3.5" /> Invite
         </Link>
@@ -53,7 +53,7 @@ export function MembersTab({
       <div className="space-y-2">
         {members.map((m) => (
           <div key={m.userId} className="card flex items-center gap-3 p-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+            <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-blue-100 text-sm font-bold text-blue-700">
               {m.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={m.image} alt="" className="h-full w-full object-cover" />
@@ -67,7 +67,7 @@ export function MembersTab({
                 <Crown className="h-3 w-3" /> Admin
               </span>
             ) : (
-              <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-bold text-emerald-700">Joined</span>
+              <span className="shrink-0 rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold text-blue-700">Joined</span>
             )}
           </div>
         ))}

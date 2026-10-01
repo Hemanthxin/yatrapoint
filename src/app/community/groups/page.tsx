@@ -26,7 +26,7 @@ export default async function CommunityGroupsPage() {
           icon={Users}
           title={<>Travel <span className="italic">Communities</span></>}
           subtitle="Join a group of travellers who share your interests, or start your own — the creator approves who joins."
-          gradient="from-emerald-800 via-emerald-700 to-green-700"
+          gradient="from-blue-800 via-blue-700 to-sky-700"
         />
       </div>
       <div className="lg:hidden">

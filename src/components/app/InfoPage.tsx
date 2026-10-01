@@ -22,7 +22,7 @@ export function InfoPage({
     <Reveal className="mx-auto max-w-3xl space-y-5">
       <BackButton fallback="/settings" />
       <header className="flex items-center gap-3">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
           <Icon className="h-6 w-6" />
         </span>
         <div className="min-w-0 flex-1">
@@ -57,7 +57,7 @@ export function InfoSection({
   return (
     <section>
       <h2 className="flex items-center gap-2 text-lg font-black tracking-tight text-slate-900">
-        <span aria-hidden className="h-5 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
+        <span aria-hidden className="h-5 w-1.5 rounded-full bg-gradient-to-b from-blue-500 to-sky-600" />
         {title}
       </h2>
       <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-600">{children}</div>
@@ -65,13 +65,13 @@ export function InfoSection({
   );
 }
 
-// A tidy bulleted list with emerald markers.
+// A tidy bulleted list with blue markers.
 export function InfoList({ items }: { items: React.ReactNode[] }) {
   return (
     <ul className="space-y-2">
       {items.map((it, i) => (
         <li key={i} className="flex gap-2.5">
-          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
           <span>{it}</span>
         </li>
       ))}

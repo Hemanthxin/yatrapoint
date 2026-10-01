@@ -35,10 +35,10 @@ function seedToNear(p: CityPlace): NearPlace {
 }
 
 const GRADIENTS = [
-  "from-emerald-400 to-green-600",
-  "from-teal-400 to-emerald-600",
-  "from-sky-400 to-emerald-500",
-  "from-lime-400 to-green-600",
+  "from-blue-400 to-sky-600",
+  "from-sky-400 to-blue-600",
+  "from-sky-400 to-blue-500",
+  "from-lime-400 to-sky-600",
 ];
 
 // Category-appropriate emoji for places with no photo.

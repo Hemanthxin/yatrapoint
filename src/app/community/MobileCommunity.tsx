@@ -45,12 +45,12 @@ export function MobileCommunity({ posts, social, media, currentUserId, userName,
               href={`/community/groups/${c.slug}`}
               className="card flex shrink-0 items-center gap-2 px-3 py-2"
             >
-              <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-emerald-100">
+              <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-blue-100">
                 {c.coverImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={c.coverImage} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <Users className="h-4 w-4 text-emerald-700" />
+                  <Users className="h-4 w-4 text-blue-700" />
                 )}
               </span>
               <span className="min-w-0">

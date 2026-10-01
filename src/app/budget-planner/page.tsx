@@ -23,7 +23,7 @@ export default async function BudgetPlannerPage() {
       {/* Mobile-only app-style hero — desktop keeps the wizard's own inline header. */}
       <div className="lg:hidden -mx-4 mb-5 border-b border-slate-200 bg-white px-4 pb-5 pt-1 shadow-sm">
         <div className="flex items-center gap-3">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-500/30">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-md shadow-blue-500/30">
             <Wallet className="h-6 w-6" />
           </span>
           <div>

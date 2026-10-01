@@ -196,7 +196,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
             {[place.district, place.state].filter(Boolean).join(", ")}
           </p>
           {hasCoords && !isFallback && (
-            <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-500/90 px-2.5 py-1 text-[11px] font-bold text-white">
+            <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-blue-500/90 px-2.5 py-1 text-[11px] font-bold text-white">
               <Navigation className="h-3 w-3" />
               {routeLoading && !route ? "Measuring distance…" : `${formatKm(drivingKm)} from you`}
             </p>
@@ -222,10 +222,10 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
                 onClick={() => setTab(t.id)}
                 aria-pressed={active}
                 className={`flex min-w-0 flex-1 basis-0 flex-col items-center gap-1 rounded-2xl px-1 py-2.5 text-[11px] font-bold transition active:scale-95 ${
-                  active ? "bg-emerald-50 text-emerald-700" : "text-slate-500 hover:bg-slate-50"
+                  active ? "bg-blue-50 text-blue-700" : "text-slate-500 hover:bg-slate-50"
                 }`}
               >
-                <Icon className={`h-[18px] w-[18px] ${active ? "text-emerald-600" : "text-slate-400"}`} />
+                <Icon className={`h-[18px] w-[18px] ${active ? "text-blue-600" : "text-slate-400"}`} />
                 <span className="leading-none">{t.label}</span>
                 {t.sub && <span className="text-[9px] font-semibold leading-none text-slate-400">{t.sub}</span>}
               </button>
@@ -243,8 +243,8 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
                 no idea how far away the place actually is. */}
             <LiveBudget place={place} />
 
-            <p className="mt-3 flex items-start gap-2 rounded-xl bg-emerald-50/70 p-3 text-[11px] leading-relaxed text-slate-600">
-              <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+            <p className="mt-3 flex items-start gap-2 rounded-xl bg-blue-50/70 p-3 text-[11px] leading-relaxed text-slate-600">
+              <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-600" />
               Fuel is a return trip from your current location. Change the vehicle,
               party size or food allowance and every line updates.
             </p>
@@ -253,7 +253,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
                 all — the action existed only on the desktop layout. */}
             <div className="mt-4 space-y-2">
               <AddToCartButton
-                className="w-full py-3 shadow-lg shadow-emerald-500/40"
+                className="w-full py-3 shadow-lg shadow-blue-500/40"
                 label="Plan this trip"
                 item={{
                   id: place.id,
@@ -308,7 +308,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
             ) : (
               nearby.map((n) => (
                 <Link key={n.id} href={`/destinations/${n.slug}`} className="card card-hover flex items-center gap-3 p-3">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-50 text-lg">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-50 text-lg">
                     {CATEGORY_BY_SLUG[n.category as CategorySlug]?.emoji ?? "📍"}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -358,7 +358,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
           <section className="card mt-3 overflow-hidden p-4">
             <div className="mb-3 flex items-center justify-between gap-2">
               <span className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
+                <span className="grid h-7 w-7 place-items-center rounded-lg bg-blue-50 text-blue-700">
                   <Navigation className="h-4 w-4" />
                 </span>
                 Route from you
@@ -370,7 +370,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs font-bold text-emerald-700 active:scale-95"
+                className="flex items-center gap-1 text-xs font-bold text-blue-700 active:scale-95"
               >
                 Directions <ExternalLink className="h-3 w-3" />
               </a>
@@ -421,7 +421,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
             className="flex w-full items-center justify-between gap-2 text-left"
           >
             <span className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
-              <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-blue-50 text-blue-700">
                 <MapPin className="h-4 w-4" />
               </span>
               About {place.name}
@@ -451,7 +451,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
           {tickets.length > 0 && (
             <div className="mt-3 border-t border-slate-100 pt-3">
               <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                <Ticket className="h-3.5 w-3.5 text-emerald-600" /> Ticket pricing
+                <Ticket className="h-3.5 w-3.5 text-blue-600" /> Ticket pricing
               </p>
               <ul className="space-y-1">
                 {tickets.map((t) => (
@@ -468,7 +468,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
 
           {place.openingTimings && (
             <p className="mt-3 flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
-              <Clock className="h-3.5 w-3.5 text-emerald-600" /> {place.openingTimings}
+              <Clock className="h-3.5 w-3.5 text-blue-600" /> {place.openingTimings}
             </p>
           )}
         </section>
@@ -597,7 +597,7 @@ function Fact({
   return (
     <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-2.5">
       <p className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-        <span className="text-emerald-600">{icon}</span>
+        <span className="text-blue-600">{icon}</span>
         {label}
       </p>
       <p className="mt-0.5 text-[13px] font-extrabold text-slate-900">

@@ -140,7 +140,7 @@ export function CartPlanner() {
         action={
           <Link
             href="/festivals"
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.03] active:scale-95"
           >
             Browse festivals
           </Link>
@@ -154,7 +154,7 @@ export function CartPlanner() {
       {loading && (
         <div className="grid h-44 place-items-center rounded-3xl border border-slate-200 bg-white text-sm font-semibold text-slate-500 shadow-sm">
           <span className="flex flex-col items-center gap-3">
-            <Loader2 className="h-7 w-7 animate-spin text-emerald-600" />
+            <Loader2 className="h-7 w-7 animate-spin text-blue-600" />
             Mapping your {cart.length} trip {cart.length === 1 ? "stop" : "stops"}…
           </span>
         </div>
@@ -164,7 +164,7 @@ export function CartPlanner() {
         <>
           {/* Mobile (< lg): order-summary strip */}
           <Reveal className="flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:hidden">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-blue-50 text-blue-600">
               <ShoppingBag className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
@@ -173,7 +173,7 @@ export function CartPlanner() {
               </p>
               <p className="text-xs font-medium text-slate-500">Mapped in order, ready to go.</p>
             </div>
-            <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+            <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
               Ready
             </span>
           </Reveal>
@@ -187,7 +187,7 @@ export function CartPlanner() {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.03] active:scale-95"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.03] active:scale-95"
               >
                 <Navigation className="h-4 w-4" /> Open in Google Maps
               </a>
@@ -235,7 +235,7 @@ export function CartPlanner() {
                   className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold shadow-md ${
                     s.unlocated
                       ? "bg-slate-200 text-slate-500"
-                      : "bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-emerald-500/30"
+                      : "bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-blue-500/30"
                   }`}
                 >
                   {/* The badge is the stop's position ON THE ROUTE, so it lines
@@ -264,7 +264,7 @@ export function CartPlanner() {
                     href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-emerald-600 lg:h-9 lg:w-9 lg:rounded-lg"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-blue-600 lg:h-9 lg:w-9 lg:rounded-lg"
                     aria-label="Open on map"
                   >
                     <ExternalLink className="h-4 w-4" />
@@ -294,7 +294,7 @@ export function CartPlanner() {
         <Reveal as="section" className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 className="flex items-center gap-2 text-base font-extrabold tracking-tight text-slate-900">
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-blue-50 text-blue-600">
                 <Wallet className="h-4 w-4" />
               </span>
               Estimated budget
@@ -350,7 +350,7 @@ export function CartPlanner() {
                   · {travellers} {travellers === 1 ? "traveller" : "travellers"}
                 </span>
               </dt>
-              <dd className="text-lg font-extrabold tabular-nums text-emerald-700">{formatINR(grandTotal)}</dd>
+              <dd className="text-lg font-extrabold tabular-nums text-blue-700">{formatINR(grandTotal)}</dd>
             </div>
             {travellers > 1 && (
               <div className="flex items-center justify-between gap-3">
@@ -384,7 +384,7 @@ export function CartPlanner() {
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-emerald-600/30 transition active:scale-[0.98]"
+            className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-600/30 transition active:scale-[0.98]"
           >
             <Navigation className="h-4 w-4" /> Plan these {stops.length}{" "}
             {stops.length === 1 ? "trip" : "trips"}

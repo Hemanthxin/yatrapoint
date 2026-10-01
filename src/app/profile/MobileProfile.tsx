@@ -40,7 +40,7 @@ export function MobileProfile({
     <Reveal className="space-y-6">
       {/* Screen heading */}
       <div className="flex items-center gap-2 px-1">
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-emerald-700">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 text-blue-700">
           <MapPin className="h-4 w-4" />
         </span>
         <div className="min-w-0">

@@ -105,7 +105,7 @@ export function VoteTab({
                   onClick={() => vote(s.id, o.value)}
                   disabled={busyId === s.id}
                   className={`flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[11px] font-bold transition ${
-                    s.myVote === o.value ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                    s.myVote === o.value ? "border-blue-500 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
                 >
                   {o.emoji} {o.label} · {s.votes[o.value]}
@@ -122,7 +122,7 @@ export function VoteTab({
                   type="button"
                   onClick={() => decide(s.id, "confirmed")}
                   disabled={busyId === s.id}
-                  className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-emerald-600 py-2 text-xs font-bold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+                  className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-blue-600 py-2 text-xs font-bold text-white transition hover:bg-blue-700 disabled:opacity-60"
                 >
                   <Check className="h-3.5 w-3.5" /> Add to Itinerary
                 </button>
@@ -148,7 +148,7 @@ export function VoteTab({
               <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-600">{s.place.name}</span>
               <span
                 className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
-                  s.status === "confirmed" ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"
+                  s.status === "confirmed" ? "bg-blue-100 text-blue-700" : "bg-slate-200 text-slate-500"
                 }`}
               >
                 {s.status === "confirmed" ? "In itinerary" : "Removed"}
@@ -162,7 +162,7 @@ export function VoteTab({
                   type="button"
                   onClick={() => decide(s.id, s.status === "confirmed" ? "rejected" : "confirmed")}
                   disabled={busyId === s.id}
-                  className="shrink-0 text-[11px] font-bold text-emerald-700 underline-offset-2 hover:underline disabled:opacity-50"
+                  className="shrink-0 text-[11px] font-bold text-blue-700 underline-offset-2 hover:underline disabled:opacity-50"
                 >
                   {s.status === "confirmed" ? "Remove" : "Add back"}
                 </button>

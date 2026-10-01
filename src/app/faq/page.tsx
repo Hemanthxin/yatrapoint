@@ -79,7 +79,7 @@ export default async function FaqPage() {
                 {item.q}
                 <span
                   aria-hidden
-                  className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700 transition group-open:rotate-45"
+                  className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-blue-100 text-blue-700 transition group-open:rotate-45"
                 >
                   +
                 </span>

@@ -138,12 +138,12 @@ export function NewGroupTripForm({ states }: { states: string[] }) {
             type="button"
             onClick={useMyLocation}
             title="Use my current location"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-emerald-600 transition hover:bg-emerald-50 active:scale-95"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-blue-600 transition hover:bg-blue-50 active:scale-95"
           >
             {status === "prompting" ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
           </button>
         </div>
-        {startCoords && <p className="mt-1 text-[11px] text-emerald-600">Location pinned — used for real route/distance estimates.</p>}
+        {startCoords && <p className="mt-1 text-[11px] text-blue-600">Location pinned — used for real route/distance estimates.</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -207,7 +207,7 @@ export function NewGroupTripForm({ states }: { states: string[] }) {
               type="button"
               onClick={() => setVehicle(v)}
               className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition ${
-                vehicle === v ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                vehicle === v ? "border-blue-500 bg-blue-50 text-blue-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"
               }`}
             >
               <span>{VEHICLES[v].emoji}</span> {VEHICLES[v].label}

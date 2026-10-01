@@ -3,46 +3,47 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────────────────────
-   THEME SYSTEM — three switchable themes (set via [data-theme] on <html>):
-     • "light"   → bold clean light (default)
-     • "dark"    → dark premium
-     • "vibrant" → saturated gradient
-   All share a coral/red accent. Semantic tokens below are consumed by the
-   `accent`/`surface` Tailwind colours and by the app-wide overrides further
-   down, so switching the attribute re-skins the whole app.
-   ───────────────────────────────────────────────────────────────────────── */
-/* DESKTOP DEFAULT = the ORIGINAL look: GREEN brand + clean light surfaces.
-   The whole redesign (coral accent + dark/vibrant themes) is applied ONLY on
-   mobile (max-width: 1023px) in the media block below, so desktop stays exactly
-   as it was. The brand palette is expressed as RGB channels so a single media
-   query can flip green→coral across every emerald/green/teal utility at once. */
+   THEME SYSTEM — three switchable themes (set via [data-theme] on <html>),
+   identical on every screen size:
+     • "light"   → cream canvas + sky-blue accent (default)
+     • "dark"    → black canvas + its own green-aura accent (independent of
+                   the light theme's accent — see the BLACK + GREEN AURA
+                   section below, which wins over everything above it)
+     • "vibrant" → saturated purple/pink gradient + coral accent
+   Semantic tokens below are consumed by the `accent`/`surface` Tailwind
+   colours and by the app-wide overrides further down, so switching the
+   attribute re-skins the whole app — EXCEPT the sign-in/sign-up, OTP and
+   admin-login screens, which deliberately opt out via
+   `@/lib/legacy-auth-theme` and keep the original green look in every theme.
+   The brand palette is also expressed as RGB channels (`--br-*`) for any
+   future `bg-brand-*`-style Tailwind utility. */
 :root {
-  /* Warm forest-green brand (the Saafera logo green) — now the accent on EVERY
-     screen, so desktop matches the cream+green mobile look instead of the old
-     bright-emerald-on-white. */
-  --br-50: 237 247 240;  --br-100: 211 236 220; --br-200: 169 218 188;
-  --br-300: 117 192 151; --br-400: 66 161 115;  --br-500: 46 139 87;
-  --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
-  --br-900: 18 61 40;    --br-950: 10 33 22;
+  /* Sky-blue brand (the Saafera logo's blue road-to-sky stretch) — now the
+     accent on EVERY screen, over a warm light-cream canvas instead of the old
+     forest-green-on-cool-white. */
+  --br-50: 239 246 255;  --br-100: 219 234 254; --br-200: 191 219 254;
+  --br-300: 147 197 253; --br-400: 96 165 250;  --br-500: 59 130 246;
+  --br-600: 37 99 235;   --br-700: 29 78 216;   --br-800: 30 64 175;
+  --br-900: 30 58 138;   --br-950: 23 37 84;
 
   --background: 248 250 249;
   --foreground: 17 24 20;
-  /* Minimalist canvas — a whisper-cool near-white with clean white surfaces,
-     hairline neutral borders and a single forest-green accent. Calm, lots of
+  /* Minimalist canvas — a light, warm cream with clean white surfaces,
+     hairline cream-toned borders and a single sky-blue accent. Calm, lots of
      whitespace, almost no shadow. */
-  --app-bg: #f7f9f8;
+  --app-bg: #faf6ec;
   --surface: #ffffff;
-  --surface-2: #f2f5f4;
-  --text: #111814;
-  --text-soft: #414b45;
-  --muted: #7c857f;
-  --border: #e8ebe9;
-  --accent: #1f6b45;
-  --accent-2: #17573a;
+  --surface-2: #f3efe2;
+  --text: #1a2233;
+  --text-soft: #4b5768;
+  --muted: #7c8591;
+  --border: #e6e0d0;
+  --accent: #2563eb;
+  --accent-2: #1d4ed8;
   /* Sun-orange secondary accent (from the Saafera logo) — used sparingly. */
   --highlight: #e8883a;
-  --nav-bg: rgba(255, 255, 255, 0.85);
-  --ring: rgba(31, 107, 69, 0.14);
+  --nav-bg: rgba(253, 250, 242, 0.85);
+  --ring: rgba(37, 99, 235, 0.16);
 }
 
 html,
@@ -66,28 +67,28 @@ body {
    green + light look.
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 1023px) {
-  /* Flip the brand palette to CORAL and lighten the base surface. */
+  /* Mirrors the desktop cream+blue palette above. */
   :root {
-    /* Saafera brand green (from the logo) — the mobile accent. */
-    --br-50: 237 247 240;  --br-100: 211 236 220; --br-200: 169 218 188;
-    --br-300: 117 192 151; --br-400: 66 161 115;  --br-500: 46 139 87;
-    --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
-    --br-900: 18 61 40;    --br-950: 10 33 22;
+    /* Saafera brand blue (from the logo) — the mobile accent. */
+    --br-50: 239 246 255;  --br-100: 219 234 254; --br-200: 191 219 254;
+    --br-300: 147 197 253; --br-400: 96 165 250;  --br-500: 59 130 246;
+    --br-600: 37 99 235;   --br-700: 29 78 216;   --br-800: 30 64 175;
+    --br-900: 30 58 138;   --br-950: 23 37 84;
 
-    /* Minimalist near-white canvas (matches desktop). */
-    --app-bg: #f7f9f8;
+    /* Minimalist cream canvas (matches desktop). */
+    --app-bg: #faf6ec;
     --surface: #ffffff;
-    --surface-2: #f2f5f4;
-    --text: #111814;
-    --text-soft: #414b45;
-    --muted: #7c857f;
-    --border: #e8ebe9;
-    --accent: #1f6b45;
-    --accent-2: #17573a;
+    --surface-2: #f3efe2;
+    --text: #1a2233;
+    --text-soft: #4b5768;
+    --muted: #7c8591;
+    --border: #e6e0d0;
+    --accent: #2563eb;
+    --accent-2: #1d4ed8;
     /* Sun-orange highlight from the Saafera logo. */
     --highlight: #e8883a;
-    --nav-bg: rgba(255, 255, 255, 0.85);
-    --ring: rgba(31, 107, 69, 0.14);
+    --nav-bg: rgba(253, 250, 242, 0.85);
+    --ring: rgba(37, 99, 235, 0.16);
   }
 
   :root[data-theme="dark"] {
@@ -466,6 +467,31 @@ body {
 :root[data-theme="dark"] .border-emerald-100,
 :root[data-theme="dark"] .border-emerald-200 { border-color: rgba(52, 211, 153, 0.18) !important; }
 
+/* Same dark-theme treatment as the emerald/green/teal rules just above, keyed
+   to the blue/sky classes the site-wide rebrand (cream canvas + sky-blue
+   accent) now uses instead. Added rather than renamed: the sign-in/OTP
+   screens were deliberately left on the original green classes, and still
+   rely on the rules above exactly as before. Dark theme itself stays its own
+   green-aura identity regardless of the light theme's accent, so these map to
+   the SAME values, not a blue tint. */
+:root[data-theme="dark"] .bg-blue-50,
+:root[data-theme="dark"] .bg-blue-100,
+:root[data-theme="dark"] .bg-sky-50 { background-color: rgba(52, 211, 153, 0.13) !important; }
+:root[data-theme="dark"] .from-blue-50 {
+  --tw-gradient-from: #0f1a15 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(15 26 21 / 0) var(--tw-gradient-to-position) !important;
+}
+:root[data-theme="dark"] .from-blue-100 { --tw-gradient-from: #122a1e var(--tw-gradient-from-position) !important; }
+:root[data-theme="dark"] .via-blue-50 {
+  --tw-gradient-stops: var(--tw-gradient-from), #0f1a15 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+:root[data-theme="dark"] .to-sky-50 { --tw-gradient-to: #0f1a18 var(--tw-gradient-to-position) !important; }
+:root[data-theme="dark"] .to-blue-50 { --tw-gradient-to: #0f1a15 var(--tw-gradient-to-position) !important; }
+:root[data-theme="dark"] .to-blue-100 { --tw-gradient-to: #122a1e var(--tw-gradient-to-position) !important; }
+:root[data-theme="dark"] .border-blue-100\/60,
+:root[data-theme="dark"] .border-blue-100,
+:root[data-theme="dark"] .border-blue-200 { border-color: rgba(52, 211, 153, 0.18) !important; }
+
 /* Richer aura + green glow on the sticky chrome for the "aura-filled" feel. */
 :root[data-theme="dark"] .glass-strong {
   box-shadow: 0 1px 0 rgba(52, 211, 153, 0.12), 0 8px 30px -20px rgba(0, 0, 0, 0.8);
@@ -718,9 +744,22 @@ input[type="number"] {
     animation-play-state: paused;
   }
 
-  /* Animated gradient brand text (deep forest → sea green). */
+  /* Animated gradient brand text (deep forest → sea green). Left exactly as
+     it was — the sign-in/OTP screens use this class directly and were
+     deliberately kept on the original look. Everywhere else uses
+     `.text-gradient-brand` below instead. */
   .text-gradient {
     background: linear-gradient(110deg, #1b5a38, #2e8b57 35%, #42a173 60%, #1b5a38);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Same animated gradient text, re-keyed to the site-wide cream+blue rebrand
+     (deep blue → sky blue) for every OTHER use of the brand gradient text. */
+  .text-gradient-brand {
+    background: linear-gradient(110deg, #1d4ed8, #2563eb 35%, #38bdf8 60%, #1d4ed8);
     background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;

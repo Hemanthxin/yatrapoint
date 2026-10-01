@@ -40,7 +40,7 @@ interface Props {
 }
 
 export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Props) {
-  const tone = "bg-emerald-100 text-emerald-700";
+  const tone = "bg-blue-100 text-blue-700";
   // The admin-uploaded (or default) banner, plus the shipped travel scenes —
   // the hero auto-cycles through all of them.
   const heroSlides = [
@@ -80,7 +80,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
             spinning and receding into the scene as you scroll past it. */}
         <Reveal
           as="section"
-          className="relative h-80 overflow-hidden rounded-[1.75rem] shadow-xl shadow-emerald-900/10 md:h-96 xl:h-[26rem]"
+          className="relative h-80 overflow-hidden rounded-[1.75rem] shadow-xl shadow-blue-900/10 md:h-96 xl:h-[26rem]"
           amount={0}
         >
           <HeroSlideshow
@@ -90,18 +90,18 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
           />
           {/* Dark scrim so white text sits comfortably over the photo — still
               image renders at full opacity, the fade just clears sooner. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/55 via-45% to-emerald-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-blue-950/55 via-45% to-blue-950/20" />
           <div className="relative flex h-full items-center justify-between gap-6 p-10">
             <div className="flex max-w-lg shrink-0 flex-col justify-center">
-              <p className="inline-flex w-max items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-200 backdrop-blur-sm">
+              <p className="inline-flex w-max items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-blue-200 backdrop-blur-sm">
                 <MapPin className="h-3 w-3" /> Featured Destination
               </p>
               <h1 className="mt-3 whitespace-nowrap font-serif text-[2.9rem] font-semibold leading-[1.05] tracking-tight text-white drop-shadow-sm">
                 Explore Karnataka,
                 <br />
-                <span className="italic text-emerald-300">Create Memories</span>
+                <span className="italic text-blue-300">Create Memories</span>
               </h1>
-              <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-emerald-50/80 drop-shadow-sm">
+              <p className="mt-3 max-w-xs text-[15px] font-medium leading-relaxed text-blue-50/80 drop-shadow-sm">
                 Smart trips. Budget friendly.
                 <br />
                 Unforgettable memories.
@@ -138,7 +138,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
                   <div className={`mb-3 grid h-11 w-11 place-items-center rounded-xl ${f.tone}`}>{f.icon}</div>
                   <p className="font-serif text-base font-semibold tracking-tight text-slate-900">{f.title}</p>
                   <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{f.desc}</p>
-                  <ChevronRight className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                  <ChevronRight className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-blue-600" />
                 </Link>
               </TiltCard>
             </Reveal>
@@ -188,7 +188,7 @@ export function DesktopDashboard({ stats, citySeed, upcoming, heroImageUrl }: Pr
 
     {/* Trust strip — full width. */}
     <div className="relative">
-      <LeafSprig className="pointer-events-none absolute -right-2 -top-8 h-20 w-20 text-emerald-500/40" />
+      <LeafSprig className="pointer-events-none absolute -right-2 -top-8 h-20 w-20 text-blue-500/40" />
       <TrustStrip />
     </div>
     </div>
@@ -199,10 +199,10 @@ function SectionHeader({ title, href }: { title: string; href: string }) {
   return (
     <div className="mb-4 flex items-center justify-between">
       <h2 className="flex items-center gap-2.5 font-serif text-2xl font-semibold tracking-tight text-slate-900">
-        <span aria-hidden className="h-5 w-1.5 rounded-full bg-gradient-to-b from-emerald-500 to-green-600" />
+        <span aria-hidden className="h-5 w-1.5 rounded-full bg-gradient-to-b from-blue-500 to-sky-600" />
         {title}
       </h2>
-      <Link href={href} className="text-sm font-bold text-emerald-700 transition hover:text-emerald-800 hover:underline">
+      <Link href={href} className="text-sm font-bold text-blue-700 transition hover:text-blue-800 hover:underline">
         View all →
       </Link>
     </div>

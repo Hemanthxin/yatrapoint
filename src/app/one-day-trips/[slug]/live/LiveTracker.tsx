@@ -162,7 +162,7 @@ export function LiveTracker({ trip }: LiveTrackerProps) {
           trail={trail}
         />
         {phase === "tracking" && (
-          <div className="absolute left-3 top-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-bold text-white shadow-lg backdrop-blur">
+          <div className="absolute left-3 top-3 z-[400] inline-flex items-center gap-1.5 rounded-full bg-blue-500/90 px-3 py-1 text-xs font-bold text-white shadow-lg backdrop-blur">
             <span className="block h-2 w-2 animate-pulse rounded-full bg-white" />
             Live
           </div>
@@ -240,7 +240,7 @@ export function LiveTracker({ trip }: LiveTrackerProps) {
               type="button"
               onClick={start}
               disabled={status === "denied"}
-              className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-sm font-bold shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50"
+              className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 py-3 text-sm font-bold shadow-lg shadow-blue-500/30 transition hover:from-blue-600 hover:to-blue-700 disabled:opacity-50"
             >
               <Play className="h-4 w-4 fill-current" /> Start trip
             </button>
@@ -268,7 +268,7 @@ export function LiveTracker({ trip }: LiveTrackerProps) {
               <button
                 type="button"
                 onClick={resume}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 py-3 text-sm font-bold text-white transition hover:bg-emerald-600"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-500 py-3 text-sm font-bold text-white transition hover:bg-blue-600"
               >
                 <Play className="h-4 w-4 fill-current" /> Resume
               </button>
@@ -282,13 +282,13 @@ export function LiveTracker({ trip }: LiveTrackerProps) {
             </>
           )}
           {phase === "arrived" && (
-            <div className="col-span-2 flex items-center gap-2 rounded-xl bg-emerald-600/30 px-4 py-3 text-sm font-bold text-emerald-200">
+            <div className="col-span-2 flex items-center gap-2 rounded-xl bg-blue-600/30 px-4 py-3 text-sm font-bold text-blue-200">
               <Sparkles className="h-5 w-5" />
               Arrived at {trip.name}! Trip duration {formatMinutes(elapsedMinutes)}.
               <button
                 type="button"
                 onClick={stop}
-                className="ml-auto inline-flex items-center gap-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs text-white hover:bg-emerald-400"
+                className="ml-auto inline-flex items-center gap-1 rounded-lg bg-blue-500 px-3 py-1.5 text-xs text-white hover:bg-blue-400"
               >
                 Done <ArrowRight className="h-3 w-3" />
               </button>
@@ -330,7 +330,7 @@ function Stat({
 function PhasePill({ phase }: { phase: Phase }) {
   const map: Record<Phase, { label: string; cls: string }> = {
     ready: { label: "Ready", cls: "bg-slate-700 text-slate-200" },
-    tracking: { label: "Tracking", cls: "bg-emerald-500 text-white" },
+    tracking: { label: "Tracking", cls: "bg-blue-500 text-white" },
     paused: { label: "Paused", cls: "bg-amber-500 text-white" },
     arrived: { label: "Arrived", cls: "bg-violet-500 text-white" },
   };

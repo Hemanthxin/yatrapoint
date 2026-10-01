@@ -110,7 +110,7 @@ export function AddPlacesTab({
                 onClick={() => add(p)}
                 disabled={added || pendingId === p.id}
                 className={`flex shrink-0 items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition ${
-                  added ? "bg-emerald-100 text-emerald-700" : "border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                  added ? "bg-blue-100 text-blue-700" : "border border-blue-500 text-blue-700 hover:bg-blue-50"
                 }`}
               >
                 {added ? (

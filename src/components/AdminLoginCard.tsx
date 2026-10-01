@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock, User, LogIn, Luggage } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { z } from "zod";
+import { LEGACY_AUTH_STYLE } from "@/lib/legacy-auth-theme";
 
 const schema = z.object({
   username: z.string().trim().min(1, "Enter your admin email"),
@@ -55,7 +56,7 @@ export function AdminLoginCard() {
   }
 
   return (
-    <div className="relative w-full max-w-md animate-fadeUp">
+    <div className="relative w-full max-w-md animate-fadeUp" style={LEGACY_AUTH_STYLE}>
       {/* Amber aura glow behind the card */}
       <div
         aria-hidden

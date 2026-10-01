@@ -94,7 +94,7 @@ export function HeroBannerManager({ initialImageUrl }: { initialImageUrl: string
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-1 flex items-center gap-2.5">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30">
           <ImageIcon className="h-5 w-5" />
         </span>
         <div className="min-w-0">
@@ -108,11 +108,11 @@ export function HeroBannerManager({ initialImageUrl }: { initialImageUrl: string
         <img src={imageUrl ?? DEFAULT_HERO_SRC} alt="Hero banner preview" className="h-full w-full object-cover" />
         {busy && (
           <div className="absolute inset-0 grid place-items-center bg-white/70">
-            <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+            <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
           </div>
         )}
         {saved && !busy && (
-          <div className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-white">
+          <div className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-white">
             <Check className="h-3.5 w-3.5" />
           </div>
         )}

@@ -101,10 +101,10 @@ export function LiveBudget({
 
   return (
     <div
-      className={`rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-emerald-500/5 ${className}`}
+      className={`rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-blue-500/5 ${className}`}
     >
       <div className="flex items-center gap-2">
-        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
+        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
           <Wallet className="h-5 w-5" />
         </div>
         <p className="text-sm font-extrabold tracking-tight text-slate-900">Live budget</p>
@@ -121,7 +121,7 @@ export function LiveBudget({
                 onClick={() => setVehicle(k)}
                 className={`flex min-h-[64px] min-w-0 flex-col items-center justify-center rounded-xl border px-0.5 py-1.5 transition active:scale-95 ${
                   vehicle === k
-                    ? "border-transparent bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
+                    ? "border-transparent bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30"
                     : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                 }`}
                 aria-label={VEHICLES[k].label}
@@ -149,7 +149,7 @@ export function LiveBudget({
             <select
               value={ticketIdx}
               onChange={(e) => setTicketIdx(Number(e.target.value))}
-              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             >
               {ticketOptions.map((opt, i) => (
                 <option key={i} value={i}>
@@ -192,7 +192,7 @@ export function LiveBudget({
         <div className="my-2 h-px bg-slate-200" />
         <div className="flex items-center justify-between">
           <dt className="text-base font-extrabold text-slate-900">Total</dt>
-          <dd className="text-2xl font-extrabold text-gradient">{formatINR(budget.total)}</dd>
+          <dd className="text-2xl font-extrabold text-gradient-brand">{formatINR(budget.total)}</dd>
         </div>
         <div className="flex items-center justify-between text-xs text-slate-500">
           <dt>Per person</dt>

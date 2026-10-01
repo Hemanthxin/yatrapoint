@@ -57,7 +57,7 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
         </p>
         <Link
           href="/community"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95"
+          className="mt-5 inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95"
         >
           <ImagePlus className="h-4 w-4" />
           Share your first place
@@ -78,7 +78,7 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
               key={post.id}
               type="button"
               onClick={() => setActiveId(post.id)}
-              className="group relative block aspect-square w-full overflow-hidden rounded-xl bg-slate-100 focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+              className="group relative block aspect-square w-full overflow-hidden rounded-xl bg-slate-100 focus:outline-none focus:ring-4 focus:ring-blue-500/20"
             >
               {post.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -88,7 +88,7 @@ export function ProfilePosts({ posts, social }: ProfilePostsProps) {
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 p-2 text-center">
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-sky-600 p-2 text-center">
                   <span className="line-clamp-3 text-xs font-bold text-white">
                     {post.title}
                   </span>
@@ -190,7 +190,7 @@ function PostModal({
               className="max-h-[55vh] w-full bg-slate-900 object-contain"
             />
           ) : (
-            <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-emerald-500 to-green-600 p-6 text-center">
+            <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-blue-500 to-sky-600 p-6 text-center">
               <span className="text-xl font-extrabold text-white">
                 {post.title}
               </span>
@@ -212,7 +212,7 @@ function PostModal({
 
             {post.locationName && (
               <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-slate-500">
-                <MapPin className="h-4 w-4 text-emerald-600" />
+                <MapPin className="h-4 w-4 text-blue-600" />
                 {post.locationName}
               </p>
             )}
@@ -228,7 +228,7 @@ function PostModal({
                 <Heart className="h-4 w-4 text-rose-500" /> {love}
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <MessageCircle className="h-4 w-4 text-emerald-600" /> {comments}
+                <MessageCircle className="h-4 w-4 text-blue-600" /> {comments}
               </span>
               <span className="ml-auto text-xs font-normal text-slate-400">
                 {formatDate(post.createdAt)}

@@ -44,7 +44,7 @@ export function AppHeader({ userLabel, userImage }: AppHeaderProps) {
                 className="h-6 w-6 rounded-full object-cover"
               />
             ) : (
-              <div className="grid h-6 w-6 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+              <div className="grid h-6 w-6 place-items-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700">
                 {userLabel.charAt(0).toUpperCase()}
               </div>
             )}

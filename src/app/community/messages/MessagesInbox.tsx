@@ -28,7 +28,7 @@ export function MessagesInbox({ conversations }: { conversations: ConversationRo
             title="No messages yet"
             description="Visit a traveller's profile and tap Message to start a chat."
             action={
-              <Send className="mx-auto h-5 w-5 text-emerald-600" aria-hidden />
+              <Send className="mx-auto h-5 w-5 text-blue-600" aria-hidden />
             }
           />
         ) : (
@@ -43,7 +43,7 @@ export function MessagesInbox({ conversations }: { conversations: ConversationRo
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={c.otherUserImage} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover" />
                   ) : (
-                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-emerald-600 text-base font-bold text-white">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-blue-600 text-base font-bold text-white">
                       {c.otherUserName.charAt(0).toUpperCase()}
                     </span>
                   )}
@@ -57,7 +57,7 @@ export function MessagesInbox({ conversations }: { conversations: ConversationRo
                   <div className="flex shrink-0 flex-col items-end gap-1">
                     <span className="text-xs text-[color:var(--muted)]">{timeAgo(c.lastCreatedAt)}</span>
                     {c.unreadCount > 0 && (
-                      <span className="grid h-5 min-w-5 place-items-center rounded-full bg-emerald-600 px-1.5 text-[10px] font-bold text-white">
+                      <span className="grid h-5 min-w-5 place-items-center rounded-full bg-blue-600 px-1.5 text-[10px] font-bold text-white">
                         {c.unreadCount}
                       </span>
                     )}

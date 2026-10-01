@@ -60,7 +60,7 @@ export function MobileTrips({
     <div className="space-y-5 pb-4">
       {/* Bold header */}
       <Reveal className="flex items-start gap-3" amount={0}>
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
           <Compass className="h-6 w-6" />
         </span>
         <div className="min-w-0">
@@ -68,7 +68,7 @@ export function MobileTrips({
             One-day trips
           </h1>
           <p className="mt-0.5 text-sm font-medium text-slate-500">
-            {filtered.length} picks near <span className="font-bold text-emerald-600">{baseCity}</span>
+            {filtered.length} picks near <span className="font-bold text-blue-600">{baseCity}</span>
           </p>
         </div>
       </Reveal>
@@ -149,7 +149,7 @@ function Chip({
       onClick={onClick}
       className={`min-h-[44px] shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition active:scale-95 ${
         active
-          ? "bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30"
+          ? "bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30"
           : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >

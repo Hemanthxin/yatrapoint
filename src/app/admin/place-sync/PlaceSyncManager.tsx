@@ -47,7 +47,7 @@ export function PlaceSyncManager({ initialCoverage }: { initialCoverage: SyncCov
             type="button"
             onClick={() => runBatch(n)}
             disabled={busy}
-            className="inline-flex h-11 items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-5 text-sm font-bold text-white shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
+            className="inline-flex h-11 items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-sky-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60"
           >
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
             Sync next {n}
@@ -65,7 +65,7 @@ export function PlaceSyncManager({ initialCoverage }: { initialCoverage: SyncCov
             {lastResult.details.map((d, i) => (
               <li key={i} className="flex items-center gap-1.5">
                 {d.startsWith("✓") ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-blue-600" />
                 ) : (
                   <XCircle className="h-3.5 w-3.5 shrink-0 text-rose-500" />
                 )}
@@ -89,7 +89,7 @@ function CoverageCard({ label, total, synced }: { label: string; total: number; 
         {synced} <span className="text-sm font-medium text-slate-400">/ {total} synced</span>
       </p>
       <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-        <div className="h-full rounded-full bg-emerald-500" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-blue-500" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );

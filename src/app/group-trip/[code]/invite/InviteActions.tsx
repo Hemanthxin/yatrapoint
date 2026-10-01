@@ -45,35 +45,35 @@ export function InviteActions({ joinCode, tripName }: { joinCode: string; tripNa
           href={`https://wa.me/?text=${encodeURIComponent(message)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-emerald-50"
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-blue-50"
         >
-          <MessageCircle className="h-5 w-5 text-emerald-600" /> WhatsApp
+          <MessageCircle className="h-5 w-5 text-blue-600" /> WhatsApp
         </a>
         <button
           type="button"
           onClick={copyLink}
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-emerald-50"
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-blue-50"
         >
-          {copied ? <Check className="h-5 w-5 text-emerald-600" /> : <Copy className="h-5 w-5 text-emerald-600" />}
+          {copied ? <Check className="h-5 w-5 text-blue-600" /> : <Copy className="h-5 w-5 text-blue-600" />}
           {copied ? "Copied" : "Copy Link"}
         </button>
         <button
           type="button"
           onClick={share}
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-emerald-50"
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-blue-50"
         >
-          <Share2 className="h-5 w-5 text-emerald-600" /> Share
+          <Share2 className="h-5 w-5 text-blue-600" /> Share
         </button>
         <a
           href={`mailto:?subject=${encodeURIComponent(`Join my trip: ${tripName}`)}&body=${encodeURIComponent(message)}`}
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-emerald-50"
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-200 p-3 text-xs font-bold text-slate-700 transition hover:bg-blue-50"
         >
-          <Mail className="h-5 w-5 text-emerald-600" /> Email
+          <Mail className="h-5 w-5 text-blue-600" /> Email
         </a>
       </div>
       <div className="flex items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-2">
         <p className="min-w-0 flex-1 truncate text-xs font-mono text-slate-600">{url}</p>
-        <button type="button" onClick={copyLink} className="shrink-0 text-xs font-bold text-emerald-700">
+        <button type="button" onClick={copyLink} className="shrink-0 text-xs font-bold text-blue-700">
           Copy
         </button>
       </div>

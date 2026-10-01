@@ -422,7 +422,7 @@ export function WizardForm({ initial }: WizardFormProps) {
       <div>
         <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
           <div
-            className="h-full rounded-full bg-emerald-600 transition-all duration-300"
+            className="h-full rounded-full bg-blue-600 transition-all duration-300"
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
           />
         </div>
@@ -445,9 +445,9 @@ export function WizardForm({ initial }: WizardFormProps) {
                 <span
                   className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition ${
                     active
-                      ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
                       : done
-                      ? "bg-emerald-100 text-emerald-700"
+                      ? "bg-blue-100 text-blue-700"
                       : "bg-slate-100 text-slate-400"
                   }`}
                 >
@@ -486,9 +486,9 @@ export function WizardForm({ initial }: WizardFormProps) {
                 <ModeCard active={planMode === "around"} onClick={() => setPlanMode("around")} icon={<LocateFixed className="h-4 w-4" />} title="Around me" desc="Use my live location and travel within a chosen distance." />
                 <Link
                   href="/budget-planner/long-trips"
-                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50/40 active:scale-[0.99]"
+                  className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-blue-300 hover:bg-blue-50/40 active:scale-[0.99]"
                 >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 text-white">
                     <Route className="h-4 w-4" />
                   </span>
                   <span>
@@ -505,7 +505,7 @@ export function WizardForm({ initial }: WizardFormProps) {
               <StepLabel icon="💰">Your Budget</StepLabel>
               <p className="mb-2 text-3xl font-bold tracking-tight text-slate-900">₹{budget.toLocaleString("en-IN")}</p>
               <div className="flex items-center gap-2">
-                <div className="flex min-h-[44px] flex-1 items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
+                <div className="flex min-h-[44px] flex-1 items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-blue-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
                   <span className="mr-1 font-semibold text-slate-400">₹</span>
                   <input
                     type="number"
@@ -526,7 +526,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                 </div>
                 <span className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">INR</span>
               </div>
-              <input type="range" min={0} max={100} step={0.5} value={budgetToSlider(budget)} onChange={(e) => setBudget(clampBudget(sliderToBudget(Number(e.target.value))))} className="mt-4 h-2 w-full cursor-pointer accent-emerald-600" />
+              <input type="range" min={0} max={100} step={0.5} value={budgetToSlider(budget)} onChange={(e) => setBudget(clampBudget(sliderToBudget(Number(e.target.value))))} className="mt-4 h-2 w-full cursor-pointer accent-blue-600" />
               <div className="mt-1.5 flex justify-between text-[11px] font-medium text-slate-400">
                 <span>₹1K</span><span>₹5K</span><span>₹10K</span><span>₹20K</span><span>₹50K</span>
               </div>
@@ -608,7 +608,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                   {availableTripTypes(travellersNum).map(({ key, icon: Icon }) => {
                     const active = tripType === key;
                     return (
-                      <button key={key} type="button" onClick={() => pickTripType(key)} className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 ${active ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
+                      <button key={key} type="button" onClick={() => pickTripType(key)} className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-2xl border text-xs font-bold transition active:scale-95 ${active ? "border-transparent bg-blue-600 text-white shadow-md shadow-blue-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
                         <Icon className="h-5 w-5" />{key}
                       </button>
                     );
@@ -624,7 +624,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                 {PLACE_GROUPS.map((g) => {
                   const on = groups.has(g.slug);
                   return (
-                    <button key={g.slug} type="button" onClick={() => toggleGroup(g.slug)} className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-4 py-2.5 text-[13px] font-semibold transition active:scale-95 lg:min-h-[40px] lg:px-3.5 lg:py-2 lg:text-xs ${on ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
+                    <button key={g.slug} type="button" onClick={() => toggleGroup(g.slug)} className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-4 py-2.5 text-[13px] font-semibold transition active:scale-95 lg:min-h-[40px] lg:px-3.5 lg:py-2 lg:text-xs ${on ? "border-transparent bg-blue-600 text-white shadow-md shadow-blue-500/30" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>
                       <span>{g.emoji}</span>{g.label}
                     </button>
                   );
@@ -659,14 +659,14 @@ export function WizardForm({ initial }: WizardFormProps) {
             <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
               <label className="flex cursor-pointer items-center justify-between gap-3">
                 <span className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-                  <Utensils className="h-4 w-4 text-emerald-600" /> Include food in my budget
+                  <Utensils className="h-4 w-4 text-blue-600" /> Include food in my budget
                 </span>
                 <button
                   type="button"
                   role="switch"
                   aria-checked={includeFood}
                   onClick={() => setIncludeFood((v) => !v)}
-                  className={`relative h-6 w-11 shrink-0 rounded-full transition ${includeFood ? "bg-emerald-500" : "bg-slate-300"}`}
+                  className={`relative h-6 w-11 shrink-0 rounded-full transition ${includeFood ? "bg-blue-500" : "bg-slate-300"}`}
                 >
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${includeFood ? "left-[22px]" : "left-0.5"}`} />
                 </button>
@@ -686,7 +686,7 @@ export function WizardForm({ initial }: WizardFormProps) {
                       value={foodBudget}
                       onChange={(e) => setFoodBudget(e.target.value)}
                       placeholder={`Leave blank to estimate (~₹${(travellersNum * daysNum * 350).toLocaleString("en-IN")})`}
-                      className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                      className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-8 pr-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
                     />
                   </div>
                   <p className="mt-1.5 text-xs text-slate-500">
@@ -763,7 +763,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="button"
             onClick={goNext}
-            className="group flex min-h-[56px] flex-[2] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 lg:min-h-[52px] lg:bg-emerald-600 lg:bg-none lg:text-sm"
+            className="group flex min-h-[56px] flex-[2] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-base font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.01] active:scale-95 lg:min-h-[52px] lg:bg-blue-600 lg:bg-none lg:text-sm"
           >
             Next <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
           </button>
@@ -771,7 +771,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           <button
             type="submit"
             disabled={geocoding}
-            className="group relative flex min-h-[56px] flex-[2] items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70 lg:min-h-[52px] lg:bg-emerald-600 lg:bg-none lg:text-sm"
+            className="group relative flex min-h-[56px] flex-[2] items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-base font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70 lg:min-h-[52px] lg:bg-blue-600 lg:bg-none lg:text-sm"
           >
             {!geocoding && <span aria-hidden className="sheen-overlay animate-sheen" />}
             <span className="relative flex items-center gap-2">
@@ -795,7 +795,7 @@ export function WizardForm({ initial }: WizardFormProps) {
 function StepLabel({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <p className="mb-3 flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-900">
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-emerald-100 text-base text-emerald-700">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-blue-100 text-base text-blue-700">
         {icon}
       </span>
       {children}
@@ -832,19 +832,19 @@ function ModeCard({
       onClick={onClick}
       className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition active:scale-[0.98] ${
         active
-          ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200"
-          : "border-slate-200 hover:border-emerald-300 hover:bg-slate-50"
+          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+          : "border-slate-200 hover:border-blue-300 hover:bg-slate-50"
       }`}
     >
       <span
         className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition ${
-          active ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30" : "bg-slate-100 text-slate-500"
+          active ? "bg-blue-600 text-white shadow-md shadow-blue-500/30" : "bg-slate-100 text-slate-500"
         }`}
       >
         {icon}
       </span>
       <span>
-        <span className={`block text-sm font-bold ${active ? "text-emerald-800" : "text-slate-800"}`}>
+        <span className={`block text-sm font-bold ${active ? "text-blue-800" : "text-slate-800"}`}>
           {title}
         </span>
         <span className="mt-0.5 block text-xs text-slate-500">{desc}</span>
@@ -872,7 +872,7 @@ function Chip({
         square ? "grid h-12 w-12 place-items-center lg:h-11 lg:w-11" : "min-h-[48px] px-5 py-2.5 lg:min-h-[44px] lg:px-4 lg:py-2"
       } ${
         active
-          ? "border-transparent bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
+          ? "border-transparent bg-blue-600 text-white shadow-md shadow-blue-500/30"
           : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
       }`}
     >

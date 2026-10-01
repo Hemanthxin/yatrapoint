@@ -58,12 +58,12 @@ export default async function CommunityGroupPage({ params }: PageProps) {
         <BackButton fallback="/community/groups" label="Communities" />
 
         <div className="card mb-6 overflow-hidden">
-          <div className="relative h-36 w-full bg-emerald-100 sm:h-48">
+          <div className="relative h-36 w-full bg-blue-100 sm:h-48">
             {community.coverImage ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={community.coverImage} alt="" className="h-full w-full object-cover" />
             ) : (
-              <div className="grid h-full w-full place-items-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+              <div className="grid h-full w-full place-items-center bg-gradient-to-br from-blue-500 to-sky-600 text-white">
                 <Users className="h-12 w-12" />
               </div>
             )}

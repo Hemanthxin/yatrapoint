@@ -90,7 +90,7 @@ export function HistoryList({ items }: { items: TripHistoryRow[] }) {
           <li
             key={item.id}
             onClick={() => onOpen(item)}
-            className="group flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-emerald-300"
+            className="group flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-300"
           >
             <div className="min-w-0">
               <p className="truncate text-sm font-bold text-slate-900">{item.title}</p>

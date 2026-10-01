@@ -86,10 +86,10 @@ export function GroupTripHub({
               type="button"
               onClick={() => setTab(t.id)}
               className={`flex shrink-0 items-center gap-1.5 rounded-2xl px-3.5 py-2.5 text-xs font-bold transition ${
-                active ? "bg-emerald-50 text-emerald-700" : "text-slate-500 hover:bg-slate-50"
+                active ? "bg-blue-50 text-blue-700" : "text-slate-500 hover:bg-slate-50"
               }`}
             >
-              <Icon className={`h-4 w-4 ${active ? "text-emerald-600" : "text-slate-400"}`} />
+              <Icon className={`h-4 w-4 ${active ? "text-blue-600" : "text-slate-400"}`} />
               {t.label}
             </button>
           );

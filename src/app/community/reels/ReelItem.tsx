@@ -160,7 +160,7 @@ export function ReelItem({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={post.authorImage} alt="" className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50" />
           ) : (
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-600 text-sm font-bold text-white ring-2 ring-white/50">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-blue-600 text-sm font-bold text-white ring-2 ring-white/50">
               {(post.authorName ?? "T").charAt(0).toUpperCase()}
             </span>
           )}
@@ -210,7 +210,7 @@ export function ReelItem({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={userImage} alt="" className="h-8 w-8 rounded-full object-cover" />
             ) : (
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700">
                 {userName.charAt(0).toUpperCase()}
               </span>
             )}
@@ -219,13 +219,13 @@ export function ReelItem({
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submitComment()}
               placeholder="Add a comment…"
-              className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm outline-none focus:border-emerald-400"
+              className="min-w-0 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm outline-none focus:border-blue-400"
             />
             <button
               type="button"
               onClick={submitComment}
               disabled={posting || !text.trim()}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-600 text-white disabled:opacity-50"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-white disabled:opacity-50"
             >
               {posting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>

@@ -36,7 +36,7 @@ export default async function LongTripsPage() {
       <Reveal className="mx-auto max-w-3xl">
         <BackButton fallback="/budget-planner" />
         <header className="mt-3 flex items-center gap-3">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
             <Route className="h-6 w-6" />
           </span>
           <div>

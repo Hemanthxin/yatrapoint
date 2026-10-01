@@ -73,7 +73,7 @@ export default async function CommunityPage() {
           icon={Users}
           title={<>Better Travel <span className="italic">Together</span></>}
           subtitle="Share your travel stories, get tips, ask questions, and connect with fellow explorers."
-          gradient="from-emerald-800 via-emerald-700 to-green-700"
+          gradient="from-blue-800 via-blue-700 to-sky-700"
           backgroundImage="/community-hero-bg.jpg"
           stats={[
             { label: "Travelers", value: formatCount(stats.travellers) },
@@ -124,7 +124,7 @@ export default async function CommunityPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={u.image} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-[color:var(--border)]" />
                 ) : (
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-emerald-600 text-base font-bold text-white">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-blue-600 text-base font-bold text-white">
                     {displayName.charAt(0).toUpperCase()}
                   </span>
                 )}
@@ -165,18 +165,18 @@ export default async function CommunityPage() {
             {trending.length > 0 && (
               <div className="card hidden p-3 [@media(min-height:800px)]:block">
                 <h2 className="mb-2.5 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
-                  <TrendingUp className="h-4 w-4 text-emerald-600" /> Trending Now
+                  <TrendingUp className="h-4 w-4 text-blue-600" /> Trending Now
                 </h2>
                 <ul className="space-y-2.5">
                   {trending.map((c) => (
                     <li key={c.id}>
                       <Link href={`/community/groups/${c.slug}`} className="flex items-center gap-2.5 rounded-xl transition hover:bg-[color:var(--surface-2)]">
-                        <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-emerald-100">
+                        <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-blue-100">
                           {c.coverImage ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={c.coverImage} alt="" className="h-full w-full object-cover" />
                           ) : (
-                            <Users className="h-4 w-4 text-emerald-700" />
+                            <Users className="h-4 w-4 text-blue-700" />
                           )}
                         </span>
                         <span className="min-w-0 flex-1">
@@ -195,7 +195,7 @@ export default async function CommunityPage() {
             {topContributors.length > 0 && (
               <div className="card hidden p-3 [@media(min-height:680px)]:block">
                 <h2 className="mb-2.5 flex items-center gap-2 text-sm font-bold text-[color:var(--text)]">
-                  <Award className="h-4 w-4 text-emerald-600" /> Top Contributors
+                  <Award className="h-4 w-4 text-blue-600" /> Top Contributors
                 </h2>
                 <ul className="space-y-2.5">
                   {topContributors.map((c, i) => (
@@ -206,7 +206,7 @@ export default async function CommunityPage() {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={c.image} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
                         ) : (
-                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue-600 text-xs font-bold text-white">
                             {c.name.charAt(0).toUpperCase()}
                           </span>
                         )}

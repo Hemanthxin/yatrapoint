@@ -26,11 +26,11 @@ export default async function GroupTripInvitePage({ params }: PageProps) {
   return (
     <AppShell userLabel={u.name || u.email || u.phone || "Traveller"} userImage={u.image}>
       <div className="mx-auto mt-6 max-w-xl space-y-5">
-        <div className="card flex items-start gap-3 border-emerald-200 bg-emerald-50/60 p-4">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+        <div className="card flex items-start gap-3 border-blue-200 bg-blue-50/60 p-4">
+          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
           <div>
-            <p className="text-sm font-extrabold text-emerald-800">Trip created!</p>
-            <p className="text-xs text-emerald-700">Let's invite your friends to plan together.</p>
+            <p className="text-sm font-extrabold text-blue-800">Trip created!</p>
+            <p className="text-xs text-blue-700">Let's invite your friends to plan together.</p>
           </div>
         </div>
 
@@ -38,17 +38,17 @@ export default async function GroupTripInvitePage({ params }: PageProps) {
           <p className="text-lg font-extrabold tracking-tight text-slate-900">{trip.name}</p>
           <div className="flex flex-wrap gap-3 text-xs font-semibold text-slate-600">
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-emerald-600" />
+              <Calendar className="h-3.5 w-3.5 text-blue-600" />
               {trip.startDate ?? "—"} → {trip.endDate ?? "—"} ({trip.days} day{trip.days > 1 ? "s" : ""})
             </span>
             <span className="flex items-center gap-1">
-              <Users className="h-3.5 w-3.5 text-emerald-600" /> {trip.travellers} people
+              <Users className="h-3.5 w-3.5 text-blue-600" /> {trip.travellers} people
             </span>
             <span className="flex items-center gap-1">
-              <Wallet className="h-3.5 w-3.5 text-emerald-600" /> {formatINR(trip.totalBudget)}
+              <Wallet className="h-3.5 w-3.5 text-blue-600" /> {formatINR(trip.totalBudget)}
             </span>
             <span className="flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5 text-emerald-600" /> {trip.startLabel} → {trip.destinationLabel}
+              <MapPin className="h-3.5 w-3.5 text-blue-600" /> {trip.startLabel} → {trip.destinationLabel}
             </span>
           </div>
         </div>

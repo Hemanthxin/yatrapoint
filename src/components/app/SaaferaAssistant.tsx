@@ -95,7 +95,7 @@ export function SaaferaAssistant() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close Saafera Assistant" : "Chat with the Saafera Assistant"}
-        className="fixed bottom-24 right-4 z-40 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
+        className="fixed bottom-24 right-4 z-40 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500 via-sky-500 to-blue-600 text-white shadow-lg shadow-blue-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
       >
         <span aria-hidden className="sheen-overlay animate-sheen" />
         {open ? (
@@ -105,7 +105,7 @@ export function SaaferaAssistant() {
             <MessageCircle className="relative h-6 w-6" />
             <span
               aria-hidden
-              className="absolute right-1.5 top-1.5 h-2.5 w-2.5 animate-pulse rounded-full bg-teal-300 ring-2 ring-white"
+              className="absolute right-1.5 top-1.5 h-2.5 w-2.5 animate-pulse rounded-full bg-sky-300 ring-2 ring-white"
             />
           </>
         )}
@@ -113,21 +113,21 @@ export function SaaferaAssistant() {
 
       {open && (
         // Thin animated gradient border (padding wrapper trick) around the
-        // glass panel — a shifting emerald→teal hairline is the one detail
+        // glass panel — a shifting blue→sky hairline is the one detail
         // that most reads as "AI" rather than a plain support-chat widget.
-        <div className="fixed inset-x-4 bottom-40 z-40 origin-bottom-right animate-pop rounded-[26px] bg-gradient-to-br from-emerald-400 via-teal-300 to-emerald-500 bg-[length:200%_200%] p-[1.5px] shadow-[0_18px_60px_-12px_rgba(2,6,23,0.45)] sm:inset-x-auto sm:right-6 sm:w-96 lg:bottom-24 animate-gradient">
+        <div className="fixed inset-x-4 bottom-40 z-40 origin-bottom-right animate-pop rounded-[26px] bg-gradient-to-br from-blue-400 via-sky-300 to-blue-500 bg-[length:200%_200%] p-[1.5px] shadow-[0_18px_60px_-12px_rgba(2,6,23,0.45)] sm:inset-x-auto sm:right-6 sm:w-96 lg:bottom-24 animate-gradient">
           <div className="flex max-h-[70vh] flex-col overflow-hidden rounded-[24px] glass-strong">
             <div className="relative flex items-center gap-2.5 overflow-hidden border-b border-white/40 px-4 py-3">
-              <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-teal-400/10 to-transparent" />
-              <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-md shadow-emerald-500/40 animate-breathe">
+              <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-500/10 via-sky-400/10 to-transparent" />
+              <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 via-sky-500 to-blue-600 text-white shadow-md shadow-blue-500/40 animate-breathe">
                 <Sparkles className="h-4 w-4" />
               </span>
               <div className="relative min-w-0 flex-1">
-                <p className="truncate bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-sm font-extrabold text-transparent">
+                <p className="truncate bg-gradient-to-r from-blue-700 to-sky-600 bg-clip-text text-sm font-extrabold text-transparent">
                   Saafera Assistant
                 </p>
                 <p className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
-                  <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                  <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
                   {contextPlace ? `Talking about ${contextPlace}` : "Online — trip advice & app help"}
                 </p>
               </div>
@@ -154,15 +154,15 @@ export function SaaferaAssistant() {
                       ) : (
                         <div className={`flex max-w-[88%] items-end gap-1.5 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
                           {m.role === "assistant" && (
-                            <span className="mb-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                            <span className="mb-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-sky-600 text-white">
                               <Sparkles className="h-2.5 w-2.5" />
                             </span>
                           )}
                           <div
                             className={`rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                               m.role === "user"
-                                ? "bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/30"
-                                : "border border-emerald-100/70 bg-gradient-to-br from-white/95 to-emerald-50/60 text-slate-800"
+                                ? "bg-gradient-to-br from-blue-600 to-sky-600 text-white shadow-md shadow-blue-500/30"
+                                : "border border-blue-100/70 bg-gradient-to-br from-white/95 to-blue-50/60 text-slate-800"
                             }`}
                           >
                             <FormattedText text={m.content} />
@@ -180,7 +180,7 @@ export function SaaferaAssistant() {
                             key={s}
                             type="button"
                             onClick={() => void send(s)}
-                            className="rounded-full border border-emerald-200 bg-white/80 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:border-emerald-400 hover:bg-emerald-50 active:scale-95"
+                            className="rounded-full border border-blue-200 bg-white/80 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:border-blue-400 hover:bg-blue-50 active:scale-95"
                           >
                             {s}
                           </button>
@@ -204,14 +204,14 @@ export function SaaferaAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={contextPlace ? `Ask more about ${contextPlace}…` : "Ask about a trip, a place, or the app…"}
-                className="min-w-0 flex-1 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/15"
+                className="min-w-0 flex-1 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-400/15"
                 disabled={sending}
               />
               <button
                 type="submit"
                 disabled={sending || !input.trim()}
                 aria-label="Send"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/30 transition active:scale-90 disabled:opacity-40"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-md shadow-blue-500/30 transition active:scale-90 disabled:opacity-40"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -235,7 +235,7 @@ function FormattedText({ text }: { text: string }) {
         const body = bullet ? line.slice(2) : line;
         return (
           <div key={i} className={bullet ? "flex gap-2" : undefined}>
-            {bullet && <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />}
+            {bullet && <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />}
             <span className="min-w-0">{renderInline(body)}</span>
           </div>
         );
@@ -258,10 +258,10 @@ function renderInline(text: string) {
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1 rounded-2xl border border-emerald-100/70 bg-gradient-to-br from-white/95 to-emerald-50/60 px-4 py-3">
-      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.3s]" />
-      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]" />
-      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500" />
+    <div className="flex items-center gap-1 rounded-2xl border border-blue-100/70 bg-gradient-to-br from-white/95 to-blue-50/60 px-4 py-3">
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.3s]" />
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]" />
+      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-500" />
     </div>
   );
 }

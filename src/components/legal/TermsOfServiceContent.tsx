@@ -95,7 +95,7 @@ export function TermsOfServiceContent() {
       <InfoSection title="10. Contact">
         <p>
           Questions about these terms? Email{" "}
-          <a href="mailto:support@saafera.app" className="font-semibold text-emerald-700 hover:underline">
+          <a href="mailto:support@saafera.app" className="font-semibold text-blue-700 hover:underline">
             support@saafera.app
           </a>
           .

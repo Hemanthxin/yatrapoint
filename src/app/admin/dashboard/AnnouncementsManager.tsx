@@ -91,7 +91,7 @@ export function AnnouncementsManager({ initial }: { initial: Announcement[] }) {
                 a.isActive ? "border-slate-200 bg-white" : "border-slate-200 bg-slate-50 opacity-60"
               }`}
             >
-              <span className={`h-2 w-2 shrink-0 rounded-full ${a.isActive ? "bg-emerald-500" : "bg-slate-300"}`} />
+              <span className={`h-2 w-2 shrink-0 rounded-full ${a.isActive ? "bg-blue-500" : "bg-slate-300"}`} />
               <span className="min-w-0 flex-1 truncate text-sm text-slate-700">{a.message}</span>
               <button
                 onClick={() => toggle(a)}

@@ -51,12 +51,12 @@ export function Brand3DHero({ stats, className = "" }: Brand3DHeroProps) {
       <motion.span
         aria-hidden
         style={{ y: orbAY }}
-        className="pointer-events-none absolute -left-8 -top-10 h-40 w-40 rounded-full bg-emerald-400/30 blur-3xl"
+        className="pointer-events-none absolute -left-8 -top-10 h-40 w-40 rounded-full bg-blue-400/30 blur-3xl"
       />
       <motion.span
         aria-hidden
         style={{ y: orbBY }}
-        className="pointer-events-none absolute -right-4 bottom-0 h-48 w-48 rounded-full bg-teal-300/20 blur-3xl"
+        className="pointer-events-none absolute -right-4 bottom-0 h-48 w-48 rounded-full bg-sky-300/20 blur-3xl"
       />
 
       <div className="relative mx-auto flex h-full w-full max-w-[16rem] items-center justify-center">
@@ -72,9 +72,9 @@ export function Brand3DHero({ stats, className = "" }: Brand3DHeroProps) {
           >
             <div
               aria-hidden
-              className="absolute -inset-3 rounded-[2.25rem] bg-gradient-to-br from-emerald-400 via-teal-300 to-emerald-600 opacity-70 blur-md"
+              className="absolute -inset-3 rounded-[2.25rem] bg-gradient-to-br from-blue-400 via-sky-300 to-blue-600 opacity-70 blur-md"
             />
-            <div className="logo-plate relative h-48 w-48 overflow-hidden rounded-[2rem] p-3 shadow-2xl shadow-emerald-950/40 ring-1 ring-white/40 sm:h-56 sm:w-56">
+            <div className="logo-plate relative h-48 w-48 overflow-hidden rounded-[2rem] p-3 shadow-2xl shadow-blue-950/40 ring-1 ring-white/40 sm:h-56 sm:w-56">
               <Image
                 src="/saafera-logo.jpg"
                 alt="Saafera"

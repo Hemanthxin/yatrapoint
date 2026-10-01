@@ -57,7 +57,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             required
-            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </Field>
         <Field label="Days">
@@ -70,7 +70,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
             value={days}
             onChange={(e) => setDays(e.target.value)}
             required
-            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </Field>
         <Field label="Travellers">
@@ -81,14 +81,14 @@ export function PlannerForm({ initial }: PlannerFormProps) {
             max={20}
             value={travellers}
             onChange={(e) => setTravellers(e.target.value)}
-            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           />
         </Field>
         <Field label="Category" hint="Optional vibe filter">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+            className="min-h-[44px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-400 focus:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
           >
             <option value="">Any category</option>
             {CATEGORIES.map((c) => (
@@ -103,7 +103,7 @@ export function PlannerForm({ initial }: PlannerFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="group relative min-h-[48px] overflow-hidden rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
+          className="group relative min-h-[48px] overflow-hidden rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/40 transition hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:hover:scale-100"
         >
           {!isPending && <span aria-hidden className="sheen-overlay animate-sheen" />}
           <span className="relative">{isPending ? "Matching…" : "Find matching trips"}</span>

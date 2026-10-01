@@ -74,19 +74,19 @@ export default async function ProfilePage() {
               </div>
               <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
                 <span className="inline-flex items-center gap-1">
-                  <Wallet className="h-3.5 w-3.5 text-emerald-600" />
+                  <Wallet className="h-3.5 w-3.5 text-blue-600" />
                   {formatINR(p.totalBudget)}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-emerald-600" />
+                  <Calendar className="h-3.5 w-3.5 text-blue-600" />
                   {formatDays(p.days)}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-emerald-600" />
+                  <Users className="h-3.5 w-3.5 text-blue-600" />
                   {p.travellers} {p.travellers === 1 ? "traveller" : "travellers"}
                 </span>
                 {p.category && (
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-bold text-emerald-700">
+                  <span className="rounded-full bg-blue-50 px-2 py-0.5 font-bold text-blue-700">
                     {categoryLabel(p.category)}
                   </span>
                 )}
@@ -100,7 +100,7 @@ export default async function ProfilePage() {
                 >
                   <Link
                     href={`/destinations/${d.slug}`}
-                    className="flex items-center gap-2 font-medium text-slate-900 hover:text-emerald-700"
+                    className="flex items-center gap-2 font-medium text-slate-900 hover:text-blue-700"
                   >
                     <MapPin className="h-3.5 w-3.5 text-slate-400" />
                     {d.name}

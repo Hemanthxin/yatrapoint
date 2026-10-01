@@ -102,7 +102,7 @@ export function NavProgress() {
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-[100] h-0.5">
       <div
-        className="h-full bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 shadow-[0_0_10px_rgba(16,185,129,0.7)] transition-[width] duration-200 ease-out"
+        className="h-full bg-gradient-to-r from-blue-400 via-sky-500 to-sky-500 shadow-[0_0_10px_rgba(16,185,129,0.7)] transition-[width] duration-200 ease-out"
         style={{ width: `${progress}%`, opacity: progress >= 100 ? 0 : 1 }}
       />
     </div>

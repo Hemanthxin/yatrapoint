@@ -61,7 +61,7 @@ export function PlaceStatusBadgesCompact({ rating, ratingCount, weeklyHoursJson,
       ) : status && (
         <span
           className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-            status.isOpen ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-600"
+            status.isOpen ? "bg-blue-50 text-blue-700" : "bg-rose-50 text-rose-600"
           }`}
         >
           {status.isOpen ? "Open now" : "Closed"}
@@ -101,7 +101,7 @@ export function PlaceStatusBadgesFull({ rating, ratingCount, weeklyHoursJson, bu
         ) : status && (
           <span
             className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-              status.isOpen ? "text-emerald-700" : "text-rose-600"
+              status.isOpen ? "text-blue-700" : "text-rose-600"
             }`}
           >
             <Clock className="h-4 w-4" />

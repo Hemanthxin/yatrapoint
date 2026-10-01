@@ -17,11 +17,11 @@ export default async function TripCartPage() {
       <Reveal amount={0}>
         {/* Mobile (< lg): app-style hero header */}
         <header className="lg:hidden mb-5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700">
             <MapPinned className="h-3 w-3" /> Trip route
           </span>
           <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900">
-            Your <span className="text-gradient">trip cart</span>
+            Your <span className="text-gradient-brand">trip cart</span>
           </h1>
           <p className="mt-0.5 text-xs font-medium text-slate-500">
             Everything you saved, mapped as one route.

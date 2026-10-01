@@ -50,7 +50,7 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
       {/* Bold header */}
       <Reveal as="header" amount={0}>
         <div className="flex items-center gap-3">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/30">
             <CalendarClock className="h-6 w-6" />
           </div>
           <div className="min-w-0">
@@ -71,7 +71,7 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
       {thisMonth.length > 0 && (
         <Reveal as="section" amount={0}>
           <div className="mb-3 flex items-center gap-1.5">
-            <Sparkles className="h-4 w-4 text-emerald-600" />
+            <Sparkles className="h-4 w-4 text-blue-600" />
             <h2 className="text-lg font-extrabold tracking-tight text-slate-900">Coming up next</h2>
           </div>
           <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4">
@@ -84,7 +84,7 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
                 <div
                   key={f.name}
                   className={`relative flex w-40 shrink-0 flex-col justify-between overflow-hidden rounded-3xl border bg-white p-4 shadow-sm active:scale-[0.98] ${
-                    isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
+                    isNext ? "border-blue-300 ring-2 ring-blue-200" : "border-slate-200"
                   }`}
                 >
                   {image && (
@@ -107,7 +107,7 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
                   <div className="relative mt-3 min-w-0">
                     <p className={`truncate text-sm font-extrabold tracking-tight ${image ? "text-white drop-shadow" : "text-slate-900"}`}>{f.name}</p>
                     {cd && (
-                      <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                      <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">
                         <Clock className="h-2.5 w-2.5" /> {cd}
                       </p>
                     )}
@@ -132,11 +132,11 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
               <Reveal
                 key={f.name}
                 className={`overflow-hidden rounded-3xl border bg-white shadow-sm ${
-                  isNext ? "border-emerald-300 ring-2 ring-emerald-200" : "border-slate-200"
+                  isNext ? "border-blue-300 ring-2 ring-blue-200" : "border-slate-200"
                 }`}
               >
                 {/* Imagery banner with stacked date badge */}
-                <div className="relative flex items-center gap-4 overflow-hidden border-b border-emerald-100/60 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
+                <div className="relative flex items-center gap-4 overflow-hidden border-b border-blue-100/60 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-4">
                   {image && (
                     <>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -171,12 +171,12 @@ export function MobileFestivals({ festivals, nextUpcomingName, images }: Props) 
                       {formatFestivalDate(f.nextISO) || f.dateLabel}
                     </span>
                     {cd && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-[11px] font-bold text-blue-700">
                         <Clock className="h-3 w-3" /> {cd}
                       </span>
                     )}
                     {isNext && (
-                      <span className="rounded-full bg-gradient-to-r from-emerald-500 to-green-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-md shadow-emerald-500/40">
+                      <span className="rounded-full bg-gradient-to-r from-blue-500 to-sky-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-md shadow-blue-500/40">
                         Up next
                       </span>
                     )}

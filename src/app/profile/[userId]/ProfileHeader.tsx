@@ -38,7 +38,7 @@ export function ProfileHeader({
           className="h-24 w-24 shrink-0 rounded-full object-cover ring-1 ring-[color:var(--border)] sm:h-28 sm:w-28"
         />
       ) : (
-        <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-emerald-600 text-3xl font-bold text-white sm:h-28 sm:w-28">
+        <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-blue-600 text-3xl font-bold text-white sm:h-28 sm:w-28">
           {name.charAt(0).toUpperCase()}
         </span>
       )}
@@ -65,7 +65,7 @@ export function ProfileHeader({
 
         {bio && (
           <p className="mt-4 flex items-start justify-center gap-1.5 text-sm text-[color:var(--text-soft)] sm:justify-start">
-            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-600" />
             {bio}
           </p>
         )}

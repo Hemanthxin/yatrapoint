@@ -52,7 +52,7 @@ function ChooserOption({
   tone: "emerald" | "violet";
 }) {
   const tones = {
-    emerald: "from-emerald-500 to-green-600 shadow-emerald-500/30",
+    emerald: "from-blue-500 to-sky-600 shadow-blue-500/30",
     violet: "from-violet-500 to-purple-600 shadow-violet-500/30",
   }[tone];
 
