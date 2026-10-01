@@ -6,6 +6,8 @@ import { searchVariants } from "@/lib/place-aliases";
 import { listUserTripPlans, type TripPlanWithItems } from "@/lib/queries/trip-plans";
 import { haversineKm, type LatLng } from "@/lib/geo";
 import { isBengaluru, travelCostFor } from "@/lib/transport";
+import { fetchTrip } from "@/lib/routing";
+import { bucketStopsByDay, GROUP_FOOD_PER_PERSON_PER_DAY, type ItineraryStop, type ItineraryDay } from "@/lib/itinerary";
 import { FESTIVALS, type Festival } from "@/lib/festivals";
 
 // The Saafera Assistant answers from real project data only — never a
@@ -625,6 +627,348 @@ async function answerFestivalQuestion(question: string): Promise<string> {
 }
 
 // ---------------------------------------------------------------------------
+// Trip-plan generation — "plan a trip to Goa for 2 days". Picks real,
+// well-rated catalogue places in the named destination, orders them with the
+// same OSRM TSP solver the Group Trip Planner's itinerary generation uses
+// (falling back to a nearest-neighbour haversine chain when OSRM doesn't
+// answer in time, same as everywhere else in the app), splits the ordered
+// stops across the requested number of days by real travel+dwell time, and
+// costs it with the same fare data the Budget Planner uses. Never invents a
+// place, a distance, or a cost.
+// ---------------------------------------------------------------------------
+
+interface TripPlanRequest {
+  destination: string;
+  days: number;
+  travellers: number;
+  budgetInr: number | null;
+}
+
+// Requires an explicit "plan/build/create a trip|itinerary" phrasing, OR
+// "trip to/for" — narrow enough that normal place-finder questions ("best
+// places to visit in Goa") never get swept in here instead.
+const TRIP_PLAN_TRIGGER = /\b(plan|build|create|make|suggest)\b[\s\S]*\b(trip|itinerary|vacation|holiday)\b|\bitinerary\b|\btrip\s+(?:to|for)\b/;
+
+function parseTripPlanRequest(question: string): TripPlanRequest | null {
+  if (!TRIP_PLAN_TRIGGER.test(question)) return null;
+
+  const daysMatch = question.match(/\b(\d{1,2})\s*-?\s*days?\b/);
+  const days = daysMatch ? Math.min(10, Math.max(1, parseInt(daysMatch[1], 10))) : 1;
+
+  const travellersMatch = question.match(/\b(\d{1,2})\s*(?:people|persons|travellers|travelers|friends|members|pax|adults)\b/);
+  const travellers = travellersMatch ? Math.min(20, Math.max(1, parseInt(travellersMatch[1], 10))) : 1;
+
+  const budgetInr = parseBudgetInr(question);
+
+  let destination: string | null = null;
+  let m = question.match(/\bto\s+([a-z][a-z\s]{1,40}?)(?:\s+for\b|\s+with\b|\s+in\s+\d|[?.!]|$)/i);
+  if (m) destination = m[1].trim();
+  if (!destination) {
+    m = question.match(/\b\d{1,2}\s*-?\s*days?\s+(?:trip\s+)?(?:to|in|at)\s+([a-z][a-z\s]{1,40}?)(?:[?.!]|$)/i);
+    if (m) destination = m[1].trim();
+  }
+  if (!destination) {
+    m = question.match(/^([a-z][a-z\s]{1,30}?)\s+trip\b/i);
+    if (m) destination = m[1].trim();
+  }
+  if (!destination || destination.replace(/\s+/g, "").length < 3) return null;
+
+  return { destination, days, travellers, budgetInr };
+}
+
+interface ItineraryCandidateRow {
+  id: string;
+  name: string;
+  category: string;
+  entryFeePerPerson: number;
+  googleRating: number | null;
+  latitude: string | null;
+  longitude: string | null;
+  imageUrl: string | null;
+  idealHoursAtPlace: number | null;
+  idealMinutesAtPlace: number | null;
+}
+
+async function findItineraryCandidates(areaText: string, limit: number): Promise<ItineraryCandidateRow[]> {
+  const cond = areaCondition(areaText);
+  if (!cond) return [];
+  return db
+    .select({
+      id: places.id,
+      name: places.name,
+      category: places.category,
+      entryFeePerPerson: places.entryFeePerPerson,
+      googleRating: places.googleRating,
+      latitude: places.latitude,
+      longitude: places.longitude,
+      imageUrl: places.imageUrl,
+      idealHoursAtPlace: places.idealHoursAtPlace,
+      idealMinutesAtPlace: places.idealMinutesAtPlace,
+    })
+    .from(places)
+    .where(visibleWhere(eq(places.isHidden, false), cond))
+    .orderBy(sql`${places.googleRating} DESC NULLS LAST`, sql`${places.popularity} DESC`)
+    .limit(limit);
+}
+
+// Some well-known trip destinations are a locality WITHIN a district rather
+// than a district/city/state value themselves (e.g. "Hampi" is a village in
+// Vijayanagara district — it never appears in `district`/`city`/`state`, only
+// inside place NAMES like "Hampi Royal Enclosure"). When the direct area
+// match finds nothing, fall back to searching real place NAMES for the term
+// and use whichever real district most of those hits actually share — never
+// a guess, just letting the catalogue's own data say where "Hampi" is.
+async function resolveItineraryArea(destinationText: string): Promise<string | null> {
+  const direct = areaCondition(destinationText);
+  if (direct) {
+    const probe = await db
+      .select({ id: places.id })
+      .from(places)
+      .where(visibleWhere(eq(places.isHidden, false), direct))
+      .limit(1);
+    if (probe.length > 0) return destinationText;
+  }
+
+  const term = "%" + destinationText.toLowerCase() + "%";
+  const nameHits = await db
+    .select({ district: places.district })
+    .from(places)
+    .where(visibleWhere(eq(places.isHidden, false), sql`lower(${places.name}) LIKE ${term}`))
+    .limit(50);
+  const counts = new Map<string, number>();
+  for (const r of nameHits) {
+    if (!r.district) continue;
+    counts.set(r.district, (counts.get(r.district) ?? 0) + 1);
+  }
+  let best: string | null = null;
+  let bestCount = 0;
+  for (const [district, count] of counts) {
+    if (count > bestCount) {
+      best = district;
+      bestCount = count;
+    }
+  }
+  return best;
+}
+
+// Collapse near-duplicate rows at essentially the same spot (e.g. "Se
+// Cathedral" / "Sé Cathedral, Old Goa") — keeps the first (already the
+// better-rated one, rows arrive rating-sorted).
+function dedupeByLocation(rows: ItineraryCandidateRow[]): ItineraryCandidateRow[] {
+  const seen = new Set<string>();
+  const out: ItineraryCandidateRow[] = [];
+  for (const r of rows) {
+    if (r.latitude && r.longitude) {
+      const key = `${Number(r.latitude).toFixed(2)},${Number(r.longitude).toFixed(2)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+    }
+    out.push(r);
+  }
+  return out;
+}
+
+const AVG_SPEED_KMH = 40; // same ballpark fallback speed used elsewhere when OSRM is unavailable
+const ROAD_FACTOR = 1.25; // same straight-line → road estimate factor used throughout this file
+
+// Greedy nearest-neighbour chain by real-world (haversine × road factor)
+// distance — used only when OSRM's /trip doesn't answer in time.
+function nearestNeighborOrder(
+  start: LatLng,
+  points: LatLng[]
+): { orderedIdx: number[]; legs: { distanceKm: number; durationMinutes: number }[]; totalDistanceKm: number; totalDurationMinutes: number } {
+  const remaining = points.map((_, i) => i);
+  const orderedIdx: number[] = [];
+  const legs: { distanceKm: number; durationMinutes: number }[] = [];
+  let current = start;
+  let totalDistanceKm = 0;
+
+  while (remaining.length > 0) {
+    let bestPos = 0;
+    let bestDist = Infinity;
+    for (let k = 0; k < remaining.length; k++) {
+      const d = haversineKm(current, points[remaining[k]]);
+      if (d < bestDist) {
+        bestDist = d;
+        bestPos = k;
+      }
+    }
+    const idx = remaining.splice(bestPos, 1)[0];
+    const roadKm = bestDist * ROAD_FACTOR;
+    orderedIdx.push(idx);
+    legs.push({ distanceKm: roadKm, durationMinutes: (roadKm / AVG_SPEED_KMH) * 60 });
+    totalDistanceKm += roadKm;
+    current = points[idx];
+  }
+  const backKm = haversineKm(current, start) * ROAD_FACTOR;
+  totalDistanceKm += backKm;
+  const totalDurationMinutes = legs.reduce((a, l) => a + l.durationMinutes, 0) + (backKm / AVG_SPEED_KMH) * 60;
+  return { orderedIdx, legs, totalDistanceKm, totalDurationMinutes };
+}
+
+// Orders every candidate place into one real route. When the traveller's live
+// location is known, that's the fixed start/end of the loop; otherwise the
+// best-rated place anchors the loop instead (there's nowhere real to start
+// from) and the rest are routed from there. Always tries OSRM's real-road TSP
+// solver first and only falls back to the haversine chain if it doesn't
+// answer — same two-tier approach `generateItinerary` (Group Trip Planner)
+// already uses.
+async function orderTripStops(
+  origin: LatLng | null,
+  coordsList: LatLng[]
+): Promise<{
+  orderedIdx: number[];
+  legs: { distanceKm: number; durationMinutes: number }[];
+  totalDistanceKm: number;
+  totalDurationMinutes: number;
+}> {
+  const routeOrigin = origin ?? coordsList[0];
+  const placesToVisit = origin ? coordsList : coordsList.slice(1);
+  const indexOffset = origin ? 0 : 1; // placesToVisit[i] === coordsList[i + indexOffset]
+
+  const trip =
+    placesToVisit.length > 0
+      ? await fetchTrip({ waypoints: [routeOrigin, ...placesToVisit], roundtrip: true, fixedFirst: true })
+      : null;
+
+  let orderedWithinVisit: number[] = [];
+  let legsWithinVisit: { distanceKm: number; durationMinutes: number }[] = [];
+  let totalDistanceKm = 0;
+  let totalDurationMinutes = 0;
+
+  if (trip) {
+    orderedWithinVisit = trip.waypointOrder.slice(1).map((i) => i - 1);
+    legsWithinVisit = trip.legs;
+    totalDistanceKm = trip.distanceKm;
+    totalDurationMinutes = trip.durationMinutes;
+  } else if (placesToVisit.length > 0) {
+    const nn = nearestNeighborOrder(routeOrigin, placesToVisit);
+    orderedWithinVisit = nn.orderedIdx;
+    legsWithinVisit = nn.legs;
+    totalDistanceKm = nn.totalDistanceKm;
+    totalDurationMinutes = nn.totalDurationMinutes;
+  }
+
+  const orderedIdx = orderedWithinVisit.map((i) => i + indexOffset);
+  const legs = [...legsWithinVisit];
+  if (!origin) {
+    orderedIdx.unshift(0);
+    legs.unshift({ distanceKm: 0, durationMinutes: 0 });
+  }
+  return { orderedIdx, legs, totalDistanceKm, totalDurationMinutes };
+}
+
+function titleCase(s: string): string {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function formatTripStop(s: ItineraryStop, index: number, isVeryFirstStop: boolean): string {
+  const fee = s.entryFeePerPerson > 0 ? `₹${s.entryFeePerPerson}/person` : "free entry";
+  const travel =
+    s.arrivalKmFromPrev > 0.1
+      ? `, ${Math.round(s.arrivalKmFromPrev)} km / ${Math.round(s.arrivalMinutesFromPrev)} min from ${
+          isVeryFirstStop ? "your location" : "the previous stop"
+        }`
+      : "";
+  return `- **${index + 1}. ${s.name}** — ${s.category}, ${fee}${travel}`;
+}
+
+function formatTripDay(day: ItineraryDay, isFirstDayOfTrip: boolean): string {
+  return [`**Day ${day.day}:**`, ...day.stops.map((s, i) => formatTripStop(s, i, isFirstDayOfTrip && i === 0))].join("\n");
+}
+
+async function answerTripPlanRequest(req: TripPlanRequest, origin: LatLng | null): Promise<ListAnswer> {
+  const resolvedArea = await resolveItineraryArea(req.destination);
+  if (!resolvedArea) {
+    return {
+      text: `I couldn't find "${req.destination}" in Saafera's catalogue yet — check the spelling, try a nearby bigger town/district name, or browse Destinations directly.`,
+      topPlace: null,
+    };
+  }
+  const poolSize = Math.min(16, Math.max(req.days * 4, 6));
+  let rows = await findItineraryCandidates(resolvedArea, poolSize * 2);
+  if (rows.length === 0) {
+    return {
+      text: `I couldn't find "${req.destination}" in Saafera's catalogue yet — check the spelling, try a nearby bigger town/district name, or browse Destinations directly.`,
+      topPlace: null,
+    };
+  }
+  rows = dedupeByLocation(rows).slice(0, poolSize);
+  const withCoords = rows.filter(
+    (r) => r.latitude && r.longitude && Number.isFinite(Number(r.latitude)) && Number.isFinite(Number(r.longitude))
+  );
+  if (withCoords.length === 0) {
+    return {
+      text: `I have places in ${titleCase(req.destination)} in the catalogue but none with map coordinates yet, so I can't build a routed plan — try Destinations directly.`,
+      topPlace: null,
+    };
+  }
+
+  const coordsList: LatLng[] = withCoords.map((p) => ({ lat: Number(p.latitude), lng: Number(p.longitude) }));
+  const { orderedIdx, legs, totalDistanceKm } = await orderTripStops(origin, coordsList);
+  const orderedPlaces = orderedIdx.map((i) => withCoords[i]);
+
+  const stops: ItineraryStop[] = orderedPlaces.map((p, i) => ({
+    placeId: p.id,
+    name: p.name,
+    category: p.category,
+    imageUrl: p.imageUrl,
+    entryFeePerPerson: p.entryFeePerPerson,
+    idealMinutes:
+      p.idealHoursAtPlace != null ? Math.max(15, Math.round(p.idealHoursAtPlace * 60)) : p.idealMinutesAtPlace ?? 60,
+    lat: coordsList[orderedIdx[i]].lat,
+    lng: coordsList[orderedIdx[i]].lng,
+    arrivalKmFromPrev: legs[i]?.distanceKm ?? 0,
+    arrivalMinutesFromPrev: legs[i]?.durationMinutes ?? 0,
+  }));
+
+  const dayBuckets = bucketStopsByDay(stops, req.days);
+
+  const inBlr = origin ? isBengaluru(origin) : false;
+  const fuelTotal = Math.round(travelCostFor("car", "small_car", totalDistanceKm, req.travellers, inBlr).cost);
+  const entryFeesTotal = stops.reduce((sum, s) => sum + s.entryFeePerPerson * req.travellers, 0);
+  const foodTotal = req.travellers * req.days * GROUP_FOOD_PER_PERSON_PER_DAY;
+  const totalCost = fuelTotal + entryFeesTotal + foodTotal;
+  const perPersonCost = Math.round(totalCost / Math.max(1, req.travellers));
+  const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
+
+  const lines: string[] = [];
+  const dest = titleCase(req.destination);
+  lines.push(
+    `Here's a ${dayBuckets.length}-day plan for ${dest} (${req.travellers} traveller${req.travellers > 1 ? "s" : ""}), using real rated places from Saafera's catalogue:`
+  );
+  if (dayBuckets.length < req.days) {
+    lines.push(
+      `(Saafera's catalogue only has enough well-rated places here to fill ${dayBuckets.length} of the ${req.days} day${req.days > 1 ? "s" : ""} you asked for — browse Destinations for more in ${dest}.)`
+    );
+  }
+  lines.push("");
+  dayBuckets.forEach((day, i) => {
+    lines.push(formatTripDay(day, i === 0), "");
+  });
+  lines.push(
+    `**Estimated cost:** ${inr(totalCost)} total (${inr(perPersonCost)}/person) — ${inr(fuelTotal)} travel (car), ${inr(
+      entryFeesTotal
+    )} entry fees, ${inr(foodTotal)} food.`
+  );
+  if (!origin) {
+    lines.push(
+      "I don't have your live location yet (allow location access in your browser) — this plan doesn't include travel cost/distance from where you are, only movement between the stops themselves."
+    );
+  }
+  if (req.budgetInr != null) {
+    lines.push(
+      totalCost <= req.budgetInr
+        ? `This fits within your ₹${req.budgetInr.toLocaleString("en-IN")} budget.`
+        : `This comes to ${inr(totalCost - req.budgetInr)} over your ₹${req.budgetInr.toLocaleString("en-IN")} budget — try fewer days/stops, or raise the budget.`
+    );
+  }
+  lines.push("", "Open the Budget Planner or Group Trip Planner to fine-tune this, save it, or get live turn-by-turn directions.");
+
+  return { text: lines.join("\n"), topPlace: orderedPlaces[0]?.name ?? null };
+}
+
+// ---------------------------------------------------------------------------
 // Personal trip-plan data
 // ---------------------------------------------------------------------------
 
@@ -804,6 +1148,7 @@ const ABOUT_SAAFERA = [
 
 const HELP_MESSAGE = [
   "Here's what you can ask me:",
+  '- Plan a trip: "plan a trip to Goa for 2 days", "plan a 3 day trip to Hampi for 4 people"',
   '- Places to visit: "best places to visit in Coorg", "hidden waterfalls near Bengaluru", "temples in Karnataka"',
   '- Budget & location: "which places can I visit with ₹5,000", "what\'s near me", "places within 30 km"',
   '- A specific place: "tell me about Hampi", "entry fee for Mysore Palace", "how far is Coorg from Bengaluru"',
@@ -883,6 +1228,22 @@ export async function answerAssistantQuestion(rawQuestion: string, ctx: Assistan
     )
   ) {
     return reply(ABOUT_SAAFERA, { suggestions: [SUGG_DISCOVER, SUGG_NEARME, SUGG_TRIPS] });
+  }
+
+  // "Plan a trip to Goa for 2 days" — generate a real, routed day-by-day plan
+  // rather than just explaining how the Budget Planner works. Checked before
+  // the FAQ block below, since "plan a trip"/"two-day trip" are also FAQ
+  // keywords there and would otherwise win first and only explain the feature
+  // instead of actually doing it.
+  const tripPlanRequest = parseTripPlanRequest(q);
+  if (tripPlanRequest) {
+    try {
+      const answer = await answerTripPlanRequest(tripPlanRequest, ctx.origin);
+      const suggestions = answer.topPlace ? [`Tell me about ${answer.topPlace}`, SUGG_NEARME] : [SUGG_NEARME];
+      return reply(answer.text, { place: answer.topPlace, suggestions });
+    } catch {
+      return reply("I couldn't build that plan just now — try again in a moment, or use the Budget Planner directly.");
+    }
   }
 
   if (TRIP_PLAN_WORDS.some((w) => q.includes(w))) {

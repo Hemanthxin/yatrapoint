@@ -21,6 +21,7 @@ const ALIAS_PAIRS: [string, string][] = [
   ["hubli", "hubballi"],
   ["chikmagalur", "chikkamagaluru"],
   ["hospet", "hosapete"],
+  ["coorg", "kodagu"],
   ["bagalkot", "bagalkote"],
   ["gadag", "gadaga"],
   // Beyond Karnataka — the same rename pattern, and the catalogue is national.
