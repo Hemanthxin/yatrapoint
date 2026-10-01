@@ -5,10 +5,9 @@ import { AppShell } from "@/components/app/AppShell";
 import { getDashboardStats, listUpcomingTrips } from "@/lib/queries/trip-plans";
 import { listDestinations } from "@/lib/queries/destinations";
 import { listPopularCityPlaces } from "@/lib/queries/city-places";
-import { getHeroBannerImage } from "@/lib/actions/site-settings";
 import { MobileDashboard } from "./MobileDashboard";
-import { DesktopDashboard } from "./DesktopDashboard";
 import { DashboardIntro } from "@/components/app/dashboard/DashboardIntro";
+import { Dashboard3DRoot } from "@/components/app/dashboard3d/Dashboard3DLazy";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -25,19 +24,18 @@ export default async function DashboardPage() {
   // nothing here depends on it — on the very first page after login, that's a
   // whole extra Neon round-trip (measured at 200ms+ each) added to every load
   // for no reason. It's independent, so it belongs in the same Promise.all.
-  const [stats, citySeed, popularTrips, upcoming, heroImageUrl] = await Promise.all([
+  const [stats, citySeed, popularTrips, upcoming] = await Promise.all([
     getDashboardStats(u.id ?? ""),
     listPopularCityPlaces(60).catch(() => []),
     listDestinations({ state: "Karnataka", isHidden: false, limit: 8 }).catch(() => []),
     listUpcomingTrips(u.id ?? ""),
-    getHeroBannerImage(),
   ]);
 
   return (
-    <AppShell userLabel={displayName} userImage={u.image}>
-      <DashboardIntro />
-      {/* ── Mobile (< lg): bespoke app UI ── */}
+    <AppShell userLabel={displayName} userImage={u.image} spatial>
+      {/* ── Mobile (< lg): bespoke app UI, unchanged ── */}
       <div className="lg:hidden">
+        <DashboardIntro />
         <MobileDashboard
           firstName={firstName}
           stats={stats}
@@ -46,9 +44,9 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* ── Desktop (≥ lg): three-column cream + green dashboard ── */}
-      <div className="hidden lg:block">
-        <DesktopDashboard stats={stats} citySeed={citySeed} upcoming={upcoming} heroImageUrl={heroImageUrl} />
+      {/* ── Desktop (≥ lg): the 3D spatial dashboard ── */}
+      <div className="hidden h-full lg:block">
+        <Dashboard3DRoot firstName={firstName} stats={stats} upcoming={upcoming} citySeed={citySeed} />
       </div>
     </AppShell>
   );

@@ -21,10 +21,19 @@ interface AppShellProps {
   // dropping the header outright would strand the traveller with no way out.
   // Desktop is unaffected and keeps the full chrome.
   immersive?: boolean;
+  // Full-screen 3D spatial takeover (the dashboard's "3D data universe") —
+  // DESKTOP (lg+) ONLY: no permanent sidebar rail, no topbar/marquee, no
+  // light aurora/blueprint backdrop, the page's own dark scene fills the
+  // viewport and its own floating dock replaces nav. Below `lg` this has no
+  // effect at all — phones keep the completely normal chrome (topbar, mobile
+  // dock, scrollable page), since the spatial page itself only renders its
+  // WebGL scene at desktop widths and falls back to the ordinary mobile
+  // dashboard underneath it.
+  spatial?: boolean;
   children: React.ReactNode;
 }
 
-export function AppShell({ userLabel, userImage, location, immersive = false, children }: AppShellProps) {
+export function AppShell({ userLabel, userImage, location, immersive = false, spatial = false, children }: AppShellProps) {
   const [open, setOpen] = useState(false);
 
   // overflow-x-CLIP, not hidden: `hidden` computes to `overflow: hidden auto`,
@@ -33,9 +42,11 @@ export function AppShell({ userLabel, userImage, location, immersive = false, ch
   // sticky tab bar both failed to pin because of it). `clip` gives the same
   // horizontal clipping without creating a scrollport.
   return (
-    <div className="relative min-h-screen overflow-x-clip text-slate-900">
-      {/* Vibrant animated aurora — blue + green light behind every screen. */}
-      <div aria-hidden className="aurora-canvas">
+    <div className={`relative min-h-screen overflow-x-clip text-slate-900 ${spatial ? "lg:text-white" : ""}`}>
+      {/* Vibrant animated aurora — blue + green light behind every screen.
+          Hidden at desktop width for the spatial dashboard, which paints its
+          own dark scene there; phones keep it regardless. */}
+      <div aria-hidden className={`aurora-canvas ${spatial ? "lg:hidden" : ""}`}>
         <div className="aurora-blob -left-32 top-[-6rem] h-[26rem] w-[26rem] bg-green-300/35 animate-aurora" />
         <div className="aurora-blob right-[-8rem] top-1/4 h-[30rem] w-[30rem] bg-emerald-300/35 animate-aurora [animation-delay:-7s]" />
         <div className="aurora-blob bottom-[-6rem] left-1/4 h-[28rem] w-[28rem] bg-teal-300/30 animate-aurora [animation-delay:-14s]" />
@@ -46,16 +57,16 @@ export function AppShell({ userLabel, userImage, location, immersive = false, ch
           viewport so it stays put while the page scrolls, the way it does on
           Rexovi — a grid that scrolls with a long page reads as wallpaper
           rather than as a drafting surface. */}
-      <span aria-hidden className="blueprint" />
+      <span aria-hidden className={`blueprint ${spatial ? "lg:hidden" : ""}`} />
 
       {/* Ring that trails the pointer and swells over anything clickable.
           Absent on touch devices and for reduced-motion users. */}
       <CursorHalo />
 
-      <Sidebar open={open} onClose={() => setOpen(false)} />
+      <Sidebar open={open} onClose={() => setOpen(false)} forceOverlay={spatial} />
 
-      <div className="relative z-10 lg:pl-64">
-        <div className={immersive ? "hidden lg:block" : undefined}>
+      <div className={`relative z-10 ${spatial ? "lg:pl-0" : "lg:pl-64"}`}>
+        <div className={spatial ? "lg:hidden" : immersive ? "hidden lg:block" : undefined}>
           <Marquee />
           <Topbar
             userLabel={userLabel}
@@ -67,7 +78,7 @@ export function AppShell({ userLabel, userImage, location, immersive = false, ch
 
         {/* With the header gone on phones, the menu becomes a floating control
             sitting on the photo itself. */}
-        {immersive && (
+        {immersive && !spatial && (
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -80,21 +91,24 @@ export function AppShell({ userLabel, userImage, location, immersive = false, ch
 
         <Reveal
           as="main"
-          className={`mx-auto max-w-[1800px] pb-32 lg:pb-10 2xl:px-10 ${
-            // Full-bleed right up to the desktop breakpoint, since the mobile
-            // place screen is what renders below `lg` — padding returning at
-            // `md` would inset it on tablets while it is still the mobile view.
-            immersive
-              ? "px-0 py-0 lg:px-8 lg:py-8"
-              : "px-4 py-5 md:px-6 md:py-8 lg:px-8"
-          }`}
+          className={
+            spatial
+              ? // Normal padded/scrollable phone layout (matches the plain
+                // default below), full-bleed fixed-height takeover at lg+
+                // where the 3D scene itself fills the viewport.
+                "mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:h-screen lg:max-w-none lg:overflow-hidden lg:p-0 lg:pb-0"
+              : immersive
+                ? "mx-auto max-w-[1800px] px-0 py-0 pb-32 lg:px-8 lg:py-8 lg:pb-10 2xl:px-10"
+                : "mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:px-8 lg:pb-10 2xl:px-10"
+          }
           amount={0}
         >
           {children}
         </Reveal>
       </div>
 
-      {/* Floating mobile dock */}
+      {/* Floating mobile dock — the spatial dashboard's desktop view has its
+          own floating dock instead; this already hides itself at lg+. */}
       <MobileNav onMenu={() => setOpen(true)} />
 
       {/* App-wide transient popups (e.g. "Trip added to cart"). */}

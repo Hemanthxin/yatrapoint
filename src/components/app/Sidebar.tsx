@@ -37,7 +37,19 @@ const NAV: NavItem[] = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function Sidebar({
+  open,
+  onClose,
+  forceOverlay = false,
+}: {
+  open: boolean;
+  onClose: () => void;
+  // The 3D spatial dashboard has no permanent rail at all — its floating dock
+  // replaces conventional nav — so this drawer should behave as an overlay on
+  // EVERY screen size there (never pinned open via `lg:translate-x-0`),
+  // opened only via the dock's own menu control.
+  forceOverlay?: boolean;
+}) {
   const path = usePathname();
 
   return (
@@ -45,15 +57,15 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       {/* Mobile backdrop — blurred so the drawer feels layered over the app */}
       <div
         onClick={onClose}
-        className={`fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        className={`fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 ${
+          forceOverlay ? "" : "lg:hidden"
+        } ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[color:var(--border)] bg-[color:var(--surface)] shadow-xl transition-transform duration-300 ease-out lg:w-64 lg:translate-x-0 lg:shadow-none ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[color:var(--border)] bg-[color:var(--surface)] shadow-xl transition-transform duration-300 ease-out ${
+          forceOverlay ? "" : "lg:w-64 lg:translate-x-0 lg:shadow-none"
+        } ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex items-center justify-center border-b border-[color:var(--border)] px-4 py-4">
           <Link href="/dashboard" aria-label="Saafera — home" className="block">
