@@ -144,6 +144,13 @@ export function PostCard({
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // The "full" card's photo box sizes itself to the actual photo once it
+  // loads (see the aspect-ratio logic below the media block) instead of
+  // forcing every photo into one fixed portrait frame — a wide landscape
+  // shot squeezed into a tall box with object-contain left big grey bars
+  // above and below it on desktop (a real bug, not a style choice).
+  const [coverAspect, setCoverAspect] = useState<number | null>(null);
+
   // Long captions collapse behind a "… more" toggle (see the caption block below).
   const [expanded, setExpanded] = useState(false);
   const isLongCaption = (post.title.length + post.description.length) > 140;
@@ -511,8 +518,14 @@ export function PostCard({
           // frame (Instagram's own) scales with the card width, so the photo is
           // as large as the column allows on every screen — with a ceiling so a
           // very wide window can't turn one post into a full page.
-          isGrid ? "aspect-[4/3]" : "aspect-[4/5] max-h-[38rem]"
+          // The grid tile stays a fixed 4:3 (every card in a row must match).
+          // The full card instead sizes to the PHOTO's own aspect ratio (see
+          // coverAspect below) — a fixed portrait box with object-contain left
+          // wide/landscape photos (a sunset, a skyline) stranded in the middle
+          // of a tall box with ugly grey bars above and below on desktop.
+          isGrid ? "aspect-[4/3]" : "max-h-[38rem]"
         }`}
+        style={!isGrid ? { aspectRatio: Math.min(1.91, Math.max(0.8, coverAspect ?? 0.8)) } : undefined}
         onClick={onPhotoClick}
         onDoubleClick={onPhotoDoubleClick}
       >
@@ -525,6 +538,11 @@ export function PostCard({
               // Compact tiles crop to keep a tidy grid; the full card shows the
               // WHOLE photo, so nothing the traveller framed is cut off.
               imgClassName={isGrid ? "h-full w-full object-cover" : "h-full w-full object-contain"}
+              onCoverLoad={
+                isGrid || coverAspect !== null
+                  ? undefined
+                  : (w, h) => setCoverAspect(w / h)
+              }
             />
           ) : post.photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -532,6 +550,11 @@ export function PostCard({
               src={post.photoUrl}
               alt={post.title}
               className={`h-full w-full ${isGrid ? "object-cover" : "object-contain"}`}
+              onLoad={
+                isGrid || coverAspect !== null
+                  ? undefined
+                  : (e) => setCoverAspect(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)
+              }
             />
           ) : (
             <div className="grid h-full w-full place-items-center bg-slate-100 text-5xl">🌄</div>

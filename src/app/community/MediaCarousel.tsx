@@ -18,6 +18,7 @@ export function MediaCarousel({
   imgClassName = "h-full w-full object-cover",
   captions,
   captionClassName = "mt-1.5 line-clamp-2 text-xs font-medium text-slate-600",
+  onCoverLoad,
 }: {
   media: MediaItem[];
   alt: string;
@@ -29,6 +30,11 @@ export function MediaCarousel({
   // to before this was added.
   captions?: (string | null)[];
   captionClassName?: string;
+  // Reports the FIRST slide's natural pixel size once it loads, so a caller
+  // can size its box to the photo's own aspect ratio instead of guessing.
+  // Never fires again after the first slide (swiping to other photos
+  // shouldn't resize the card underneath the user).
+  onCoverLoad?: (naturalWidth: number, naturalHeight: number) => void;
 }) {
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
@@ -70,7 +76,16 @@ export function MediaCarousel({
         </div>
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={current.url} alt={alt} className={imgClassName} />
+        <img
+          src={current.url}
+          alt={alt}
+          className={imgClassName}
+          onLoad={
+            clampedIndex === 0 && onCoverLoad
+              ? (e) => onCoverLoad(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight)
+              : undefined
+          }
+        />
       )}
 
       {media.length > 1 && (
