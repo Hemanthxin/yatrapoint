@@ -80,6 +80,17 @@ function isTransientDbError(err: unknown): boolean {
   return /fetch failed|ConnectTimeout|ETIMEDOUT|ECONNRESET|fetch error/i.test(msg);
 }
 
+// A short, safe snippet of the real error — stripped of anything that could
+// be a connection string/credential — appended to the user-facing message so
+// the NEXT failure is actually diagnosable from a screenshot, instead of
+// guessing blind again (this exact bug has resisted two earlier fixes
+// because the generic message gives no signal about what actually failed).
+function safeErrorDetail(err: unknown): string {
+  const raw = err instanceof Error ? err.message : String(err);
+  const stripped = raw.replace(/[a-z0-9+.-]+:\/\/[^\s)]+/gi, "[redacted]");
+  return stripped.slice(0, 160);
+}
+
 const createGroupTripSchema = z.object({
   name: z.string().min(2).max(140),
   startLabel: z.string().min(2).max(200),
@@ -149,7 +160,10 @@ export async function createGroupTrip(
       const canRetry = attempt === 1 && isTransientDbError(err);
       console.error(`[createGroupTrip] failed (attempt ${attempt}${canRetry ? ", retrying" : ""}):`, err);
       if (!canRetry) {
-        return { ok: false, error: "Could not create the trip. Run db:push if you just added the tables." };
+        return {
+          ok: false,
+          error: `Could not create the trip (${safeErrorDetail(err)}). Run db:push if you just added the tables.`,
+        };
       }
     }
   }
