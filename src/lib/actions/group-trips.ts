@@ -68,6 +68,18 @@ function randomJoinCode(len = 6): string {
 
 const VEHICLE_KINDS = ["bike", "small_car", "sedan", "suv", "cab"] as const;
 
+// Neon's HTTP driver occasionally hits a one-off connection timeout/blip
+// (observed directly while debugging this: a plain SELECT threw
+// `ConnectTimeoutError` once, then succeeded immediately on retry with no
+// code change). That's not a missing-table problem, so a single quick retry
+// before giving up avoids surfacing a transient hiccup as "create trip
+// failed" — the schema itself is fine; the network call just needs another
+// try.
+function isTransientDbError(err: unknown): boolean {
+  const msg = err instanceof Error ? `${err.message} ${err.cause ?? ""}` : String(err);
+  return /fetch failed|ConnectTimeout|ETIMEDOUT|ECONNRESET|fetch error/i.test(msg);
+}
+
 const createGroupTripSchema = z.object({
   name: z.string().min(2).max(140),
   startLabel: z.string().min(2).max(200),
@@ -93,49 +105,55 @@ export async function createGroupTrip(
   const session = await auth();
   if (!session?.user?.id) return { ok: false, error: "Please sign in first." };
 
-  try {
-    let joinCode = randomJoinCode();
-    for (let tries = 0; tries < 6; tries++) {
-      const exists = await db.select({ id: groupTrips.id }).from(groupTrips).where(eq(groupTrips.joinCode, joinCode)).limit(1);
-      if (exists.length === 0) break;
-      joinCode = randomJoinCode();
+  const d = parsed.data;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      let joinCode = randomJoinCode();
+      for (let tries = 0; tries < 6; tries++) {
+        const exists = await db.select({ id: groupTrips.id }).from(groupTrips).where(eq(groupTrips.joinCode, joinCode)).limit(1);
+        if (exists.length === 0) break;
+        joinCode = randomJoinCode();
+      }
+
+      const [created] = await db
+        .insert(groupTrips)
+        .values({
+          joinCode,
+          name: d.name,
+          creatorId: session.user.id,
+          startLabel: d.startLabel,
+          startLatitude: d.startLatitude != null ? String(d.startLatitude) : null,
+          startLongitude: d.startLongitude != null ? String(d.startLongitude) : null,
+          destinationState: d.destinationState,
+          destinationDistrict: d.destinationDistrict || null,
+          destinationLabel: d.destinationLabel,
+          startDate: d.startDate || null,
+          endDate: d.endDate || null,
+          days: d.days,
+          travellers: d.travellers,
+          totalBudget: d.totalBudget,
+          vehicle: d.vehicle,
+        })
+        .returning({ id: groupTrips.id, joinCode: groupTrips.joinCode });
+      if (!created) return { ok: false, error: "Could not create the trip." };
+
+      // No db.transaction here — same reason as createCommunity (neon-http
+      // driver, no transaction support used anywhere in this codebase); a
+      // failure past this point is a hard error rather than a silent partial
+      // trip, same tradeoff already accepted for communities.
+      await db.insert(groupTripMembers).values({ groupTripId: created.id, userId: session.user.id, role: "admin" });
+
+      revalidatePath("/group-trip");
+      return { ok: true, joinCode: created.joinCode, id: created.id };
+    } catch (err) {
+      const canRetry = attempt === 1 && isTransientDbError(err);
+      console.error(`[createGroupTrip] failed (attempt ${attempt}${canRetry ? ", retrying" : ""}):`, err);
+      if (!canRetry) {
+        return { ok: false, error: "Could not create the trip. Run db:push if you just added the tables." };
+      }
     }
-
-    const d = parsed.data;
-    const [created] = await db
-      .insert(groupTrips)
-      .values({
-        joinCode,
-        name: d.name,
-        creatorId: session.user.id,
-        startLabel: d.startLabel,
-        startLatitude: d.startLatitude != null ? String(d.startLatitude) : null,
-        startLongitude: d.startLongitude != null ? String(d.startLongitude) : null,
-        destinationState: d.destinationState,
-        destinationDistrict: d.destinationDistrict || null,
-        destinationLabel: d.destinationLabel,
-        startDate: d.startDate || null,
-        endDate: d.endDate || null,
-        days: d.days,
-        travellers: d.travellers,
-        totalBudget: d.totalBudget,
-        vehicle: d.vehicle,
-      })
-      .returning({ id: groupTrips.id, joinCode: groupTrips.joinCode });
-    if (!created) return { ok: false, error: "Could not create the trip." };
-
-    // No db.transaction here — same reason as createCommunity (neon-http
-    // driver, no transaction support used anywhere in this codebase); a
-    // failure past this point is a hard error rather than a silent partial
-    // trip, same tradeoff already accepted for communities.
-    await db.insert(groupTripMembers).values({ groupTripId: created.id, userId: session.user.id, role: "admin" });
-
-    revalidatePath("/group-trip");
-    return { ok: true, joinCode: created.joinCode, id: created.id };
-  } catch (err) {
-    console.error("[createGroupTrip] failed:", err);
-    return { ok: false, error: "Could not create the trip. Run db:push if you just added the tables." };
   }
+  return { ok: false, error: "Could not create the trip. Run db:push if you just added the tables." };
 }
 
 export async function joinGroupTripByCode(joinCode: string): Promise<ActionResult & { id?: string; joinCode?: string }> {
