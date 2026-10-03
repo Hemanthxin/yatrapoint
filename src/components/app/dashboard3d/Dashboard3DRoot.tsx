@@ -15,7 +15,7 @@ import { ConnectionLines } from "./ConnectionLines";
 import { ParticleField } from "./ParticleField";
 import { FloatingDock } from "./FloatingDock";
 import { DeepDivePanel } from "./DeepDivePanel";
-import { WeatherDeepDive } from "./WeatherModule";
+import { WeatherDeepDive, useLiveWeather } from "./WeatherModule";
 import { NearbyDeepDive } from "./NearbyModule";
 import type { SpatialModule } from "./types";
 
@@ -32,6 +32,11 @@ interface Props {
 // spatial/depth/parallax feel using a toolkit already proven elsewhere in
 // this app (the dashboard's 3D logo hero, the landing page's mouse-parallax).
 export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
+  // Lifted up from WeatherDeepDive so the live temperature can show on the
+  // module's face too, not just once the deep-dive panel is opened — the
+  // same data, read once here and reused by renderDeepDive() below.
+  const weather = useLiveWeather();
+
   const modules = useMemo<SpatialModule[]>(() => {
     return [
       {
@@ -107,15 +112,15 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
         id: "weather",
         label: "Weather",
         icon: CloudSun,
-        value: "Live",
+        value: weather ? `${weather.temp}°C` : "Live",
         position: [50, 83, -2],
         color: "#86efac",
         href: "/dashboard",
-        renderDeepDive: () => <WeatherDeepDive />,
+        renderDeepDive: () => <WeatherDeepDive weather={weather} />,
       },
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stats, upcoming]);
+  }, [stats, upcoming, weather]);
 
   const heroNodes = upcoming.slice(0, 4).map((t) => ({ id: t.id, label: t.name }));
 

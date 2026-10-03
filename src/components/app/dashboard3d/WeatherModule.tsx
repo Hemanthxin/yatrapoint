@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Droplets, Wind, Gauge } from "lucide-react";
 import { useLocation } from "@/components/app/LocationContext";
 
@@ -16,15 +16,29 @@ interface Weather {
 // embedded HTML inside the WebGL scene) so a slow/failed fetch can't block
 // anything 3D-related.
 export function useLiveWeather() {
-  const { coords } = useLocation();
+  const { coords, status, request } = useLocation();
   const [weather, setWeather] = useState<Weather | null>(null);
+  const coordsRef = useRef(coords);
+  coordsRef.current = coords;
 
   useEffect(() => {
+    if (status === "idle") request();
+  }, [status, request]);
+
+  // Wait for geolocation to settle, and fetch once per fix rather than on
+  // every GPS accuracy refinement tick — same reasoning as NearbyModule's
+  // fetch effect (see its comment): re-fetching on each refinement risks the
+  // request never getting a clean run before the next tick restarts it.
+  const ready = status === "granted" || status === "denied" || status === "unavailable";
+
+  useEffect(() => {
+    if (!ready) return;
     let cancelled = false;
+    const { lat, lng } = coordsRef.current;
     async function load() {
       try {
         const res = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`
         );
         const data = await res.json();
         if (cancelled) return;
@@ -42,13 +56,13 @@ export function useLiveWeather() {
     return () => {
       cancelled = true;
     };
-  }, [coords]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
 
   return weather;
 }
 
-export function WeatherDeepDive() {
-  const weather = useLiveWeather();
+export function WeatherDeepDive({ weather }: { weather: Weather | null }) {
   if (!weather) return <p className="text-sm text-white/50">Fetching live weather…</p>;
   return (
     <div className="grid grid-cols-3 gap-2 text-center">
