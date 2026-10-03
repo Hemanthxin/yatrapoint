@@ -89,15 +89,20 @@ export function SaaferaAssistant() {
   return (
     <>
       {/* Launcher — pulsing glow ring (same language as the mobile dock's Plan
-          button) plus a small "live" status dot so it reads as an active AI
-          core, not a static icon. */}
+          button) plus a small "live" status dot, so it reads as an active AI
+          core inviting a click. Once open, it's just a close button — the
+          glow's own offset drop-shadow (meant to read as an ambient pulse)
+          looked like a stray translucent blob behind a plain X, so neither
+          the glow nor the sheen sweep run while open. */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close Saafera Assistant" : "Chat with the Saafera Assistant"}
-        className="fixed bottom-24 right-4 z-50 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
+        className={`fixed bottom-24 right-4 z-50 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white transition active:scale-95 lg:bottom-6 lg:right-6 ${
+          open ? "shadow-md shadow-black/20" : "shadow-lg shadow-emerald-500/40 animate-glow"
+        }`}
       >
-        <span aria-hidden className="sheen-overlay animate-sheen" />
+        {!open && <span aria-hidden className="sheen-overlay animate-sheen" />}
         {open ? (
           <X className="relative h-6 w-6" />
         ) : (
