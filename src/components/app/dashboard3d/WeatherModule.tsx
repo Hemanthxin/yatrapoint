@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Droplets, Wind, Gauge } from "lucide-react";
+import { Droplets, Wind, Gauge, Leaf } from "lucide-react";
 import { useLocation } from "@/components/app/LocationContext";
 
 interface Weather {
@@ -42,11 +42,27 @@ export function useLiveWeather() {
         );
         const data = await res.json();
         if (cancelled) return;
+
+        // Air quality is a separate Open-Meteo host (same as the flat
+        // dashboard's WeatherCard) — tolerate its absence, never let it
+        // block the temperature/humidity/wind reading above.
+        let aqi: number | null = null;
+        try {
+          const aqiRes = await fetch(
+            `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=us_aqi`
+          );
+          const aqiData = await aqiRes.json();
+          aqi = aqiData?.current?.us_aqi ?? null;
+        } catch {
+          /* AQI is a bonus — ignore its failure */
+        }
+        if (cancelled) return;
+
         setWeather({
           temp: Math.round(data.current.temperature_2m),
           humidity: Math.round(data.current.relative_humidity_2m),
           wind: Math.round(data.current.wind_speed_10m),
-          aqi: null,
+          aqi: aqi != null ? Math.round(aqi) : null,
         });
       } catch {
         /* dashboard stays fine without it */
@@ -62,21 +78,52 @@ export function useLiveWeather() {
   return weather;
 }
 
+// US AQI bands — same thresholds as the flat dashboard's WeatherCard.
+function aqiTone(aqi: number): string {
+  if (aqi <= 50) return "text-emerald-300";
+  if (aqi <= 100) return "text-amber-300";
+  return "text-rose-300";
+}
+function aqiLabel(aqi: number): string {
+  if (aqi <= 50) return "Good";
+  if (aqi <= 100) return "Moderate";
+  if (aqi <= 150) return "Unhealthy (sensitive)";
+  if (aqi <= 200) return "Unhealthy";
+  if (aqi <= 300) return "Very unhealthy";
+  return "Hazardous";
+}
+
 export function WeatherDeepDive({ weather }: { weather: Weather | null }) {
   if (!weather) return <p className="text-sm text-white/50">Fetching live weather…</p>;
   return (
-    <div className="grid grid-cols-3 gap-2 text-center">
+    <div className="grid grid-cols-2 gap-2 text-center">
+      <Metric icon={<Gauge className="h-4 w-4" />} label="Feels" value={`${weather.temp}°C`} />
       <Metric icon={<Droplets className="h-4 w-4" />} label="Humidity" value={`${weather.humidity}%`} />
       <Metric icon={<Wind className="h-4 w-4" />} label="Wind" value={`${weather.wind} km/h`} />
-      <Metric icon={<Gauge className="h-4 w-4" />} label="Feels" value={`${weather.temp}°C`} />
+      <Metric
+        icon={<Leaf className="h-4 w-4" />}
+        iconClassName={weather.aqi != null ? aqiTone(weather.aqi) : undefined}
+        label="Air Quality"
+        value={weather.aqi != null ? `${weather.aqi} · ${aqiLabel(weather.aqi)}` : "—"}
+      />
     </div>
   );
 }
 
-function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function Metric({
+  icon,
+  label,
+  value,
+  iconClassName,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  iconClassName?: string;
+}) {
   return (
     <div className="flex flex-col items-center gap-1 rounded-xl bg-white/5 p-3">
-      <span className="text-emerald-300">{icon}</span>
+      <span className={iconClassName ?? "text-emerald-300"}>{icon}</span>
       <span className="text-[10px] font-medium text-white/50">{label}</span>
       <span className="text-xs font-bold text-white">{value}</span>
     </div>

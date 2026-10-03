@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { Bot, X, Send } from "lucide-react";
 import { useLocation } from "./LocationContext";
 
 interface ChatMessage {
@@ -95,14 +95,14 @@ export function SaaferaAssistant() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close Saafera Assistant" : "Chat with the Saafera Assistant"}
-        className="fixed bottom-24 right-4 z-40 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
+        className="fixed bottom-24 right-4 z-50 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
       >
         <span aria-hidden className="sheen-overlay animate-sheen" />
         {open ? (
           <X className="relative h-6 w-6" />
         ) : (
           <>
-            <MessageCircle className="relative h-6 w-6" />
+            <Bot className="relative h-6 w-6" />
             <span
               aria-hidden
               className="absolute right-1.5 top-1.5 h-2.5 w-2.5 animate-pulse rounded-full bg-teal-300 ring-2 ring-white"
@@ -112,15 +112,15 @@ export function SaaferaAssistant() {
       </button>
 
       {open && (
-        // Thin animated gradient border (padding wrapper trick) around the
-        // glass panel — a shifting emerald→teal hairline is the one detail
-        // that most reads as "AI" rather than a plain support-chat widget.
-        <div className="fixed inset-x-4 bottom-40 z-40 origin-bottom-right animate-pop rounded-[26px] bg-gradient-to-br from-emerald-400 via-teal-300 to-emerald-500 bg-[length:200%_200%] p-[1.5px] shadow-[0_18px_60px_-12px_rgba(2,6,23,0.45)] sm:inset-x-auto sm:right-6 sm:w-96 lg:bottom-24 animate-gradient">
-          <div className="flex max-h-[70vh] flex-col overflow-hidden rounded-[24px] glass-strong">
-            <div className="relative flex items-center gap-2.5 overflow-hidden border-b border-white/40 px-4 py-3">
+        // Docked full-height panel on the right edge — the same layout
+        // convention as the Claude/Codex chat sidebar in VS Code, instead of
+        // a floating card. Full height on every screen size; a fixed width
+        // on larger screens, full width on mobile.
+        <div className="fixed inset-y-0 right-0 z-40 flex w-full animate-slideInRight flex-col overflow-hidden border-l border-emerald-200/60 bg-white shadow-[-18px_0_60px_-12px_rgba(2,6,23,0.35)] sm:w-[400px] lg:w-[440px]">
+            <div className="relative flex items-center gap-2.5 overflow-hidden border-b border-emerald-100 px-4 py-3">
               <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-teal-400/10 to-transparent" />
               <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-md shadow-emerald-500/40 animate-breathe">
-                <Sparkles className="h-4 w-4" />
+                <Bot className="h-4 w-4" />
               </span>
               <div className="relative min-w-0 flex-1">
                 <p className="truncate bg-gradient-to-r from-emerald-700 to-teal-600 bg-clip-text text-sm font-extrabold text-transparent">
@@ -140,6 +140,14 @@ export function SaaferaAssistant() {
                   Reset
                 </button>
               )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close Saafera Assistant"
+                className="relative grid h-7 w-7 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
 
             <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
@@ -155,7 +163,7 @@ export function SaaferaAssistant() {
                         <div className={`flex max-w-[88%] items-end gap-1.5 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
                           {m.role === "assistant" && (
                             <span className="mb-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-                              <Sparkles className="h-2.5 w-2.5" />
+                              <Bot className="h-2.5 w-2.5" />
                             </span>
                           )}
                           <div
@@ -216,7 +224,6 @@ export function SaaferaAssistant() {
                 <Send className="h-4 w-4" />
               </button>
             </form>
-          </div>
         </div>
       )}
     </>

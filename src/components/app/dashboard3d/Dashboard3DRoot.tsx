@@ -169,10 +169,19 @@ function Dashboard3DInner({
 
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} forceOverlay />
 
-      {/* Greeting — plain HTML, outside the 3D scene, always crisp. */}
-      <div className="pointer-events-none absolute left-6 top-6 z-20 lg:left-10 lg:top-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/70">Saafera · Spatial</p>
-        <h1 className="mt-1 text-2xl font-bold text-white lg:text-3xl">Welcome back, {firstName}</h1>
+      {/* Brand mark + greeting — plain HTML, outside the 3D scene, always
+          crisp. The logo's own JPG background is white, so it sits in a
+          small white plate (same `.logo-plate` convention as the mobile
+          dashboard header) rather than showing a stray white box on this
+          dark scene. */}
+      <div className="pointer-events-none absolute left-6 top-6 z-20 flex items-center gap-3 lg:left-10 lg:top-8">
+        <div className="logo-plate relative h-11 w-11 shrink-0 overflow-hidden rounded-xl p-1.5 shadow-lg shadow-black/30">
+          <Image src="/saafera-logo.jpg" alt="Saafera" fill sizes="44px" className="object-contain" />
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/70">Saafera · Spatial</p>
+          <h1 className="mt-1 text-2xl font-bold text-white lg:text-3xl">Welcome back, {firstName}</h1>
+        </div>
       </div>
 
       <Scene>

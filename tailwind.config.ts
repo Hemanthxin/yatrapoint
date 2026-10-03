@@ -101,6 +101,12 @@ export default {
           "0%": { opacity: "0", transform: "translateY(-8px) scale(0.98)" },
           "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
         },
+        // Docked panel entrance — slides in from the right edge, like a VS
+        // Code sidebar (Claude/Codex panel) rather than a popping-up card.
+        slideInRight: {
+          "0%": { opacity: "0", transform: "translateX(24px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
         // Slow cinematic pan/zoom for full-bleed hero photography.
         kenburns: {
           "0%": { transform: "scale(1) translate(0, 0)" },
@@ -123,6 +129,7 @@ export default {
         dockIn: "dockIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both",
         aurora: "aurora 22s ease-in-out infinite",
         slideDown: "slideDown 0.22s cubic-bezier(0.22, 1, 0.36, 1) both",
+        slideInRight: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both",
         kenburns: "kenburns 20s ease-out alternate infinite",
       },
     },
