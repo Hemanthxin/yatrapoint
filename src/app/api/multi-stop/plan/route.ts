@@ -453,6 +453,16 @@ export async function POST(req: NextRequest) {
   // haversine/radius/district checks in JS below still apply on top of it.
   const dLatDeg = radiusKm / 111;
   const dLngDeg = radiusKm / (111 * Math.max(0.2, Math.cos((searchCentre.lat * Math.PI) / 180)));
+  // `imageUrl` stores a full base64-encoded image inline (not a link) — the
+  // same column that made /api/nearby-places take 8-20s until it was split
+  // into a cheap scan + a final-shortlist image lookup (see that route for
+  // the full explanation). This bounding box scales with the chosen radius,
+  // so at the 100-200/200+ km "around me" bands it covers a huge area and
+  // can match thousands of rows — pulling every one of their images here
+  // was slow/large enough to throw and surface as "place/route lookups
+  // timed out or failed". Images for the handful of places that actually
+  // make it into the plan are fetched later (see the `statusRows` query
+  // below, which already does a final-shortlist lookup for ratings/hours).
   const catalogueRows = await db
     .select({
       id: places.id,
@@ -469,7 +479,6 @@ export async function POST(req: NextRequest) {
       idealHoursAtPlace: places.idealHoursAtPlace,
       idealMinutesAtPlace: places.idealMinutesAtPlace,
       avgCostForTwo: places.avgCostForTwo,
-      imageUrl: places.imageUrl,
       googleWeeklyHours: places.googleWeeklyHours,
     })
     .from(places)
@@ -532,7 +541,8 @@ export async function POST(req: NextRequest) {
       foodCostPerPerson:
         p.avgCostForTwo != null ? Math.round(p.avgCostForTwo / 2) : undefined,
       popularity: p.popularity,
-      imageUrl: p.imageUrl,
+      // Backfilled later, for the final shortlist only — see `statusRows`.
+      imageUrl: null,
       weeklyHours: p.googleWeeklyHours,
       meta: { citySeedSlug: p.slug },
     });
@@ -939,7 +949,7 @@ export async function POST(req: NextRequest) {
   // Each stop's Google-synced rating/hours (see /admin/place-sync — an
   // admin-triggered batch, not live). One query now that every catalogue place
   // lives in one table, instead of one per source table.
-  type GoogleStatus = { rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null };
+  type GoogleStatus = { rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null; imageUrl: string | null };
   const googleStatusMap = new Map<string, GoogleStatus>();
   const statusIds = [...new Set(galleryLookups.map((l) => l.id))];
   const statusRows = statusIds.length
@@ -950,13 +960,16 @@ export async function POST(req: NextRequest) {
           ratingCount: places.googleRatingCount,
           weeklyHours: places.googleWeeklyHours,
           businessStatus: places.googleBusinessStatus,
+          // Catalogue photo, deferred from the bounding-box scan above —
+          // fetched here for only the handful of places in the final plan.
+          imageUrl: places.imageUrl,
         })
         .from(places)
         .where(inArray(places.id, statusIds))
     : [];
   for (const row of statusRows) googleStatusMap.set(row.id, row);
 
-  const withImages = <T extends { id: string }>(
+  const withImages = <T extends { id: string; imageUrl?: string | null }>(
     s: T
   ): T & { images: { url: string; caption: string | null }[]; rating: number | null; ratingCount: number | null; weeklyHours: string | null; businessStatus: string | null } => {
     const key = splitGalleryId(s.id);
@@ -964,6 +977,9 @@ export async function POST(req: NextRequest) {
     const status = key ? googleStatusMap.get(key.placeId) : undefined;
     return {
       ...s,
+      // A catalogue place (has a `key`) gets its real photo here; an OSM
+      // candidate (no `key`) already carries its own imageUrl from Overpass.
+      imageUrl: key ? status?.imageUrl ?? null : s.imageUrl ?? null,
       images: images.map((i) => ({ url: i.url, caption: i.caption })),
       rating: status?.rating ?? null,
       ratingCount: status?.ratingCount ?? null,
