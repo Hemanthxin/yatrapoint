@@ -90,31 +90,25 @@ export function SaaferaAssistant() {
     <>
       {/* Launcher — pulsing glow ring (same language as the mobile dock's Plan
           button) plus a small "live" status dot, so it reads as an active AI
-          core inviting a click. Once open, it's just a close button — the
-          glow's own offset drop-shadow (meant to read as an ambient pulse)
-          looked like a stray translucent blob behind a plain X, so neither
-          the glow nor the sheen sweep run while open. */}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close Saafera Assistant" : "Chat with the Saafera Assistant"}
-        className={`fixed bottom-24 right-4 z-50 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white transition active:scale-95 lg:bottom-6 lg:right-6 ${
-          open ? "shadow-md shadow-black/20" : "shadow-lg shadow-emerald-500/40 animate-glow"
-        }`}
-      >
-        {!open && <span aria-hidden className="sheen-overlay animate-sheen" />}
-        {open ? (
-          <X className="relative h-6 w-6" />
-        ) : (
-          <>
-            <Bot className="relative h-6 w-6" />
-            <span
-              aria-hidden
-              className="absolute right-1.5 top-1.5 h-2.5 w-2.5 animate-pulse rounded-full bg-teal-300 ring-2 ring-white"
-            />
-          </>
-        )}
-      </button>
+          core inviting a click. The docked panel below has its own header
+          close button, so the launcher is only rendered while CLOSED —
+          rendering it on top of the open panel put it directly over the
+          panel's own Send button in the same bottom-right corner. */}
+      {!open && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Chat with the Saafera Assistant"
+          className="fixed bottom-24 right-4 z-50 grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40 transition animate-glow active:scale-95 lg:bottom-6 lg:right-6"
+        >
+          <span aria-hidden className="sheen-overlay animate-sheen" />
+          <Bot className="relative h-6 w-6" />
+          <span
+            aria-hidden
+            className="absolute right-1.5 top-1.5 h-2.5 w-2.5 animate-pulse rounded-full bg-teal-300 ring-2 ring-white"
+          />
+        </button>
+      )}
 
       {open && (
         // Docked full-height panel on the right edge — the same layout
