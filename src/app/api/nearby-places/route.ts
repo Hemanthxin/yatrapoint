@@ -74,8 +74,30 @@ export async function GET(req: NextRequest) {
   const dLng = radiusKm / (111 * Math.max(0.2, Math.cos((lat * Math.PI) / 180))) + 0.02;
 
   try {
+    // `imageUrl` stores a full base64-encoded image inline (not a link), so
+    // it's the single biggest column in this table by far. Pulling it for up
+    // to 2000 bounding-box candidates just to keep `limit` of them made this
+    // query take 8-20+ seconds; selecting everything EXCEPT the image here,
+    // then fetching images only for the final shortlist below, keeps the
+    // first query's payload small regardless of how many candidates match.
     const rows = await db
-      .select()
+      .select({
+        id: places.id,
+        name: places.name,
+        slug: places.slug,
+        category: places.category,
+        cityKind: places.cityKind,
+        placeType: places.placeType,
+        kinds: places.kinds,
+        district: places.district,
+        state: places.state,
+        baseCity: places.baseCity,
+        area: places.area,
+        city: places.city,
+        latitude: places.latitude,
+        longitude: places.longitude,
+        googleBusinessStatus: places.googleBusinessStatus,
+      })
       .from(places)
       .where(
         and(
@@ -126,7 +148,7 @@ export async function GET(req: NextRequest) {
             : source === "nearby"
             ? `From ${r.baseCity ?? "Bangalore"}`
             : r.area || r.city || null,
-        imageUrl: r.imageUrl,
+        imageUrl: null,
         latitude: r.latitude!,
         longitude: r.longitude!,
         distanceKm: haversineKm(centre, { lat: la, lng: lo }),
@@ -137,6 +159,17 @@ export async function GET(req: NextRequest) {
       .filter((p) => p.distanceKm <= radiusKm)
       .sort((a, b) => a.distanceKm - b.distanceKm)
       .slice(0, limit);
+
+    // Images only ever get fetched for the final shortlist, not the up-to-2000
+    // bounding-box candidates above — that's the whole point of the split.
+    if (result.length > 0) {
+      const imageRows = await db
+        .select({ id: places.id, imageUrl: places.imageUrl })
+        .from(places)
+        .where(inArray(places.id, result.map((p) => p.id)));
+      const imageById = new Map(imageRows.map((r) => [r.id, r.imageUrl]));
+      for (const p of result) p.imageUrl = imageById.get(p.id) ?? null;
+    }
 
     return NextResponse.json({ ok: true, count: result.length, places: result });
   } catch (err) {

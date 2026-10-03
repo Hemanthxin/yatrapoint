@@ -48,7 +48,7 @@ export default async function DashboardPage() {
           transforms + Framer Motion (no WebGL — see dashboard3d/Dashboard3DRoot
           for why react-three-fiber didn't work out here) ── */}
       <div className="hidden h-full lg:block">
-        <Dashboard3DRoot firstName={firstName} stats={stats} upcoming={upcoming} citySeed={citySeed} />
+        <Dashboard3DRoot firstName={firstName} stats={stats} upcoming={upcoming} />
       </div>
     </AppShell>
   );

@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Wallet, Binoculars, Briefcase, MapPinned, CloudSun } from "lucide-react";
 
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
-import type { CityPlace } from "@/lib/db/schema";
 import { formatINR } from "@/lib/format";
 import { Sidebar } from "@/components/app/Sidebar";
 import { SpatialProvider, useSpatial } from "./SpatialStore";
@@ -17,13 +16,13 @@ import { ParticleField } from "./ParticleField";
 import { FloatingDock } from "./FloatingDock";
 import { DeepDivePanel } from "./DeepDivePanel";
 import { WeatherDeepDive } from "./WeatherModule";
+import { NearbyDeepDive } from "./NearbyModule";
 import type { SpatialModule } from "./types";
 
 interface Props {
   firstName: string;
   stats: DashboardStats;
   upcoming: UpcomingTrip[];
-  citySeed: CityPlace[];
 }
 
 // A "3D data universe" dashboard built entirely from real CSS 3D transforms
@@ -32,9 +31,8 @@ interface Props {
 // Next.js 15's App Router (crashed on every load). This gets the same
 // spatial/depth/parallax feel using a toolkit already proven elsewhere in
 // this app (the dashboard's 3D logo hero, the landing page's mouse-parallax).
-export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props) {
+export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
   const modules = useMemo<SpatialModule[]>(() => {
-    const nearby = citySeed.slice(0, 5);
     return [
       {
         id: "planner",
@@ -96,22 +94,14 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
         id: "nearby",
         label: "Nearby Places",
         icon: MapPinned,
-        value: nearby.length ? `${nearby.length} curated` : "Explore",
+        // Real nearby places need the traveller's live location, which this
+        // static face value can't know ahead of time — same "Live" convention
+        // as Weather below, resolved for real once the deep-dive opens.
+        value: "Live",
         position: [87, 82, 0],
         color: "#6ee7b7",
         href: "/explore-bangalore",
-        renderDeepDive: () =>
-          nearby.length === 0 ? (
-            <p className="text-sm text-white/60">Allow location access to see what's near you.</p>
-          ) : (
-            <ul className="space-y-2">
-              {nearby.map((p) => (
-                <li key={p.id} className="rounded-xl bg-white/5 px-3 py-2 text-sm font-medium text-white/85">
-                  {p.name}
-                </li>
-              ))}
-            </ul>
-          ),
+        renderDeepDive: () => <NearbyDeepDive />,
       },
       {
         id: "weather",
@@ -125,7 +115,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming, citySeed }: Props)
       },
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stats, upcoming, citySeed]);
+  }, [stats, upcoming]);
 
   const heroNodes = upcoming.slice(0, 4).map((t) => ({ id: t.id, label: t.name }));
 
