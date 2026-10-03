@@ -80,6 +80,17 @@ function isTransientDbError(err: unknown): boolean {
   return /fetch failed|ConnectTimeout|ETIMEDOUT|ECONNRESET|fetch error/i.test(msg);
 }
 
+// Sessions here are JWT cookies (no server-side session table), so deleting
+// or recreating a `users` row doesn't invalidate a browser's existing
+// cookie — it keeps "working" (the JWT signature still checks out) but now
+// names a creator_id that no longer exists, which this FK violation catches
+// at the DB layer. Confirmed live: the reporting account's email wasn't in
+// `users` at all when this fired. The fix is a fresh sign-in, not db:push.
+function isStaleSessionError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /group_trips_creator_id_fkey|violates foreign key constraint.*creator_id/i.test(msg);
+}
+
 // A short, safe snippet of the real error — stripped of anything that could
 // be a connection string/credential — appended to the user-facing message so
 // the NEXT failure is actually diagnosable from a screenshot, instead of
@@ -157,6 +168,10 @@ export async function createGroupTrip(
       revalidatePath("/group-trip");
       return { ok: true, joinCode: created.joinCode, id: created.id };
     } catch (err) {
+      if (isStaleSessionError(err)) {
+        console.error("[createGroupTrip] stale session (creator_id has no matching user row):", err);
+        return { ok: false, error: "Your session has expired — please sign out and sign back in, then try again." };
+      }
       const canRetry = attempt === 1 && isTransientDbError(err);
       console.error(`[createGroupTrip] failed (attempt ${attempt}${canRetry ? ", retrying" : ""}):`, err);
       if (!canRetry) {
