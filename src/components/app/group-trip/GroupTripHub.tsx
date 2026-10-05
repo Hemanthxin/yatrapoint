@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, MapPinPlus, Vote as VoteIcon, ClipboardCheck, Route, Copy } from "lucide-react";
+import { Users, MapPinPlus, Vote as VoteIcon, ClipboardCheck, Route, Copy, ArrowRight } from "lucide-react";
 
 import type { GroupTrip } from "@/lib/db/schema";
 import type { GroupTripMemberRow, SuggestionWithVotes } from "@/lib/queries/group-trips";
@@ -48,6 +48,20 @@ export function GroupTripHub({
   function refresh() {
     router.refresh();
   }
+
+  // The flow is really a sequence (gather people -> pick places -> vote ->
+  // admin decides -> itinerary), not just a flat set of tabs — nothing on
+  // the page itself pointed a traveller to the next step, which is exactly
+  // what made the Members tab (just a list, then empty space) feel like a
+  // dead end. One shared "Continue" footer, keyed off the current tab +
+  // role, instead of repeating this in every tab component.
+  const CONTINUE: Partial<Record<TabId, { next: TabId; label: string }>> = {
+    members: { next: "add", label: "Continue to Add Places" },
+    add: { next: "vote", label: "Continue to Vote" },
+    vote: isAdmin ? { next: "decide", label: "Continue to Decide" } : { next: "itinerary", label: "Continue to Itinerary" },
+    decide: { next: "itinerary", label: "Continue to Itinerary" },
+  };
+  const continueStep = CONTINUE[tab];
 
   async function copyJoinCode() {
     try {
@@ -103,6 +117,16 @@ export function GroupTripHub({
         <VoteTab suggestions={suggestions} isAdmin tripId={trip.id} confirmedCount={suggestions.filter((s) => s.status === "confirmed").length} onChange={refresh} />
       )}
       {tab === "itinerary" && <ItineraryTab trip={trip} itinerary={itinerary} isAdmin={isAdmin} onChange={refresh} />}
+
+      {continueStep && (
+        <button
+          type="button"
+          onClick={() => setTab(continueStep.next)}
+          className="btn-primary mt-5 flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm"
+        >
+          {continueStep.label} <ArrowRight className="h-4 w-4" />
+        </button>
+      )}
     </div>
   );
 }
