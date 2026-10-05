@@ -122,7 +122,10 @@ function Metric({
   iconClassName?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-xl bg-black/[0.03] p-3">
+    <div
+      className="flex flex-col items-center gap-1 rounded-xl p-3"
+      style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+    >
       <span className={iconClassName ?? "text-emerald-600"}>{icon}</span>
       <span className="text-[10px] font-medium text-slate-500">{label}</span>
       <span className="text-xs font-bold text-slate-900">{value}</span>

@@ -27,7 +27,13 @@ export function FloatingDock({ onMenu }: { onMenu: () => void }) {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center">
-      <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-black/5 bg-white/75 px-2 py-2 shadow-2xl shadow-emerald-900/10 backdrop-blur-2xl">
+      <div
+        className="pointer-events-auto flex items-center gap-1 rounded-full px-2 py-2 backdrop-blur-2xl"
+        style={{
+          background: "rgba(250, 246, 236, 0.8)",
+          boxShadow: "-5px -5px 12px rgba(255,255,255,0.55), 5px 5px 18px rgba(120,110,80,0.3)",
+        }}
+      >
         <button
           type="button"
           onClick={onMenu}

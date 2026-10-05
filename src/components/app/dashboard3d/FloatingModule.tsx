@@ -70,13 +70,16 @@ export function FloatingModule({ mod }: { mod: SpatialModule }) {
       <motion.div
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 5, repeat: isSelected ? 0 : Infinity, ease: "easeInOut" }}
-        className="rounded-2xl border p-4 backdrop-blur-xl transition-colors duration-300"
+        className="rounded-2xl p-4 backdrop-blur-xl transition-colors duration-300"
         style={{
-          borderColor: glowing ? `${mod.color}70` : `${mod.color}35`,
-          background: "rgba(255, 255, 255, 0.72)",
+          background: "rgba(250, 246, 236, 0.78)",
+          // Neumorphic light/dark pair instead of a border — sitting over a
+          // photo (not a flat colour) so it can't vanish into the
+          // background the way a true neumorphic card does, but the same
+          // "extruded" shadow logic still applies.
           boxShadow: glowing
-            ? `0 12px 32px -8px ${mod.color}55, inset 0 0 0 1px ${mod.color}25`
-            : `0 8px 24px -12px rgba(15,35,25,0.18)`,
+            ? `-5px -5px 12px rgba(255,255,255,0.65), 5px 5px 16px ${mod.color}50`
+            : `-4px -4px 10px rgba(255,255,255,0.5), 4px 4px 14px rgba(120,110,80,0.28)`,
         }}
       >
         <span

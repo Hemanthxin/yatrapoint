@@ -85,7 +85,11 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
           ) : (
             <ul className="space-y-2">
               {upcoming.map((t) => (
-                <li key={t.id} className="rounded-xl bg-black/[0.03] px-3 py-2">
+                <li
+                  key={t.id}
+                  className="rounded-xl px-3 py-2"
+                  style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+                >
                   <p className="text-sm font-semibold text-slate-900">{t.name}</p>
                   <p className="text-xs text-slate-500">
                     {t.days} day{t.days === 1 ? "" : "s"} · {t.status}
@@ -217,7 +221,10 @@ function Dashboard3DInner({
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2.5">
+    <div
+      className="flex items-center justify-between rounded-xl px-3 py-2.5"
+      style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+    >
       <span className="text-xs font-medium text-slate-500">{label}</span>
       <span className="text-sm font-bold text-slate-900">{value}</span>
     </div>

@@ -74,7 +74,11 @@ export function NearbyDeepDive() {
   return (
     <ul className="space-y-2">
       {places.map((p) => (
-        <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl bg-black/[0.03] px-3 py-2">
+        <li
+          key={p.id}
+          className="flex items-center justify-between gap-2 rounded-xl px-3 py-2"
+          style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+        >
           <span className="min-w-0 truncate text-sm font-medium text-slate-800">{p.name}</span>
           <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-emerald-700">
             <MapPin className="h-3 w-3" /> {formatKm(p.distanceKm)}
