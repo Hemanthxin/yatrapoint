@@ -271,7 +271,8 @@ export function Feed({
           <button
             type="button"
             onClick={showPendingPosts}
-            className="btn-primary sticky top-16 z-10 px-5 py-2.5 text-sm"
+            className="btn-primary sticky z-10 px-5 py-2.5 text-sm"
+            style={{ top: "var(--app-header-h)" }}
           >
             <ArrowUp className="h-4 w-4" />
             {pendingPosts.length} new {pendingPosts.length === 1 ? "post" : "posts"}

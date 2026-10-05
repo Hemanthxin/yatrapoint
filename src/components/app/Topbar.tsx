@@ -114,7 +114,7 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
   }
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-1.5 border-b border-[color:var(--border)] glass-strong px-3 md:gap-3 md:px-6">
+    <header className="flex h-16 items-center gap-1.5 border-b border-[color:var(--border)] glass-strong px-3 md:gap-3 md:px-6">
       <button
         onClick={onMenu}
         className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[color:var(--accent)] text-white transition hover:bg-[color:var(--accent-2)] active:scale-95 lg:hidden"

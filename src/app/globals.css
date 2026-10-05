@@ -50,6 +50,13 @@
   --neu-surface: var(--app-bg);
   --neu-light: rgba(255, 255, 255, 0.85);
   --neu-dark: rgba(184, 168, 122, 0.45);
+
+  /* Real height of the fixed Marquee+Topbar header — AppShell measures and
+     overwrites this via ResizeObserver once mounted. This fallback (its
+     approximate real height) just avoids a flash of the wrong offset for
+     any sticky element that clears it (`top: var(--app-header-h)`) before
+     that first measurement lands. */
+  --app-header-h: 6rem;
 }
 
 html,

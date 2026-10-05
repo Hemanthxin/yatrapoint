@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { CursorHalo } from "./CursorHalo";
@@ -36,13 +36,44 @@ interface AppShellProps {
 export function AppShell({ userLabel, userImage, location, immersive = false, spatial = false, children }: AppShellProps) {
   const [open, setOpen] = useState(false);
 
+  // The Marquee+Topbar header used to be `position: sticky`, which turned
+  // out to be unreliable in this exact nested structure — confirmed by
+  // direct testing: an identical clone of the header, moved to document.body,
+  // stuck correctly; the real one, even with `position: sticky !important`
+  // forced inline, did not (it scrolled away like a normal in-flow element).
+  // `position: fixed` on the same element in the same spot works reliably,
+  // so the header is fixed to the viewport instead, with its real rendered
+  // height measured and applied as top padding on the content that follows
+  // it — otherwise fixed positioning would pull it out of flow and the page
+  // content would start underneath it.
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => {
+      const h = el.offsetHeight;
+      setHeaderHeight(h);
+      // Exposed for any page-level sticky element that needs to clear the
+      // header (e.g. a secondary sticky search bar or filter row) — those
+      // used to hardcode `top-16` assuming the header was exactly 64px
+      // (Topbar alone), which silently stopped matching reality once the
+      // marquee's height was also part of the fixed region above it.
+      document.documentElement.style.setProperty("--app-header-h", `${h}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [immersive, spatial]);
+
   // overflow-x-CLIP, not hidden: `hidden` computes to `overflow: hidden auto`,
   // which turns this wrapper into a scroll container and silently breaks
   // `position: sticky` for every descendant (the community rail and the feed's
   // sticky tab bar both failed to pin because of it). `clip` gives the same
   // horizontal clipping without creating a scrollport.
   return (
-    <div className="relative min-h-screen overflow-x-clip text-slate-900">
+    <div className="relative min-h-screen overflow-x-clip overflow-y-visible text-slate-900">
       {/* Vibrant animated aurora — blue + green light behind every screen.
           Hidden at desktop width for the spatial dashboard, which paints its
           own scene there; phones keep it regardless. */}
@@ -66,7 +97,10 @@ export function AppShell({ userLabel, userImage, location, immersive = false, sp
       <Sidebar open={open} onClose={() => setOpen(false)} forceOverlay={spatial} />
 
       <div className={`relative z-10 ${spatial ? "lg:pl-0" : "lg:pl-64"}`}>
-        <div className={spatial ? "lg:hidden" : immersive ? "hidden lg:block" : undefined}>
+        <div
+          ref={headerRef}
+          className={`fixed inset-x-0 top-0 z-20 ${spatial ? "lg:hidden" : immersive ? "hidden lg:block" : ""} ${spatial ? "" : "lg:left-64"}`}
+        >
           <Marquee />
           <Topbar
             userLabel={userLabel}
@@ -75,6 +109,14 @@ export function AppShell({ userLabel, userImage, location, immersive = false, sp
             onMenu={() => setOpen((v) => !v)}
           />
         </div>
+        {/* Fixed positioning (above) pulls the header out of document flow —
+            this reserves the same space it used to occupy so content starts
+            right below it instead of underneath it. */}
+        <div
+          aria-hidden
+          style={{ height: headerHeight }}
+          className={spatial ? "lg:hidden" : immersive ? "hidden lg:block" : undefined}
+        />
 
         {/* With the header gone on phones, the menu becomes a floating control
             sitting on the photo itself. */}

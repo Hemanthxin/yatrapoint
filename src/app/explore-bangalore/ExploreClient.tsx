@@ -268,7 +268,10 @@ export function ExploreClient({ seed }: ExploreClientProps) {
     <div className="mt-4 flex flex-col">
       {/* Controls — a prominent, sticky search bar on mobile; an inline row on
           desktop (lg:) exactly as before. Ordered first on mobile, second on lg. */}
-      <div className="order-1 -mx-4 sticky top-16 z-10 bg-white/90 px-4 py-2 backdrop-blur lg:static lg:order-2 lg:mx-0 lg:mt-3 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+      <div
+        className="order-1 -mx-4 sticky z-10 bg-white/90 px-4 py-2 backdrop-blur lg:static lg:order-2 lg:mx-0 lg:mt-3 lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none"
+        style={{ top: "var(--app-header-h)" }}
+      >
         <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:gap-3">
           <div className="relative flex-1 lg:min-w-[12rem]">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 lg:left-3.5" />

@@ -117,7 +117,10 @@ export default async function CommunityPage() {
               max-h/overflow pair is only a backstop for odd window sizes or
               zoomed text — at these breakpoints nothing actually scrolls, and
               the scrollbar is hidden either way. */}
-          <aside className="sticky top-20 hidden max-h-[calc(100vh-6rem)] w-72 shrink-0 space-y-3 overflow-y-auto [scrollbar-width:none] xl:block [&::-webkit-scrollbar]:hidden">
+          <aside
+            className="sticky hidden max-h-[calc(100vh-6rem)] w-72 shrink-0 space-y-3 overflow-y-auto [scrollbar-width:none] xl:block [&::-webkit-scrollbar]:hidden"
+            style={{ top: "calc(var(--app-header-h) + 1rem)" }}
+          >
             <div className="card p-3">
               <Link href="/profile" className="flex items-center gap-3">
                 {u.image ? (
