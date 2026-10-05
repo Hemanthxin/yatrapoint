@@ -21,6 +21,7 @@ import {
 import { signOutAction } from "@/lib/actions/auth";
 import { useCart, removeFromCart, clearCart } from "@/lib/cart";
 import { ThemeToggle } from "@/components/app/ThemeToggle";
+import { searchSuggestions, type SearchSuggestion } from "@/lib/actions/search";
 
 interface TopbarProps {
   userLabel: string;
@@ -41,12 +42,16 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
 
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [suggestOpen, setSuggestOpen] = useState(false);
   const [openNotif, setOpenNotif] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
   const cartRef = useRef<HTMLDivElement>(null);
+  const desktopSearchRef = useRef<HTMLFormElement>(null);
+  const mobileSearchRef = useRef<HTMLFormElement>(null);
   const cart = useCart();
 
   // Close dropdowns on outside click.
@@ -55,16 +60,57 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setOpenNotif(false);
       if (userRef.current && !userRef.current.contains(e.target as Node)) setOpenUser(false);
       if (cartRef.current && !cartRef.current.contains(e.target as Node)) setOpenCart(false);
+      if (
+        desktopSearchRef.current &&
+        !desktopSearchRef.current.contains(e.target as Node) &&
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(e.target as Node)
+      ) {
+        setSuggestOpen(false);
+      }
     }
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
+  // Live suggestions — even a single letter should show something, per the
+  // product ask, so this fires from length 1 (not the usual 2-3 char
+  // minimum). Debounced so a fast typist doesn't fire a search per
+  // keystroke, and a request counter discards any response that isn't for
+  // the LATEST query — a slow early response landing after a faster later
+  // one would otherwise flash stale results back onto the screen.
+  const searchReqId = useRef(0);
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length === 0) {
+      setSuggestions([]);
+      setSuggestOpen(false);
+      return;
+    }
+    const myId = ++searchReqId.current;
+    const timer = setTimeout(() => {
+      searchSuggestions(q).then((results) => {
+        if (searchReqId.current !== myId) return; // superseded by a newer keystroke
+        setSuggestions(results);
+        setSuggestOpen(true);
+      });
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [query]);
+
   function onSearch(e: FormEvent) {
     e.preventDefault();
     const q = query.trim();
     setSearchOpen(false);
+    setSuggestOpen(false);
     router.push(q ? `/destinations?q=${encodeURIComponent(q)}` : "/destinations");
+  }
+
+  function goToSuggestion(href: string) {
+    setSuggestOpen(false);
+    setSearchOpen(false);
+    setQuery("");
+    router.push(href);
   }
 
   return (
@@ -79,20 +125,28 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
 
       {/* Tablet / desktop: inline search. On phones it collapses to an icon
           (below) that expands into a full-width bar. */}
-      <form onSubmit={onSearch} className="group relative hidden flex-1 md:block lg:max-w-xl">
+      <form
+        ref={desktopSearchRef}
+        onSubmit={onSearch}
+        className="group relative hidden flex-1 md:block lg:max-w-xl"
+      >
         <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition group-focus-within:text-emerald-600" />
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => suggestions.length > 0 && setSuggestOpen(true)}
           placeholder="Search places, trips…"
           className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+          autoComplete="off"
         />
+        {suggestOpen && <SuggestionsDropdown suggestions={suggestions} onPick={goToSuggestion} />}
       </form>
 
       {/* Phone: full-width search that slides over the header when tapped. */}
       {searchOpen && (
         <form
+          ref={mobileSearchRef}
           onSubmit={onSearch}
           className="absolute inset-0 z-40 flex animate-slideDown items-center gap-2 bg-[color:var(--surface)] px-3 md:hidden"
         >
@@ -103,9 +157,12 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => suggestions.length > 0 && setSuggestOpen(true)}
               placeholder="Search places, trips…"
               className="w-full rounded-full border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              autoComplete="off"
             />
+            {suggestOpen && <SuggestionsDropdown suggestions={suggestions} onPick={goToSuggestion} />}
           </div>
           <button
             type="button"
@@ -300,5 +357,56 @@ export function Topbar({ userLabel, userImage, onMenu }: TopbarProps) {
         </div>
       </div>
     </header>
+  );
+}
+
+// Live search-as-you-type results — shows from a single typed character, per
+// the product ask. A plain absolutely-positioned panel rather than a
+// separate dropdown primitive, since it only ever appears directly under
+// the one search input that's currently open (desktop or mobile, never
+// both at once).
+function SuggestionsDropdown({
+  suggestions,
+  onPick,
+}: {
+  suggestions: SearchSuggestion[];
+  onPick: (href: string) => void;
+}) {
+  return (
+    <div className="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-2xl glass-strong shadow-xl">
+      {suggestions.length === 0 ? (
+        <p className="px-4 py-3 text-sm text-slate-500">No matches — try a different spelling.</p>
+      ) : (
+        <ul className="max-h-80 overflow-y-auto no-scrollbar">
+          {suggestions.map((s) => (
+            <li key={s.id}>
+              <button
+                type="button"
+                onMouseDown={(e) => {
+                  // mousedown (not click) fires before the input's blur /
+                  // the outside-click handler, so the suggestion registers
+                  // before the dropdown closes out from under it.
+                  e.preventDefault();
+                  onPick(s.href);
+                }}
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-black/[0.04]"
+              >
+                <Search className="h-4 w-4 shrink-0 text-slate-400" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium text-slate-800">{s.name}</span>
+                  {(s.area || s.category) && (
+                    <span className="block truncate text-xs text-slate-500">
+                      {[s.category?.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), s.area]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  )}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
