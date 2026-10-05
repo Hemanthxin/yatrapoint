@@ -72,21 +72,21 @@ export function FloatingModule({ mod }: { mod: SpatialModule }) {
         transition={{ duration: 5, repeat: isSelected ? 0 : Infinity, ease: "easeInOut" }}
         className="rounded-2xl border p-4 backdrop-blur-xl transition-colors duration-300"
         style={{
-          borderColor: glowing ? `${mod.color}99` : `${mod.color}30`,
-          background: "rgba(10, 16, 28, 0.55)",
+          borderColor: glowing ? `${mod.color}70` : `${mod.color}35`,
+          background: "rgba(255, 255, 255, 0.72)",
           boxShadow: glowing
-            ? `0 0 32px -4px ${mod.color}80, inset 0 0 0 1px ${mod.color}30`
-            : `0 8px 24px -12px rgba(0,0,0,0.6)`,
+            ? `0 12px 32px -8px ${mod.color}55, inset 0 0 0 1px ${mod.color}25`
+            : `0 8px 24px -12px rgba(15,35,25,0.18)`,
         }}
       >
         <span
           className="grid h-9 w-9 place-items-center rounded-lg"
-          style={{ backgroundColor: `${mod.color}22`, color: mod.color }}
+          style={{ backgroundColor: `${mod.color}1f`, color: mod.color }}
         >
           <Icon className="h-4 w-4" />
         </span>
-        <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/55">{mod.label}</p>
-        <p className="font-sans text-xl font-bold text-white">{mod.value}</p>
+        <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">{mod.label}</p>
+        <p className="font-sans text-xl font-bold text-slate-900">{mod.value}</p>
       </motion.div>
     </motion.div>
   );

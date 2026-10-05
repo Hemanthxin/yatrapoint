@@ -66,17 +66,17 @@ export function NearbyDeepDive() {
   const places = useNearbyPlaces(5);
 
   if (places === null) {
-    return <p className="text-sm text-white/50">Finding places near you…</p>;
+    return <p className="text-sm text-slate-500">Finding places near you…</p>;
   }
   if (places.length === 0) {
-    return <p className="text-sm text-white/60">Allow location access to see what's genuinely near you.</p>;
+    return <p className="text-sm text-slate-600">Allow location access to see what's genuinely near you.</p>;
   }
   return (
     <ul className="space-y-2">
       {places.map((p) => (
-        <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl bg-white/5 px-3 py-2">
-          <span className="min-w-0 truncate text-sm font-medium text-white/85">{p.name}</span>
-          <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-emerald-300">
+        <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl bg-black/[0.03] px-3 py-2">
+          <span className="min-w-0 truncate text-sm font-medium text-slate-800">{p.name}</span>
+          <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-emerald-700">
             <MapPin className="h-3 w-3" /> {formatKm(p.distanceKm)}
           </span>
         </li>

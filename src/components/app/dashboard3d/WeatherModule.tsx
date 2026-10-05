@@ -80,9 +80,9 @@ export function useLiveWeather() {
 
 // US AQI bands — same thresholds as the flat dashboard's WeatherCard.
 function aqiTone(aqi: number): string {
-  if (aqi <= 50) return "text-emerald-300";
-  if (aqi <= 100) return "text-amber-300";
-  return "text-rose-300";
+  if (aqi <= 50) return "text-emerald-600";
+  if (aqi <= 100) return "text-amber-600";
+  return "text-rose-600";
 }
 function aqiLabel(aqi: number): string {
   if (aqi <= 50) return "Good";
@@ -94,7 +94,7 @@ function aqiLabel(aqi: number): string {
 }
 
 export function WeatherDeepDive({ weather }: { weather: Weather | null }) {
-  if (!weather) return <p className="text-sm text-white/50">Fetching live weather…</p>;
+  if (!weather) return <p className="text-sm text-slate-500">Fetching live weather…</p>;
   return (
     <div className="grid grid-cols-2 gap-2 text-center">
       <Metric icon={<Gauge className="h-4 w-4" />} label="Feels" value={`${weather.temp}°C`} />
@@ -122,10 +122,10 @@ function Metric({
   iconClassName?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-xl bg-white/5 p-3">
-      <span className={iconClassName ?? "text-emerald-300"}>{icon}</span>
-      <span className="text-[10px] font-medium text-white/50">{label}</span>
-      <span className="text-xs font-bold text-white">{value}</span>
+    <div className="flex flex-col items-center gap-1 rounded-xl bg-black/[0.03] p-3">
+      <span className={iconClassName ?? "text-emerald-600"}>{icon}</span>
+      <span className="text-[10px] font-medium text-slate-500">{label}</span>
+      <span className="text-xs font-bold text-slate-900">{value}</span>
     </div>
   );
 }

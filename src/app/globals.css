@@ -25,18 +25,18 @@
   --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
   --br-900: 18 61 40;    --br-950: 10 33 22;
 
-  --background: 248 250 249;
+  --background: 250 246 236;
   --foreground: 17 24 20;
-  /* Minimalist canvas — a whisper-cool near-white with clean white surfaces,
-     hairline neutral borders and a single forest-green accent. Calm, lots of
-     whitespace, almost no shadow. */
-  --app-bg: #f7f9f8;
+  /* Warm cream canvas with clean pure-white surfaces, warm hairline borders
+     and a single forest-green accent. Calm, lots of whitespace, almost no
+     shadow. */
+  --app-bg: #faf6ec;
   --surface: #ffffff;
-  --surface-2: #f2f5f4;
+  --surface-2: #f3eddc;
   --text: #111814;
   --text-soft: #414b45;
   --muted: #7c857f;
-  --border: #e8ebe9;
+  --border: #eae2cc;
   --accent: #1f6b45;
   --accent-2: #17573a;
   /* Sun-orange secondary accent (from the Saafera logo) — used sparingly. */
@@ -74,14 +74,14 @@ body {
     --br-600: 33 110 68;   --br-700: 27 90 56;    --br-800: 22 74 47;
     --br-900: 18 61 40;    --br-950: 10 33 22;
 
-    /* Minimalist near-white canvas (matches desktop). */
-    --app-bg: #f7f9f8;
+    /* Warm cream canvas (matches desktop). */
+    --app-bg: #faf6ec;
     --surface: #ffffff;
-    --surface-2: #f2f5f4;
+    --surface-2: #f3eddc;
     --text: #111814;
     --text-soft: #414b45;
     --muted: #7c857f;
-    --border: #e8ebe9;
+    --border: #eae2cc;
     --accent: #1f6b45;
     --accent-2: #17573a;
     /* Sun-orange highlight from the Saafera logo. */

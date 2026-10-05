@@ -57,14 +57,14 @@ export function OrbitalHero({ headline, headlineLabel, subLines, nodes, dimmed =
           an angle, then spun continuously around its own axis. */}
       <motion.span
         aria-hidden
-        className="pointer-events-none absolute h-72 w-72 rounded-full border border-emerald-400/50"
-        style={{ rotateX: 70, boxShadow: "0 0 40px rgba(52,211,153,0.35)" }}
+        className="pointer-events-none absolute h-72 w-72 rounded-full border border-emerald-600/40"
+        style={{ rotateX: 70, boxShadow: "0 0 40px rgba(5,150,105,0.25)" }}
         animate={{ rotateZ: 360 }}
         transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
       />
       <motion.span
         aria-hidden
-        className="pointer-events-none absolute h-56 w-56 rounded-full border border-green-300/40"
+        className="pointer-events-none absolute h-56 w-56 rounded-full border border-green-700/30"
         style={{ rotateX: 68, rotateZ: 30 }}
         animate={{ rotateZ: [30, -330] }}
         transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
@@ -83,7 +83,7 @@ export function OrbitalHero({ headline, headlineLabel, subLines, nodes, dimmed =
           cy="50"
           r="48"
           fill="none"
-          stroke="#6ee7b7"
+          stroke="#059669"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeDasharray="90 212"
@@ -104,21 +104,22 @@ export function OrbitalHero({ headline, headlineLabel, subLines, nodes, dimmed =
           style={{ transformStyle: "preserve-3d" }}
         >
           <span
-            className="block h-2.5 w-2.5 rounded-full bg-emerald-300"
-            style={{ boxShadow: "0 0 10px 3px rgba(110,231,183,0.7)" }}
+            className="block h-2.5 w-2.5 rounded-full bg-emerald-600"
+            style={{ boxShadow: "0 0 10px 3px rgba(5,150,105,0.5)" }}
           />
-          <span className="absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-100 backdrop-blur-sm">
+          <span className="absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 shadow-sm backdrop-blur-sm">
             {n.label}
           </span>
         </div>
       ))}
 
-      {/* Holographic centre typography. */}
+      {/* Centre typography — a soft white halo (not a dark glow) keeps dark
+          text readable against the busy, bright background photo. */}
       <div className="pointer-events-none relative z-10 flex flex-col items-center text-center">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-200/80">{headlineLabel}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-700/80">{headlineLabel}</p>
         <p
-          className="font-sans text-6xl font-bold text-white"
-          style={{ textShadow: "0 0 24px rgba(110,231,183,0.65), 0 0 60px rgba(52,211,153,0.35)" }}
+          className="font-sans text-6xl font-bold text-slate-900"
+          style={{ textShadow: "0 0 20px rgba(255,255,255,0.9), 0 0 48px rgba(255,255,255,0.6)" }}
         >
           {headline}
         </p>
@@ -128,7 +129,7 @@ export function OrbitalHero({ headline, headlineLabel, subLines, nodes, dimmed =
           }`}
         >
           {subLines.map((line) => (
-            <p key={line} className="text-xs font-medium text-white/70">
+            <p key={line} className="text-xs font-medium text-slate-700" style={{ textShadow: "0 0 12px rgba(255,255,255,0.9)" }}>
               {line}
             </p>
           ))}

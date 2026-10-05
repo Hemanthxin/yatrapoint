@@ -45,7 +45,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
         icon: Wallet,
         value: formatINR(stats.totalBudget),
         position: [16, 22, 1],
-        color: "#34d399",
+        color: "#0d9488",
         href: "/budget-planner",
         renderDeepDive: () => (
           <div className="space-y-3">
@@ -61,11 +61,11 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
         icon: Binoculars,
         value: String(stats.placesExplored),
         position: [84, 18, 2],
-        color: "#2dd4bf",
+        color: "#0f766e",
         href: "/destinations",
         renderDeepDive: () => (
-          <p className="text-sm leading-relaxed text-white/70">
-            You've saved <span className="font-bold text-white">{stats.placesExplored}</span> place
+          <p className="text-sm leading-relaxed text-slate-600">
+            You've saved <span className="font-bold text-slate-900">{stats.placesExplored}</span> place
             {stats.placesExplored === 1 ? "" : "s"} to your favourites. Open Destinations to explore more and add to
             the list.
           </p>
@@ -77,17 +77,17 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
         icon: Briefcase,
         value: upcoming.length ? `${upcoming.length} planned` : "None yet",
         position: [12, 78, -1],
-        color: "#4ade80",
+        color: "#16a34a",
         href: "/one-day-trips",
         renderDeepDive: () =>
           upcoming.length === 0 ? (
-            <p className="text-sm text-white/60">No saved trips yet — build one in the Budget Planner.</p>
+            <p className="text-sm text-slate-600">No saved trips yet — build one in the Budget Planner.</p>
           ) : (
             <ul className="space-y-2">
               {upcoming.map((t) => (
-                <li key={t.id} className="rounded-xl bg-white/5 px-3 py-2">
-                  <p className="text-sm font-semibold text-white">{t.name}</p>
-                  <p className="text-xs text-white/50">
+                <li key={t.id} className="rounded-xl bg-black/[0.03] px-3 py-2">
+                  <p className="text-sm font-semibold text-slate-900">{t.name}</p>
+                  <p className="text-xs text-slate-500">
                     {t.days} day{t.days === 1 ? "" : "s"} · {t.status}
                   </p>
                 </li>
@@ -104,7 +104,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
         // as Weather below, resolved for real once the deep-dive opens.
         value: "Live",
         position: [87, 82, 0],
-        color: "#6ee7b7",
+        color: "#059669",
         href: "/explore-bangalore",
         renderDeepDive: () => <NearbyDeepDive />,
       },
@@ -114,7 +114,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
         icon: CloudSun,
         value: weather ? `${weather.temp}°C` : "Live",
         position: [50, 83, -2],
-        color: "#86efac",
+        color: "#22c55e",
         href: "/dashboard",
         renderDeepDive: () => <WeatherDeepDive weather={weather} />,
       },
@@ -146,44 +146,44 @@ function Dashboard3DInner({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-black">
-      {/* Background scene — a looping video (the static PNG shows as a
-          poster until it's ready, and stays as the background if video
-          can't play at all). A dark scrim on top keeps every panel and
-          line of text legible regardless of how bright any one frame is. */}
-      <video
-        src="/dashboard-spatial-bg.mp4"
-        poster="/dashboard-spatial-bg.png"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="absolute inset-0 h-full w-full object-cover"
+    <div className="relative h-full w-full overflow-hidden bg-[#faf6ec]">
+      {/* Background scene — the futuristic zen torii reflection still image.
+          A light scrim keeps text/panels legible without crushing the
+          image's own bright cream/white detail the way a dark overlay
+          would. */}
+      <Image
+        src="/dashboard-spatial-bg.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
       />
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 100% at 50% 30%, rgba(3,10,6,0.45) 0%, rgba(2,8,5,0.78) 65%, rgba(1,4,2,0.94) 100%)",
+            "radial-gradient(120% 100% at 50% 30%, rgba(255,255,255,0.08) 0%, rgba(250,246,236,0.35) 55%, rgba(243,235,210,0.55) 100%)",
         }}
       />
 
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} forceOverlay />
 
       {/* Brand mark + greeting — plain HTML, outside the 3D scene, always
-          crisp. The logo's own JPG background is white, so it sits in a
-          small white plate (same `.logo-plate` convention as the mobile
-          dashboard header) rather than showing a stray white box on this
-          dark scene. */}
+          crisp. */}
       <div className="pointer-events-none absolute left-6 top-6 z-20 flex items-center gap-3 lg:left-10 lg:top-8">
-        <div className="logo-plate relative h-11 w-11 shrink-0 overflow-hidden rounded-xl p-1.5 shadow-lg shadow-black/30">
+        <div className="logo-plate relative h-11 w-11 shrink-0 overflow-hidden rounded-xl p-1.5 shadow-lg shadow-black/10">
           <Image src="/saafera-logo.jpg" alt="Saafera" fill sizes="44px" className="object-contain" />
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/70">Saafera · Spatial</p>
-          <h1 className="mt-1 text-2xl font-bold text-white lg:text-3xl">Welcome back, {firstName}</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-700/80">Saafera · Spatial</p>
+          <h1
+            className="mt-1 text-2xl font-bold text-slate-900 lg:text-3xl"
+            style={{ textShadow: "0 1px 16px rgba(255,255,255,0.8)" }}
+          >
+            Welcome back, {firstName}
+          </h1>
         </div>
       </div>
 
@@ -206,7 +206,7 @@ function Dashboard3DInner({
 
       <FloatingDock onMenu={() => setMenuOpen(true)} />
       {!selectedId && (
-        <p className="pointer-events-none absolute bottom-28 left-1/2 z-20 -translate-x-1/2 text-center text-[11px] font-medium text-white/35">
+        <p className="pointer-events-none absolute bottom-28 left-1/2 z-20 -translate-x-1/2 text-center text-[11px] font-medium text-slate-600/70">
           Drag to rotate · scroll to go deeper · click a panel to focus
         </p>
       )}
@@ -217,9 +217,9 @@ function Dashboard3DInner({
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2.5">
-      <span className="text-xs font-medium text-white/55">{label}</span>
-      <span className="text-sm font-bold text-white">{value}</span>
+    <div className="flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2.5">
+      <span className="text-xs font-medium text-slate-500">{label}</span>
+      <span className="text-sm font-bold text-slate-900">{value}</span>
     </div>
   );
 }

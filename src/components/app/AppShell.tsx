@@ -42,10 +42,10 @@ export function AppShell({ userLabel, userImage, location, immersive = false, sp
   // sticky tab bar both failed to pin because of it). `clip` gives the same
   // horizontal clipping without creating a scrollport.
   return (
-    <div className={`relative min-h-screen overflow-x-clip text-slate-900 ${spatial ? "lg:text-white" : ""}`}>
+    <div className="relative min-h-screen overflow-x-clip text-slate-900">
       {/* Vibrant animated aurora — blue + green light behind every screen.
           Hidden at desktop width for the spatial dashboard, which paints its
-          own dark scene there; phones keep it regardless. */}
+          own scene there; phones keep it regardless. */}
       <div aria-hidden className={`aurora-canvas ${spatial ? "lg:hidden" : ""}`}>
         <div className="aurora-blob -left-32 top-[-6rem] h-[26rem] w-[26rem] bg-green-300/35 animate-aurora" />
         <div className="aurora-blob right-[-8rem] top-1/4 h-[30rem] w-[30rem] bg-emerald-300/35 animate-aurora [animation-delay:-7s]" />

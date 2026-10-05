@@ -34,12 +34,12 @@ export function ParticleField({ count = 26 }: { count?: number }) {
       {particles.map((p, i) => (
         <motion.span
           key={i}
-          className="absolute rounded-full bg-emerald-200"
+          className="absolute rounded-full bg-emerald-600"
           style={{ left: `${p.left}%`, top: `${p.top}%`, width: p.size, height: p.size }}
           animate={{
             y: [0, -p.drift, 0],
             x: [0, p.drift * 0.4, 0],
-            opacity: [0, 0.5, 0],
+            opacity: [0, 0.45, 0],
           }}
           transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "easeInOut" }}
         />

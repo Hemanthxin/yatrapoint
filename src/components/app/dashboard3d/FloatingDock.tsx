@@ -27,16 +27,16 @@ export function FloatingDock({ onMenu }: { onMenu: () => void }) {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center">
-      <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.06] px-2 py-2 shadow-2xl backdrop-blur-2xl">
+      <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-black/5 bg-white/75 px-2 py-2 shadow-2xl shadow-emerald-900/10 backdrop-blur-2xl">
         <button
           type="button"
           onClick={onMenu}
           aria-label="Open menu"
-          className="grid h-11 w-11 place-items-center rounded-full text-white/60 transition hover:bg-white/10 hover:text-white"
+          className="grid h-11 w-11 place-items-center rounded-full text-slate-500 transition hover:bg-black/5 hover:text-slate-800"
         >
           <Menu className="h-5 w-5" />
         </button>
-        <span className="mx-1 h-6 w-px bg-white/10" />
+        <span className="mx-1 h-6 w-px bg-black/10" />
         {DOCK.map(({ href, label, icon: Icon }) => {
           const active = path === href || path.startsWith(href + "/");
           return (
@@ -46,11 +46,11 @@ export function FloatingDock({ onMenu }: { onMenu: () => void }) {
               aria-label={label}
               title={label}
               className={`group relative grid h-11 w-11 place-items-center rounded-full transition ${
-                active ? "bg-white text-slate-900" : "text-white/70 hover:bg-white/10 hover:text-white"
+                active ? "bg-emerald-700 text-white" : "text-slate-500 hover:bg-black/5 hover:text-slate-800"
               }`}
             >
               <Icon className="h-5 w-5" />
-              <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-black/80 px-2 py-1 text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
+              <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900/90 px-2 py-1 text-[10px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
                 {label}
               </span>
             </Link>

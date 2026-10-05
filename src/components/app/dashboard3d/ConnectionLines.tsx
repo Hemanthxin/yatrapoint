@@ -19,7 +19,7 @@ export function ConnectionLines({ modules }: { modules: SpatialModule[] }) {
             y2={`${y}%`}
             stroke={m.color}
             strokeWidth={1}
-            strokeOpacity={0.18}
+            strokeOpacity={0.3}
           />
         );
       })}
