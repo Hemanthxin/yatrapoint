@@ -628,27 +628,32 @@ input[type="number"] {
     padding-right: 2.25rem;
   }
 
-  /* Chrome — clean, near-solid white with a light blur. Minimalism favours a
-     quiet, almost-opaque bar over a heavy frosted-glass effect. */
+  /* Chrome — cream (not white) and nearly opaque, with a neumorphic shadow
+     instead of a hard border, so the nav bar/dock/dropdowns read as part of
+     the same extruded system as cards and buttons. Kept slightly
+     translucent + blurred (not literally --neu-surface flat) since these
+     sit over scrolling content and still need to stay legible regardless
+     of what scrolls underneath. */
   .glass {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(250, 246, 236, 0.85);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
   }
   .glass-strong {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(250, 246, 236, 0.92);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px -4px rgba(120, 110, 80, 0.22);
   }
   /* Phones: drop backdrop-filter (the biggest scroll-jank cost) for a solid bar. */
   @media (max-width: 767px) {
     .glass {
-      background: rgba(255, 255, 255, 0.96);
+      background: rgba(250, 246, 236, 0.97);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
     .glass-strong {
-      background: rgba(255, 255, 255, 0.98);
+      background: rgba(250, 246, 236, 0.99);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
@@ -796,4 +801,86 @@ input[type="number"] {
       animation: none !important;
     }
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NEUMORPHISM, SITEWIDE — not just wherever a component already used the
+   shared .card/.input classes above. Most of the app's cards and form
+   fields are hand-styled per component with the SAME raw Tailwind "white
+   card with a slate border" signature (confirmed: `border-slate-200
+   bg-white` alone appears 160+ times across ~68 files) rather than the
+   shared classes. Rewriting every one of those files individually would be
+   a huge, risky sweep for a purely cosmetic change, so instead this target
+   that exact recurring signature directly, site-wide, via compound class
+   selectors — an element needs BOTH the border-color utility AND bg-white
+   present together (not just any white background) to match, which is
+   specific enough to mean "this is a card/field shell" and not catch
+   unrelated small white elements (icon circles, badges, etc.) that happen
+   to use bg-white alone.
+   Written OUTSIDE any @layer: unlayered rules always beat @layer rules in
+   the cascade regardless of selector specificity, so this reliably wins
+   over the Tailwind utilities (.bg-white, .border-slate-200, .shadow-sm,
+   .rounded-*) it's overriding, without having to fight load order.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:is(
+  .border-slate-100,
+  .border-slate-200,
+  .border-slate-300,
+  .border-emerald-200,
+  .border-emerald-200\/60,
+  .border-emerald-300
+).bg-white:not(input):not(textarea):not(select) {
+  background-color: var(--neu-surface) !important;
+  border-color: transparent !important;
+  box-shadow:
+    -8px -8px 16px var(--neu-light),
+    8px 8px 20px var(--neu-dark) !important;
+}
+/* The disabled/read-only field variant (bg-slate-50 instead of bg-white)
+   gets the same raised shell — disabled fields in this codebase are never
+   form controls the user types into, just labelled read-only display. */
+.border-slate-200.bg-slate-50:not(input):not(textarea):not(select) {
+  background-color: var(--neu-surface) !important;
+  border-color: transparent !important;
+  box-shadow:
+    -6px -6px 12px var(--neu-light),
+    6px 6px 16px var(--neu-dark) !important;
+}
+/* The white hairline some glass-strong chrome (Topbar, MobileNav dock,
+   dropdown menus) pairs with .glass-strong — a visible seam now that
+   .glass-strong itself is cream, not white. Drop it; the dual shadow
+   above already defines the shape. */
+:is(.border-white\/60, .border-white\/50, .border-white\/40) {
+  border-color: transparent !important;
+}
+
+/* Actual form controls get the PRESSED-IN treatment instead — a raised
+   input reads as a button, which is the wrong affordance. */
+:is(input, textarea, select):is(
+  .border-slate-100,
+  .border-slate-200,
+  .border-slate-300
+).bg-white,
+:is(input, textarea, select).border-slate-200.bg-slate-50 {
+  /* input[type="search"] renders with native -webkit-appearance:
+     searchfield by default, which silently ignores a custom
+     background/box-shadow unless appearance is reset first. */
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--neu-surface) !important;
+  border-color: transparent !important;
+  box-shadow:
+    inset -3px -3px 8px var(--neu-light),
+    inset 3px 3px 8px var(--neu-dark) !important;
+}
+:is(input, textarea, select):is(
+  .border-slate-100,
+  .border-slate-200,
+  .border-slate-300
+).bg-white:focus {
+  box-shadow:
+    inset -2px -2px 6px var(--neu-light),
+    inset 2px 2px 6px var(--neu-dark),
+    0 0 0 3px var(--ring) !important;
+  outline: none;
 }
