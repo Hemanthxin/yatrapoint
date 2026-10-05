@@ -147,16 +147,19 @@ function Dashboard3DInner({
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-black">
-      {/* Background scene image — a dark scrim on top keeps every panel and
-          line of text legible over it regardless of how bright any one part
-          of the photo is. */}
-      <Image
-        src="/dashboard-spatial-bg.png"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
+      {/* Background scene — a looping video (the static PNG shows as a
+          poster until it's ready, and stays as the background if video
+          can't play at all). A dark scrim on top keeps every panel and
+          line of text legible regardless of how bright any one frame is. */}
+      <video
+        src="/dashboard-spatial-bg.mp4"
+        poster="/dashboard-spatial-bg.png"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 h-full w-full object-cover"
       />
       <div
         aria-hidden
