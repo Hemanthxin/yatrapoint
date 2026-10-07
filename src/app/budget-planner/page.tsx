@@ -15,10 +15,10 @@ export default async function BudgetPlannerPage() {
           it stays put while the form scrolls, and confined to THIS page only. */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center lg:hidden"
         style={{ backgroundImage: "url('/trip-planner-bg.jpg')" }}
       />
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/70" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/70 lg:hidden" />
 
       {/* Mobile-only app-style hero — desktop keeps the wizard's own inline header. */}
       <div className="lg:hidden -mx-4 mb-5 border-b border-slate-200 bg-white px-4 pb-5 pt-1 shadow-sm">

@@ -1,0 +1,903 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE TRIP PLANNER AS A STORY — guide scene, chapter path, counters, the
+   "building your plan" theatre and the tale-of-your-trip itinerary.
+   Standalone & responsive (mobile uses the cream/green theme; desktop picks up
+   the painted tokens via the var() fallbacks below).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.qg,
+.qp,
+.ql,
+.ts,
+.q-coins,
+.q-days,
+.q-people {
+  --q-ink: var(--text, #2a2112);
+  --q-soft: var(--text-soft, #4d3f27);
+  --q-ring: rgb(var(--ink, 92 68 36) / 0.5);
+  --q-paper: var(--paper-hi, #fffdf3);
+  --q-paper2: var(--paper-lo, #fcf1d3);
+  --q-accent: var(--accent, #1f9a4d);
+  --q-gold: rgb(var(--gold, 240 172 36));
+}
+
+/* ───────────────────────── GUIDE SCENE ───────────────────────── */
+.qg {
+  position: relative;
+  height: 13.5rem;
+  overflow: hidden;
+  border-radius: 1.6rem 1.3rem 1.7rem 1.4rem;
+  box-shadow: 0 0 0 2px var(--q-ring), 0 22px 34px -22px rgb(var(--shadow, 96 70 30) / 0.7);
+  --qg-sky: linear-gradient(180deg, #8fd3ff 0%, #ffe3b0 70%, #fff3d0 100%);
+}
+.qg[data-step="1"] {
+  --qg-sky: linear-gradient(180deg, #55b4f5 0%, #bfe6ff 62%, #eaf8ff 100%);
+}
+.qg[data-step="2"] {
+  --qg-sky: linear-gradient(180deg, #78a4ee 0%, #ffc58a 62%, #ffe8b2 100%);
+}
+.qg[data-step="3"] {
+  --qg-sky: linear-gradient(180deg, #43349a 0%, #de6c9a 62%, #ffb88a 100%);
+}
+.qg-sky {
+  position: absolute;
+  inset: 0;
+  background: var(--qg-sky);
+}
+.qg-sun {
+  position: absolute;
+  left: 14%;
+  top: 46%;
+  width: 4.6rem;
+  height: 4.6rem;
+  margin: -2.3rem 0 0 -2.3rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fffbe3, #ffe08e 60%, #f8b95e);
+  box-shadow: 0 0 0 0.9rem rgba(255, 228, 150, 0.35), 0 0 0 2rem rgba(255, 228, 150, 0.16), 0 0 3rem 1rem rgba(255, 214, 120, 0.55);
+  transition: left 1s cubic-bezier(0.4, 0, 0.2, 1), top 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.qg[data-step="1"] .qg-sun {
+  left: 52%;
+  top: 22%;
+}
+.qg[data-step="2"] .qg-sun {
+  left: 80%;
+  top: 44%;
+}
+.qg[data-step="3"] .qg-sun {
+  left: 88%;
+  top: 70%;
+  background: radial-gradient(circle at 40% 38%, #fff4d8, #ffc07a 60%, #f0805a);
+}
+.qg-stars {
+  position: absolute;
+  inset: 0 0 40%;
+  opacity: 0;
+  transition: opacity 1s;
+  background-image: radial-gradient(1.5px 1.5px at 12% 22%, #fff 99%, transparent), radial-gradient(1.5px 1.5px at 30% 12%, #fff 99%, transparent),
+    radial-gradient(2px 2px at 52% 26%, #fff 99%, transparent), radial-gradient(1.5px 1.5px at 66% 10%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 78% 30%, #fff 99%, transparent), radial-gradient(2px 2px at 92% 14%, #fff 99%, transparent);
+}
+.qg[data-step="3"] .qg-stars {
+  opacity: 0.9;
+}
+.sb-scape.qg-ridges {
+  position: absolute;
+  inset: 0;
+}
+.qg-dusk {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(70, 40, 140, 0.35), rgba(120, 50, 120, 0.12));
+  transition: opacity 1s;
+}
+.qg[data-step="3"] .qg-dusk {
+  opacity: 1;
+}
+.qg-title {
+  position: absolute;
+  left: 1.5rem;
+  top: 1rem;
+  z-index: 3;
+}
+.qg-title .sb-eyebrow {
+  font-size: 0.95rem;
+  color: #c4551f;
+}
+.qg-title h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 2rem;
+  line-height: 1.05;
+  font-weight: 600;
+  color: #2d3a5a;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.7);
+}
+.qg[data-step="3"] .qg-title h2,
+.qg[data-step="3"] .qg-title .sb-eyebrow {
+  color: #fff1d6;
+  text-shadow: 0 2px 14px rgba(40, 10, 70, 0.6);
+}
+.qg-cast {
+  position: absolute;
+  left: 1.2rem;
+  bottom: 0.15rem;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+}
+.qg-c {
+  position: relative;
+  flex: none;
+}
+.qg-c > svg,
+.qg-c .jr-hover,
+.qg-c .jr-hover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.qg-juno {
+  width: 6.2rem;
+  height: 7rem;
+}
+.qg-teddy {
+  width: 6.3rem;
+  height: 8.5rem;
+  margin-left: -0.6rem;
+}
+.qg-pip {
+  width: 3.8rem;
+  height: 4.1rem;
+  margin: 0 0 3.6rem -0.4rem;
+}
+.qg-teddy > svg,
+.qg-juno > svg {
+  transform-origin: 50% 100%;
+  animation: jr-breathe 3.4s ease-in-out infinite;
+}
+.qg-c.is-talking {
+  animation: q-talk 0.5s ease-in-out infinite alternate;
+}
+@keyframes q-talk {
+  to {
+    transform: translateY(-7px) scale(1.04);
+  }
+}
+.qg-say {
+  position: absolute;
+  left: 15.8rem;
+  right: 1.2rem;
+  bottom: 1.3rem;
+  z-index: 5;
+  max-width: 29rem;
+  min-height: 3.6rem;
+  padding: 0.55rem 1rem 0.7rem;
+  font-size: 1.12rem;
+  line-height: 1.3;
+  color: #3a2d1c;
+  background: #fffaf0;
+  border-radius: 1.1rem 1.1rem 1.1rem 0.3rem;
+  box-shadow: 0 0 0 2px rgba(92, 68, 36, 0.55), 0 14px 22px -12px rgba(40, 24, 8, 0.6);
+  transform-origin: 0% 100%;
+  animation: q-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.qg-say i {
+  display: block;
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b6702f;
+}
+.qg-say::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  bottom: 0.9rem;
+  border: 8px solid transparent;
+  border-right-color: #fffaf0;
+  border-left: 0;
+}
+@keyframes q-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(8px);
+  }
+}
+@media (max-width: 700px) {
+  .qg {
+    height: 19.5rem;
+  }
+  .qg-title h2 {
+    font-size: 1.55rem;
+  }
+  .qg-cast {
+    bottom: 6.6rem;
+    transform: scale(0.72);
+    transform-origin: left bottom;
+  }
+  .qg-say {
+    left: 0.8rem;
+    right: 0.8rem;
+    bottom: 0.7rem;
+    max-width: none;
+    min-height: 3.2rem;
+  }
+  .qg-say::before {
+    display: none;
+  }
+}
+
+/* ───────────────────────── CHAPTER PATH ───────────────────────── */
+.qp {
+  margin: 0.3rem 0 0.2rem;
+}
+.qp-track {
+  position: relative;
+  height: 4.8rem;
+}
+.qp-track > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.qp-base,
+.qp-done {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.qp-base {
+  stroke: rgb(var(--ink, 92 68 36) / 0.28);
+  stroke-width: 5;
+}
+.qp-done {
+  stroke: var(--q-accent);
+  stroke-width: 5;
+  transition: stroke-dashoffset 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.qp-stop {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.qp-stop:disabled {
+  cursor: default;
+}
+.qp-stop i {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--q-soft);
+  background: var(--q-paper);
+  box-shadow: 0 0 0 2px var(--q-ring);
+  transition: transform 0.4s, background 0.4s, color 0.4s;
+}
+.qp-stop.is-done i {
+  color: #fff;
+  background: var(--q-accent);
+}
+.qp-stop.is-on i {
+  transform: scale(1.18);
+  color: #3a2410;
+  background: #ffd877;
+  box-shadow: 0 0 0 2px #b6702f, 0 0 16px 3px rgba(255, 200, 90, 0.7);
+}
+.qp-stop span {
+  position: absolute;
+  top: 100%;
+  margin-top: 0.15rem;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--q-soft);
+  opacity: 0.8;
+}
+.qp-stop.is-on span {
+  opacity: 1;
+  color: var(--q-ink);
+}
+.qp-bear {
+  position: absolute;
+  z-index: 3;
+  width: 2.5rem;
+  height: 3.4rem;
+  transform: translate(-50%, -88%);
+  pointer-events: none;
+  transition: left 0.95s cubic-bezier(0.4, 0, 0.2, 1), top 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.qp-bear > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+@media (max-width: 560px) {
+  .qp-stop span {
+    display: none;
+  }
+}
+
+/* shared walk cycle — legs swing from the hip, the body bobs */
+.q-walk .br-leg-b,
+.q-walk .fx-leg-b,
+.qp-bear.is-walking .br-leg-b {
+  animation: q-leg 0.55s ease-in-out infinite alternate;
+}
+.q-walk .br-leg-f,
+.q-walk .fx-leg-f,
+.qp-bear.is-walking .br-leg-f {
+  animation: q-leg 0.55s ease-in-out infinite alternate-reverse;
+}
+.q-walk .br-arm,
+.qp-bear.is-walking .br-arm {
+  animation: q-arm 0.55s ease-in-out infinite alternate-reverse;
+}
+.q-walk .fx-tail {
+  animation: q-leg 0.42s ease-in-out infinite alternate;
+}
+.q-walk .br-scarf,
+.q-walk .fx-scarf {
+  animation: q-arm 0.5s ease-in-out infinite alternate;
+}
+.qp-bear.is-walking > svg {
+  animation: q-bob 0.3s ease-in-out infinite;
+}
+@keyframes q-leg {
+  from {
+    transform: rotate(17deg);
+  }
+  to {
+    transform: rotate(-17deg);
+  }
+}
+@keyframes q-arm {
+  from {
+    transform: rotate(7deg);
+  }
+  to {
+    transform: rotate(-7deg);
+  }
+}
+@keyframes q-bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ───────────────────────── COUNTERS ───────────────────────── */
+.q-coins {
+  width: 5.8rem;
+  height: 5.3rem;
+  flex: none;
+  overflow: visible;
+}
+.q-coin {
+  animation: q-coin-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes q-coin-in {
+  from {
+    transform: translateY(-16px);
+    opacity: 0;
+  }
+}
+.q-days,
+.q-people {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.7rem;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+.q-days span,
+.q-people span {
+  animation: q-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.q-people b {
+  font-size: 1.1rem;
+  color: var(--q-soft);
+}
+
+/* ───────────────────────── GENERATION THEATRE ───────────────────────── */
+.ql {
+  overflow: hidden;
+  border-radius: 1.6rem 1.3rem 1.7rem 1.4rem;
+  background: linear-gradient(165deg, var(--q-paper), var(--q-paper2));
+  box-shadow: 0 0 0 2px var(--q-ring), 0 26px 40px -24px rgb(var(--shadow, 96 70 30) / 0.7);
+  animation: q-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.ql-scene {
+  position: relative;
+  height: 15.5rem;
+  overflow: hidden;
+}
+.ql-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #7fcdf6 0%, #ffe6b0 72%, #fff4d2 100%);
+}
+.ql-sun {
+  position: absolute;
+  right: 14%;
+  top: 14%;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fffbe3, #ffe08e 60%, #f8b95e);
+  box-shadow: 0 0 0 0.7rem rgba(255, 228, 150, 0.35), 0 0 2.4rem 0.8rem rgba(255, 214, 120, 0.55);
+}
+.ql-pan {
+  position: absolute;
+  left: 0;
+  bottom: 2.1rem;
+  width: 200%;
+  display: flex;
+  animation: ql-pan var(--t, 24s) linear infinite;
+}
+.ql-pan svg {
+  flex: none;
+  display: block;
+  width: 50%;
+  height: 100%;
+}
+.ql-far {
+  height: 9rem;
+  --t: 70s;
+  opacity: 0.9;
+}
+.ql-mid {
+  height: 7.4rem;
+  --t: 34s;
+}
+.ql-near {
+  height: 5.4rem;
+  --t: 15s;
+}
+@keyframes ql-pan {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ql-road {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5rem;
+  background: linear-gradient(180deg, #e4c283, #d1a85c);
+  border-top: 3px solid #a37c3f;
+}
+.ql-road::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55%;
+  height: 4px;
+  background-image: linear-gradient(90deg, #fff3d0 0 30px, transparent 30px);
+  background-size: 68px 4px;
+  animation: ql-dash 0.45s linear infinite;
+}
+@keyframes ql-dash {
+  to {
+    background-position-x: -68px;
+  }
+}
+.ql-cast {
+  position: absolute;
+  left: 12%;
+  bottom: 0.75rem;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+}
+.ql-c {
+  position: relative;
+  flex: none;
+}
+.ql-c > svg,
+.ql-c .jr-hover,
+.ql-c .jr-hover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ql-c > svg {
+  animation: q-bob 0.55s ease-in-out infinite;
+}
+.ql-juno {
+  width: 6.4rem;
+  height: 7.2rem;
+}
+.ql-teddy {
+  width: 6.4rem;
+  height: 8.6rem;
+  margin-left: -0.4rem;
+}
+.ql-pip {
+  width: 3.8rem;
+  height: 4.1rem;
+  margin: 0 0 4.2rem 0.2rem;
+}
+.ql-body {
+  padding: 1.1rem 1.5rem 1.4rem;
+}
+.ql-line {
+  min-height: 2rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 1.3;
+  color: var(--q-ink);
+  animation: q-fade 0.6s ease both;
+}
+@keyframes q-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.ql-meter,
+.ts-meter {
+  position: relative;
+  height: 0.8rem;
+  margin: 0.9rem 0 0.2rem;
+  border-radius: 999px;
+  background: rgb(var(--ink, 92 68 36) / 0.14);
+  box-shadow: inset 0 1px 3px rgb(var(--ink, 92 68 36) / 0.3);
+}
+.ql-meter i,
+.ts-meter i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5fd48a, #f6c640);
+  transition: width 0.4s ease;
+}
+.ts-meter i {
+  transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ts-meter.is-over i {
+  background: linear-gradient(90deg, #f6c640, #e0533d);
+}
+.ql-meter b,
+.ts-meter b {
+  position: absolute;
+  top: 50%;
+  font-size: 1.3rem;
+  transform: translate(-50%, -50%);
+  transition: left 0.4s ease;
+  animation: q-coin-spin 1.2s linear infinite;
+}
+@keyframes q-coin-spin {
+  50% {
+    transform: translate(-50%, -50%) rotateY(180deg);
+  }
+}
+.ql-chips,
+.ts-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ql-chips li,
+.ts-chips li {
+  padding: 0.18rem 0.7rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--q-soft);
+  background: rgb(var(--gold, 240 172 36) / 0.2);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgb(var(--ink, 92 68 36) / 0.22);
+}
+
+/* ───────────────────────── THE TALE OF YOUR TRIP ───────────────────────── */
+.ts {
+  position: relative;
+  color: var(--q-ink);
+  container-type: inline-size;
+}
+.ts-who {
+  margin-right: 0.15rem;
+}
+/* in a narrow column the photo sits above the words instead of squeezing them */
+@container (max-width: 920px) {
+  .ts-card:not(.ts-card-wide) {
+    flex-direction: column;
+    max-width: 22rem;
+  }
+  .ts-pic {
+    width: auto;
+    height: 9rem;
+    margin: 0.25rem;
+  }
+}
+.ts-head {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 1rem 1.4rem;
+  text-align: center;
+  border-radius: 1.6rem 1.3rem 1.7rem 1.4rem;
+  background: radial-gradient(90% 120% at 50% 0%, rgba(255, 214, 120, 0.5), transparent 70%), linear-gradient(165deg, var(--q-paper), var(--q-paper2));
+  box-shadow: 0 0 0 2px var(--q-ring), 0 24px 36px -24px rgb(var(--shadow, 96 70 30) / 0.7);
+}
+.ts-ta {
+  font-family: var(--font-script), cursive;
+  font-size: 1.9rem;
+  line-height: 1;
+  color: #d9582a;
+}
+.ts-head h2 {
+  margin-top: 0.2rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.08;
+}
+.ts-sub {
+  margin-top: 0.4rem;
+  font-style: italic;
+  color: var(--q-soft);
+}
+.ts-lanterns i {
+  position: absolute;
+  bottom: -1.6rem;
+  width: 0.9rem;
+  height: 1.2rem;
+  border-radius: 0.3rem;
+  background: #ff9a4a;
+  box-shadow: 0 0 14px 4px rgba(255, 170, 80, 0.6);
+  opacity: 0;
+  animation: ts-float 6.5s ease-in 2;
+}
+@keyframes ts-float {
+  0% {
+    transform: translateY(0) rotate(-4deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(-17rem) rotate(6deg);
+    opacity: 0;
+  }
+}
+.ts-trail {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 3.2rem 1fr;
+  row-gap: 1.7rem;
+  margin: 1.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ts-trail::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  border-left: 3px dashed rgb(var(--ink, 92 68 36) / 0.38);
+  transform: translateX(-1.5px);
+}
+.ts-node {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 3.2rem 1fr;
+  align-items: start;
+}
+.ts-dot {
+  grid-column: 2;
+  grid-row: 1;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #3a2410;
+  background: radial-gradient(circle at 35% 30%, #fff1b8, #f2b641);
+  box-shadow: 0 0 0 3px #b6702f, 0 8px 14px -6px rgba(80, 50, 10, 0.6);
+}
+.ts-l .ts-card {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+  margin-right: 0.8rem;
+}
+.ts-r .ts-card {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: start;
+  margin-left: 0.8rem;
+}
+.ts-card {
+  display: flex;
+  gap: 0.95rem;
+  max-width: 34rem;
+  padding: 0.95rem;
+  border-radius: 1.1rem 0.9rem 1.2rem 1rem;
+  background: linear-gradient(165deg, var(--q-paper), var(--q-paper2));
+  box-shadow: 0 0 0 1.5px var(--q-ring), inset 0 0 0 5px rgb(var(--paper-hi-rgb, 255 253 243) / 0.4), 0 20px 28px -18px rgb(var(--shadow, 96 70 30) / 0.7);
+}
+.ts-card small {
+  display: block;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.86rem;
+  color: #b6702f;
+}
+.ts-card h3 {
+  margin: 0.1rem 0 0.35rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.35rem;
+  line-height: 1.12;
+  font-weight: 600;
+  color: var(--q-ink);
+}
+.ts-card p {
+  font-size: 0.98rem;
+  line-height: 1.42;
+  color: var(--q-soft);
+}
+.ts-card p b {
+  color: var(--q-ink);
+}
+.ts-pic {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 7.6rem;
+  height: 7.6rem;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  font-size: 2.9rem;
+  background: linear-gradient(135deg, #bde9ff, #fff1c8);
+  box-shadow: 0 0 0 1.5px var(--q-ring), 0 0 0 5px var(--q-paper), 0 0 0 6.5px rgb(var(--ink, 92 68 36) / 0.25);
+  margin: 0.25rem 0.3rem 0.25rem 0.25rem;
+}
+.ts-pic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ts-pic em {
+  position: absolute;
+  right: 0.25rem;
+  bottom: 0.15rem;
+  font-style: normal;
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
+}
+.ts-day {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.ts-day span {
+  display: inline-block;
+  padding: 0.35rem 1.4rem 0.45rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #ffe9a8;
+  background: linear-gradient(180deg, #d5503f, #b03a2c);
+  clip-path: polygon(0 0, 100% 0, 96% 50%, 100% 100%, 0 100%, 4% 50%);
+  padding-inline: 2.2rem;
+}
+.ts-start,
+.ts-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ts-start .ts-dot,
+.ts-end .ts-dot {
+  margin-bottom: 0.7rem;
+}
+.ts-card-wide {
+  display: block;
+  width: 100%;
+  max-width: 36rem;
+  text-align: center;
+}
+.ts-card-wide .ts-chips {
+  justify-content: center;
+}
+@media (max-width: 760px) {
+  .ts-trail {
+    grid-template-columns: 2.6rem 1fr;
+    row-gap: 1.3rem;
+  }
+  .ts-trail::before {
+    left: 1.3rem;
+  }
+  .ts-node {
+    grid-template-columns: 2.6rem 1fr;
+  }
+  .ts-dot {
+    grid-column: 1;
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 1.05rem;
+  }
+  .ts-l .ts-card,
+  .ts-r .ts-card {
+    grid-column: 2;
+    justify-self: stretch;
+    margin: 0 0 0 0.6rem;
+    max-width: none;
+  }
+  .ts-day {
+    grid-column: 1 / -1;
+    text-align: left;
+    padding-left: 0.2rem;
+  }
+  .ts-start,
+  .ts-end {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    align-items: start;
+  }
+  .ts-start .ts-dot,
+  .ts-end .ts-dot {
+    margin: 0;
+  }
+  .ts-card-wide {
+    grid-column: 2;
+    margin-left: 0.6rem;
+    width: auto;
+    text-align: left;
+  }
+  .ts-card-wide .ts-chips {
+    justify-content: flex-start;
+  }
+  .ts-pic {
+    width: 5.2rem;
+    height: 5.2rem;
+    font-size: 2.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qg *,
+  .qp *,
+  .ql *,
+  .ts *,
+  .q-coins *,
+  .q-days *,
+  .q-people * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

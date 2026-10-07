@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   User,
   Heart,
@@ -29,6 +29,8 @@ import { LivePlan, type LivePlanProps } from "./LivePlan";
 import { PersonalFinanceIllustration } from "@/components/illustrations";
 import { Reveal } from "@/components/app/Reveal";
 import { PageHero } from "@/components/app/PageHero";
+import { QuestGuide, QuestPath } from "./quest/QuestGuide";
+import { CoinStack, DaySuns, PeopleHeads } from "./quest/counters";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 
 // Wizard step slide — direction-aware (custom prop) so Next slides in from
@@ -309,6 +311,57 @@ export function WizardForm({ initial }: WizardFormProps) {
     distBandLabel(km) + (direction !== "any" ? ` · ${dirLabel}` : "");
   const whereLabel = planMode === "around" ? `Around me · ${aroundLabel}` : areaLabel(area);
 
+  // ── The three companions react to whatever the traveller touched last ──
+  const [touched, setTouched] = useState<string | null>(null);
+  const prevVals = useRef<Record<string, unknown> | null>(null);
+  useEffect(() => {
+    const cur: Record<string, unknown> = { budget, days, travellers, tripType, transport, food, places, km, direction, planMode, groups, includeFood };
+    const p = prevVals.current;
+    prevVals.current = cur;
+    if (!p) return;
+    const changed = Object.keys(cur).find((k) => p[k] !== cur[k]);
+    if (changed) setTouched(changed);
+  }, [budget, days, travellers, tripType, transport, food, places, km, direction, planMode, groups, includeFood]);
+  useEffect(() => setTouched(null), [step]);
+
+  const money = `₹${budget.toLocaleString("en-IN")}`;
+  const DEFAULT_QUIPS: { who: 0 | 1 | 2; text: string }[] = [
+    { who: 0, text: "Welcome, traveller! Tell us where your road begins." },
+    { who: 1, text: "Now — what shall we collect along the way?" },
+    { who: 2, text: "How do we travel, and what do we eat?" },
+    { who: 0, text: "The scroll is ready. Seal it and we set off!" },
+  ];
+  const quip: { who: 0 | 1 | 2; text: string } = (() => {
+    switch (touched) {
+      case "budget":
+        return { who: 2, text: budget <= 2000 ? `${money}? A lean trip — we'll be wonderfully clever with it.` : budget <= 10000 ? `${money} it is. A comfy purse — I'll guard every coin.` : `${money}! Hoo-ray, a generous purse. Let's spend it beautifully.` };
+      case "days":
+        return { who: 0, text: daysNum === 1 ? "One day? A swift dash — pack light!" : daysNum === 2 ? "Two days: a proper weekend wander!" : daysNum <= 4 ? `${daysNum} days of road ahead. Bring the good boots!` : "A grand expedition! I'll pack extra lantern oil." };
+      case "travellers":
+        return { who: 1, text: travellersNum === 1 ? "Solo! Just you, the road and me." : travellersNum === 2 ? "Two travellers — a perfect pair." : `${travellersNum} of us! I'll draw a nice roomy route.` };
+      case "planMode":
+        return { who: 1, text: planMode === "around" ? "Starting from your doorstep — my favourite." : `${area.state || "A faraway land"}? I'll fetch a bigger map!` };
+      case "tripType":
+        return { who: 0, text: `A ${tripType.toLowerCase()} trip! I know just the sort of places.` };
+      case "transport":
+        return transport === "Bike" ? { who: 1, text: "Two wheels and wind in my whiskers!" } : { who: 2, text: "Four wheels and a tank of fuel — I'll budget the petrol." };
+      case "food":
+        return { who: 2, text: `${food} food, noted. A happy tummy is half the trip.` };
+      case "includeFood":
+        return { who: 2, text: includeFood ? "Food in the budget — wise! I'll set a little aside." : "No food budget? You're braver than I thought." };
+      case "places":
+        return { who: 1, text: `${places} stops — I'll space them out nicely.` };
+      case "km":
+        return { who: 1, text: `${distBandLabel(km)} from home — noted!` };
+      case "direction":
+        return { who: 1, text: direction === "any" ? "A full circle — every road is open." : `Heading ${dirLabel.toLowerCase()}? Compass set!` };
+      case "groups":
+        return { who: 0, text: groups.size === 0 ? "Pick a few kinds of places — I'm curious!" : "Good picks — those are exactly my kind of places!" };
+      default:
+        return DEFAULT_QUIPS[step];
+    }
+  })();
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setAreaError(null);
@@ -406,61 +459,25 @@ export function WizardForm({ initial }: WizardFormProps) {
   return (
     <>
     <Reveal as="form" onSubmit={onSubmit} className="mx-auto max-w-3xl space-y-5">
-      {/* Editorial header — desktop only; mobile uses the page hero above. */}
-      <div className="hidden lg:block">
-        <PageHero
-          eyebrow="Plan smarter, spend less"
-          icon={Wallet}
-          title={<>Trip <span className="italic">Planner</span></>}
-          subtitle={`Plan a trip that fits your budget — ${STEPS.length} quick steps.`}
-          action={<PersonalFinanceIllustration className="hidden h-28 w-28 shrink-0 xl:block" />}
-          backgroundImage="/pagehero-bg.jpg"
-        />
-      </div>
+      {/* Title — desktop only; mobile uses the page hero above. */}
+      <header className="hidden text-center lg:block">
+        <p className="sb-eyebrow justify-center text-base">A trip, told as a story</p>
+        <h1 className="mt-1 font-serif text-5xl font-semibold leading-[1.05] tracking-tight text-slate-900">
+          Plan your <span className="italic">adventure</span>
+        </h1>
+        <p className="mt-2 text-base text-slate-600">{STEPS.length} chapters, three friends, one trip that fits your budget.</p>
+      </header>
 
-      {/* Progress bar + clickable step markers */}
-      <div>
-        <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-emerald-600 transition-all duration-300"
-            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-          />
-        </div>
-        <div className="flex items-start justify-between gap-1">
-          {STEPS.map((s, i) => {
-            const done = i < step;
-            const active = i === step;
-            return (
-              <button
-                key={s}
-                type="button"
-                onClick={() => {
-                  if (i > step) return;
-                  setStepDir(i < step ? -1 : 1);
-                  setStep(i);
-                }}
-                disabled={i > step}
-                className="flex flex-1 flex-col items-center gap-1.5 text-center disabled:cursor-default"
-              >
-                <span
-                  className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold transition ${
-                    active
-                      ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
-                      : done
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-slate-100 text-slate-400"
-                  }`}
-                >
-                  {done ? <Check className="h-4 w-4" /> : i + 1}
-                </span>
-                <span className={`text-[11px] font-semibold leading-tight ${active ? "text-slate-900" : "text-slate-400"}`}>
-                  {s}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {/* The companions' scene for this chapter, and the trail of chapters */}
+      <QuestGuide step={step} who={quip.who} text={quip.text} />
+      <QuestPath
+        step={step}
+        onJump={(i) => {
+          if (i > step) return;
+          setStepDir(i < step ? -1 : 1);
+          setStep(i);
+        }}
+      />
 
       {/* Current step's fields */}
       <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -503,7 +520,10 @@ export function WizardForm({ initial }: WizardFormProps) {
 
             <div>
               <StepLabel icon="💰">Your Budget</StepLabel>
-              <p className="mb-2 text-3xl font-bold tracking-tight text-slate-900">₹{budget.toLocaleString("en-IN")}</p>
+              <div className="mb-2 flex items-end justify-between gap-3">
+                <p className="text-3xl font-bold tracking-tight text-slate-900">₹{budget.toLocaleString("en-IN")}</p>
+                <CoinStack budget={budget} />
+              </div>
               <div className="flex items-center gap-2">
                 <div className="flex min-h-[44px] flex-1 items-center rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
                   <span className="mr-1 font-semibold text-slate-400">₹</span>
@@ -543,12 +563,14 @@ export function WizardForm({ initial }: WizardFormProps) {
                 <div className="flex flex-wrap gap-2">
                   {DAY_OPTIONS.map((d) => (<Chip key={d} active={days === d} onClick={() => setDays(d)}>{d}</Chip>))}
                 </div>
+                <DaySuns days={daysNum} />
               </div>
               <div>
                 <StepLabel icon="👥">Travellers</StepLabel>
                 <div className="flex flex-wrap gap-2">
                   {TRAVELLER_OPTIONS.map((t) => (<Chip key={t} active={travellers === t} onClick={() => pickTravellers(t)} square>{t}</Chip>))}
                 </div>
+                <PeopleHeads count={travellersNum} />
               </div>
             </div>
           </div>
@@ -702,8 +724,8 @@ export function WizardForm({ initial }: WizardFormProps) {
         {step === 3 && (
           <div className="space-y-5">
             <div>
-              <StepLabel icon={<CheckCircle2 className="h-4 w-4" />}>Review your trip</StepLabel>
-              <p className="-mt-1 text-xs text-slate-500">Check the details, then generate your plan. You can jump back to any step to tweak.</p>
+              <StepLabel icon={<CheckCircle2 className="h-4 w-4" />}>Read the scroll before you seal it</StepLabel>
+              <p className="-mt-1 text-xs text-slate-500">Check the details, then seal the plan — the companions will draw your route. You can walk back to any chapter to tweak.</p>
             </div>
             <dl className="overflow-hidden rounded-2xl border border-slate-200">
               <SummaryRow label="Where" value={whereLabel || "—"} />
@@ -761,6 +783,7 @@ export function WizardForm({ initial }: WizardFormProps) {
         )}
         {step < STEPS.length - 1 ? (
           <button
+            key="step-next"
             type="button"
             onClick={goNext}
             className="group flex min-h-[56px] flex-[2] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 lg:min-h-[52px] lg:bg-emerald-600 lg:bg-none lg:text-sm"
@@ -769,6 +792,7 @@ export function WizardForm({ initial }: WizardFormProps) {
           </button>
         ) : (
           <button
+            key="step-seal"
             type="submit"
             disabled={geocoding}
             className="group relative flex min-h-[56px] flex-[2] items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-base font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.01] active:scale-95 disabled:opacity-70 lg:min-h-[52px] lg:bg-emerald-600 lg:bg-none lg:text-sm"
@@ -776,9 +800,9 @@ export function WizardForm({ initial }: WizardFormProps) {
             {!geocoding && <span aria-hidden className="sheen-overlay animate-sheen" />}
             <span className="relative flex items-center gap-2">
               {geocoding ? (
-                <><Loader2 className="h-5 w-5 animate-spin" /> Locating…</>
+                <><Loader2 className="h-5 w-5 animate-spin" /> Finding your starting point…</>
               ) : (
-                <>{snapshot ? "Update Plan" : "Generate Plan"} <ArrowRight className="h-5 w-5" /></>
+                <>{snapshot ? "Redraw the map" : "Seal the plan & set off"} <ArrowRight className="h-5 w-5" /></>
               )}
             </span>
           </button>

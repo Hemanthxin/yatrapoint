@@ -60,6 +60,8 @@ const CATEGORY_TILE_GRADIENT: Record<string, string> = {
 };
 import { groupsToOverpass } from "@/lib/catalog/place-groups";
 import { Reveal } from "@/components/app/Reveal";
+import { QuestLoader } from "./quest/QuestLoader";
+import { TripStory } from "./quest/TripStory";
 
 const TripMap = dynamic(() => import("@/components/map/TripMap"), {
   ssr: false,
@@ -771,10 +773,8 @@ export function LivePlan({
         </span>
       </section>
 
-      {loading && !plan && (
-        <div className="grid h-64 place-items-center rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]">
-          <SaaferaLoader label="Mapping the best places for your budget…" />
-        </div>
+      {((loading && !plan) || (!plan && !error && (status === "prompting" || status === "idle"))) && (
+        <QuestLoader budget={budget} people={people} days={days} stops={maxStops} />
       )}
 
       {error && !loading && (
@@ -876,6 +876,17 @@ export function LivePlan({
               </p>
             </Reveal>
           )}
+
+          {/* The plan, told as a story: one chapter per stop, Pip's ledger at the end */}
+          <TripStory
+            stops={plan.stops}
+            totals={plan.totals}
+            budget={budget}
+            people={people}
+            days={days}
+            hours={hours}
+            originLabel={originOverride?.label}
+          />
 
           {/* Primary CTA — navigate the whole trip in Google Maps */}
           <a
