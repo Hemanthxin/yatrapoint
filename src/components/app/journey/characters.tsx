@@ -89,10 +89,13 @@ export function Owl() {
         <circle cx="54" cy="64" r="19" fill="#fff3d6" />
         <circle cx="86" cy="64" r="19" fill="#fff3d6" />
         <g className="ow-eyes" style={{ transformOrigin: "70px 64px" }}>
-          <circle cx="56" cy="65" r="9" fill="#2a170d" stroke="none" />
-          <circle cx="84" cy="65" r="9" fill="#2a170d" stroke="none" />
-          <circle cx="59" cy="62" r="2.6" fill="#fff" stroke="none" />
-          <circle cx="87" cy="62" r="2.6" fill="#fff" stroke="none" />
+          {/* .ow-look can be nudged from outside so the owl's gaze follows the pointer */}
+          <g className="ow-look">
+            <circle cx="56" cy="65" r="9" fill="#2a170d" stroke="none" />
+            <circle cx="84" cy="65" r="9" fill="#2a170d" stroke="none" />
+            <circle cx="59" cy="62" r="2.6" fill="#fff" stroke="none" />
+            <circle cx="87" cy="62" r="2.6" fill="#fff" stroke="none" />
+          </g>
         </g>
         <path d="M70 72L63 82L70 90L77 82Z" fill="#f09a3a" />
         {/* coin pouch */}
