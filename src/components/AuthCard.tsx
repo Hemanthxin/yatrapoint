@@ -195,12 +195,12 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
       {/* Glow aura */}
       <div
         aria-hidden
-        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-emerald-400/50 via-green-400/25 to-transparent blur-2xl"
+        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-amber-300/45 via-orange-200/20 to-transparent blur-2xl"
       />
 
-      <div className="relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/90 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
+      <div className="sb-auth relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/90 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
         {/* Gradient banner */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 px-7 pb-8 pt-7 text-white">
+        <div className="sb-auth-banner relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 px-7 pb-8 pt-7 text-white">
           <span aria-hidden className="sheen-overlay animate-sheen" />
           <div className="relative">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">

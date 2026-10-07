@@ -1,15 +1,10 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { isAdminSession } from "@/lib/admin";
-import { BackgroundScene } from "@/components/BackgroundScene";
-import { Hero } from "@/components/Hero";
-import { Nav } from "@/components/Nav";
 import { AuthCard } from "@/components/AuthCard";
-import { TrustStrip } from "@/components/TrustStrip";
-import { StatsCounterStrip } from "@/components/StatsCounterStrip";
 import { MobileLogin } from "@/components/MobileLogin";
 import { LoginSwitch } from "@/components/LoginSwitch";
-import { ParallaxStage } from "@/components/ParallaxStage";
+import { StoryLanding, type StoryData } from "@/components/story/StoryLanding";
 import { countDestinations, listStates } from "@/lib/queries/destinations";
 import { FESTIVALS } from "@/lib/festivals";
 import { CATEGORIES } from "@/lib/catalog/categories";
@@ -28,31 +23,26 @@ export default async function HomePage() {
     listStates().catch(() => [] as string[]),
   ]);
 
+  const story: StoryData = {
+    places: placesCount,
+    states: statesList,
+    festivals: FESTIVALS.filter((f) => f.dateISO).map((f) => ({
+      name: f.name,
+      month: Number((f.dateISO as string).slice(5, 7)) - 1,
+      dateLabel: f.dateLabel,
+      emoji: f.emoji,
+    })),
+    categories: CATEGORIES.map((c) => ({ slug: c.slug, label: c.label, emoji: c.emoji })),
+    festivalCount: FESTIVALS.length,
+  };
+
   return (
     <LoginSwitch
       mobile={<MobileLogin googleClientId={googleClientId} />}
       desktop={
-        <ParallaxStage className="relative min-h-screen overflow-hidden">
-          <main className="contents">
-            <BackgroundScene />
-            <Nav />
-            <section className="relative z-10 mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 pb-12 pt-32 md:px-12 lg:flex-row lg:items-center lg:justify-between lg:pt-36">
-              <Hero />
-              <div id="login" className="w-full lg:w-auto">
-                <AuthCard googleClientId={googleClientId} />
-              </div>
-            </section>
-            <section className="relative z-10 mx-auto max-w-7xl px-6 pb-10 md:px-12">
-              <StatsCounterStrip
-                places={placesCount}
-                states={statesList.length}
-                festivals={FESTIVALS.length}
-                categories={CATEGORIES.length}
-              />
-              <TrustStrip />
-            </section>
-          </main>
-        </ParallaxStage>
+        // Desktop gets the painted storybook: a scroll-driven tale with the
+        // sign-in card living in its first scene (id="login").
+        <StoryLanding data={story} auth={<AuthCard googleClientId={googleClientId} />} />
       }
     />
   );

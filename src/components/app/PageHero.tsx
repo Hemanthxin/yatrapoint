@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/app/Reveal";
+import { MountainScape, type ScapeLayer } from "@/components/storybook/MountainScape";
 
 interface PageHeroProps {
-  /** Small uppercase kicker above the headline, e.g. "Explore India". */
+  /** Small kicker above the headline, e.g. "Explore India". */
   eyebrow?: string;
   /** Main headline — pass a fragment for a two-tone/serif-accented title. */
   title: ReactNode;
@@ -11,26 +12,37 @@ interface PageHeroProps {
   icon?: LucideIcon;
   /** Quick stat pills shown under the subtitle, e.g. {label:"Places", value:"1,300+"}. */
   stats?: { label: string; value: string }[];
-  /** Tailwind gradient stops for the banner background. Ignored when `backgroundImage` is set. */
+  /** Legacy Tailwind gradient prop — kept so existing call sites compile; the banner is now a painted scene. */
   gradient?: string;
-  /** Optional photo/illustration behind the banner, in place of the flat gradient — a dark scrim is added automatically so the title stays readable. */
+  /** Optional photo behind the banner, in place of the painted sky — a dark scrim is added so the title stays readable. */
   backgroundImage?: string;
   /** Optional CTA / controls slot, right-aligned on wide screens. */
   action?: ReactNode;
   className?: string;
 }
 
-// Desktop-only editorial banner — big serif headline over a full-width
-// gradient field, used in place of the old compact icon+title header on the
-// large-screen variant of each section page. Never rendered on mobile: it's
-// only ever imported from a page's `hidden lg:block` desktop branch.
+// Short, wide banner: the viewBox is sliced from the bottom, so ridges sit low
+// (base ≥ 700) and the tallest peaks are allowed to be cropped by the frame.
+const DAY: ScapeLayer[] = [
+  { color: "#d7c4c4", fade: "#f4e2c4", shade: "#b6a1ac", base: 730, amp: 220, peaks: 5, snow: true },
+  { color: "#b8a9b6", fade: "#e6d3b6", shade: "#968a9f", base: 790, amp: 170, peaks: 6 },
+  { color: "#8f9f86", fade: "#cfcfa0", shade: "#6a8062", base: 860, amp: 120, peaks: 8, trees: "pine", treeColor: "#62795a", treeCount: 60, treeSize: [24, 46] },
+];
+const NIGHT: ScapeLayer[] = [
+  { color: "#424a86", fade: "#262b5c", shade: "#2f3670", base: 730, amp: 220, peaks: 5, snow: true },
+  { color: "#313868", fade: "#1c2148", shade: "#242a58", base: 790, amp: 170, peaks: 6 },
+  { color: "#222952", fade: "#141935", shade: "#181e40", base: 860, amp: 120, peaks: 8, trees: "pine", treeColor: "#141a38", treeCount: 60, treeSize: [24, 46] },
+];
+
+// Desktop-only painted banner — a small illustrated scene (sky, sun/moon,
+// three watercolour ridges) with the page title lettered over it. Never
+// rendered on mobile: it's only ever imported from a page's desktop branch.
 export function PageHero({
   eyebrow,
   title,
   subtitle,
   icon: Icon,
   stats,
-  gradient = "from-emerald-700 via-emerald-600 to-teal-700",
   backgroundImage,
   action,
   className = "",
@@ -39,53 +51,48 @@ export function PageHero({
     <Reveal
       amount={0}
       y={16}
-      className={`relative mb-10 overflow-hidden rounded-[2rem] px-10 py-12 text-white shadow-xl shadow-emerald-900/15 ${
-        backgroundImage ? "bg-slate-900" : `bg-gradient-to-br ${gradient}`
+      className={`sb-hero relative mb-10 overflow-hidden rounded-[2rem] px-10 py-12 ${
+        backgroundImage ? "sb-hero--photo text-white" : ""
       } ${className}`}
     >
-      {backgroundImage && (
+      {backgroundImage ? (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={backgroundImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent" />
         </>
-      )}
-      {/* Soft decorative texture — only over the flat gradient; a photo already
-          carries its own detail. */}
-      {!backgroundImage && (
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.14]">
-          <div className="absolute -left-16 -top-24 h-72 w-72 rounded-full bg-white blur-3xl" />
-          <div className="absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-white blur-3xl" />
+      ) : (
+        <div aria-hidden className="sb-hero-sky">
+          <span className="sb-hero-orb" />
+          <div className="absolute inset-x-0 top-0 -bottom-[14%]" data-sb-parallax="0.1">
+            <MountainScape layers={DAY} idPrefix="ph-day" seed={3} className="sb-only-day" />
+            <MountainScape layers={NIGHT} idPrefix="ph-night" seed={3} className="sb-only-night" />
+          </div>
         </div>
       )}
-      <div aria-hidden className="sheen-overlay animate-sheen" />
 
       <div className="relative flex flex-wrap items-end justify-between gap-8">
         <div className="max-w-2xl">
           {(eyebrow || Icon) && (
             <div className="mb-4 flex items-center gap-2.5">
               {Icon && (
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white/15 backdrop-blur">
+                <span className="sb-hero-icon grid h-10 w-10 shrink-0 place-items-center rounded-2xl">
                   <Icon className="h-5 w-5" />
                 </span>
               )}
-              {eyebrow && (
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/75">{eyebrow}</span>
-              )}
+              {eyebrow && <span className="sb-eyebrow text-sm font-semibold">{eyebrow}</span>}
             </div>
           )}
-          <h1 className="font-serif text-5xl font-semibold leading-[1.05] tracking-tight xl:text-6xl">
+          <h1 className="sb-hero-title font-serif text-5xl font-semibold leading-[1.05] tracking-tight xl:text-6xl">
             {title}
           </h1>
-          {subtitle && (
-            <p className="mt-4 max-w-xl text-lg font-medium leading-relaxed text-white/85">{subtitle}</p>
-          )}
+          {subtitle && <p className="sb-hero-sub mt-4 max-w-xl text-lg font-medium leading-relaxed">{subtitle}</p>}
           {stats && stats.length > 0 && (
             <div className="mt-7 flex flex-wrap gap-8">
               {stats.map((s) => (
                 <div key={s.label}>
-                  <p className="font-serif text-3xl font-semibold leading-none">{s.value}</p>
-                  <p className="mt-1.5 text-xs font-bold uppercase tracking-wide text-white/70">{s.label}</p>
+                  <p className="sb-hero-title font-serif text-3xl font-semibold leading-none">{s.value}</p>
+                  <p className="sb-hero-sub mt-1.5 text-xs font-bold uppercase tracking-wide opacity-80">{s.label}</p>
                 </div>
               ))}
             </div>

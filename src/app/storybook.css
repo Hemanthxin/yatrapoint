@@ -1,0 +1,705 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAINTED STORYBOOK — desktop (≥1024px) re-skin.
+
+   The whole desktop app is dressed as a hand-painted illustrated book:
+   parchment paper, sepia ink outlines, watercolour washes and a painted horizon.
+   It is done the same way the neumorphism it replaces was: by re-pointing the
+   theme TOKENS (so every `var(--surface)`/`emerald-*` consumer recolours at
+   once) and by overriding the shared primitives (.card/.btn/.input/.glass) and
+   the app's recurring "white card with a slate border" signature.
+
+     • Day  = html:not([data-theme="dark"])   → warm parchment, moss green, ochre
+     • Night = html[data-theme="dark"]        → indigo midnight, candle gold
+
+   Phones/tablets (<1024px) are intentionally untouched. Imported AFTER
+   globals.css, so equal-specificity rules here win; the unlayered override
+   block at the bottom beats Tailwind's @layer utilities by construction.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Lenis (smooth scroll) — required housekeeping; harmless when Lenis is off. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Layout primitives for painted scenes (used by <MountainScape/>). They are
+   structural only — safe at every width. */
+.sb-scape,
+.sb-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.sb-layer svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.sb-backdrop {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  /* ───────────────────────── TOKENS — DAY ───────────────────────── */
+  html:root:not([data-theme="dark"]) {
+    /* Moss / sage brand scale, replaces the saturated emerald. */
+    --br-50: 244 246 232;  --br-100: 229 237 206; --br-200: 205 221 168;
+    --br-300: 170 197 124; --br-400: 131 166 91;  --br-500: 93 136 72;
+    --br-600: 70 109 56;   --br-700: 54 88 46;    --br-800: 42 70 38;
+    --br-900: 33 55 31;    --br-950: 19 32 18;
+
+    --app-bg: #f2e6c6;
+    --surface: #fbf3da;
+    --surface-2: #efe0b6;
+    --text: #2e2515;
+    --text-soft: #54452d;
+    --muted: #84744f;
+    --border: #d8c595;
+    --accent: #476e3b;
+    --accent-2: #355a2e;
+    --highlight: #c9782e;
+    --nav-bg: rgba(246, 236, 207, 0.92);
+    --ring: rgba(201, 120, 46, 0.28);
+
+    --neu-surface: var(--surface);
+    --neu-light: rgba(255, 252, 238, 0.9);
+    --neu-dark: rgba(122, 92, 44, 0.32);
+    --grid-line: transparent;
+
+    /* Painted-primitive tokens (space-separated RGB so they take /alpha). */
+    --ink: 92 68 36;
+    --shadow: 96 70 30;
+    --wash: 201 120 46;
+    --paper-hi: #fdf7e2;
+    --paper-lo: #f3e6bf;
+    --gold: 201 151 58;
+    --sb-grain-a: 0.34;
+
+    color-scheme: light;
+  }
+
+  /* ───────────────────────── TOKENS — NIGHT ───────────────────────── */
+  html:root[data-theme="dark"] {
+    --br-50: 237 240 255;  --br-100: 219 226 252; --br-200: 190 202 247;
+    --br-300: 244 214 142; --br-400: 238 198 106; --br-500: 232 184 82;
+    --br-600: 214 160 56;  --br-700: 178 128 40;  --br-800: 138 98 34;
+    --br-900: 98 70 30;    --br-950: 60 42 20;
+
+    --app-bg: #12162e;
+    --surface: #1d2245;
+    --surface-2: #272d5a;
+    --text: #f1e6c8;
+    --text-soft: #d4c7a4;
+    --muted: #9b9bc0;
+    --border: #3a4070;
+    --accent: #eec56a;
+    --accent-2: #f6d98e;
+    --highlight: #f08a5d;
+    --nav-bg: rgba(24, 28, 58, 0.9);
+    --ring: rgba(238, 197, 106, 0.32);
+
+    --neu-surface: var(--surface);
+    --neu-light: rgba(255, 255, 255, 0.05);
+    --neu-dark: rgba(2, 4, 18, 0.55);
+    --grid-line: transparent;
+
+    --ink: 225 205 150;
+    --shadow: 3 5 22;
+    --wash: 120 140 255;
+    --paper-hi: #262c5a;
+    --paper-lo: #1b2043;
+    --gold: 238 197 106;
+    --sb-grain-a: 0.16;
+
+    color-scheme: dark;
+  }
+
+  /* ───────────────────────── TYPE ───────────────────────── */
+  html:root {
+    --font-sans: var(--font-ui), "Segoe UI", system-ui, sans-serif;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size-adjust: 0.5;
+    letter-spacing: 0.004em;
+    background-color: var(--app-bg);
+    color: var(--text);
+  }
+  main h1,
+  main h2,
+  main h3,
+  aside h1,
+  aside h2,
+  .sb-serif {
+    font-family: var(--font-serif), Georgia, serif;
+  }
+  ::selection {
+    background: rgb(var(--wash) / 0.35);
+    color: var(--text);
+  }
+
+  /* ───────────────────────── PAPER, GRAIN & VIGNETTE ───────────────────────── */
+  html:root {
+    --sb-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .38  0 0 0 0 .28  0 0 0 0 .14  0 0 0 .62 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    --sb-fibers: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='520' height='520'><filter id='f' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.014 .05' numOctaves='3' seed='5'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .34  0 0 0 0 .18  0 0 0 .3 -.12'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+  }
+  html:root[data-theme="dark"] {
+    --sb-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .9  0 0 0 0 .85  0 0 0 0 .7  0 0 0 .6 -.22'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  /* Paper tooth + long fibres, above everything but never in the way. */
+  body::before {
+    z-index: 9990;
+    background-image: var(--sb-fibers), var(--sb-grain);
+    background-size: 520px 520px, 280px 280px;
+    opacity: var(--sb-grain-a);
+  }
+  /* Soft burnt edges like an aged page. */
+  body::after {
+    z-index: 9989;
+    background: radial-gradient(130% 110% at 50% 45%, transparent 58%, rgb(var(--ink) / 0.16) 100%);
+  }
+
+  /* ───────────────────────── AMBIENT PAINTED CANVAS ───────────────────────── */
+  html:root:not([data-theme="dark"]) .aurora-canvas {
+    background:
+      radial-gradient(60% 46% at 6% 4%, rgba(143, 176, 120, 0.34), transparent 66%),
+      radial-gradient(52% 44% at 96% 2%, rgba(226, 150, 120, 0.26), transparent 62%),
+      radial-gradient(70% 44% at 62% 104%, rgba(232, 178, 92, 0.34), transparent 64%),
+      linear-gradient(180deg, #f6ecd0 0%, #f2e4bd 48%, #ecd8a8 100%);
+  }
+  html:root[data-theme="dark"] .aurora-canvas {
+    background:
+      radial-gradient(54% 44% at 8% 0%, rgba(98, 112, 220, 0.34), transparent 66%),
+      radial-gradient(48% 42% at 98% 6%, rgba(190, 96, 150, 0.2), transparent 62%),
+      radial-gradient(60% 40% at 56% 106%, rgba(238, 197, 106, 0.16), transparent 64%),
+      linear-gradient(180deg, #151a3a 0%, #12162e 56%, #0e1226 100%);
+    opacity: 1;
+  }
+  .blueprint {
+    display: none !important;
+  }
+  .sb-backdrop {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 74%;
+    opacity: 0.62;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 36%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 36%);
+    will-change: transform;
+  }
+  html:root[data-theme="dark"] .sb-backdrop {
+    opacity: 0.9;
+  }
+  html:root[data-theme="dark"] .sb-only-day,
+  html:root:not([data-theme="dark"]) .sb-only-night {
+    display: none;
+  }
+
+  /* ───────────────────────── PAINTED CARDS ───────────────────────── */
+  .card,
+  :is(
+      .border-slate-100,
+      .border-slate-200,
+      .border-slate-300,
+      .border-emerald-200,
+      .border-emerald-200\/60,
+      .border-emerald-300
+    ).bg-white:not(input):not(textarea):not(select),
+  .border-slate-200.bg-slate-50:not(input):not(textarea):not(select) {
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.5), transparent 52%),
+      radial-gradient(90% 70% at 100% 100%, rgb(var(--wash) / 0.1), transparent 62%),
+      linear-gradient(165deg, var(--paper-hi), var(--paper-lo)) !important;
+    border-color: transparent !important;
+    box-shadow:
+      0 0 0 1px rgb(var(--ink) / 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 0 22px -8px rgb(var(--ink) / 0.12),
+      0 14px 24px -16px rgb(var(--shadow) / 0.6),
+      0 3px 8px -3px rgb(var(--shadow) / 0.28) !important;
+  }
+  html:root[data-theme="dark"] .card,
+  html:root[data-theme="dark"]
+    :is(
+      .border-slate-100,
+      .border-slate-200,
+      .border-slate-300,
+      .border-emerald-200,
+      .border-emerald-200\/60,
+      .border-emerald-300
+    ).bg-white:not(input):not(textarea):not(select),
+  html:root[data-theme="dark"] .border-slate-200.bg-slate-50:not(input):not(textarea):not(select) {
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(160, 170, 255, 0.12), transparent 52%),
+      radial-gradient(90% 70% at 100% 100%, rgb(var(--gold) / 0.06), transparent 62%),
+      linear-gradient(165deg, var(--paper-hi), var(--paper-lo)) !important;
+    box-shadow:
+      0 0 0 1px rgb(var(--ink) / 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 16px 28px -16px rgb(var(--shadow) / 0.85),
+      0 3px 8px -3px rgb(var(--shadow) / 0.5) !important;
+  }
+  .card {
+    border-radius: 1.15rem 0.95rem 1.25rem 1rem / 1rem 1.2rem 0.95rem 1.25rem;
+  }
+  /* The hand-ruled inner frame — a second, slightly wobbly pen line, as on an
+     illustrated plate. Replaces the old registration ticks. */
+  .card::before,
+  .ticks::before {
+    inset: 5px;
+    top: 5px;
+    left: 5px;
+    width: auto;
+    height: auto;
+    border: 1px solid rgb(var(--ink) / 0.26);
+    border-radius: 0.8rem 0.65rem 0.9rem 0.7rem;
+    opacity: 0;
+    filter: url(#sb-rough);
+    transition: opacity 0.4s ease;
+  }
+  .card::after,
+  .ticks::after {
+    display: none;
+  }
+  .card:hover::before,
+  .ticks:hover::before {
+    opacity: 1;
+  }
+  .card-hover {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px) rotate(-0.25deg);
+    box-shadow:
+      0 0 0 1px rgb(var(--ink) / 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      0 24px 34px -18px rgb(var(--shadow) / 0.7),
+      0 6px 12px -4px rgb(var(--shadow) / 0.3);
+  }
+  html:root[data-theme="dark"] .card-hover:hover {
+    box-shadow:
+      0 0 0 1px rgb(var(--gold) / 0.5),
+      0 24px 34px -18px rgb(var(--shadow) / 0.9),
+      0 0 26px -6px rgb(var(--gold) / 0.3);
+    border-color: transparent !important;
+  }
+
+  /* ───────────────────────── PAINTED BUTTONS ───────────────────────── */
+  .btn-primary {
+    position: relative;
+    border-radius: 0.85rem 0.6rem 0.9rem 0.65rem / 0.65rem 0.9rem 0.6rem 0.85rem;
+    color: #fff8e6;
+    text-shadow: 0 1px 1px rgba(30, 40, 18, 0.5);
+    letter-spacing: 0.01em;
+    background:
+      radial-gradient(90% 120% at 15% 0%, rgba(255, 255, 255, 0.28), transparent 55%),
+      var(--sb-grain),
+      linear-gradient(170deg, var(--accent), var(--accent-2));
+    background-size: auto, 200px 200px, auto;
+    box-shadow:
+      0 0 0 1px rgba(30, 44, 22, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -3px 7px rgba(18, 30, 12, 0.3),
+      0 6px 14px -5px rgb(var(--shadow) / 0.7);
+    transition: transform 0.18s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+  .btn-primary:hover {
+    background-color: transparent;
+    filter: brightness(1.08) saturate(1.05);
+    transform: translateY(-1.5px) rotate(-0.3deg);
+    box-shadow:
+      0 0 0 1px rgba(30, 44, 22, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.34),
+      inset 0 -3px 7px rgba(18, 30, 12, 0.3),
+      0 12px 20px -6px rgb(var(--shadow) / 0.7);
+  }
+  .btn-primary:active {
+    transform: translateY(1px) scale(0.985);
+  }
+  html:root[data-theme="dark"] .btn-primary {
+    color: #2a1d08;
+    text-shadow: 0 1px 0 rgba(255, 240, 200, 0.4);
+    background:
+      radial-gradient(90% 120% at 15% 0%, rgba(255, 255, 255, 0.45), transparent 55%),
+      var(--sb-grain),
+      linear-gradient(170deg, #f6d98e, #e0a94a);
+    background-size: auto, 200px 200px, auto;
+    box-shadow:
+      0 0 0 1px rgba(120, 80, 20, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -3px 7px rgba(120, 70, 10, 0.3),
+      0 0 22px -4px rgba(238, 197, 106, 0.55);
+  }
+  .btn-secondary {
+    border-radius: 0.8rem 0.65rem 0.85rem 0.7rem / 0.7rem 0.85rem 0.65rem 0.8rem;
+    background:
+      radial-gradient(90% 120% at 15% 0%, rgba(255, 255, 255, 0.4), transparent 55%),
+      linear-gradient(170deg, var(--paper-hi), var(--paper-lo));
+    color: var(--text-soft);
+    box-shadow:
+      0 0 0 1.5px rgb(var(--ink) / 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 5px 10px -5px rgb(var(--shadow) / 0.5);
+  }
+  .btn-secondary:hover {
+    color: var(--accent);
+    transform: translateY(-1px) rotate(0.2deg);
+  }
+  .btn-secondary:active {
+    box-shadow:
+      0 0 0 1.5px rgb(var(--ink) / 0.4),
+      inset 0 3px 8px rgb(var(--shadow) / 0.3);
+  }
+
+  /* ───────────────────────── INK-ON-PAPER FIELDS ───────────────────────── */
+  .input,
+  :is(input, textarea, select):is(.border-slate-100, .border-slate-200, .border-slate-300).bg-white,
+  :is(input, textarea, select).border-slate-200.bg-slate-50 {
+    background:
+      linear-gradient(180deg, rgb(var(--ink) / 0.07), transparent 38%),
+      color-mix(in srgb, var(--paper-hi) 78%, transparent) !important;
+    color: var(--text);
+    border-radius: 0.7rem 0.55rem 0.75rem 0.6rem / 0.6rem 0.75rem 0.55rem 0.7rem;
+    border-color: transparent !important;
+    box-shadow:
+      0 0 0 1px rgb(var(--ink) / 0.3),
+      inset 0 2px 5px rgb(var(--ink) / 0.14),
+      inset 0 -2px 0 rgb(var(--gold) / 0.55) !important;
+    transition: box-shadow 0.25s ease, background 0.25s ease;
+  }
+  .input:focus,
+  :is(input, textarea, select):is(.border-slate-100, .border-slate-200, .border-slate-300).bg-white:focus {
+    outline: none;
+    box-shadow:
+      0 0 0 1px rgb(var(--ink) / 0.4),
+      inset 0 2px 5px rgb(var(--ink) / 0.12),
+      inset 0 -2px 0 rgb(var(--gold)),
+      0 0 0 4px var(--ring) !important;
+  }
+  .input::placeholder,
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ───────────────────────── CHROME ───────────────────────── */
+  .glass,
+  .glass-strong {
+    background:
+      linear-gradient(180deg, rgba(255, 252, 238, 0.35), transparent),
+      var(--nav-bg) !important;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  header.glass-strong {
+    position: relative;
+    border-bottom: 1.5px solid rgb(var(--ink) / 0.3) !important;
+    box-shadow: 0 10px 22px -16px rgb(var(--shadow) / 0.6) !important;
+  }
+  /* Torn-paper lower edge. */
+  header.glass-strong::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -7px;
+    height: 7px;
+    pointer-events: none;
+    background: var(--nav-bg);
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 8' preserveAspectRatio='none'><path d='M0 0H400V3L388 6 376 3 362 7 350 4 338 6 322 2 310 5 296 3 280 7 266 4 250 6 238 3 224 6 208 2 196 5 180 4 166 7 150 3 138 6 124 4 110 7 96 3 82 6 66 2 54 5 40 3 26 6 12 3 0 5Z'/></svg>");
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 8' preserveAspectRatio='none'><path d='M0 0H400V3L388 6 376 3 362 7 350 4 338 6 322 2 310 5 296 3 280 7 266 4 250 6 238 3 224 6 208 2 196 5 180 4 166 7 150 3 138 6 124 4 110 7 96 3 82 6 66 2 54 5 40 3 26 6 12 3 0 5Z'/></svg>");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+
+  /* Sidebar → the book's cloth spine: moss green, gold lettering. The component
+     paints from tokens, so re-scoping the tokens on the <aside> recolours every
+     child without touching its markup. */
+  aside.fixed.inset-y-0.left-0 {
+    --text: #f6ebc8;
+    --text-soft: #e6d9ae;
+    --muted: #b9ad84;
+    --accent: #f2cb6b;
+    --accent-2: #f6d98e;
+    --surface: #2a4429;
+    --surface-2: rgba(255, 240, 190, 0.1);
+    --border: rgba(242, 203, 107, 0.28);
+    background:
+      var(--sb-grain),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 30%),
+      linear-gradient(175deg, #38573a 0%, #2a4429 55%, #213820 100%) !important;
+    background-size: 220px 220px, auto, auto;
+    border-right: 3px double rgba(242, 203, 107, 0.45) !important;
+    box-shadow: 10px 0 30px -14px rgb(var(--shadow) / 0.7) !important;
+  }
+  html:root[data-theme="dark"] aside.fixed.inset-y-0.left-0 {
+    --surface: #161b3a;
+    background:
+      var(--sb-grain),
+      linear-gradient(180deg, rgba(160, 170, 255, 0.08), transparent 30%),
+      linear-gradient(175deg, #20265a 0%, #161b3a 60%, #10142c 100%) !important;
+    background-size: 220px 220px, auto, auto;
+  }
+  aside.fixed.inset-y-0.left-0 .app-logo {
+    padding: 6px;
+    background: #fbf3da;
+    border-radius: 0.9rem;
+    box-shadow: 0 0 0 2px rgba(242, 203, 107, 0.55), 0 6px 12px -4px rgba(0, 0, 0, 0.45);
+  }
+
+  /* News ticker → a painted ribbon banner. */
+  .marquee-mask {
+    background:
+      var(--sb-grain),
+      linear-gradient(180deg, #8f3f2d, #6c2b20) !important;
+    background-size: 200px 200px, auto;
+    color: #fbefcc;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 220, 160, 0.4),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+      0 3px 8px -3px rgba(60, 20, 10, 0.5);
+  }
+  .marquee-mask > span:first-of-type {
+    background: #4a1c14 !important;
+    color: #f6d98e;
+    border-right: 1px solid rgba(246, 217, 142, 0.5);
+  }
+  .marquee-mask > span:last-of-type {
+    background: linear-gradient(270deg, #6c2b20, transparent) !important;
+  }
+
+  /* ───────────────────────── SMALL DETAILS ───────────────────────── */
+  *::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  *::-webkit-scrollbar-track {
+    background: rgb(var(--ink) / 0.07);
+  }
+  *::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgb(var(--gold) / 0.9), rgb(var(--ink) / 0.55));
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--gold));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  hr {
+    border: 0;
+    height: 6px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 6' preserveAspectRatio='none'><path d='M0 3 C 10 0 18 6 30 3 S 50 0 62 3 S 84 6 96 3 S 112 1 120 3' fill='none' stroke='%23926b34' stroke-opacity='.5' stroke-width='1.4'/></svg>") center / 100% 100% no-repeat;
+  }
+
+  /* The old neon halo is replaced by the painter's brush (StorybookEffects). */
+  .cursor-halo {
+    display: none !important;
+  }
+  .sb-brush {
+    position: fixed;
+    inset: 0;
+    z-index: 9995;
+    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Chapter-style eyebrow used by banners and the landing story. */
+  .sb-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-serif), Georgia, serif;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: var(--highlight);
+  }
+  .sb-eyebrow::before,
+  .sb-eyebrow::after {
+    content: "";
+    width: 2.2rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor);
+  }
+  .sb-eyebrow::after {
+    transform: scaleX(-1);
+  }
+}
+
+/* Reduced motion: keep the paint, drop the drift. */
+@media (prefers-reduced-motion: reduce) {
+  .sb-backdrop {
+    transform: none !important;
+  }
+}
+
+/* ───────────────────────── PAINTED PAGE BANNER (<PageHero/>) ───────────────────────── */
+@media (min-width: 1024px) {
+  .sb-hero {
+    min-height: 15rem;
+    color: var(--text);
+    box-shadow:
+      0 0 0 1.5px rgb(var(--ink) / 0.42),
+      inset 0 0 0 5px rgb(var(--paper-hi) / 0.35),
+      0 24px 38px -24px rgb(var(--shadow) / 0.75);
+    border-radius: 2rem 1.6rem 2.1rem 1.7rem / 1.7rem 2.1rem 1.6rem 2rem;
+  }
+  .sb-hero-sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #f7d6a2 0%, #f9e6c0 52%, #f5ebcf 100%);
+  }
+  html:root[data-theme="dark"] .sb-hero-sky {
+    background: linear-gradient(180deg, #181c47 0%, #2c2c64 62%, #46386f 100%);
+  }
+  /* Keeps the lettering legible where it crosses the ridges. */
+  .sb-hero-sky::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(248, 236, 205, 0.9) 0%, rgba(248, 236, 205, 0.55) 42%, transparent 72%);
+  }
+  html:root[data-theme="dark"] .sb-hero-sky::after {
+    background: linear-gradient(90deg, rgba(18, 22, 54, 0.82) 0%, rgba(18, 22, 54, 0.45) 42%, transparent 72%);
+  }
+  .sb-hero-orb {
+    position: absolute;
+    right: 17%;
+    top: 12%;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #fff7d8, #fad27f 55%, #f0a24e);
+    box-shadow: 0 0 70px 26px rgba(250, 210, 127, 0.55);
+  }
+  html:root[data-theme="dark"] .sb-hero-orb {
+    background: radial-gradient(circle at 38% 36%, #fffbe8, #eadfb4 58%, #c8b98c);
+    box-shadow: 0 0 60px 22px rgba(238, 197, 106, 0.3);
+  }
+  .sb-hero-title {
+    color: var(--text);
+  }
+  .sb-hero-sub {
+    color: var(--text-soft);
+  }
+  .sb-hero-icon {
+    background: rgb(var(--gold) / 0.25);
+    color: var(--accent);
+    box-shadow: 0 0 0 1.5px rgb(var(--ink) / 0.35);
+  }
+  .sb-hero--photo .sb-hero-title {
+    color: #fff;
+  }
+  .sb-hero--photo .sb-hero-sub,
+  .sb-hero--photo .sb-eyebrow {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .sb-hero .sb-eyebrow::before,
+  .sb-hero .sb-eyebrow::after {
+    width: 1.4rem;
+  }
+}
+
+/* ───────────────────────── PAINTED WORLD (dashboard backdrop) ───────────────────────── */
+.sb-world {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .sb-world {
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: linear-gradient(180deg, #a7b6da 0%, #f2c6bc 52%, #fbe0b8 100%);
+  }
+  html:root[data-theme="dark"] .sb-world {
+    background: linear-gradient(180deg, #0e1230 0%, #1c2150 56%, #2c2a62 100%);
+  }
+  .sb-world-orb {
+    position: absolute;
+    left: 31%;
+    top: 24%;
+    width: 15vmin;
+    height: 15vmin;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #fffbe3, #ffe19a 55%, #f7b56a);
+    box-shadow: 0 0 0 2vmin rgba(255, 226, 160, 0.35), 0 0 0 5vmin rgba(255, 214, 150, 0.2), 0 0 12vmin 6vmin rgba(255, 200, 130, 0.55);
+  }
+  html:root[data-theme="dark"] .sb-world-orb {
+    background: radial-gradient(circle at 38% 36%, #fffbe8, #eadfb4 58%, #c8b98c);
+    box-shadow: 0 0 0 2vmin rgba(238, 197, 106, 0.18), 0 0 10vmin 4vmin rgba(238, 197, 106, 0.3);
+  }
+  .sb-world .sb-scape {
+    inset: 0;
+  }
+
+  /* ───────────────────────── WARM-TONE REMAPS (DAY) ─────────────────────────
+     The app is written in Tailwind's cold grey/white. On parchment those read as
+     stark patches, so the neutrals are pulled onto the sepia scale. Night already
+     has its own remaps in globals.css. Exact classes only — translucent
+     bg-white/10…/60 overlays on photos are deliberately left alone. */
+  html:root:not([data-theme="dark"]) .bg-white:not(input):not(textarea):not(select),
+  html:root:not([data-theme="dark"]) .bg-white/95,
+  html:root:not([data-theme="dark"]) .bg-white/90,
+  html:root:not([data-theme="dark"]) .bg-white/85,
+  html:root:not([data-theme="dark"]) .bg-white/80,
+  html:root:not([data-theme="dark"]) .bg-white/70 {
+    background-color: var(--surface);
+  }
+  html:root:not([data-theme="dark"]) .bg-slate-50,
+  html:root:not([data-theme="dark"]) .bg-slate-100,
+  html:root:not([data-theme="dark"]) .bg-gray-50,
+  html:root:not([data-theme="dark"]) .bg-gray-100 {
+    background-color: var(--surface-2);
+  }
+  html:root:not([data-theme="dark"]) .text-slate-900,
+  html:root:not([data-theme="dark"]) .text-slate-800,
+  html:root:not([data-theme="dark"]) .text-gray-900 {
+    color: var(--text);
+  }
+  html:root:not([data-theme="dark"]) .text-slate-700,
+  html:root:not([data-theme="dark"]) .text-slate-600,
+  html:root:not([data-theme="dark"]) .text-gray-700,
+  html:root:not([data-theme="dark"]) .text-gray-600 {
+    color: var(--text-soft);
+  }
+  html:root:not([data-theme="dark"]) .text-slate-500,
+  html:root:not([data-theme="dark"]) .text-slate-400,
+  html:root:not([data-theme="dark"]) .text-gray-500,
+  html:root:not([data-theme="dark"]) .text-gray-400 {
+    color: var(--muted);
+  }
+  html:root:not([data-theme="dark"]) .border-slate-100,
+  html:root:not([data-theme="dark"]) .border-slate-200,
+  html:root:not([data-theme="dark"]) .border-slate-300,
+  html:root:not([data-theme="dark"]) .border-gray-200,
+  html:root:not([data-theme="dark"]) .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+  html:root:not([data-theme="dark"]) .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--border);
+  }
+}

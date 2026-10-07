@@ -10,6 +10,7 @@ import { Marquee } from "./Marquee";
 import { ToastHost } from "./ToastHost";
 import { Reveal } from "./Reveal";
 import { SaaferaAssistant } from "./SaaferaAssistant";
+import { PaintedBackdrop } from "@/components/storybook/MountainScape";
 
 interface AppShellProps {
   userLabel: string;
@@ -82,6 +83,8 @@ export function AppShell({ userLabel, userImage, location, immersive = false, sp
         <div className="aurora-blob right-[-8rem] top-1/4 h-[30rem] w-[30rem] bg-emerald-300/35 animate-aurora [animation-delay:-7s]" />
         <div className="aurora-blob bottom-[-6rem] left-1/4 h-[28rem] w-[28rem] bg-teal-300/30 animate-aurora [animation-delay:-14s]" />
         <div className="aurora-blob right-1/4 top-1/2 h-64 w-64 bg-teal-200/35 animate-breathe" />
+        {/* Painted mountain horizon (desktop storybook theme; hidden below lg). */}
+        <PaintedBackdrop />
       </div>
 
       {/* Blueprint grid, over the aurora and under the content. Fixed to the

@@ -7,6 +7,7 @@ import { Wallet, Binoculars, Briefcase, MapPinned, CloudSun } from "lucide-react
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import { formatINR } from "@/lib/format";
 import { Sidebar } from "@/components/app/Sidebar";
+import { PaintedWorld } from "@/components/storybook/MountainScape";
 import { SpatialProvider, useSpatial } from "./SpatialStore";
 import { Scene } from "./Scene";
 import { OrbitalHero } from "./OrbitalHero";
@@ -151,26 +152,9 @@ function Dashboard3DInner({
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#faf6ec]">
-      {/* Background scene — the futuristic zen torii reflection still image.
-          A light scrim keeps text/panels legible without crushing the
-          image's own bright cream/white detail the way a dark overlay
-          would. */}
-      <Image
-        src="/dashboard-spatial-bg.png"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(120% 100% at 50% 30%, rgba(255,255,255,0.08) 0%, rgba(250,246,236,0.35) 55%, rgba(243,235,210,0.55) 100%)",
-        }}
-      />
+      {/* Background scene — a painted storybook landscape (dawn by day, moonlit at
+          night) that replaces the old photo backdrop. */}
+      <PaintedWorld />
 
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} forceOverlay />
 

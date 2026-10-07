@@ -15,6 +15,8 @@ export function LoginSwitch({
   desktop: React.ReactNode;
 }) {
   const isDesktop = useIsDesktop();
-  if (isDesktop === null) return <>{mobile}</>;
+  // Pre-hydration: keep the mobile markup for phones/crawlers, but don't flash it
+  // at desktop widths just before the painted story mounts.
+  if (isDesktop === null) return <div className="lg:hidden">{mobile}</div>;
   return <>{isDesktop ? desktop : mobile}</>;
 }

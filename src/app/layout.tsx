@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Caveat, Fraunces } from "next/font/google";
+import { Inter, Caveat, Fraunces, Alegreya_Sans } from "next/font/google";
 import "./globals.css";
+import "./storybook.css";
 import { Providers } from "@/components/Providers";
 import { SEO_KEYWORDS } from "@/lib/seo";
+import { PaintDefs } from "@/components/storybook/PaintDefs";
+import { StorybookEffects } from "@/components/storybook/StorybookEffects";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const script = Caveat({ subsets: ["latin"], variable: "--font-script" });
@@ -14,6 +17,15 @@ const serif = Fraunces({
   variable: "--font-serif",
   style: ["normal", "italic"],
   weight: ["400", "500", "600", "700"],
+});
+
+// Hand-lettered storybook sans for the painted desktop theme (storybook.css
+// points --font-sans at this on screens ≥1024px; phones keep Inter).
+const ui = Alegreya_Sans({
+  subsets: ["latin"],
+  variable: "--font-ui",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -85,7 +97,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sans.variable} ${script.variable} ${serif.variable}`} data-theme="light">
+    <html lang="en" className={`${sans.variable} ${script.variable} ${serif.variable} ${ui.variable}`} data-theme="light">
       <head>
         {/* Apply the saved theme before first paint to avoid a flash. */}
         <script
@@ -95,7 +107,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen">
+        <PaintDefs />
         <Providers>{children}</Providers>
+        <StorybookEffects />
       </body>
     </html>
   );
