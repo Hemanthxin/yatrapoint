@@ -141,7 +141,7 @@ export function AppShell({ userLabel, userImage, location, immersive = false, sp
               ? // Normal padded/scrollable phone layout (matches the plain
                 // default below), full-bleed fixed-height takeover at lg+
                 // where the 3D scene itself fills the viewport.
-                "mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:h-screen lg:max-w-none lg:overflow-hidden lg:p-0 lg:pb-0"
+                "mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:max-w-none lg:overflow-hidden lg:p-0 lg:pb-0"
               : immersive
                 ? "mx-auto max-w-[1800px] px-0 py-0 pb-32 lg:px-8 lg:py-8 lg:pb-10 2xl:px-10"
                 : "mx-auto max-w-[1800px] px-4 py-5 pb-32 md:px-6 md:py-8 lg:px-8 lg:pb-10 2xl:px-10"

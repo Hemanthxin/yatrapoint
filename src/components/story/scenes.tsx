@@ -279,8 +279,10 @@ export function Bear() {
         <ellipse cx="102" cy="94" rx="19" ry="14.5" fill="#ecca9b" />
         <ellipse cx="111" cy="88" rx="6.8" ry="5" fill="#3a2418" stroke="none" />
         <path d="M108 99q4 4 9 0" fill="none" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="94" cy="72" r="4.2" fill="#2a170d" stroke="none" />
-        <circle cx="95.4" cy="70.6" r="1.4" fill="#fff" stroke="none" />
+        <g className="br-eye">
+          <circle cx="94" cy="72" r="4.2" fill="#2a170d" stroke="none" />
+          <circle cx="95.4" cy="70.6" r="1.4" fill="#fff" stroke="none" />
+        </g>
         <ellipse cx="80" cy="92" rx="8" ry="5" fill="#e98a7a" opacity="0.5" stroke="none" />
         {/* arm + lantern */}
         <g className="br-arm" style={{ transformOrigin: "108px 124px" }}>

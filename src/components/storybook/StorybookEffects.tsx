@@ -13,7 +13,7 @@ declare global {
 
 // Screens that own their own scrolling (snap feeds, live maps, the 3D scene) —
 // hijacking the wheel there would fight the page, so smooth-scroll stays off.
-const NO_SMOOTH = [/^\/community\/reels/, /^\/multi-stop\/live/, /\/live$/, /^\/dashboard$/];
+const NO_SMOOTH = [/^\/community\/reels/, /^\/multi-stop\/live/, /\/live$/];
 
 const BRUSH_DAY = ["201,120,46", "93,136,72", "214,120,110", "120,150,190", "201,151,58"];
 const BRUSH_NIGHT = ["238,197,106", "130,150,255", "214,140,200", "120,200,200", "246,217,142"];

@@ -8,6 +8,8 @@ import { listPopularCityPlaces } from "@/lib/queries/city-places";
 import { MobileDashboard } from "./MobileDashboard";
 import { DashboardIntro } from "@/components/app/dashboard/DashboardIntro";
 import { Dashboard3DRoot } from "@/components/app/dashboard3d/Dashboard3DRoot";
+import { JourneyStory } from "@/components/app/journey/JourneyStory";
+import { daysUntil, festivalsByNextOccurrence, formatFestivalDate } from "@/lib/festivals";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -31,6 +33,12 @@ export default async function DashboardPage() {
     listUpcomingTrips(u.id ?? ""),
   ]);
 
+  // The journey story's "Festival Village" station: the genuinely next festival.
+  const nextFest = festivalsByNextOccurrence()[0];
+  const festival = nextFest
+    ? { name: nextFest.name, dateLabel: formatFestivalDate(nextFest.nextISO), emoji: nextFest.emoji, days: daysUntil(nextFest.nextISO) }
+    : null;
+
   return (
     <AppShell userLabel={displayName} userImage={u.image} spatial>
       {/* ── Mobile (< lg): bespoke app UI, unchanged ── */}
@@ -47,8 +55,12 @@ export default async function DashboardPage() {
       {/* ── Desktop (≥ lg): the 3D spatial dashboard, built from real CSS 3D
           transforms + Framer Motion (no WebGL — see dashboard3d/Dashboard3DRoot
           for why react-three-fiber didn't work out here) ── */}
-      <div className="hidden h-full lg:block">
-        <Dashboard3DRoot firstName={firstName} stats={stats} upcoming={upcoming} />
+      <div className="hidden lg:block">
+        <div className="h-screen">
+          <Dashboard3DRoot firstName={firstName} stats={stats} upcoming={upcoming} />
+        </div>
+        {/* …and below the fold, a scroll-driven story of the traveller's own journey. */}
+        <JourneyStory firstName={firstName} stats={stats} festival={festival} />
       </div>
     </AppShell>
   );

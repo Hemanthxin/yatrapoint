@@ -195,8 +195,27 @@ function Dashboard3DInner({
       <FloatingDock onMenu={() => setMenuOpen(true)} />
       {!selectedId && (
         <p className="pointer-events-none absolute bottom-28 left-1/2 z-20 -translate-x-1/2 text-center text-[11px] font-medium text-slate-600/70">
-          Drag to rotate · scroll to go deeper · click a panel to focus
+          Drag to rotate · shift + scroll to go deeper · click a panel to focus
         </p>
+      )}
+      {/* Invitation to the story below the fold. */}
+      {!selectedId && (
+        <a
+          href="#journey"
+          onClick={(e) => {
+            e.preventDefault();
+            const el = document.getElementById("journey");
+            if (!el) return;
+            const lenis = window.__sbLenis;
+            if (lenis) lenis.scrollTo(el, { duration: 2 });
+            else el.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="sb-journey-cue absolute bottom-6 z-20"
+          style={{ left: "calc(50% + 12.5rem)" }}
+        >
+          <span>Your journey story</span>
+          <i aria-hidden>↓</i>
+        </a>
       )}
       <DeepDivePanel modules={modules} />
     </div>

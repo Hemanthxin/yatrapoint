@@ -55,7 +55,9 @@ export function Scene({ children }: { children: ReactNode }) {
   }
 
   function onWheel(e: React.WheelEvent<HTMLDivElement>) {
-    if (Math.abs(e.deltaY) < 12) return;
+    // Plain wheel scrolls the page (the journey story lives below the fold);
+    // holding Shift keeps the old "dolly deeper" gesture.
+    if (!e.shiftKey || Math.abs(e.deltaY) < 12) return;
     const next = Math.max(0, Math.min(1, layerIndex.current + (e.deltaY > 0 ? 1 : -1)));
     if (next === layerIndex.current) return;
     layerIndex.current = next;
