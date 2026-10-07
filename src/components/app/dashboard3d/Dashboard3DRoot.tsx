@@ -89,7 +89,7 @@ export function Dashboard3DRoot({ firstName, stats, upcoming }: Props) {
                 <li
                   key={t.id}
                   className="rounded-xl px-3 py-2"
-                  style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+                  style={{ boxShadow: "inset 0 0 0 1px rgb(var(--ink) / 0.22), inset 0 2px 6px rgb(var(--ink) / 0.12)" }}
                 >
                   <p className="text-sm font-semibold text-slate-900">{t.name}</p>
                   <p className="text-xs text-slate-500">
@@ -168,7 +168,7 @@ function Dashboard3DInner({
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-700/80">Saafera · Spatial</p>
           <h1
             className="mt-1 text-2xl font-bold text-slate-900 lg:text-3xl"
-            style={{ textShadow: "0 1px 16px rgba(255,255,255,0.8)" }}
+            style={{ textShadow: "0 1px 16px var(--sb-glow, rgba(255,255,255,0.8))" }}
           >
             Welcome back, {firstName}
           </h1>
@@ -226,7 +226,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="flex items-center justify-between rounded-xl px-3 py-2.5"
-      style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+      style={{ boxShadow: "inset 0 0 0 1px rgb(var(--ink) / 0.22), inset 0 2px 6px rgb(var(--ink) / 0.12)" }}
     >
       <span className="text-xs font-medium text-slate-500">{label}</span>
       <span className="text-sm font-bold text-slate-900">{value}</span>

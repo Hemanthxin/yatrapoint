@@ -124,7 +124,7 @@ function Metric({
   return (
     <div
       className="flex flex-col items-center gap-1 rounded-xl p-3"
-      style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+      style={{ boxShadow: "inset 0 0 0 1px rgb(var(--ink) / 0.22), inset 0 2px 6px rgb(var(--ink) / 0.12)" }}
     >
       <span className={iconClassName ?? "text-emerald-600"}>{icon}</span>
       <span className="text-[10px] font-medium text-slate-500">{label}</span>

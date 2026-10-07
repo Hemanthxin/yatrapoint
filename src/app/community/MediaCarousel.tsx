@@ -80,6 +80,13 @@ export function MediaCarousel({
           src={current.url}
           alt={alt}
           className={imgClassName}
+          // A server-rendered <img> can finish loading BEFORE React attaches onLoad,
+          // so the event is missed — read the size straight off a cached image too.
+          ref={(el) => {
+            if (el && clampedIndex === 0 && onCoverLoad && el.complete && el.naturalWidth > 0) {
+              onCoverLoad(el.naturalWidth, el.naturalHeight);
+            }
+          }}
           onLoad={
             clampedIndex === 0 && onCoverLoad
               ? (e) => onCoverLoad(e.currentTarget.naturalWidth, e.currentTarget.naturalHeight)

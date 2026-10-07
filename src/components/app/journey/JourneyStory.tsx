@@ -38,7 +38,7 @@ const INTRO = 0.14;
 const WHO = ["Teddy", "Juno", "Pip"] as const;
 const ROMAN = ["I", "II", "III", "IV", "V"];
 
-const DAY_SKY = { a: ["#9fd3ea", "#f6e8b4", "#fbf3d2"], b: ["#5b4a8c", "#e58c78", "#f6c08a"] };
+const DAY_SKY = { a: ["#62c4f6", "#fff0b0", "#fffadc"], b: ["#6a4cb0", "#f0708a", "#ffbc7a"] };
 const NIGHT_SKY = { a: ["#222a68", "#1a2052", "#141a42"], b: ["#090d29", "#121744", "#1d1f55"] };
 
 function Chars({ text }: { text: string }) {
@@ -221,9 +221,11 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
         const w = parseFloat(el.style.width) || el.offsetWidth;
         const h = parseFloat(el.style.height) || el.offsetHeight;
         gsap.set(el, { x: sx - w / 2, y: fy - h * 0.98 - Math.abs(sw) * 5, rotation: Math.atan(slope) * 26 });
-        if (parts[0]) gsap.set(parts[0], { rotation: sw * 26 });
-        if (parts[1]) gsap.set(parts[1], { rotation: -sw * 26 });
-        if (parts[2]) gsap.set(parts[2], { rotation: tail ? Math.sin(dist / 40 + phase) * 9 : sw * -9 });
+        const cs = Math.cos(dist / 70 + phase);
+        // swing from the hip, and lift whichever foot is travelling forward
+        if (parts[0]) gsap.set(parts[0], { rotation: sw * 16, y: -Math.max(0, -cs) * 5 });
+        if (parts[1]) gsap.set(parts[1], { rotation: -sw * 16, y: -Math.max(0, cs) * 5 });
+        if (parts[2]) gsap.set(parts[2], { rotation: tail ? Math.sin(dist / 40 + phase) * 9 : sw * -6 });
         if (parts[3]) gsap.set(parts[3], { rotation: Math.sin(dist / 140 + 1) * 9 });
       };
 
@@ -403,8 +405,8 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
                 seed={61}
                 idp="jf"
                 layers={[
-                  { color: "#b9d3d8", fade: "#e3eadb", shade: "#9fbdc6", base: 600, amp: 260, peaksPer1600: 3 },
-                  { color: "#9fc3b9", fade: "#d6e6c9", shade: "#80ab9f", base: 660, amp: 200, peaksPer1600: 4 },
+                  { color: "#a6dcf4", fade: "#e8f7e0", shade: "#86c4e4", base: 600, amp: 260, peaksPer1600: 3 },
+                  { color: "#86d8c4", fade: "#dcf6c6", shade: "#62c2ac", base: 660, amp: 200, peaksPer1600: 4 },
                 ]}
               />
             </div>
@@ -414,8 +416,8 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
                 seed={74}
                 idp="jm"
                 layers={[
-                  { color: "#86b98a", fade: "#bfd89a", shade: "#6c9f72", base: 690, amp: 130, peaksPer1600: 5, trees: "pine", treeColor: "#4f8a5c", treeDensity: 36 },
-                  { color: "#6aa56c", fade: "#a8cc82", shade: "#528a58", base: 770, amp: 90, peaksPer1600: 6, trees: "oak", treeColor: "#4e8d4b", treeDensity: 26 },
+                  { color: "#6fd08a", fade: "#cbf0a2", shade: "#4fb86e", base: 690, amp: 130, peaksPer1600: 5, trees: "pine", treeColor: "#2fa860", treeDensity: 36 },
+                  { color: "#52c070", fade: "#b4e48c", shade: "#38a458", base: 770, amp: 90, peaksPer1600: 6, trees: "oak", treeColor: "#3aa850", treeDensity: 26 },
                 ]}
               />
             </div>

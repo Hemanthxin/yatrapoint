@@ -119,7 +119,7 @@ export function OrbitalHero({ headline, headlineLabel, subLines, nodes, dimmed =
         <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-700/80">{headlineLabel}</p>
         <p
           className="font-sans text-6xl font-bold text-slate-900"
-          style={{ textShadow: "0 0 20px rgba(255,255,255,0.9), 0 0 48px rgba(255,255,255,0.6)" }}
+          style={{ textShadow: "0 0 20px var(--sb-glow, rgba(255,255,255,0.9)), 0 0 48px var(--sb-glow, rgba(255,255,255,0.6))" }}
         >
           {headline}
         </p>
@@ -129,7 +129,7 @@ export function OrbitalHero({ headline, headlineLabel, subLines, nodes, dimmed =
           }`}
         >
           {subLines.map((line) => (
-            <p key={line} className="text-xs font-medium text-slate-700" style={{ textShadow: "0 0 12px rgba(255,255,255,0.9)" }}>
+            <p key={line} className="text-xs font-medium text-slate-700" style={{ textShadow: "0 0 12px var(--sb-glow, rgba(255,255,255,0.9))" }}>
               {line}
             </p>
           ))}

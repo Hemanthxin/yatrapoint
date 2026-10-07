@@ -92,9 +92,9 @@ export function MountainScape({
 
 /** Palettes shared by the app backdrop, page banners and the landing story. */
 export const DAY_BACKDROP: ScapeLayer[] = [
-  { color: "#d9c9b3", fade: "#f0e4c6", shade: "#b9a98f", base: 560, amp: 300, peaks: 5, snow: true },
-  { color: "#c3b79d", fade: "#eadcb9", shade: "#a09378", base: 650, amp: 250, peaks: 6 },
-  { color: "#a9ad8c", fade: "#d9d3ac", shade: "#7e8a66", base: 760, amp: 180, peaks: 7, trees: "pine", treeColor: "#7c8a63", treeCount: 70, treeSize: [28, 56] },
+  { color: "#c9d8f6", fade: "#fff0d2", shade: "#a9bfe8", base: 560, amp: 300, peaks: 5, snow: true },
+  { color: "#a9dcc8", fade: "#f4f0c0", shade: "#86c4ac", base: 650, amp: 250, peaks: 6 },
+  { color: "#7fd08e", fade: "#d6ecaa", shade: "#52b46a", base: 760, amp: 180, peaks: 7, trees: "pine", treeColor: "#4fae6a", treeCount: 70, treeSize: [28, 56] },
 ];
 
 export const NIGHT_BACKDROP: ScapeLayer[] = [
@@ -115,12 +115,12 @@ export function PaintedBackdrop() {
 
 /** The six-ridge dawn panorama used by the landing hero and the dashboard. */
 export const DAWN_LAYERS: ScapeLayer[] = [
-  { color: "#e6c9d2", fade: "#f9dcc2", shade: "#cba7b8", base: 560, amp: 300, peaks: 5, snow: true },
-  { color: "#d0b2c8", fade: "#f4d4c0", shade: "#ae91b4", base: 615, amp: 270, peaks: 6, snow: true, castle: true },
-  { color: "#ad98be", fade: "#e9cac2", shade: "#8a79a8", base: 690, amp: 230, peaks: 6 },
-  { color: "#8188aa", fade: "#d7c0c2", shade: "#636f96", base: 765, amp: 200, peaks: 7, trees: "pine", treeColor: "#5f6c92", treeCount: 50 },
-  { color: "#587693", fade: "#aab5b2", shade: "#415e7c", base: 835, amp: 170, peaks: 7, trees: "pine", treeColor: "#3e5978", treeCount: 80, treeSize: [30, 60] },
-  { color: "#3b5b64", fade: "#4b6b61", shade: "#2c4851", base: 905, amp: 120, peaks: 8, trees: "pine", treeColor: "#233f46", treeCount: 100, treeSize: [44, 92] },
+  { color: "#f9c3dc", fade: "#ffe6c8", shade: "#ec9fc8", base: 560, amp: 300, peaks: 5, snow: true },
+  { color: "#dcaaf0", fade: "#ffdccb", shade: "#bb86e0", base: 615, amp: 270, peaks: 6, snow: true, castle: true },
+  { color: "#a39df4", fade: "#f8d2d2", shade: "#7f7ae0", base: 690, amp: 230, peaks: 6 },
+  { color: "#62adf0", fade: "#c2dcef", shade: "#418ad6", base: 765, amp: 200, peaks: 7, trees: "pine", treeColor: "#418ad6", treeCount: 50 },
+  { color: "#33bc8f", fade: "#96dcb6", shade: "#22976f", base: 835, amp: 170, peaks: 7, trees: "pine", treeColor: "#1f9a72", treeCount: 80, treeSize: [30, 60] },
+  { color: "#1b8a6e", fade: "#34a07f", shade: "#106e5a", base: 905, amp: 120, peaks: 8, trees: "pine", treeColor: "#0f6a56", treeCount: 100, treeSize: [44, 92] },
 ];
 
 export const MOONLIT_LAYERS: ScapeLayer[] = [

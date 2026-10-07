@@ -24,9 +24,9 @@ interface PageHeroProps {
 // Short, wide banner: the viewBox is sliced from the bottom, so ridges sit low
 // (base ≥ 700) and the tallest peaks are allowed to be cropped by the frame.
 const DAY: ScapeLayer[] = [
-  { color: "#d7c4c4", fade: "#f4e2c4", shade: "#b6a1ac", base: 730, amp: 220, peaks: 5, snow: true },
-  { color: "#b8a9b6", fade: "#e6d3b6", shade: "#968a9f", base: 790, amp: 170, peaks: 6 },
-  { color: "#8f9f86", fade: "#cfcfa0", shade: "#6a8062", base: 860, amp: 120, peaks: 8, trees: "pine", treeColor: "#62795a", treeCount: 60, treeSize: [24, 46] },
+  { color: "#dcc4f2", fade: "#ffe6cc", shade: "#bb98e0", base: 730, amp: 220, peaks: 5, snow: true },
+  { color: "#9fc0f2", fade: "#e4eed8", shade: "#7da2e0", base: 790, amp: 170, peaks: 6 },
+  { color: "#4fc08a", fade: "#c4ecaa", shade: "#2f9f6c", base: 860, amp: 120, peaks: 8, trees: "pine", treeColor: "#2a9a66", treeCount: 60, treeSize: [24, 46] },
 ];
 const NIGHT: ScapeLayer[] = [
   { color: "#424a86", fade: "#262b5c", shade: "#2f3670", base: 730, amp: 220, peaks: 5, snow: true },

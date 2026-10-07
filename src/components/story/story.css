@@ -21,9 +21,9 @@
   position: fixed;
   inset: 0;
   z-index: 0;
-  --s1: #a7b6da;
-  --s2: #f2c6bc;
-  --s3: #fbe0b8;
+  --s1: #6fb9f2;
+  --s2: #ffc7a4;
+  --s3: #ffe8b4;
   background:
     radial-gradient(60% 40% at 80% 12%, rgba(255, 255, 255, 0.28), transparent 70%),
     linear-gradient(180deg, var(--s1) 0%, var(--s2) 55%, var(--s3) 100%);
@@ -448,7 +448,7 @@
 
 /* The login card, as a sheet of parchment (AuthCard carries .sb-auth). */
 .sb-auth {
-  background: var(--sb-grain), linear-gradient(165deg, #fdf7e2, #f2e4bc);
+  background: var(--sb-grain), linear-gradient(165deg, #ffffff, #fff4d6);
   background-size: 240px 240px, auto;
   border-radius: 1.7rem 1.3rem 1.8rem 1.4rem / 1.4rem 1.8rem 1.3rem 1.7rem;
   box-shadow: 0 0 0 2px rgba(92, 68, 36, 0.55), inset 0 0 0 7px rgba(253, 247, 226, 0.8), inset 0 0 0 8px rgba(92, 68, 36, 0.22),
@@ -458,7 +458,7 @@
   background:
     radial-gradient(80% 140% at 85% 0%, rgba(255, 226, 150, 0.45), transparent 60%),
     var(--sb-grain),
-    linear-gradient(160deg, #5b8f4a, #3b6b3a) !important;
+    linear-gradient(135deg, #26c281 0%, #1aa58f 55%, #1d8fcf 100%) !important;
   background-size: auto, 220px 220px, auto !important;
   clip-path: polygon(0 0, 100% 0, 100% 86%, 92% 92%, 83% 87%, 72% 94%, 60% 88%, 49% 95%, 38% 89%, 26% 94%, 14% 88%, 6% 93%, 0 88%);
 }
@@ -474,7 +474,7 @@
   border-radius: 0.8rem 0.6rem 0.85rem 0.65rem !important;
 }
 .sb-auth button[type="submit"] {
-  background: linear-gradient(170deg, #5b8f4a, #3b6b3a) !important;
+  background: linear-gradient(170deg, #2fcf7a, #17a05a) !important;
   border-radius: 0.9rem 0.65rem 0.95rem 0.7rem !important;
   box-shadow: 0 0 0 1px rgba(30, 44, 22, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 8px 16px -6px rgba(40, 70, 40, 0.7) !important;
 }

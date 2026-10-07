@@ -8,10 +8,16 @@ export function Fox() {
     <svg viewBox="0 0 200 224" className="jr-char-svg" aria-hidden>
       <ellipse cx="92" cy="218" rx="54" ry="6.5" fill="#000" opacity="0.18" />
       <g filter="url(#sb-rough)" stroke="#5a2a10" strokeWidth="2" strokeLinejoin="round">
-        {/* back leg */}
-        <g className="fx-leg-b" style={{ transformOrigin: "70px 166px" }}>
-          <ellipse cx="70" cy="188" rx="11" ry="25" fill="#cf6a2a" />
-          <ellipse cx="68" cy="212" rx="16" ry="8" fill="#3a2418" />
+        {/* legs sit behind the body and swing from the hip */}
+        <g className="fx-leg-b" style={{ transformOrigin: "74px 156px" }}>
+          <path d="M58 156h30v36a15 12 0 0 1 -30 0Z" fill="#cf6a2a" />
+          <path d="M58 188h30v10a15 12 0 0 1 -30 0Z" fill="#3a2418" stroke="none" />
+          <ellipse cx="80" cy="209" rx="18" ry="8" fill="#3a2418" />
+        </g>
+        <g className="fx-leg-f" style={{ transformOrigin: "116px 156px" }}>
+          <path d="M102 156h30v36a15 12 0 0 1 -30 0Z" fill="#e57b32" />
+          <path d="M102 188h30v10a15 12 0 0 1 -30 0Z" fill="#3a2418" stroke="none" />
+          <ellipse cx="124" cy="209" rx="18" ry="8" fill="#3a2418" />
         </g>
         {/* tail */}
         <g className="fx-tail" style={{ transformOrigin: "52px 150px" }}>
@@ -19,19 +25,14 @@ export function Fox() {
           <path d="M14 74C6 90 4 108 10 124C22 114 30 100 30 92Z" fill="#fff4e0" />
         </g>
         {/* body */}
-        <ellipse cx="94" cy="138" rx="40" ry="42" fill="#e57b32" />
-        <ellipse cx="104" cy="148" rx="21" ry="28" fill="#fff1dc" stroke="none" />
+        <ellipse cx="94" cy="140" rx="41" ry="44" fill="#e57b32" />
+        <ellipse cx="104" cy="152" rx="22" ry="29" fill="#fff1dc" stroke="none" />
         {/* rolled map */}
         <g transform="rotate(-12 70 134)">
           <rect x="46" y="124" width="40" height="15" rx="7.5" fill="#f3e2b3" />
           <circle cx="47" cy="131.5" r="7" fill="#e7cf92" />
           <circle cx="85" cy="131.5" r="7" fill="#e7cf92" />
           <path d="M60 124v15M72 124v15" stroke="#c0402e" strokeWidth="3" />
-        </g>
-        {/* front leg */}
-        <g className="fx-leg-f" style={{ transformOrigin: "110px 166px" }}>
-          <ellipse cx="110" cy="188" rx="11" ry="25" fill="#e57b32" />
-          <ellipse cx="112" cy="212" rx="16" ry="8" fill="#3a2418" />
         </g>
         {/* scarf */}
         <path d="M62 104C80 118 112 118 128 102L132 116C112 132 78 132 58 118Z" fill="#3f8f5a" />

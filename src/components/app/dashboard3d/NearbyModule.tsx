@@ -77,7 +77,7 @@ export function NearbyDeepDive() {
         <li
           key={p.id}
           className="flex items-center justify-between gap-2 rounded-xl px-3 py-2"
-          style={{ boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.18)" }}
+          style={{ boxShadow: "inset 0 0 0 1px rgb(var(--ink) / 0.22), inset 0 2px 6px rgb(var(--ink) / 0.12)" }}
         >
           <span className="min-w-0 truncate text-sm font-medium text-slate-800">{p.name}</span>
           <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-emerald-700">

@@ -55,11 +55,11 @@ const SIGNS = [
 ];
 
 const CHAPTERS = [
-  { id: "hero", n: "I", t: "The Waking Mountains", sky: ["#a7b6da", "#f2c6bc", "#fbe0b8"] },
-  { id: "prologue", n: "II", t: "The Prologue", sky: ["#f6e7c8", "#f3dfb6", "#efd5a2"] },
+  { id: "hero", n: "I", t: "The Waking Mountains", sky: ["#6fb9f2", "#ffc7a4", "#ffe8b4"] },
+  { id: "prologue", n: "II", t: "The Prologue", sky: ["#fff5d6", "#ffe8b0", "#ffd98a"] },
   { id: "gate", n: "III", t: "The Gate", sky: ["#12302f", "#1f4a42", "#3b6b55"] },
-  { id: "road", n: "IV", t: "The Wanderer's Road", sky: ["#8cc3d8", "#f1e2a7", "#f8efca"] },
-  { id: "voices", n: "V", t: "Names the Wind Whispers", sky: ["#47306a", "#c0627a", "#f4a374"] },
+  { id: "road", n: "IV", t: "The Wanderer's Road", sky: ["#58c0f2", "#fff0a6", "#fff8d2"] },
+  { id: "voices", n: "V", t: "Names the Wind Whispers", sky: ["#5a3aa0", "#f0607e", "#ffb070"] },
   { id: "realms", n: "VI", t: "The Six Realms", sky: ["#16214a", "#2b3a78", "#6a6aa6"] },
   { id: "wheel", n: "VII", t: "The Wheel of Festivals", sky: ["#0e1330", "#1a1f4d", "#2c2a62"] },
   { id: "finale", n: "VIII", t: "Epilogue", sky: ["#080b20", "#10153a", "#1b1f4f"] },
@@ -397,9 +397,10 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
         const ph = (p * T) / 70;
         const swing = Math.sin(ph);
         gsap.set(char, { x: charX - charW / 2, y: fy - charH + charH * 0.04 - Math.abs(swing) * 5, rotation: Math.atan(slope) * 28 });
-        if (legB) gsap.set(legB, { rotation: swing * 26 });
-        if (legF) gsap.set(legF, { rotation: -swing * 26 });
-        if (arm) gsap.set(arm, { rotation: swing * -9 });
+        const cosp = Math.cos(ph);
+        if (legB) gsap.set(legB, { rotation: swing * 16, y: -Math.max(0, -cosp) * 5 });
+        if (legF) gsap.set(legF, { rotation: -swing * 16, y: -Math.max(0, cosp) * 5 });
+        if (arm) gsap.set(arm, { rotation: swing * -6 });
         if (scarf) gsap.set(scarf, { rotation: Math.sin(ph * 0.5 + 1) * 9 });
         signEls.forEach((el, i) => {
           const sx = signX[i] - p * T;
@@ -811,8 +812,8 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
                 seed={31}
                 idp="rf"
                 layers={[
-                  { color: "#b9d3d8", fade: "#e3eadb", shade: "#9fbdc6", base: 600, amp: 260, peaksPer1600: 3 },
-                  { color: "#9fc3b9", fade: "#d6e6c9", shade: "#80ab9f", base: 660, amp: 200, peaksPer1600: 4 },
+                  { color: "#a6dcf4", fade: "#e8f7e0", shade: "#86c4e4", base: 600, amp: 260, peaksPer1600: 3 },
+                  { color: "#86d8c4", fade: "#dcf6c6", shade: "#62c2ac", base: 660, amp: 200, peaksPer1600: 4 },
                 ]}
               />
             </div>
@@ -822,8 +823,8 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
                 seed={44}
                 idp="rm"
                 layers={[
-                  { color: "#86b98a", fade: "#bfd89a", shade: "#6c9f72", base: 690, amp: 130, peaksPer1600: 5, trees: "pine", treeColor: "#4f8a5c", treeDensity: 36 },
-                  { color: "#6aa56c", fade: "#a8cc82", shade: "#528a58", base: 770, amp: 90, peaksPer1600: 6, trees: "oak", treeColor: "#4e8d4b", treeDensity: 26 },
+                  { color: "#6fd08a", fade: "#cbf0a2", shade: "#4fb86e", base: 690, amp: 130, peaksPer1600: 5, trees: "pine", treeColor: "#2fa860", treeDensity: 36 },
+                  { color: "#52c070", fade: "#b4e48c", shade: "#38a458", base: 770, amp: 90, peaksPer1600: 6, trees: "oak", treeColor: "#3aa850", treeDensity: 26 },
                 ]}
               />
             </div>

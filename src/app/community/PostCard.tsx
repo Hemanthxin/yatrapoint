@@ -408,10 +408,10 @@ export function PostCard({
       // left the first cards still faded out on load — an empty-looking feed
       // until you scrolled. Reveal as soon as any part is on screen.
       amount={0}
-      className={`card card-hover overflow-hidden ${isGrid ? "flex flex-col" : ""}`}
+      className={`sb-post card card-hover overflow-hidden ${isGrid ? "flex flex-col" : ""}`}
     >
       {/* Header */}
-      <div className="flex items-center gap-3 p-3.5">
+      <div className="sb-post-head flex items-center gap-3 p-3.5">
         <Link href={`/profile/${post.userId}`} className="shrink-0">
           {post.authorImage ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -512,7 +512,7 @@ export function PostCard({
           it can't — every card gets the same Instagram-style square tile
           regardless of variant or the photo's native dimensions. */}
       <div
-        className={`relative shrink-0 cursor-pointer select-none overflow-hidden bg-slate-100 ${
+        className={`sb-post-media relative shrink-0 cursor-pointer select-none overflow-hidden bg-slate-100 ${
           // BUG-12: the full card's photo was a fixed 26rem box that cropped
           // hard on wide screens and stayed small on phones. A 4:5 portrait
           // frame (Instagram's own) scales with the card width, so the photo is
@@ -550,6 +550,12 @@ export function PostCard({
               src={post.photoUrl}
               alt={post.title}
               className={`h-full w-full ${isGrid ? "object-cover" : "object-contain"}`}
+              // already-loaded (server-rendered) image: onLoad would have fired before hydration
+              ref={(el) => {
+                if (el && !isGrid && coverAspect === null && el.complete && el.naturalWidth > 0) {
+                  setCoverAspect(el.naturalWidth / el.naturalHeight);
+                }
+              }}
               onLoad={
                 isGrid || coverAspect !== null
                   ? undefined

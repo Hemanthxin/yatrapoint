@@ -25,8 +25,8 @@ export function DeepDivePanel({ modules }: { modules: SpatialModule[] }) {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="pointer-events-auto fixed bottom-28 right-4 top-24 z-30 w-[min(92vw,22rem)] overflow-y-auto rounded-3xl p-5 text-slate-900 backdrop-blur-2xl lg:bottom-8 lg:right-8 lg:top-28"
           style={{
-            background: "rgba(250, 246, 236, 0.88)",
-            boxShadow: "-6px -6px 14px rgba(255,255,255,0.55), 6px 6px 22px rgba(120,110,80,0.3)",
+            background: "color-mix(in srgb, var(--surface) 90%, transparent)",
+            boxShadow: "0 0 0 2px rgb(var(--ink) / 0.4), inset 0 0 0 6px rgb(var(--paper-hi) / 0.4), 0 28px 40px -20px rgb(var(--shadow) / 0.7)",
           }}
         >
           <div className="flex items-center justify-between">
@@ -54,7 +54,7 @@ export function DeepDivePanel({ modules }: { modules: SpatialModule[] }) {
             href={active.href}
             className="mt-5 flex items-center justify-center rounded-xl py-2.5 text-sm font-semibold text-slate-800 transition"
             style={{
-              boxShadow: "inset -3px -3px 7px rgba(255,255,255,0.6), inset 3px 3px 7px rgba(120,110,80,0.22)",
+              boxShadow: "inset 0 0 0 1px rgb(var(--ink) / 0.22), inset 0 2px 6px rgb(var(--ink) / 0.12)",
             }}
           >
             Open {active.label}

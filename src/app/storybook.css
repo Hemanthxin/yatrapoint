@@ -54,23 +54,23 @@ html.lenis body {
   /* ───────────────────────── TOKENS — DAY ───────────────────────── */
   html:root:not([data-theme="dark"]) {
     /* Moss / sage brand scale, replaces the saturated emerald. */
-    --br-50: 244 246 232;  --br-100: 229 237 206; --br-200: 205 221 168;
-    --br-300: 170 197 124; --br-400: 131 166 91;  --br-500: 93 136 72;
-    --br-600: 70 109 56;   --br-700: 54 88 46;    --br-800: 42 70 38;
-    --br-900: 33 55 31;    --br-950: 19 32 18;
+    --br-50: 238 251 232;  --br-100: 214 244 203; --br-200: 180 233 160;
+    --br-300: 134 214 112; --br-400: 88 190 84;   --br-500: 48 166 76;
+    --br-600: 33 138 62;   --br-700: 28 110 52;   --br-800: 25 88 45;
+    --br-900: 21 70 38;    --br-950: 11 40 22;
 
-    --app-bg: #f2e6c6;
-    --surface: #fbf3da;
-    --surface-2: #efe0b6;
-    --text: #2e2515;
-    --text-soft: #54452d;
-    --muted: #84744f;
-    --border: #d8c595;
-    --accent: #476e3b;
-    --accent-2: #355a2e;
-    --highlight: #c9782e;
-    --nav-bg: rgba(246, 236, 207, 0.92);
-    --ring: rgba(201, 120, 46, 0.28);
+    --app-bg: #fff6df;
+    --surface: #fffbf0;
+    --surface-2: #fbefcf;
+    --text: #2a2112;
+    --text-soft: #4d3f27;
+    --muted: #7d6c45;
+    --border: #ead9a8;
+    --accent: #1f9a4d;
+    --accent-2: #17803f;
+    --highlight: #f0821f;
+    --nav-bg: rgba(255, 249, 230, 0.93);
+    --ring: rgba(240, 130, 31, 0.3);
 
     --neu-surface: var(--surface);
     --neu-light: rgba(255, 252, 238, 0.9);
@@ -80,11 +80,13 @@ html.lenis body {
     /* Painted-primitive tokens (space-separated RGB so they take /alpha). */
     --ink: 92 68 36;
     --shadow: 96 70 30;
-    --wash: 201 120 46;
-    --paper-hi: #fdf7e2;
-    --paper-lo: #f3e6bf;
-    --gold: 201 151 58;
-    --sb-grain-a: 0.34;
+    --wash: 255 150 50;
+    --paper-hi: #fffdf3;
+    --paper-lo: #fcf1d3;
+    --gold: 240 172 36;
+    --sb-grain-a: 0.15;
+    --sb-vig: 0.05;
+    --sb-glow: rgba(255, 255, 255, 0.88);
 
     color-scheme: light;
   }
@@ -121,6 +123,8 @@ html.lenis body {
     --paper-lo: #1b2043;
     --gold: 238 197 106;
     --sb-grain-a: 0.16;
+    --sb-vig: 0.14;
+    --sb-glow: rgba(12, 14, 44, 0.85);
 
     color-scheme: dark;
   }
@@ -174,16 +178,16 @@ html.lenis body {
   /* Soft burnt edges like an aged page. */
   body::after {
     z-index: 9989;
-    background: radial-gradient(130% 110% at 50% 45%, transparent 58%, rgb(var(--ink) / 0.16) 100%);
+    background: radial-gradient(130% 110% at 50% 45%, transparent 60%, rgb(var(--ink) / var(--sb-vig, 0.06)) 100%);
   }
 
   /* ───────────────────────── AMBIENT PAINTED CANVAS ───────────────────────── */
   html:root:not([data-theme="dark"]) .aurora-canvas {
     background:
-      radial-gradient(60% 46% at 6% 4%, rgba(143, 176, 120, 0.34), transparent 66%),
-      radial-gradient(52% 44% at 96% 2%, rgba(226, 150, 120, 0.26), transparent 62%),
-      radial-gradient(70% 44% at 62% 104%, rgba(232, 178, 92, 0.34), transparent 64%),
-      linear-gradient(180deg, #f6ecd0 0%, #f2e4bd 48%, #ecd8a8 100%);
+      radial-gradient(60% 46% at 6% 4%, rgba(120, 214, 150, 0.34), transparent 66%),
+      radial-gradient(52% 44% at 96% 2%, rgba(255, 150, 130, 0.28), transparent 62%),
+      radial-gradient(70% 44% at 62% 104%, rgba(255, 200, 90, 0.42), transparent 64%),
+      linear-gradient(180deg, #fffcec 0%, #fff4d4 50%, #ffe9b4 100%);
   }
   html:root[data-theme="dark"] .aurora-canvas {
     background:
@@ -203,7 +207,7 @@ html.lenis body {
     right: 0;
     bottom: 0;
     height: 74%;
-    opacity: 0.62;
+    opacity: 0.8;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 36%);
     mask-image: linear-gradient(180deg, transparent 0%, #000 36%);
@@ -450,7 +454,7 @@ html.lenis body {
     background:
       var(--sb-grain),
       linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 30%),
-      linear-gradient(175deg, #38573a 0%, #2a4429 55%, #213820 100%) !important;
+      linear-gradient(175deg, #3f9a58 0%, #2f8247 55%, #266f3b 100%) !important;
     background-size: 220px 220px, auto, auto;
     border-right: 3px double rgba(242, 203, 107, 0.45) !important;
     box-shadow: 10px 0 30px -14px rgb(var(--shadow) / 0.7) !important;
@@ -474,7 +478,7 @@ html.lenis body {
   .marquee-mask {
     background:
       var(--sb-grain),
-      linear-gradient(180deg, #8f3f2d, #6c2b20) !important;
+      linear-gradient(180deg, #d5503f, #b03a2c) !important;
     background-size: 200px 200px, auto;
     color: #fbefcc;
     box-shadow:
@@ -572,7 +576,7 @@ html.lenis body {
   .sb-hero-sky {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, #f7d6a2 0%, #f9e6c0 52%, #f5ebcf 100%);
+    background: linear-gradient(180deg, #7fcdf6 0%, #ffe2a8 56%, #fff3cf 100%);
   }
   html:root[data-theme="dark"] .sb-hero-sky {
     background: linear-gradient(180deg, #181c47 0%, #2c2c64 62%, #46386f 100%);
@@ -582,7 +586,7 @@ html.lenis body {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(248, 236, 205, 0.9) 0%, rgba(248, 236, 205, 0.55) 42%, transparent 72%);
+    background: linear-gradient(90deg, rgba(255, 250, 232, 0.88) 0%, rgba(255, 250, 232, 0.5) 42%, transparent 72%);
   }
   html:root[data-theme="dark"] .sb-hero-sky::after {
     background: linear-gradient(90deg, rgba(18, 22, 54, 0.82) 0%, rgba(18, 22, 54, 0.45) 42%, transparent 72%);
@@ -635,7 +639,7 @@ html.lenis body {
     position: absolute;
     inset: 0;
     overflow: hidden;
-    background: linear-gradient(180deg, #a7b6da 0%, #f2c6bc 52%, #fbe0b8 100%);
+    background: linear-gradient(180deg, #6fb9f2 0%, #ffc9a6 54%, #ffe8b4 100%);
   }
   html:root[data-theme="dark"] .sb-world {
     background: linear-gradient(180deg, #0e1230 0%, #1c2150 56%, #2c2a62 100%);
@@ -735,5 +739,47 @@ html.lenis body {
     50% {
       transform: translateY(5px);
     }
+  }
+}
+
+/* ───────────────────────── COMMUNITY POST CARD — a travel postcard ───────────────────────── */
+@media (min-width: 1024px) {
+  .sb-post {
+    padding-bottom: 0.4rem;
+  }
+  .sb-post .sb-post-head {
+    margin: 0.25rem 0.7rem 0;
+    padding: 0.8rem 0.4rem 0.75rem;
+    border-bottom: 1.5px dashed rgb(var(--ink) / 0.3);
+  }
+  .sb-post .sb-post-media {
+    margin: 0.8rem 1rem 0.3rem;
+    border-radius: 0.6rem 0.5rem 0.65rem 0.55rem;
+    background: var(--surface-2);
+    box-shadow:
+      0 0 0 1.5px rgb(var(--ink) / 0.5),
+      0 0 0 6px var(--paper-hi),
+      0 0 0 7.5px rgb(var(--ink) / 0.25),
+      0 16px 22px -12px rgb(var(--shadow) / 0.7);
+  }
+  .sb-post .sb-post-media img {
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sb-post:hover .sb-post-media img {
+    transform: scale(1.03);
+  }
+  .sb-post img.rounded-full {
+    box-shadow: 0 0 0 2px rgb(var(--gold)), 0 0 0 4px var(--paper-hi);
+  }
+  .sb-post .bg-emerald-600.rounded-full {
+    background: linear-gradient(145deg, #34c176, #1f9a5a);
+    box-shadow: 0 0 0 2px rgb(var(--gold)), 0 0 0 4px var(--paper-hi);
+  }
+  .sb-post button:not(.btn-primary):not(.btn-secondary):hover {
+    background-color: rgb(var(--gold) / 0.2);
+  }
+  .sb-post .text-xs.font-semibold.text-slate-900,
+  .sb-post .font-bold.text-slate-900 {
+    font-family: var(--font-serif), Georgia, serif;
   }
 }
