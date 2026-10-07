@@ -133,11 +133,12 @@
   gap: 0.6rem;
 }
 .st-intro-seal {
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
-  background: #fbf3da;
+  width: 15rem;
+  height: 15rem;
+  overflow: hidden;
+  background: #fff;
   border-radius: 50%;
-  padding: 1.1rem;
-  box-shadow: 0 0 0 4px #d9a23f, 0 0 0 7px #2b4c33, 0 0 0 9px #d9a23f;
+  box-shadow: 0 0 0 4px #d9a23f, 0 0 0 7px #2b4c33, 0 0 0 9px #d9a23f, 0 14px 30px rgba(0, 0, 0, 0.5);
 }
 .st-intro-mask {
   overflow: hidden;
@@ -180,6 +181,26 @@
   display: flex;
   gap: 0.8rem;
   align-items: center;
+}
+.st-brand-img {
+  display: block;
+  width: 3.7rem;
+  height: 3.7rem;
+  border-radius: 1rem;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 0 0 1.5px rgba(92, 68, 36, 0.5), 0 10px 20px -8px rgba(80, 55, 20, 0.6);
+  transition: transform 0.25s ease;
+}
+.st-brand {
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.st-brand:hover .st-brand-img {
+  transform: translateY(-2px) rotate(-2deg);
 }
 .st-brand,
 .st-toc-btn,

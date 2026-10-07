@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { signOut } from "@/auth";
-import { Logo } from "@/components/Logo";
+import Image from "next/image";
 import { NavLink } from "./NavLink";
 
 const links = [
@@ -20,7 +20,7 @@ export function AppHeader({ userLabel, userImage }: AppHeaderProps) {
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3">
         <Link href="/dashboard" className="text-slate-900" aria-label="Home">
-          <Logo />
+          <Image src="/saafera-logo.jpg" alt="Saafera" width={120} height={120} className="h-11 w-11 rounded-lg object-contain" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

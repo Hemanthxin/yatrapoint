@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DAWN_LAYERS, MountainScape, type ScapeLayer } from "@/components/storybook/MountainScape";
-import { LogoMark } from "@/components/Logo";
+import Image from "next/image";
 import {
   Bear,
   Bird,
@@ -618,10 +618,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
         <div className="st-intro-shade" />
         <div className="st-intro-content">
           <div className="st-intro-seal">
-            <LogoMark className="h-24 w-24" />
-          </div>
-          <div className="st-intro-mask">
-            <p className="st-intro-line st-intro-title">Saafera</p>
+            <Image src="/saafera-logo.jpg" alt="Saafera" width={420} height={420} priority className="h-full w-full object-cover" />
           </div>
           <div className="st-intro-mask">
             <p className="st-intro-line st-intro-sub">a storybook map of India</p>
@@ -632,8 +629,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       {/* chrome */}
       <header className="st-nav">
         <button type="button" className="st-brand" onClick={() => goTo(0)} aria-label="Back to the first page">
-          <LogoMark className="h-9 w-9" />
-          <span>Saafera</span>
+          <Image src="/saafera-logo.jpg" alt="Saafera" width={120} height={120} priority className="st-brand-img" />
         </button>
         <div className="st-nav-r">
           <button type="button" className="st-toc-btn" onClick={() => setToc(true)}>

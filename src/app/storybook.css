@@ -753,6 +753,8 @@ html.lenis body {
     border-bottom: 1.5px dashed rgb(var(--ink) / 0.3);
   }
   .sb-post .sb-post-media {
+    /* the frame always spans the card (minus its mat), whatever the photo's aspect ratio */
+    width: calc(100% - 2rem);
     margin: 0.8rem 1rem 0.3rem;
     border-radius: 0.6rem 0.5rem 0.65rem 0.55rem;
     background: var(--surface-2);

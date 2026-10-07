@@ -512,7 +512,7 @@ export function PostCard({
           it can't — every card gets the same Instagram-style square tile
           regardless of variant or the photo's native dimensions. */}
       <div
-        className={`sb-post-media relative shrink-0 cursor-pointer select-none overflow-hidden bg-slate-100 ${
+        className={`sb-post-media relative w-full shrink-0 cursor-pointer select-none overflow-hidden bg-slate-100 ${
           // BUG-12: the full card's photo was a fixed 26rem box that cropped
           // hard on wide screens and stayed small on phones. A 4:5 portrait
           // frame (Instagram's own) scales with the card width, so the photo is

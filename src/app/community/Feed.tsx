@@ -14,6 +14,7 @@ import type { MediaItem } from "./MediaCarousel";
 import { RevealGrid } from "@/components/app/RevealGrid";
 import { EmptyState } from "@/components/app/EmptyState";
 import { CommunityIllustration } from "@/components/illustrations";
+import { useIsDesktop } from "@/components/app/useIsDesktop";
 
 // Local default — NOT imported from "@/lib/queries/community" because that module
 // pulls in the server DB client, which would crash when bundled into this
@@ -71,6 +72,9 @@ export function Feed({
   const [typeFilter, setTypeFilter] = useState<PostType | "all">("all");
   const [view, setView] = useState<"feed" | "grid">("feed");
   const [composerOpen, setComposerOpen] = useState(false);
+  // Big screens get a responsive grid of uniform cards; phones keep the single
+  // full-size column (see the BUG-12 notes below).
+  const wide = useIsDesktop() === true;
   const feedTopRef = useRef<HTMLDivElement>(null);
 
   function handleDeleted(postId: string) {
@@ -305,7 +309,13 @@ export function Feed({
         // items-start: let each card keep its natural height. Stretching them
         // to the row height just opened a void between the caption and the
         // reaction row.
-        <RevealGrid className="mx-auto grid w-full max-w-2xl grid-cols-1 items-start gap-5">
+        <RevealGrid
+          className={
+            wide
+              ? "grid w-full items-stretch gap-6 [grid-template-columns:repeat(auto-fill,minmax(21rem,1fr))]"
+              : "mx-auto grid w-full max-w-2xl grid-cols-1 items-start gap-5"
+          }
+        >
           {visible.map((p, i) => (
             <PostCard
               key={p.id}
@@ -318,7 +328,7 @@ export function Feed({
               onDeleted={handleDeleted}
               media={media[p.id]}
               tier={authorTiers?.[p.userId]}
-              variant="full"
+              variant={wide ? "grid" : "full"}
             />
           ))}
         </RevealGrid>
