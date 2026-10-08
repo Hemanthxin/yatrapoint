@@ -1,0 +1,629 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE DASHBOARD'S WELCOME — a painted basecamp that knows the time of day.
+   Everything inside is sized in container units (cqw) so the whole scene scales
+   with the content column (which now sits beside the sidebar).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.wh-wrap {
+  display: grid;
+  gap: 2rem;
+  container-type: inline-size;
+}
+
+.wh {
+  position: relative;
+  isolation: isolate;
+  height: clamp(27rem, 47cqw, 36rem);
+  overflow: hidden;
+  border-radius: 1.9rem 1.5rem 2rem 1.6rem;
+  box-shadow: 0 0 0 2px rgb(var(--ink, 92 68 36) / 0.5), 0 30px 46px -28px rgb(var(--shadow, 96 70 30) / 0.75);
+  background: #bfe8ff;
+}
+
+/* ───────── sky: five times of day that cross-fade as the clock moves on ───────── */
+.wh-skies {
+  position: absolute;
+  inset: 0;
+}
+.wh-sky {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.wh-sky.on {
+  opacity: 1;
+}
+.wh-sky-dawn {
+  background: linear-gradient(180deg, #6f9be8 0%, #ffb59c 58%, #ffe3b0 100%);
+}
+.wh-sky-morning {
+  background: linear-gradient(180deg, #58c1f6 0%, #bfe8ff 60%, #fff6d8 100%);
+}
+.wh-sky-afternoon {
+  background: linear-gradient(180deg, #46b4f2 0%, #a6dcff 55%, #fff0b8 100%);
+}
+.wh-sky-golden {
+  background: linear-gradient(180deg, #5f78d6 0%, #ff9f6a 58%, #ffe09a 100%);
+}
+.wh-sky-night {
+  background: linear-gradient(180deg, #0d1240 0%, #2a2f78 60%, #4f4690 100%);
+}
+.wh-stars {
+  position: absolute;
+  inset: 0 0 38%;
+  opacity: 0;
+  transition: opacity 1.4s;
+  background-image: radial-gradient(1.5px 1.5px at 8% 20%, #fff 99%, transparent), radial-gradient(2px 2px at 21% 10%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 34% 30%, #fff 99%, transparent), radial-gradient(2px 2px at 47% 14%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 59% 26%, #fff 99%, transparent), radial-gradient(2px 2px at 72% 9%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 84% 24%, #fff 99%, transparent), radial-gradient(2px 2px at 94% 12%, #fff 99%, transparent);
+  animation: wh-twinkle 4s ease-in-out infinite alternate;
+}
+.wh-stars.on {
+  opacity: 0.95;
+}
+.wh-stars.dim {
+  opacity: 0.3;
+}
+@keyframes wh-twinkle {
+  to {
+    filter: brightness(1.5);
+  }
+}
+.wh-orb {
+  position: absolute;
+  width: clamp(4rem, 8.5cqw, 6.2rem);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fffbe3, #ffe08e 60%, #f8b95e);
+  box-shadow: 0 0 0 1.1rem rgba(255, 228, 150, 0.34), 0 0 0 2.4rem rgba(255, 228, 150, 0.16), 0 0 4rem 1.4rem rgba(255, 214, 120, 0.55);
+  transition: left 1.6s cubic-bezier(0.4, 0, 0.2, 1), top 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.wh-orb.moon {
+  background: radial-gradient(circle at 38% 36%, #fffbe8, #eadfb4 58%, #c8b98c);
+  box-shadow: 0 0 0 0.8rem rgba(238, 197, 106, 0.18), 0 0 3rem 1rem rgba(238, 197, 106, 0.32);
+}
+.wh[data-phase="golden"] .wh-orb {
+  background: radial-gradient(circle at 40% 38%, #fff1cf, #ffb06a 60%, #f0745a);
+}
+.wh-cloud {
+  position: absolute;
+  animation: wh-drift 80s ease-in-out infinite alternate;
+  transition: opacity 1.4s;
+}
+@keyframes wh-drift {
+  from {
+    transform: translateX(-50px);
+  }
+  to {
+    transform: translateX(110px);
+  }
+}
+
+/* ───────── mountains ───────── */
+.wh-ridges {
+  position: absolute;
+  inset: 0;
+}
+.wh-ridges .sb-scape {
+  position: absolute;
+  inset: 0;
+}
+.wh-moon {
+  opacity: 0;
+  transition: opacity 1.4s;
+}
+.wh-moon.on {
+  opacity: 1;
+}
+.wh-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 1.4s;
+}
+.wh[data-phase="dawn"] .wh-tint {
+  background: linear-gradient(180deg, rgba(255, 150, 120, 0.1), rgba(255, 170, 130, 0.22));
+}
+.wh[data-phase="golden"] .wh-tint {
+  background: linear-gradient(180deg, rgba(255, 120, 60, 0.08), rgba(255, 130, 50, 0.26));
+}
+
+/* ───────── ground, lanterns, tent ───────── */
+.wh-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 44%;
+}
+.wh[data-phase="night"] .wh-ground {
+  filter: brightness(0.5) saturate(0.85);
+}
+.wh-string {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 17rem;
+  pointer-events: none;
+}
+.wh-rope {
+  transform-origin: 50% 0;
+  animation: wh-sway 6s ease-in-out infinite alternate;
+}
+@keyframes wh-sway {
+  from {
+    transform: rotate(-0.4deg);
+  }
+  to {
+    transform: rotate(0.4deg);
+  }
+}
+.wh-l .body {
+  fill: #7a6a50;
+  transition: fill 0.9s var(--d, 0s);
+}
+.wh-l .halo {
+  opacity: 0;
+  transition: opacity 0.9s var(--d, 0s);
+}
+.wh-l.on .body {
+  fill: #ffd877;
+}
+.wh-l.on .halo {
+  opacity: 0.5;
+  animation: wh-pulse 3.2s ease-in-out infinite;
+}
+.wh[data-phase="night"] .wh-l.on .halo,
+.wh[data-phase="golden"] .wh-l.on .halo {
+  opacity: 0.85;
+}
+@keyframes wh-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+.wh-tent {
+  position: absolute;
+  left: 2.5%;
+  bottom: 0.9rem;
+  width: 28cqw;
+  min-width: 14rem;
+  pointer-events: none;
+  z-index: 3;
+}
+.wh[data-phase="night"] .wh-tent .jr-st-svg {
+  filter: brightness(0.82);
+}
+
+/* ───────── the companions ───────── */
+.wh-cast {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.wh-c {
+  position: absolute;
+  transform-origin: 50% 100%;
+}
+.wh-c > svg,
+.wh-hover,
+.wh-hover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.wh-juno {
+  left: 49%;
+  bottom: 1.5rem;
+  width: clamp(5rem, 11cqw, 8rem);
+  aspect-ratio: 200 / 224;
+}
+.wh-teddy {
+  left: 58%;
+  bottom: 1.2rem;
+  width: clamp(5.4rem, 11.6cqw, 8.4rem);
+  aspect-ratio: 170 / 230;
+}
+.wh-pip {
+  left: 67%;
+  bottom: 9rem;
+  width: clamp(3.2rem, 6.8cqw, 4.8rem);
+  aspect-ratio: 140 / 150;
+}
+.wh-teddy > svg,
+.wh-juno > svg {
+  transform-origin: 50% 100%;
+  animation: jr-breathe 3.4s ease-in-out infinite;
+}
+.wh-hover {
+  animation: jr-hover 2.8s ease-in-out infinite;
+}
+.wh-c.talk {
+  animation: wh-talk 0.55s ease-in-out infinite alternate;
+}
+@keyframes wh-talk {
+  to {
+    transform: translateY(-5px) scale(1.035);
+  }
+}
+/* Teddy raises his lantern in greeting */
+.wh-teddy .br-arm {
+  animation: wh-wave 2.6s ease-in-out infinite;
+}
+@keyframes wh-wave {
+  0%,
+  100% {
+    transform: rotate(6deg);
+  }
+  50% {
+    transform: rotate(-34deg);
+  }
+}
+.wh-say {
+  position: absolute;
+  width: max-content;
+  max-width: 16rem;
+  padding: 0.55rem 0.9rem 0.65rem;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  color: #3a2d1c;
+  background: #fffaf0;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 2px rgba(92, 68, 36, 0.55), 0 14px 22px -12px rgba(40, 24, 8, 0.6);
+  animation: wh-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.wh-say i {
+  display: block;
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #b6702f;
+}
+.wh-say::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 1.6rem;
+  border: 8px solid transparent;
+  border-top-color: #fffaf0;
+  border-bottom: 0;
+}
+.wh-say.who-1 {
+  left: 44%;
+  bottom: 11.4rem;
+}
+.wh-say.who-0 {
+  left: 53%;
+  bottom: 14.4rem;
+}
+.wh-say.who-2 {
+  left: 60%;
+  bottom: 15.6rem;
+}
+@keyframes wh-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.65) translateY(8px);
+  }
+}
+
+/* ───────── signpost ───────── */
+.wh-sign {
+  position: absolute;
+  right: 3%;
+  bottom: 1.4rem;
+  z-index: 6;
+  display: grid;
+  gap: 0.4rem;
+  width: clamp(9.5rem, 16cqw, 12rem);
+}
+.wh-post {
+  position: absolute;
+  left: 50%;
+  top: -1.6rem;
+  bottom: -0.3rem;
+  z-index: -1;
+  width: 0.75rem;
+  margin-left: -0.375rem;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #7a5226, #a87a42, #6b4520);
+  box-shadow: 0 0 0 1.5px #4a2f14;
+}
+.wh-board {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.8rem 0.45rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #3a2410;
+  background: linear-gradient(170deg, #f0d49a, #d9ae62);
+  border-radius: 0.55rem 0.7rem 0.55rem 0.65rem;
+  box-shadow: 0 0 0 2px #7b5226, inset 0 0 0 3px rgba(255, 244, 210, 0.45), 0 10px 14px -8px rgba(60, 30, 10, 0.7);
+  transform: rotate(var(--r, 0deg));
+  transform-origin: 50% 0;
+  animation: wh-swing 5s ease-in-out infinite alternate;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.wh-board.is-r {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
+@keyframes wh-swing {
+  from {
+    transform: rotate(calc(var(--r, 0deg) - 1.3deg));
+  }
+  to {
+    transform: rotate(calc(var(--r, 0deg) + 1.3deg));
+  }
+}
+.wh-board:hover,
+.wh-board:focus-visible {
+  animation-play-state: paused;
+  transform: rotate(0deg) scale(1.07);
+  box-shadow: 0 0 0 2px #7b5226, 0 0 20px 5px rgba(255, 200, 90, 0.75), 0 10px 14px -8px rgba(60, 30, 10, 0.7);
+}
+
+/* ───────── greeting card ───────── */
+.wh-card {
+  position: absolute;
+  left: 2.2%;
+  top: 1.3rem;
+  z-index: 7;
+  width: min(47%, 36rem);
+  min-width: 19rem;
+  padding: 1rem 1.35rem 1.15rem;
+  color: #2a2112;
+  background: rgba(255, 251, 240, 0.9);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  border-radius: 1.4rem 1.1rem 1.5rem 1.2rem;
+  box-shadow: 0 0 0 2px rgba(92, 68, 36, 0.5), inset 0 0 0 5px rgba(255, 255, 255, 0.55), 0 22px 32px -18px rgba(40, 24, 8, 0.6);
+  animation: wh-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes wh-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.wh-date {
+  min-height: 1.1rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  color: #b6702f;
+}
+.wh-card h1 {
+  margin-top: 0.1rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.9rem, 3.5cqw + 0.7rem, 3.4rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: #2a2112;
+}
+.wh-card h1 em {
+  color: #d9582a;
+}
+.wh-sub {
+  margin-top: 0.4rem;
+  font-style: italic;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: #4d3f27;
+}
+.wh-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.45rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wh-chips a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.75rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #3a2d1c;
+  background: rgba(240, 172, 36, 0.2);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1.5px rgba(92, 68, 36, 0.35);
+  transition: transform 0.2s, background 0.2s;
+}
+.wh-chips a:hover {
+  transform: translateY(-2px) rotate(-1deg);
+  background: rgba(240, 172, 36, 0.38);
+}
+.wh-cue {
+  position: absolute;
+  left: 33%;
+  bottom: 0.9rem;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem 0.45rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: #3a2410;
+  background: rgba(255, 250, 238, 0.92);
+  border-radius: 999px 14px 999px 14px;
+  box-shadow: 0 0 0 1.5px rgba(92, 68, 36, 0.5), 0 10px 18px -10px rgba(60, 40, 10, 0.7);
+  transition: transform 0.25s;
+}
+.wh-cue svg {
+  animation: wh-nudge 1.8s ease-in-out infinite;
+}
+.wh-cue:hover {
+  transform: translateY(-3px);
+}
+@keyframes wh-nudge {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* ───────── "Today at camp" cards ───────── */
+.th-title {
+  margin: 0 0 0.9rem;
+}
+/* a small parchment tab, so the label stays readable over the painted backdrop */
+.th-title .sb-eyebrow {
+  padding: 0.25rem 1.1rem 0.3rem;
+  font-size: 1.02rem;
+  background: var(--nav-bg, rgba(255, 249, 230, 0.93));
+  border-radius: 999px 14px 999px 14px;
+  box-shadow: 0 0 0 1.5px rgb(var(--ink, 92 68 36) / 0.4);
+}
+.th-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.4rem;
+}
+@container (max-width: 860px) {
+  .th-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.th-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 15rem;
+  padding: 1.2rem 1.3rem 1.3rem;
+}
+.th-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.th-card header b {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.th-card header span {
+  font-size: 1.6rem;
+}
+.th-big {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 3.8rem;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--text);
+}
+.th-big small {
+  font-size: 1.5rem;
+  color: var(--text-soft);
+}
+.th-note {
+  font-size: 0.98rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+}
+.th-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.th-metrics li {
+  padding: 0.2rem 0.7rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  background: rgb(var(--gold, 240 172 36) / 0.2);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgb(var(--ink, 92 68 36) / 0.25);
+}
+.th-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.th-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.th-list li > span:first-child {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.3rem;
+  height: 2.3rem;
+  font-size: 1.2rem;
+  border-radius: 0.7rem;
+  background: rgb(var(--gold, 240 172 36) / 0.22);
+  box-shadow: 0 0 0 1.5px rgb(var(--ink, 92 68 36) / 0.3);
+}
+.th-list li div {
+  min-width: 0;
+  flex: 1;
+}
+.th-list li b {
+  display: block;
+  overflow: hidden;
+  font-size: 0.98rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+.th-list li small {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.th-list li em {
+  flex: none;
+  font-style: normal;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.th-pin {
+  color: var(--accent);
+}
+.th-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--accent);
+  transition: gap 0.25s;
+}
+.th-link:hover {
+  gap: 0.7rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wh *,
+  .th * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

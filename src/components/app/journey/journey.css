@@ -12,8 +12,11 @@ html:root[data-theme="dark"] .jr {
 }
 .jr-stage {
   position: relative;
-  height: 100vh;
+  /* fills the viewport below the fixed app header; --jv is 1% of this height (set by JourneyStory) */
+  height: calc(100vh - var(--app-header-h, 0px) - 1rem);
   overflow: hidden;
+  border-radius: 1.9rem 1.5rem 2rem 1.6rem;
+  box-shadow: 0 0 0 2px rgb(var(--ink, 92 68 36) / 0.5), 0 30px 46px -28px rgb(var(--shadow, 96 70 30) / 0.75);
 }
 
 /* ───────── sky ───────── */
@@ -113,9 +116,9 @@ html:root[data-theme="dark"] .jr-fore {
 }
 .jr-st-art {
   position: absolute;
-  left: -23vh;
-  bottom: -0.8vh;
-  width: 46vh;
+  left: calc(var(--jv, 1vh) * -23);
+  bottom: calc(var(--jv, 1vh) * -0.8);
+  width: calc(var(--jv, 1vh) * 46);
   pointer-events: none;
 }
 .jr-st-svg {
@@ -126,7 +129,7 @@ html:root[data-theme="dark"] .jr-fore {
 .jr-panel {
   position: absolute;
   left: -10.5rem;
-  bottom: 37vh;
+  bottom: calc(var(--jv, 1vh) * 37);
   width: 21rem;
   padding: 1.05rem 1.25rem 1.1rem;
   color: var(--text, #2e2515);

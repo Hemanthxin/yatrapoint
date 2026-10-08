@@ -140,13 +140,18 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
   /* ───────── measure ───────── */
   useLayoutEffect(() => {
     let t: number | undefined;
-    const measure = () => setDims({ vw: window.innerWidth, vh: window.innerHeight });
+    const measure = () => {
+      const st = root.current?.querySelector<HTMLElement>(".jr-stage");
+      if (!st) return;
+      setDims({ vw: st.clientWidth, vh: st.clientHeight });
+    };
     measure();
     const onResize = () => {
       window.clearTimeout(t);
       t = window.setTimeout(() => {
         const d = dimsRef.current;
-        if (!d || Math.abs(window.innerWidth - d.vw) > 40 || Math.abs(window.innerHeight - d.vh) > 80) measure();
+        const st = root.current?.querySelector<HTMLElement>(".jr-stage");
+        if (!d || !st || Math.abs(st.clientWidth - d.vw) > 40 || Math.abs(st.clientHeight - d.vh) > 80) measure();
       }, 280);
     };
     window.addEventListener("resize", onResize);
@@ -160,6 +165,9 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
   useLayoutEffect(() => {
     if (!dims || !root.current) return;
     const { vw, vh } = dims;
+    (root.current as HTMLElement).style.setProperty("--jv", `${vh / 100}px`);
+    // pin just under the fixed app header (AppShell publishes its height as --app-header-h)
+    const headerPx = () => Math.round(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--app-header-h")) || 0);
     const s = vh / 900;
     const T = Math.round(vw * 4.8);
     const L = Math.round(T * 0.92 + vh * 0.6);
@@ -326,7 +334,7 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
       place(0);
       const st = ScrollTrigger.create({
         trigger: stage,
-        start: "top top",
+        start: () => `top ${headerPx()}px`,
         end: () => `+=${L}`,
         pin: true,
         onUpdate: (self) => place(self.progress),

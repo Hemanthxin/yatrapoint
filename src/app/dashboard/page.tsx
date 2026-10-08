@@ -7,7 +7,7 @@ import { listDestinations } from "@/lib/queries/destinations";
 import { listPopularCityPlaces } from "@/lib/queries/city-places";
 import { MobileDashboard } from "./MobileDashboard";
 import { DashboardIntro } from "@/components/app/dashboard/DashboardIntro";
-import { Dashboard3DRoot } from "@/components/app/dashboard3d/Dashboard3DRoot";
+import { DashboardHome } from "@/components/app/home/DashboardHome";
 import { JourneyStory } from "@/components/app/journey/JourneyStory";
 import { daysUntil, festivalsByNextOccurrence, formatFestivalDate } from "@/lib/festivals";
 
@@ -40,7 +40,7 @@ export default async function DashboardPage() {
     : null;
 
   return (
-    <AppShell userLabel={displayName} userImage={u.image} spatial>
+    <AppShell userLabel={displayName} userImage={u.image}>
       {/* ── Mobile (< lg): bespoke app UI, unchanged ── */}
       <div className="lg:hidden">
         <DashboardIntro />
@@ -52,14 +52,11 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* ── Desktop (≥ lg): the 3D spatial dashboard, built from real CSS 3D
-          transforms + Framer Motion (no WebGL — see dashboard3d/Dashboard3DRoot
-          for why react-three-fiber didn't work out here) ── */}
-      <div className="hidden lg:block">
-        <div className="h-screen">
-          <Dashboard3DRoot firstName={firstName} stats={stats} upcoming={upcoming} />
-        </div>
-        {/* …and below the fold, a scroll-driven story of the traveller's own journey. */}
+      {/* ── Desktop (≥ lg): the normal app shell (sidebar kept) around a painted
+          basecamp that welcomes the traveller by the real time of day, a "today"
+          row of live cards, and — below — a scroll-driven story of their journey ── */}
+      <div className="hidden space-y-10 lg:block">
+        <DashboardHome firstName={firstName} stats={stats} upcoming={upcoming} festival={festival} />
         <JourneyStory firstName={firstName} stats={stats} festival={festival} />
       </div>
     </AppShell>
