@@ -143,7 +143,14 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
     const measure = () => {
       const st = root.current?.querySelector<HTMLElement>(".jr-stage");
       if (!st) return;
-      setDims({ vw: st.clientWidth, vh: st.clientHeight });
+      const w = st.clientWidth;
+      const h = st.clientHeight;
+      // a display:none stage measures 0×0 — there is nothing to build until it is actually visible
+      if (w < 200 || h < 200) {
+        setDims(null);
+        return;
+      }
+      setDims({ vw: w, vh: h });
     };
     measure();
     const onResize = () => {

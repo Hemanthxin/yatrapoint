@@ -45,7 +45,9 @@ export interface Ridge {
   peaks: number[]; // indices of local summits
 }
 
-export function makeRidge({ seed, base, amp, peaks, rough = 0.5, width = 1600, step = 8 }: RidgeOpts): Ridge {
+export function makeRidge({ seed, base, amp, peaks, rough = 0.5, width: rawWidth = 1600, step = 8 }: RidgeOpts): Ridge {
+  // a NaN / zero / negative width (e.g. from a 0×0 measurement) would yield an empty ridge
+  const width = Number.isFinite(rawWidth) && rawWidth > 0 ? rawWidth : 1600;
   const r = rng(seed);
   const n1 = noise1(seed + 11);
   const n2 = noise1(seed + 77);
@@ -78,6 +80,7 @@ export function makeRidge({ seed, base, amp, peaks, rough = 0.5, width = 1600, s
 const f = (n: number) => Math.round(n * 10) / 10;
 
 export function ridgeFill(pts: Pt[], bottom: number): string {
+  if (pts.length === 0) return "";
   return `M${f(pts[0][0])} ${bottom}L${pts.map(([x, y]) => `${f(x)} ${f(y)}`).join("L")}L${f(pts[pts.length - 1][0])} ${bottom}Z`;
 }
 
