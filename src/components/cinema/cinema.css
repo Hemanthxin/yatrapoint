@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE CINEMA LAYER — the real-time 3D canvas and its film-style framing.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.cine {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #cfe5f5;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+.cine.is-ready {
+  opacity: 1;
+}
+.cine--fixed {
+  position: fixed;
+  z-index: 0;
+}
+.cine-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* soft out-of-focus foliage in the corners — the cheap, convincing stand-in for depth of field */
+.cine-leaves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 30% at -4% 108%, rgba(24, 92, 44, 0.9), rgba(24, 92, 44, 0) 70%),
+    radial-gradient(30% 24% at 104% 106%, rgba(34, 110, 52, 0.82), rgba(34, 110, 52, 0) 72%),
+    radial-gradient(22% 18% at 18% 110%, rgba(70, 150, 70, 0.55), rgba(70, 150, 70, 0) 75%);
+  filter: blur(14px);
+  mix-blend-mode: multiply;
+  opacity: 0.8;
+  animation: cine-sway 9s ease-in-out infinite alternate;
+}
+@keyframes cine-sway {
+  to {
+    transform: translate(6px, -4px) scale(1.02);
+  }
+}
+html:root[data-theme="dark"] .cine-leaves {
+  opacity: 0.45;
+}
+
+/* When 3D is running, the paper-fibre / burnt-edge overlay of the painted theme would fight the film look */
+html[data-cinema="1"] body::before {
+  background-image: var(--sb-grain);
+  background-size: 280px 280px;
+  opacity: 0.07;
+}
+html[data-cinema="1"] body::after {
+  background: radial-gradient(130% 110% at 50% 45%, transparent 66%, rgba(10, 8, 30, 0.2) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cine-leaves {
+    animation: none;
+  }
+}

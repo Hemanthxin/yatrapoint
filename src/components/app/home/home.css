@@ -183,6 +183,22 @@
 .wh[data-phase="golden"] .wh-l.on .halo {
   opacity: 0.85;
 }
+/* From golden hour into the night EVERY lantern is lit, not only the ones earned by explored places
+   (by day the lit count still shows how many places you've explored). The unearned ones glow a
+   little softer, so the earned ones still read as brighter. */
+.wh[data-phase="night"] .wh-l .body,
+.wh[data-phase="golden"] .wh-l .body {
+  fill: #ffd877;
+}
+.wh[data-phase="night"] .wh-l .halo,
+.wh[data-phase="golden"] .wh-l .halo {
+  opacity: 0.6;
+  animation: wh-pulse 3.2s ease-in-out infinite;
+}
+.wh[data-phase="night"] .wh-l.on .halo,
+.wh[data-phase="golden"] .wh-l.on .halo {
+  opacity: 0.95;
+}
 @keyframes wh-pulse {
   50% {
     opacity: 0.3;
@@ -1276,4 +1292,28 @@
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* ═══════════════ 3D MODE — the real-time camp replaces the painted scene ═══════════════ */
+.wh--cine .wh-skies,
+.wh--cine .wh-ridges,
+.wh--cine .wh-string,
+.wh--cine .wh-ground,
+.wh--cine .wh-tent,
+.wh--cine .wh-c {
+  display: none !important;
+}
+.wh--cine {
+  background: #0d1240;
+}
+.wh--cine .wh-say.who-0,
+.wh--cine .wh-say.who-1,
+.wh--cine .wh-say.who-2 {
+  left: auto;
+  right: 29%;
+  bottom: 54%;
+}
+.wh--cine .wh-say::after {
+  left: auto;
+  right: 2rem;
 }

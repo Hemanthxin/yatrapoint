@@ -16,6 +16,9 @@ import { useLiveWeather } from "@/components/app/dashboard3d/WeatherModule";
 import { useNearbyPlaces } from "@/components/app/dashboard3d/NearbyModule";
 import type { JourneyFestival } from "@/components/app/journey/JourneyStory";
 import { CampGround, LanternString, SignPost, type SignLink } from "./camp";
+import { CinemaWorld } from "@/components/cinema/CinemaWorld";
+import { useCinemaSupport } from "@/components/cinema/useCinemaSupport";
+import type { CinemaController } from "@/components/cinema/engine/engine";
 import { TodayCards } from "./TodayCards";
 
 type Phase = "dawn" | "morning" | "afternoon" | "golden" | "night";
@@ -52,6 +55,18 @@ function orbAt(h: number): { x: number; y: number; moon: boolean } {
   return { x: 10 + 80 * Math.min(1, g), y: 66 - 48 * Math.sin(Math.min(1, g) * Math.PI), moon: true };
 }
 
+/** The visitor's clock as a position on the 3D world's time-of-day scale. */
+function worldTime(h: number): number {
+  const stops: [number, number][] = [[4.5, 4], [6.2, 0], [9, 1], [15, 1.3], [17.4, 2], [18.8, 3], [20.5, 4], [28.5, 4]];
+  const hh = h < 4.5 ? h + 24 : h;
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [a, ta] = stops[i];
+    const [b, tb] = stops[i + 1];
+    if (hh >= a && hh <= b) return ta + ((hh - a) / (b - a)) * (tb - ta);
+  }
+  return 1;
+}
+
 const WHO = ["Teddy", "Juno", "Pip"] as const;
 const SIGNS: SignLink[] = [
   { href: "/budget-planner", label: "Plan a trip", emoji: "🗺️", hint: { who: 1, text: "Shall I unroll a fresh map?" } },
@@ -70,6 +85,12 @@ interface Props {
 /** The dashboard's welcome: a painted basecamp that knows the time of day and what you've been up to. */
 export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
   const weather = useLiveWeather();
+
+  // Real-time 3D camp when the device can run it; the painted 2D camp below is the fallback.
+  const support = useCinemaSupport();
+  const [cineFailed, setCineFailed] = useState(false);
+  const cine = support?.ok === true && !cineFailed;
+  const [ctl, setCtl] = useState<CinemaController | null>(null);
   const nearby = useNearbyPlaces(4);
 
   // Real local time — set after mount so server and client markup match.
@@ -85,10 +106,25 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
     const t = window.setInterval(tick, 60_000);
     return () => window.clearInterval(t);
   }, []);
+  // The app's dark theme is "night" for the basecamp too: moon, stars, dark mountains and lit lanterns,
+  // whatever the clock says. (Watches <html data-theme>, so the toggle takes effect instantly.)
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const el = document.documentElement;
+    const read = () => setDark(el.getAttribute("data-theme") === "dark");
+    read();
+    const mo = new MutationObserver(read);
+    mo.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => mo.disconnect();
+  }, []);
+
   const h = hour ?? 14;
-  const phase = phaseOf(Math.floor(h));
-  const orb = orbAt(h);
+  const phase: Phase = dark ? "night" : phaseOf(Math.floor(h));
+  const orb = orbAt(dark ? 22 : h);
   const night = phase === "night";
+  // Dark theme during the day: the greeting still follows the real clock, so the line under it
+  // acknowledges that the stars came out early rather than claiming it is night.
+  const subline = dark && phaseOf(Math.floor(h)) !== "night" ? "Dark mode is on — the stars came out early." : SUBLINE[phase];
 
   const trips = stats.tripsPlanned;
   const places = stats.placesExplored;
@@ -113,9 +149,9 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
       const t = weather.temp;
       l.push({ who: 2, text: `${t}°C out there — ${t >= 32 ? "carry plenty of water!" : t <= 18 ? "bring a jacket!" : "lovely weather for travelling!"}` });
     }
-    l.push({ who: 0, text: SUBLINE[phase] });
+    l.push({ who: 0, text: subline });
     return l;
-  }, [h, firstName, trips, nextTrip, saved, festival, weather, phase]);
+  }, [h, firstName, trips, nextTrip, saved, festival, weather, subline]);
 
   const [idx, setIdx] = useState(0);
   const [hint, setHint] = useState<SignLink["hint"] | null>(null);
@@ -125,6 +161,15 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
     return () => window.clearInterval(t);
   }, [hint]);
   const say = hint ?? lines[idx % lines.length];
+
+  // keep the 3D world in step with the page: the visitor's clock (or the dark theme), the lanterns they have
+  // earned, and whichever companion is talking
+  useEffect(() => {
+    if (!ctl) return;
+    ctl.setTime(dark ? 4 : worldTime(h));
+    ctl.setLit(lit);
+    ctl.setTalking(say.who);
+  }, [ctl, dark, h, lit, say.who]);
 
   const chips = [
     { e: "🎒", t: `${trips} ${trips === 1 ? "trip" : "trips"} planned`, href: "/trip-history" },
@@ -149,7 +194,8 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
 
   return (
     <div className="wh-wrap">
-      <section className="wh" data-phase={phase} data-ready={hour != null} aria-label="Welcome to basecamp">
+      <section className={`wh ${cine ? "wh--cine" : ""}`} data-phase={phase} data-ready={hour != null} aria-label="Welcome to basecamp">
+        {cine && support && <CinemaWorld mode="camp" quality={support.quality} onController={setCtl} onFail={() => setCineFailed(true)} />}
         <div className="wh-skies" aria-hidden>
           {PHASES.map((p) => (
             <i key={p} className={`wh-sky wh-sky-${p} ${p === phase ? "on" : ""}`} />
@@ -201,7 +247,7 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
           <h1>
             {greetingOf(Math.floor(h))}, <em>{firstName}</em>
           </h1>
-          <p className="wh-sub">{SUBLINE[phase]}</p>
+          <p className="wh-sub">{subline}</p>
           <ul className="wh-chips">
             {chips.map((c) => (
               <li key={c.t}>

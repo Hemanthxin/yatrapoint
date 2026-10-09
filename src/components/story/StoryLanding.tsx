@@ -1,6 +1,9 @@
 "use client";
 
 import "./story.css";
+import { CinemaWorld } from "@/components/cinema/CinemaWorld";
+import { useCinemaSupport } from "@/components/cinema/useCinemaSupport";
+import type { CinemaController } from "@/components/cinema/engine/engine";
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
@@ -130,6 +133,15 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
   const [toc, setToc] = useState(false);
   const introDone = useRef(false);
 
+  // Real-time 3D world when the device can run it; otherwise the illustrated 2D scenes below stay in charge.
+  const support = useCinemaSupport();
+  const [cineFailed, setCineFailed] = useState(false);
+  const cine = support?.ok === true && !cineFailed;
+  const ctl = useRef<CinemaController | null>(null);
+  const drive = useRef<(() => void) | null>(null);
+  const cineIsReady = useRef(false);
+  const cineReady = useRef<(() => void) | null>(null);
+
   const states = useMemo(
     () =>
       data.states.length
@@ -182,7 +194,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
 
   /* ─────────────────────── the whole choreography ─────────────────────── */
   useLayoutEffect(() => {
-    if (!dims || !root.current) return;
+    if (!dims || support === null || !root.current) return;
     const { vw, vh } = dims;
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(root.current as HTMLElement);
@@ -257,7 +269,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
           scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
         });
       });
-      gsap.to(".st-sun", { y: vh * 0.55, scale: 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } });
+      if (!cine) gsap.to(".st-sun", { y: vh * 0.55, scale: 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } });
       gsap.to(".st-hero-copy", { y: -90, opacity: 0.0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "70% top", scrub: true } });
 
       // pointer parallax (x only — scroll owns y)
@@ -302,6 +314,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       } else if (intro && !introDone.current) {
         lenis?.stop();
         document.documentElement.style.overflow = "hidden";
+        const runIntro = () => {
         const done = () => {
           introDone.current = true;
           intro.style.display = "none";
@@ -324,6 +337,18 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
             tl.progress(1);
           }
         }, 9000);
+        };
+        // the cover stays shut until the 3D world has drawn its first frame (or 8 s pass)
+        if (cine && !cineIsReady.current) {
+          cineReady.current = runIntro;
+          window.setTimeout(() => {
+            const f = cineReady.current;
+            cineReady.current = null;
+            f?.();
+          }, 8000);
+        } else {
+          runIntro();
+        }
       } else {
         if (intro) intro.style.display = "none";
         wake();
@@ -358,22 +383,28 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       };
       const sc = Math.max(vw / 1600, vh / 900);
       const oy = vh / 2 + (590 - 450) * sc; // portal centre in px, matches the 1600×900 art
-      Object.values(gl).forEach((el) => gsap.set(el, { transformOrigin: `50% ${oy}px` }));
+      if (!cine) Object.values(gl).forEach((el) => gsap.set(el, { transformOrigin: `50% ${oy}px` }));
       gsap.set(".gt-flash", { background: `radial-gradient(circle at 50% ${oy}px, #fffdea 0%, #ffeaa6 22%, #f8e3a8 62%, #f8e3a8 100%)` });
       gsap
         .timeline({ scrollTrigger: { trigger: gate, start: "top top", end: "+=280%", pin: true, scrub: 0.8 } })
-        .fromTo(gl.bg, { scale: 1 }, { scale: 2.4, ease: "none", duration: 1 }, 0)
-        .fromTo(gl.mid, { scale: 1 }, { scale: 6, ease: "none", duration: 1 }, 0)
-        .fromTo(gl.arch, { scale: 1 }, { scale: 11, ease: "power2.in", duration: 1 }, 0)
-        .fromTo(gl.fore, { scale: 1 }, { scale: 9, ease: "none", duration: 1 }, 0)
-        .to(gl.fore, { opacity: 0, duration: 0.28 }, 0.3)
-        .to(gl.mid, { opacity: 0, duration: 0.25 }, 0.58)
+        .add(() => {}, 0)
         .to(".gt-t1", { opacity: 0, y: -50, duration: 0.18 }, 0.1)
         .fromTo(".gt-t2", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.22 }, 0.52)
-        .to(".gt-flash", { opacity: 1, duration: 0.3 }, 0.72)
-        .to(".gt-t2", { opacity: 0, duration: 0.12 }, 0.9)
-        .to(".st-swirl", { rotation: 900, ease: "none", duration: 1, svgOrigin: "800 600" }, 0)
-        .to(".st-rune", { scale: 1.5, duration: 0.5, yoyo: true, repeat: 1 }, 0.1);
+        .to(".gt-t2", { opacity: 0, duration: 0.12 }, 0.9);
+      if (!cine) {
+        // 2D art: dive through the painted arch by scaling its layers
+        gsap
+          .timeline({ scrollTrigger: { trigger: gate, start: "top top", end: "+=280%", pin: false, scrub: 0.8 } })
+          .fromTo(gl.bg, { scale: 1 }, { scale: 2.4, ease: "none", duration: 1 }, 0)
+          .fromTo(gl.mid, { scale: 1 }, { scale: 6, ease: "none", duration: 1 }, 0)
+          .fromTo(gl.arch, { scale: 1 }, { scale: 11, ease: "power2.in", duration: 1 }, 0)
+          .fromTo(gl.fore, { scale: 1 }, { scale: 9, ease: "none", duration: 1 }, 0)
+          .to(gl.fore, { opacity: 0, duration: 0.28 }, 0.3)
+          .to(gl.mid, { opacity: 0, duration: 0.25 }, 0.58)
+          .to(".gt-flash", { opacity: 1, duration: 0.3 }, 0.72)
+          .to(".st-swirl", { rotation: 900, ease: "none", duration: 1, svgOrigin: "800 600" }, 0)
+          .to(".st-rune", { scale: 1.5, duration: 0.5, yoyo: true, repeat: 1 }, 0.1);
+      }
 
       /* ── road: a little bear walks across the land ── */
       const s = vh / 900;
@@ -382,14 +413,22 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       const charW = (charH * 170) / 230;
       const charX = vw * 0.3;
       const char = one(".rd-char") as HTMLElement;
+      const cineCards = q(".rd-cine-card") as HTMLElement[];
       const strips = (["far", "mid", "road", "fore", "cloud"] as const).map((k) => ({ k, el: one(`.rd-${k}`) as HTMLElement, f: { far: 0.12, mid: 0.34, road: 1, fore: 1.38, cloud: 0.06 }[k] }));
       const signEls = q(".rd-sign") as HTMLElement[];
       const signX = [0.12, 0.3, 0.5, 0.7, 0.9].map((f) => charX + f * T);
-      signEls.forEach((el, i) => {
-        gsap.set(el, { x: signX[i], y: roadY(signX[i] / s) * s });
-      });
+      if (!cine) {
+        signEls.forEach((el, i) => {
+          gsap.set(el, { x: signX[i], y: roadY(signX[i] / s) * s });
+        });
+      }
       const legB = one(".br-leg-b"), legF = one(".br-leg-f"), arm = one(".br-arm"), scarf = one(".br-scarf");
       const place = (p: number) => {
+        if (cine) {
+          // each station's card fades in around its share of the walk
+          cineCards.forEach((el, i) => el.style.setProperty("--n", clamp(1 - Math.abs(p - (i + 0.5) / cineCards.length) / 0.11).toFixed(3)));
+          return;
+        }
         strips.forEach(({ el, f }) => gsap.set(el, { x: -p * f * T }));
         const wx = (charX + p * T) / s;
         const fy = roadY(wx) * s;
@@ -408,7 +447,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
         });
         gsap.set(".rd-progress-dot", { left: `${p * 100}%` });
       };
-      gsap.set(char, { width: charW, height: charH });
+      if (!cine) gsap.set(char, { width: charW, height: charH });
       place(0);
       ScrollTrigger.create({
         trigger: "#road",
@@ -441,7 +480,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
           });
         },
       });
-      gsap.to(".vo-sun", { rotation: 220, ease: "none", scrollTrigger: { trigger: "#voices", start: "top bottom", end: "bottom top", scrub: true } });
+      if (!cine) gsap.to(".vo-sun", { rotation: 220, ease: "none", scrollTrigger: { trigger: "#voices", start: "top bottom", end: "bottom top", scrub: true } });
       gsap.fromTo(".vo-band-a", { rotation: -7, y: 90 }, { rotation: -3, y: 0, ease: "none", scrollTrigger: { trigger: "#voices", start: "top bottom", end: "center center", scrub: true } });
       gsap.fromTo(".vo-band-b", { rotation: 6, y: -90 }, { rotation: 2, y: 0, ease: "none", scrollTrigger: { trigger: "#voices", start: "top bottom", end: "center center", scrub: true } });
       gsap.from("#voices .st-heading .st-c", { yPercent: 118, duration: 1, stagger: 0.03, ease: "power3.out", scrollTrigger: { trigger: "#voices", start: "top 60%" } });
@@ -544,6 +583,35 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       };
       window.addEventListener("pointermove", onGlow, { passive: true });
 
+      // 3D: scroll position → chapter + progress through it → the camera's place in the story
+      if (cine) {
+        const secs = CHAPTERS.map((c) => document.getElementById(c.id) as HTMLElement);
+        const tops: number[] = [];
+        const measure = () => {
+          secs.forEach((el, i) => {
+            const host = el.parentElement?.classList.contains("pin-spacer") ? el.parentElement : el;
+            tops[i] = host.getBoundingClientRect().top + window.scrollY;
+          });
+          tops[secs.length] = Math.max(tops[secs.length - 1] + 1, document.documentElement.scrollHeight - window.innerHeight);
+        };
+        const update = () => {
+          if (!tops.length) measure();
+          const y = window.scrollY;
+          let i = 0;
+          while (i < secs.length - 1 && y >= tops[i + 1]) i++;
+          const local = clamp((y - tops[i]) / Math.max(1, tops[i + 1] - tops[i]));
+          const u = i + local;
+          const c = ctl.current;
+          if (!c) return;
+          c.setU(u);
+          const up = u < 3 ? gsap.utils.clamp(0, 1, (u - 2.8) / 0.2) : 1 - gsap.utils.clamp(0, 1, (u - 3.0) / 0.2);
+          c.setPortal(up);
+        };
+        drive.current = update;
+        ScrollTrigger.addEventListener("refresh", measure);
+        ScrollTrigger.create({ start: 0, end: "max", onUpdate: update, onRefresh: () => (measure(), update()) });
+      }
+
       // reduced motion: park every endless ambient loop (clouds, birds, ticker, fireflies)
       if (calm) {
         gsap.globalTimeline.getChildren(true, true, false).forEach((tw) => {
@@ -563,7 +631,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       };
     }, root);
     return () => ctx.revert();
-  }, [dims, span, setRealmStable, setMonthStable]);
+  }, [dims, span, cine, support, setRealmStable, setMonthStable]);
 
   /* ─────────────────────────────── render ─────────────────────────────── */
   const stat = [
@@ -602,7 +670,27 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
   );
 
   return (
-    <div ref={root} className="story">
+    <div ref={root} className={`story ${cine ? "story--cine" : ""}`}>
+      {/* the real-time 3D world (desktop with WebGL2); the painted sky below is the fallback */}
+      {cine && support && (
+        <CinemaWorld
+          mode="landing"
+          quality={support.quality}
+          fixed
+          onController={(c) => {
+            ctl.current = c;
+            if (c) drive.current?.();
+          }}
+          onFail={() => setCineFailed(true)}
+          onReady={() => {
+            cineIsReady.current = true;
+            const f = cineReady.current;
+            cineReady.current = null;
+            f?.();
+            drive.current?.();
+          }}
+        />
+      )}
       {/* the one painting behind everything */}
       <div className="st-sky" aria-hidden />
       <div className="st-stars" aria-hidden>
@@ -693,7 +781,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
               <Bird s={1 - i * 0.18} />
             </div>
           ))}
-          <MountainScape layers={DAWN_LAYERS} idPrefix="hero" seed={4} />
+          {!cine && <MountainScape layers={DAWN_LAYERS} idPrefix="hero" seed={4} />}
         </div>
 
         <div className="st-hero-grid">
@@ -762,18 +850,10 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
 
       {/* ═══ III · GATE ═══ */}
       <section id="gate" className="st-gate">
-        <div className="gt-layer gt-bg">
-          <GateBackdrop />
-        </div>
-        <div className="gt-layer gt-mid">
-          <GateMid />
-        </div>
-        <div className="gt-layer gt-arch">
-          <GateArch />
-        </div>
-        <div className="gt-layer gt-fore">
-          <GateFore />
-        </div>
+        <div className="gt-layer gt-bg">{!cine && <GateBackdrop />}</div>
+        <div className="gt-layer gt-mid">{!cine && <GateMid />}</div>
+        <div className="gt-layer gt-arch">{!cine && <GateArch />}</div>
+        <div className="gt-layer gt-fore">{!cine && <GateFore />}</div>
         <div className="gt-flash" />
         <div className="gt-t1">
           <p className="sb-eyebrow">Chapter III · The Gate</p>
@@ -792,7 +872,18 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
             <Chars text="One little traveller, five good reasons" />
           </h2>
         </div>
-        {dims && (
+        {cine && (
+          <div className="rd-cine" aria-hidden>
+            {SIGNS.map((sg, i) => (
+              <div className="rd-cine-card" key={sg.t}>
+                <span className="rd-no">{["I", "II", "III", "IV", "V"][i]}</span>
+                <h3>{sg.t}</h3>
+                <p>{sg.d}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        {dims && !cine && (
           <>
             <div className="rd-sunball" aria-hidden />
             <div className="rd-strip rd-cloud" style={{ width: Math.round(w + 0.06 * T) }} aria-hidden>
@@ -895,7 +986,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
             <div className="vo-track">{ticker2}</div>
           </div>
         </div>
-        <MountainScape layers={DUSK_LAYERS} idPrefix="dusk" seed={9} className="vo-scape" />
+        {!cine && <MountainScape layers={DUSK_LAYERS} idPrefix="dusk" seed={9} className="vo-scape" />}
       </section>
 
       {/* ═══ VI · REALMS (3-D SPIRAL) ═══ */}
@@ -998,7 +1089,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
           </div>
         </div>
         <div className="fn-scape" aria-hidden>
-          <MountainScape layers={NIGHT_LAYERS} idPrefix="night" seed={12} />
+          {!cine && <MountainScape layers={NIGHT_LAYERS} idPrefix="night" seed={12} />}
           <div className="fn-cottage">
             <Cottage />
           </div>

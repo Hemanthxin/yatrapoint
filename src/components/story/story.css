@@ -1264,3 +1264,124 @@
 .fn-foot a:hover {
   color: #f3c969;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3D MODE — the real-time world (CinemaWorld) replaces the painted backdrops.
+   The 2D markup is still in the DOM (GSAP targets it) but never painted.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.story--cine .st-sky,
+.story--cine .st-stars,
+.story--cine .st-hero-art,
+.story--cine .gt-layer,
+.story--cine .vo-sun,
+.story--cine .fn-scape,
+.story--cine .fn-fly,
+.story--cine .fn-glow,
+.story--cine .st-leaves,
+.story--cine .st-seal-wrap {
+  display: none !important;
+}
+.story--cine .st-gate,
+.story--cine .st-road,
+.story--cine .st-voices,
+.story--cine .st-realms,
+.story--cine .st-wheel,
+.story--cine .st-finale {
+  background: transparent;
+}
+.story--cine .st-hero-copy {
+  text-shadow: 0 2px 24px rgba(255, 244, 220, 0.55);
+}
+.story--cine .st-lede {
+  color: #3b2d46;
+}
+
+/* prologue: the words sit on a frosted page at the left; the valley stays visible on the right */
+.story--cine .st-prologue {
+  place-items: center start;
+  padding-left: 5vw;
+}
+.story--cine .st-pro-inner {
+  grid-template-columns: 1fr;
+  max-width: 47rem;
+}
+.story--cine .st-pro-text {
+  padding: 2.2rem 2.8rem 2.4rem;
+  background: var(--sb-grain), linear-gradient(165deg, rgba(255, 252, 240, 0.9), rgba(255, 244, 218, 0.84));
+  background-size: 240px 240px, auto;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem 1.2rem 1.6rem 1.3rem;
+  box-shadow: 0 0 0 2px rgba(92, 68, 36, 0.5), inset 0 0 0 7px rgba(255, 252, 240, 0.6), 0 34px 54px -26px rgba(40, 24, 8, 0.65);
+}
+.story--cine .st-prose {
+  font-size: clamp(1.45rem, 2vw, 2.05rem);
+}
+
+/* gate captions float over the bright arch */
+.story--cine .gt-t1 {
+  bottom: auto;
+  top: 18vh;
+  text-shadow: 0 3px 28px rgba(60, 30, 5, 0.75);
+}
+.story--cine .gt-t2 h2 {
+  color: #fff6d8;
+  text-shadow: 0 0 40px rgba(120, 70, 10, 0.7), 0 4px 0 rgba(120, 70, 10, 0.35);
+}
+
+/* road: one station card at a time, floating beside the walkers */
+.story--cine .rd-top {
+  text-shadow: 0 2px 18px rgba(255, 252, 240, 0.8);
+}
+.rd-cine {
+  position: absolute;
+  inset: 0;
+  z-index: 14;
+  pointer-events: none;
+}
+.rd-cine-card {
+  --n: 0;
+  position: absolute;
+  right: 6vw;
+  top: 52%;
+  width: min(22rem, 28vw);
+  padding: 1.15rem 1.35rem 1.3rem;
+  color: #3a2410;
+  background: var(--sb-grain), linear-gradient(170deg, #f6dfa6, #dcb26a);
+  background-size: 200px 200px, auto;
+  border-radius: 0.9rem 1.1rem 0.9rem 1rem;
+  box-shadow: 0 0 0 3px #7b5226, inset 0 0 0 4px rgba(255, 244, 210, 0.45), 0 26px 40px -18px rgba(60, 30, 10, 0.75);
+  opacity: calc(var(--n) * 1.7 - 0.25);
+  transform: translateY(calc(-50% + (1 - var(--n)) * 26px)) rotate(calc(1.6deg - var(--n) * 1.6deg)) scale(calc(0.9 + var(--n) * 0.1));
+}
+.rd-cine-card h3 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.7rem;
+  line-height: 1.1;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.rd-cine-card p {
+  font-size: 1.1rem;
+  line-height: 1.38;
+}
+.rd-cine-card .rd-no {
+  top: -1.05rem;
+  right: 1.1rem;
+}
+
+/* wheel + realms + finale read over the real night sky */
+.story--cine .wh-copy,
+.story--cine .sp-copy {
+  text-shadow: 0 2px 22px rgba(4, 6, 30, 0.7);
+}
+
+/* hero: a soft veil on the left so the headline stays readable over the 3D scene */
+.story--cine .st-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 246, 224, 0.62) 0%, rgba(255, 246, 224, 0.3) 34%, rgba(255, 246, 224, 0) 58%);
+}
