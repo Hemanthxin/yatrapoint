@@ -6,55 +6,65 @@
 export function Fox() {
   return (
     <svg viewBox="0 0 200 224" className="jr-char-svg" aria-hidden>
-      <ellipse cx="92" cy="218" rx="54" ry="6.5" fill="#000" opacity="0.18" />
-      <g filter="url(#sb-rough)" stroke="#5a2a10" strokeWidth="2" strokeLinejoin="round">
+      <ellipse cx="96" cy="218" rx="56" ry="6.5" fill="#000" opacity="0.18" />
+      <g filter="url(#sb-rough)" stroke="#5a2a10" strokeWidth="2.2" strokeLinejoin="round">
         {/* legs sit behind the body and swing from the hip */}
-        <g className="fx-leg-b" style={{ transformOrigin: "74px 156px" }}>
-          <path d="M58 156h30v36a15 12 0 0 1 -30 0Z" fill="#cf6a2a" />
-          <path d="M58 188h30v10a15 12 0 0 1 -30 0Z" fill="#3a2418" stroke="none" />
-          <ellipse cx="80" cy="209" rx="18" ry="8" fill="#3a2418" />
+        <g className="fx-leg-b" style={{ transformOrigin: "78px 164px" }}>
+          <path d="M64 164h28v30a14 12 0 0 1 -28 0Z" fill="#d9692a" />
+          <path d="M64 190h28v6a14 12 0 0 1 -28 0Z" fill="#3a2418" stroke="none" />
+          <ellipse cx="80" cy="207" rx="18" ry="8.5" fill="#3a2418" />
         </g>
-        <g className="fx-leg-f" style={{ transformOrigin: "116px 156px" }}>
-          <path d="M102 156h30v36a15 12 0 0 1 -30 0Z" fill="#e57b32" />
-          <path d="M102 188h30v10a15 12 0 0 1 -30 0Z" fill="#3a2418" stroke="none" />
-          <ellipse cx="124" cy="209" rx="18" ry="8" fill="#3a2418" />
+        <g className="fx-leg-f" style={{ transformOrigin: "118px 164px" }}>
+          <path d="M104 164h28v30a14 12 0 0 1 -28 0Z" fill="#ee8238" />
+          <path d="M104 190h28v6a14 12 0 0 1 -28 0Z" fill="#3a2418" stroke="none" />
+          <ellipse cx="120" cy="207" rx="18" ry="8.5" fill="#3a2418" />
         </g>
-        {/* tail */}
-        <g className="fx-tail" style={{ transformOrigin: "52px 150px" }}>
-          <path d="M54 152C12 160 -6 112 14 74C28 100 52 112 74 134Z" fill="#e57b32" />
-          <path d="M14 74C6 90 4 108 10 124C22 114 30 100 30 92Z" fill="#fff4e0" />
+        {/* big fluffy tail */}
+        <g className="fx-tail" style={{ transformOrigin: "60px 158px" }}>
+          <path d="M62 162C8 176 -10 118 14 70C30 98 54 110 80 138Z" fill="#ee8238" />
+          <path d="M14 70C4 88 2 108 8 126C22 116 32 100 34 90Z" fill="#fff4e0" />
         </g>
         {/* body */}
-        <ellipse cx="94" cy="140" rx="41" ry="44" fill="#e57b32" />
-        <ellipse cx="104" cy="152" rx="22" ry="29" fill="#fff1dc" stroke="none" />
-        {/* rolled map */}
-        <g transform="rotate(-12 70 134)">
-          <rect x="46" y="124" width="40" height="15" rx="7.5" fill="#f3e2b3" />
-          <circle cx="47" cy="131.5" r="7" fill="#e7cf92" />
-          <circle cx="85" cy="131.5" r="7" fill="#e7cf92" />
-          <path d="M60 124v15M72 124v15" stroke="#c0402e" strokeWidth="3" />
+        <ellipse cx="98" cy="154" rx="38" ry="40" fill="#ee8238" />
+        <ellipse cx="106" cy="164" rx="22" ry="27" fill="#fff1dc" stroke="none" />
+        {/* rolled map under one arm */}
+        <g transform="translate(-4 20) rotate(-14 70 156)">
+          <rect x="50" y="148" width="40" height="15" rx="7.5" fill="#f3e2b3" />
+          <circle cx="51" cy="155.5" r="7" fill="#e7cf92" />
+          <circle cx="89" cy="155.5" r="7" fill="#e7cf92" />
+          <path d="M64 148v15M76 148v15" stroke="#c0402e" strokeWidth="3" />
         </g>
+        {/* ears — drawn first so the big head overlaps their base */}
+        <path d="M58 64L48 6L100 42Z" fill="#ee8238" />
+        <path d="M63 54L57 22L86 42Z" fill="#3a2418" stroke="none" />
+        <path d="M146 64L156 6L104 42Z" fill="#ee8238" />
+        <path d="M141 54L147 22L118 42Z" fill="#3a2418" stroke="none" />
+        {/* wide, cheeky head with cheek fluff */}
+        <path d="M46 88C42 52 70 36 102 36C134 36 162 52 158 88L170 100L152 102C146 120 126 128 102 128C78 128 58 120 52 102L34 100Z" fill="#ee8238" />
+        {/* cream face mask */}
+        <path d="M52 102C60 112 78 112 102 104C126 112 144 112 152 102C146 120 126 128 102 128C78 128 58 120 52 102Z" fill="#fff1dc" stroke="none" />
+        <ellipse cx="102" cy="106" rx="30" ry="18" fill="#fff1dc" stroke="none" />
+        <ellipse cx="102" cy="94" rx="7.5" ry="5.6" fill="#2a170d" stroke="none" />
+        <ellipse cx="100" cy="92.4" rx="2.4" ry="1.4" fill="#fff" opacity="0.7" stroke="none" />
+        <path d="M102 99v5M90 108q6 7 12 -1q6 8 12 1" fill="none" strokeWidth="2.2" strokeLinecap="round" />
+        {/* big shiny eyes */}
+        <g className="fx-eye">
+          <ellipse cx="78" cy="76" rx="9.5" ry="11" fill="#2a170d" stroke="none" />
+          <ellipse cx="126" cy="76" rx="9.5" ry="11" fill="#2a170d" stroke="none" />
+          <circle cx="81" cy="72" r="3.4" fill="#fff" stroke="none" />
+          <circle cx="129" cy="72" r="3.4" fill="#fff" stroke="none" />
+          <circle cx="75" cy="80.5" r="1.5" fill="#fff" opacity="0.8" stroke="none" />
+          <circle cx="123" cy="80.5" r="1.5" fill="#fff" opacity="0.8" stroke="none" />
+        </g>
+        <path d="M66 60q11 -7 22 -1M116 59q11 -6 22 1" fill="none" strokeWidth="2.4" strokeLinecap="round" />
+        <ellipse cx="62" cy="98" rx="9" ry="5.6" fill="#f08a7a" opacity="0.55" stroke="none" />
+        <ellipse cx="142" cy="98" rx="9" ry="5.6" fill="#f08a7a" opacity="0.55" stroke="none" />
         {/* scarf */}
-        <path d="M62 104C80 118 112 118 128 102L132 116C112 132 78 132 58 118Z" fill="#3f8f5a" />
-        <g className="fx-scarf" style={{ transformOrigin: "60px 112px" }}>
-          <path d="M60 110C46 118 38 132 34 150L48 150C52 138 58 128 66 122Z" fill="#3f8f5a" />
+        <path d="M68 124C86 140 118 140 134 122L138 136C118 154 86 154 64 138Z" fill="#3f8f5a" />
+        <g className="fx-scarf" style={{ transformOrigin: "66px 130px" }}>
+          <path d="M66 128C50 136 42 150 38 168L53 168C57 154 63 144 72 138Z" fill="#3f8f5a" />
+          <path d="M43 150l12 -4M41 158l12 -4" stroke="#bfe8c8" strokeWidth="2" fill="none" />
         </g>
-        {/* ears */}
-        <path d="M70 56L64 14L96 44Z" fill="#e57b32" />
-        <path d="M70 50L68 28L84 44Z" fill="#3a2418" stroke="none" />
-        <path d="M112 46L130 12L134 54Z" fill="#e57b32" />
-        <path d="M118 44L128 26L130 48Z" fill="#3a2418" stroke="none" />
-        {/* head */}
-        <ellipse cx="100" cy="76" rx="37" ry="31" fill="#e57b32" />
-        <path d="M70 90C78 106 100 108 114 96L146 90L112 76Z" fill="#fff1dc" stroke="none" />
-        <path d="M108 78L148 88L112 102Z" fill="#fff1dc" />
-        <circle cx="148" cy="87.5" r="5.6" fill="#2a170d" stroke="none" />
-        <g className="fx-eye" style={{ transformOrigin: "112px 70px" }}>
-          <ellipse cx="112" cy="70" rx="4.4" ry="5.4" fill="#2a170d" stroke="none" />
-          <circle cx="113.4" cy="68" r="1.5" fill="#fff" stroke="none" />
-        </g>
-        <path d="M126 98q6 4 12 -1" fill="none" strokeWidth="2" strokeLinecap="round" />
-        <ellipse cx="92" cy="86" rx="7" ry="4.4" fill="#f08a7a" opacity="0.5" stroke="none" />
       </g>
     </svg>
   );

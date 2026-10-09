@@ -242,55 +242,67 @@ export function Bear() {
           <stop offset="1" stopColor="#ffd060" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <ellipse cx="84" cy="224" rx="50" ry="6" fill="#000" opacity="0.18" />
-      <g filter="url(#sb-rough)" stroke="#4a2a14" strokeWidth="2" strokeLinejoin="round">
+      <ellipse cx="84" cy="224" rx="52" ry="6" fill="#000" opacity="0.18" />
+      <g filter="url(#sb-rough)" stroke="#4a2a14" strokeWidth="2.2" strokeLinejoin="round">
         {/* legs sit BEHIND the body and swing from the hip, so no stilts */}
-        <g className="br-leg-b" style={{ transformOrigin: "66px 152px" }}>
-          <path d="M52 152h28v42a14 12 0 0 1 -28 0Z" fill="#9c6535" />
-          <ellipse cx="73" cy="208" rx="19" ry="9" fill="#7a4a24" />
+        <g className="br-leg-b" style={{ transformOrigin: "66px 164px" }}>
+          <path d="M50 164h30v34a15 13 0 0 1 -30 0Z" fill="#a9703c" />
+          <ellipse cx="68" cy="210" rx="21" ry="10" fill="#8a5429" />
+          <ellipse cx="68" cy="212" rx="9" ry="4.4" fill="#e9b98a" stroke="none" />
         </g>
-        <g className="br-leg-f" style={{ transformOrigin: "106px 152px" }}>
-          <path d="M92 152h28v42a14 12 0 0 1 -28 0Z" fill="#b87a45" />
-          <ellipse cx="113" cy="208" rx="19" ry="9" fill="#8a5429" />
+        <g className="br-leg-f" style={{ transformOrigin: "104px 164px" }}>
+          <path d="M90 164h30v34a15 13 0 0 1 -30 0Z" fill="#c4854c" />
+          <ellipse cx="108" cy="210" rx="21" ry="10" fill="#9c6535" />
+          <ellipse cx="108" cy="212" rx="9" ry="4.4" fill="#f0c79a" stroke="none" />
         </g>
-        <circle cx="40" cy="142" r="9" fill="#b87a45" />
-        {/* body */}
-        <path d="M42 128C42 100 128 100 130 128C132 158 114 182 86 182C56 182 42 158 42 128Z" fill="#b87a45" />
-        <ellipse cx="90" cy="152" rx="26" ry="28" fill="#e9c595" stroke="none" />
+        <circle cx="44" cy="146" r="10" fill="#c4854c" />
+        {/* plump little body */}
+        <path d="M40 140C40 108 128 108 130 140C132 176 112 198 86 198C58 198 40 176 40 140Z" fill="#c4854c" />
+        <ellipse cx="88" cy="160" rx="27" ry="31" fill="#f0d5a8" stroke="none" />
         {/* satchel */}
-        <path d="M58 112C70 140 92 152 116 166" fill="none" stroke="#6b3a1d" strokeWidth="6" strokeLinecap="round" />
-        <rect x="42" y="152" width="34" height="30" rx="7" fill="#7b4624" />
-        <rect x="48" y="158" width="22" height="9" rx="3" fill="#946034" stroke="none" />
-        <circle cx="59" cy="172" r="3.5" fill="#f1cf6a" stroke="#6b4a10" strokeWidth="1.2" />
+        <path d="M56 118C68 146 92 160 118 174" fill="none" stroke="#6b3a1d" strokeWidth="6" strokeLinecap="round" />
+        <rect x="38" y="158" width="34" height="30" rx="8" fill="#7b4624" />
+        <rect x="44" y="164" width="22" height="9" rx="3" fill="#946034" stroke="none" />
+        <circle cx="55" cy="179" r="3.6" fill="#f1cf6a" stroke="#6b4a10" strokeWidth="1.2" />
         {/* scarf */}
-        <path d="M52 106C68 122 102 122 120 104L124 118C104 136 70 136 48 120Z" fill="#c74a3a" />
-        <g className="br-scarf" style={{ transformOrigin: "50px 112px" }}>
-          <path d="M50 110C36 116 28 130 24 148L38 150C42 138 50 128 58 122Z" fill="#c74a3a" />
-          <path d="M28 130l12 -4M26 138l12 -4" stroke="#f3d9a0" strokeWidth="2" fill="none" />
+        <path d="M46 112C64 132 108 132 126 110L132 126C110 146 64 146 42 128Z" fill="#d4513f" />
+        <g className="br-scarf" style={{ transformOrigin: "48px 120px" }}>
+          <path d="M48 118C32 124 24 138 20 158L36 160C40 146 48 136 58 130Z" fill="#d4513f" />
+          <path d="M24 140l13 -4M22 148l13 -4" stroke="#f6dca6" strokeWidth="2.2" fill="none" />
         </g>
-        {/* head */}
-        <circle cx="62" cy="48" r="15" fill="#b87a45" />
-        <circle cx="62" cy="48" r="8" fill="#e9c595" stroke="none" />
-        <circle cx="112" cy="48" r="15" fill="#b87a45" />
-        <circle cx="112" cy="48" r="8" fill="#e9c595" stroke="none" />
-        <circle cx="87" cy="78" r="40" fill="#c08150" />
-        <ellipse cx="105" cy="94" rx="20" ry="15" fill="#ecca9b" />
-        <ellipse cx="115" cy="87" rx="7" ry="5.2" fill="#3a2418" stroke="none" />
-        <path d="M110 99q5 4.5 10 0" fill="none" strokeWidth="2" strokeLinecap="round" />
+        {/* big round ears */}
+        <circle cx="46" cy="40" r="19" fill="#c4854c" />
+        <circle cx="46" cy="40" r="10" fill="#f0c79a" stroke="none" />
+        <circle cx="126" cy="40" r="19" fill="#c4854c" />
+        <circle cx="126" cy="40" r="10" fill="#f0c79a" stroke="none" />
+        {/* the head is half the bear — that is what makes him cuddly */}
+        <ellipse cx="86" cy="76" rx="52" ry="46" fill="#d1925a" />
+        <ellipse cx="86" cy="52" rx="30" ry="14" fill="#e1a874" opacity="0.55" stroke="none" />
+        {/* muzzle */}
+        <ellipse cx="90" cy="96" rx="25" ry="19" fill="#f3d9ae" />
+        <path d="M82 86h16q2 0 1 3l-7 8q-2 2 -4 0l-7 -8q-1 -3 1 -3Z" fill="#3a2418" stroke="#3a2418" strokeWidth="2.6" />
+        <path d="M90 99v4M80 105q5 6 10 -2q5 8 10 2" fill="none" strokeWidth="2.2" strokeLinecap="round" />
+        {/* big shiny eyes */}
         <g className="br-eye">
-          <circle cx="97" cy="71" r="4.6" fill="#2a170d" stroke="none" />
-          <circle cx="98.6" cy="69.4" r="1.5" fill="#fff" stroke="none" />
+          <ellipse cx="66" cy="72" rx="9.5" ry="11" fill="#2a170d" stroke="none" />
+          <ellipse cx="108" cy="72" rx="9.5" ry="11" fill="#2a170d" stroke="none" />
+          <circle cx="69" cy="68" r="3.4" fill="#fff" stroke="none" />
+          <circle cx="111" cy="68" r="3.4" fill="#fff" stroke="none" />
+          <circle cx="63" cy="76.5" r="1.5" fill="#fff" opacity="0.8" stroke="none" />
+          <circle cx="105" cy="76.5" r="1.5" fill="#fff" opacity="0.8" stroke="none" />
         </g>
-        <ellipse cx="80" cy="92" rx="8" ry="5" fill="#e98a7a" opacity="0.55" stroke="none" />
+        <path d="M56 58q10 -7 20 -1M98 57q10 -6 20 1" fill="none" strokeWidth="2.4" strokeLinecap="round" />
+        <ellipse cx="50" cy="92" rx="9" ry="6" fill="#f08a7a" opacity="0.6" stroke="none" />
+        <ellipse cx="124" cy="92" rx="9" ry="6" fill="#f08a7a" opacity="0.6" stroke="none" />
         {/* arm — one capsule from the shoulder to the hand, lantern hanging from it */}
-        <g className="br-arm" style={{ transformOrigin: "108px 124px" }}>
-          <path d="M108 124Q128 132 134 152" fill="none" stroke="#4a2a14" strokeWidth="19" strokeLinecap="round" />
-          <path d="M108 124Q128 132 134 152" fill="none" stroke="#b87a45" strokeWidth="15" strokeLinecap="round" />
-          <path d="M134 158v10" stroke="#4a2a14" strokeWidth="2" />
-          <circle cx="134" cy="182" r="30" fill="url(#br-glow)" stroke="none" className="br-lanternglow" />
-          <rect x="126" y="168" width="16" height="22" rx="3" fill="#f6d77a" stroke="#4a2a14" strokeWidth="2" />
-          <path d="M125 168h18l-3 -6h-12Z" fill="#4a2a14" />
-          <path d="M128 190h12" stroke="#4a2a14" strokeWidth="2.6" />
+        <g className="br-arm" style={{ transformOrigin: "112px 132px" }}>
+          <path d="M112 132Q130 138 136 156" fill="none" stroke="#4a2a14" strokeWidth="21" strokeLinecap="round" />
+          <path d="M112 132Q130 138 136 156" fill="none" stroke="#c4854c" strokeWidth="16.5" strokeLinecap="round" />
+          <path d="M136 162v10" stroke="#4a2a14" strokeWidth="2" />
+          <circle cx="136" cy="186" r="30" fill="url(#br-glow)" stroke="none" className="br-lanternglow" />
+          <rect x="128" y="172" width="16" height="22" rx="3" fill="#f6d77a" stroke="#4a2a14" strokeWidth="2" />
+          <path d="M127 172h18l-3 -6h-12Z" fill="#4a2a14" />
+          <path d="M130 194h12" stroke="#4a2a14" strokeWidth="2.6" />
         </g>
       </g>
     </svg>
