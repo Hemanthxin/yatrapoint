@@ -18,6 +18,7 @@ import { getCityPlaceBySlug } from "@/lib/queries/city-places";
 import { AppShell } from "@/components/app/AppShell";
 import { LocationBanner } from "@/components/app/LocationBanner";
 import { NearbyRestaurants } from "./NearbyRestaurants";
+import { PlaceReviews } from "@/components/app/reviews/PlaceReviews";
 import { Reveal } from "@/components/app/Reveal";
 import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
@@ -184,6 +185,8 @@ export default async function CityPlacePage({ params }: PageProps) {
           centreLng={Number(place.longitude)}
         />
       </section>
+
+      <PlaceReviews placeId={place.id} placeName={place.name} className="mt-8" />
       </Reveal>
     </AppShell>
   );

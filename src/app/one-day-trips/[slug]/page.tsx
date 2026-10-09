@@ -8,6 +8,7 @@ import { getNearbyBySlug } from "@/lib/queries/nearby";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { TripDetail } from "./TripDetail";
+import { PlaceReviews } from "@/components/app/reviews/PlaceReviews";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -33,6 +34,7 @@ export default async function NearbyDetailPage({ params }: PageProps) {
       </Link>
       <LocationBanner />
       <TripDetail trip={trip} gallery={gallery} />
+      <PlaceReviews placeId={trip.id} placeName={trip.name} className="mt-8" />
     </AppShell>
   );
 }

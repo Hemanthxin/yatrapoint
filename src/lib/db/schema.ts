@@ -896,6 +896,31 @@ export const siteSettings = pgTable("site_settings", {
 
 export type SiteSetting = typeof siteSettings.$inferSelect;
 
+// --- Visitor reviews of a place. One row per (place, user): a user adds,
+// edits or deletes their own; everyone signed in can read them all. placeId is
+// not a foreign key because reviews attach to rows of several catalogues
+// (destinations, city places, one-day trips) whose ids never collide. ---
+export const placeReviews = pgTable(
+  "place_reviews",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    placeId: text("place_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    rating: integer("rating").notNull(),
+    body: varchar("body", { length: 1000 }).notNull().default(""),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    onePerUser: unique("place_reviews_place_user_uq").on(t.placeId, t.userId),
+    placeIdx: index("place_reviews_place_idx").on(t.placeId, t.createdAt),
+  })
+);
+
+export type PlaceReview = typeof placeReviews.$inferSelect;
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type OtpCode = typeof otpCodes.$inferSelect;

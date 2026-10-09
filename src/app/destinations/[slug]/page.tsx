@@ -20,6 +20,7 @@ import { DestinationDetail } from "./DestinationDetail";
 import { Reveal } from "@/components/app/Reveal";
 import { HeroPhoto } from "@/components/app/HeroPhoto";
 import { MobileDetail } from "./MobileDetail";
+import { PlaceReviews } from "@/components/app/reviews/PlaceReviews";
 import { IMAGE_SOURCE } from "@/lib/queries/admin-images";
 import { listGalleryImages } from "@/lib/queries/place-gallery";
 import { listNearbyPoi } from "@/lib/queries/nearby-poi";
@@ -91,6 +92,9 @@ export default async function DestinationPage({ params }: PageProps) {
           favored={favIds.has(destination.id)}
           seededPoi={seededPoi}
         />
+        <div className="px-3 pb-6">
+          <PlaceReviews placeId={destination.id} placeName={destination.name} />
+        </div>
       </div>
 
       {/* ── Desktop (≥ lg): the original layout, unchanged ── */}
@@ -228,6 +232,8 @@ export default async function DestinationPage({ params }: PageProps) {
         <LocationBanner />
       </div>
       <DestinationDetail destination={destination} />
+
+      <PlaceReviews placeId={destination.id} placeName={destination.name} className="mt-8" />
 
       {relatedFiltered.length > 0 && (
         <section className="mt-10">
