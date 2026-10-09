@@ -9,7 +9,8 @@ interface Toast extends ToastDetail {
 }
 
 // Renders transient popups fired via showToast(). Mounted once in the app shell.
-// Stacks toasts bottom-center (above the mobile dock) and auto-dismisses each.
+// Stacks toasts bottom-center (above the mobile dock) and auto-dismisses each. z-[70] keeps a
+// confirmation above the floating assistant (z-50) — it must never be hidden behind it.
 export function ToastHost() {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const counter = useRef(0);
@@ -31,7 +32,7 @@ export function ToastHost() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+6rem)] z-50 flex flex-col items-center gap-2 px-4 lg:bottom-8">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+6rem)] z-[70] flex flex-col items-center gap-2 px-4 lg:bottom-8">
       {toasts.map((t) => (
         <div
           key={t.id}

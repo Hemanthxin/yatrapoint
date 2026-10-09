@@ -71,6 +71,17 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
   const [aboutOpen, setAboutOpen] = useState(false);
 
   const cat = CATEGORY_BY_SLUG[place.category as CategorySlug];
+  // The trip-cart entry for this place. The id MUST be `dest-<id>` — the same key the desktop page and
+  // the place cards use (and the only form the cart planner looks up), so a place added here is the same
+  // "Added" place everywhere instead of a second, unresolvable entry.
+  const cartItem = {
+    id: `dest-${place.id}`,
+    name: place.name,
+    subtitle: [place.district, place.state].filter(Boolean).join(", "),
+    href: `/destinations/${place.slug}`,
+    kind: "destination",
+    emoji: cat?.emoji ?? "📍",
+  };
   const gradient = CATEGORY_GRADIENT[place.category as CategorySlug] ?? "from-slate-400 to-slate-600";
   const lat = Number(place.latitude);
   const lng = Number(place.longitude);
@@ -252,18 +263,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
             {/* The mobile screen had no way to add a place to the trip cart at
                 all — the action existed only on the desktop layout. */}
             <div className="mt-4 space-y-2">
-              <AddToCartButton
-                className="w-full py-3 shadow-lg shadow-emerald-500/40"
-                label="Plan this trip"
-                item={{
-                  id: place.id,
-                  name: place.name,
-                  subtitle: [place.district, place.state].filter(Boolean).join(", "),
-                  href: `/destinations/${place.slug}`,
-                  kind: "destination",
-                  emoji: cat?.emoji ?? "📍",
-                }}
-              />
+              <AddToCartButton className="w-full py-3 shadow-lg shadow-emerald-500/40" label="Plan this trip" item={cartItem} />
             </div>
           </section>
         )}
@@ -500,7 +500,7 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
           </div>
         )}
 
-        {place.bookingUrl ? (
+        {place.bookingUrl && (
           <a
             href={place.bookingUrl}
             target="_blank"
@@ -509,14 +509,10 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
           >
             <Ticket className="h-4 w-4" /> Book Tickets <ExternalLink className="h-3.5 w-3.5" />
           </a>
-        ) : (
-          <Link
-            href="/budget-planner"
-            className="btn-primary mt-3 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-sm"
-          >
-            <Wallet className="h-4 w-4" /> Plan a trip here
-          </Link>
         )}
+        {/* Adds this place to the trip cart and pops the "added to cart" toast — it no longer jumps
+            straight to the planner. Tap again to remove it. */}
+        <AddToCartButton className="mt-3 w-full rounded-2xl py-3.5" label="Plan a trip here" item={cartItem} />
       </div>
     </div>
   );
