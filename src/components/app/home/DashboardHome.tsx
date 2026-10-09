@@ -4,10 +4,9 @@ import "./home.css";
 import "@/components/app/journey/journey.css"; // shared keyframes for the cast (blink, wing-beat…)
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowRight, MapPin } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 import { formatINR } from "@/lib/format";
-import { formatKm } from "@/lib/geo";
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import { MountainScape, DAWN_LAYERS, MOONLIT_LAYERS } from "@/components/storybook/MountainScape";
 import { Bear, Cloud } from "@/components/story/scenes";
@@ -17,6 +16,7 @@ import { useLiveWeather } from "@/components/app/dashboard3d/WeatherModule";
 import { useNearbyPlaces } from "@/components/app/dashboard3d/NearbyModule";
 import type { JourneyFestival } from "@/components/app/journey/JourneyStory";
 import { CampGround, LanternString, SignPost, type SignLink } from "./camp";
+import { TodayCards } from "./TodayCards";
 
 type Phase = "dawn" | "morning" | "afternoon" | "golden" | "night";
 const PHASES: Phase[] = ["dawn", "morning", "afternoon", "golden", "night"];
@@ -219,98 +219,7 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
         </button>
       </section>
 
-      <section className="th" aria-label="Today at camp">
-        <h2 className="th-title">
-          <span className="sb-eyebrow">Today at camp</span>
-        </h2>
-        <div className="th-grid">
-          {/* Weather */}
-          <article className="card th-card">
-            <header>
-              <b>Right where you are</b>
-              <span aria-hidden>{weather ? (weather.temp >= 30 ? "☀️" : weather.temp >= 22 ? "🌤️" : "🧥") : "🌤️"}</span>
-            </header>
-            {weather ? (
-              <>
-                <p className="th-big">
-                  {weather.temp}
-                  <small>°C</small>
-                </p>
-                <p className="th-note">
-                  <span aria-hidden>🦉</span> {weather.temp >= 32 ? "Pip says: carry water and start early." : weather.temp <= 18 ? "Pip says: a jacket would be wise." : "Pip says: lovely weather for travelling."}
-                </p>
-                <ul className="th-metrics">
-                  <li>💧 {weather.humidity}%</li>
-                  <li>🌬️ {weather.wind} km/h</li>
-                  <li>🍃 {weather.aqi != null ? `AQI ${weather.aqi}` : "AQI —"}</li>
-                </ul>
-              </>
-            ) : (
-              <p className="th-note">Pip is peeking out of the window…</p>
-            )}
-          </article>
-
-          {/* Next adventure */}
-          <article className="card th-card">
-            <header>
-              <b>Next adventure</b>
-              <span aria-hidden>🎒</span>
-            </header>
-            {upcoming.length ? (
-              <ul className="th-list">
-                {upcoming.slice(0, 3).map((t) => (
-                  <li key={t.id}>
-                    <span aria-hidden>🏞️</span>
-                    <div>
-                      <b>{t.name}</b>
-                      <small>
-                        {t.days} {t.days === 1 ? "day" : "days"} · {t.status && t.status !== "draft" ? "Confirmed" : "Pending"}
-                      </small>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="th-note">
-                <span aria-hidden>🦊</span> Juno says: the map is blank — let&rsquo;s draw your first route together.
-              </p>
-            )}
-            <Link href={upcoming.length ? "/trip-history" : "/budget-planner"} className="th-link">
-              {upcoming.length ? "See all your trips" : "Plan a trip"} <ArrowRight className="h-4 w-4" />
-            </Link>
-          </article>
-
-          {/* Near you */}
-          <article className="card th-card">
-            <header>
-              <b>Near you</b>
-              <span aria-hidden>📍</span>
-            </header>
-            {nearby === null ? (
-              <p className="th-note">Teddy is sniffing out nearby places…</p>
-            ) : nearby.length === 0 ? (
-              <p className="th-note">Allow location access and Teddy will find what&rsquo;s genuinely near you.</p>
-            ) : (
-              <ul className="th-list th-near">
-                {nearby.slice(0, 4).map((p) => (
-                  <li key={p.id}>
-                    <span className="th-pin" aria-hidden>
-                      <MapPin className="h-3.5 w-3.5" />
-                    </span>
-                    <div>
-                      <b>{p.name}</b>
-                    </div>
-                    <em>{formatKm(p.distanceKm)}</em>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <Link href="/explore-bangalore" className="th-link">
-              Open nearby places <ArrowRight className="h-4 w-4" />
-            </Link>
-          </article>
-        </div>
-      </section>
+      <TodayCards weather={weather} nearby={nearby} upcoming={upcoming} phase={phase} />
     </div>
   );
 }
