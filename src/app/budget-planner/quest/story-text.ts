@@ -123,6 +123,8 @@ export interface StoryStop {
   arrivalMinutesFromPrev: number;
   imageUrl?: string | null;
   rating?: number | null;
+  /** Set for catalogue places; lets the story link a chapter to the place's own page. */
+  meta?: { citySeedSlug?: string };
 }
 
 /** Split the stops across the trip's days by cumulative time, like the planner's own hours-per-day budget. */

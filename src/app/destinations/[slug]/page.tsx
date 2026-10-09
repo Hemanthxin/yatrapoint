@@ -91,10 +91,8 @@ export default async function DestinationPage({ params }: PageProps) {
           nearby={relatedFiltered}
           favored={favIds.has(destination.id)}
           seededPoi={seededPoi}
+          reviews={<PlaceReviews placeId={destination.id} placeName={destination.name} />}
         />
-        <div className="px-3 pb-6">
-          <PlaceReviews placeId={destination.id} placeName={destination.name} />
-        </div>
       </div>
 
       {/* ── Desktop (≥ lg): the original layout, unchanged ── */}

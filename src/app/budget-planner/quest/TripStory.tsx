@@ -2,7 +2,9 @@
 
 import "./quest.css";
 import { Fragment } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { planStopHref } from "@/lib/place-href";
 import { formatINR } from "@/lib/format";
 import { DAY_NAMES, KIND_EMOJI, KIND_LABEL, assignDays, fmtKm, fmtMinutes, kindOf, teddyLine, type StoryStop } from "./story-text";
 
@@ -77,6 +79,7 @@ export function TripStory({
           const side = i % 2 === 0 ? "ts-l" : "ts-r";
           const firstOfDay = i === 0 || dayOf[i] !== dayOf[i - 1];
           const km = s.arrivalKmFromPrev;
+          const href = planStopHref(s.id, s.meta?.citySeedSlug);
           return (
             <Fragment key={s.id}>
               {firstOfDay && (
@@ -89,20 +92,31 @@ export function TripStory({
               <motion.li className={`ts-node ${side}`} variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
                 <span className="ts-dot">{i + 1}</span>
                 <article className="ts-card">
-                  <div className="ts-pic">
-                    {s.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={s.imageUrl} alt="" loading="lazy" />
+                  {(() => {
+                    const pic = (
+                      <>
+                        {s.imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={s.imageUrl} alt="" loading="lazy" />
+                        ) : (
+                          <span aria-hidden>{KIND_EMOJI[kind]}</span>
+                        )}
+                        <em aria-hidden>{KIND_EMOJI[kind]}</em>
+                      </>
+                    );
+                    return href ? (
+                      <Link href={href} className="ts-pic ts-link" aria-label={`Open ${s.name}`}>
+                        {pic}
+                      </Link>
                     ) : (
-                      <span aria-hidden>{KIND_EMOJI[kind]}</span>
-                    )}
-                    <em aria-hidden>{KIND_EMOJI[kind]}</em>
-                  </div>
+                      <div className="ts-pic">{pic}</div>
+                    );
+                  })()}
                   <div className="ts-txt">
                     <small>
                       Chapter {i + 1} · {KIND_LABEL[kind]}
                     </small>
-                    <h3>{s.name}</h3>
+                    <h3>{href ? <Link href={href}>{s.name}</Link> : s.name}</h3>
                     <p className="ts-teddy">
                       <span className="ts-who" title="Teddy">🐻</span> {teddyLine(kind, s.name, i)}
                     </p>
@@ -115,6 +129,11 @@ export function TripStory({
                       </li>
                       <li>⏱ about {fmtMinutes(s.idealMinutes)} here</li>
                       {s.rating ? <li>⭐ {s.rating.toFixed(1)}</li> : null}
+                      {href && (
+                        <li className="ts-open">
+                          <Link href={href}>View place →</Link>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </article>

@@ -16,6 +16,7 @@ import {
   Search,
   Share2,
   ShoppingBag,
+  Star,
   Ticket,
   Utensils,
   Wallet,
@@ -55,19 +56,23 @@ interface Props {
   // Food and shopping already in our catalogue, read from the database on the
   // server. Rendered immediately; the live OSM lookup only adds to these.
   seededPoi?: { food: OsmPlace[]; shopping: OsmPlace[] };
+  // The server-rendered reviews section, shown in its own tab.
+  reviews?: React.ReactNode;
 }
 
 const TABS: { id: TabId; label: string; sub?: string; icon: typeof Wallet }[] = [
   { id: "budget", label: "Budget", icon: Wallet },
-  { id: "food", label: "Food", icon: Utensils },
-  { id: "shopping", label: "Shopping", icon: ShoppingBag },
+  { id: "eat", label: "Food", sub: "& Shopping", icon: Utensils },
   { id: "nearby", label: "Places", sub: "Nearby", icon: MapPin },
+  { id: "reviews", label: "Reviews", icon: Star },
   { id: "vlogs", label: "Vlogs", icon: Film },
 ];
-type TabId = "budget" | "food" | "shopping" | "nearby" | "vlogs";
+type TabId = "budget" | "eat" | "nearby" | "reviews" | "vlogs";
 
-export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Props) {
+export function MobileDetail({ place, gallery, nearby, favored, seededPoi, reviews }: Props) {
   const [tab, setTab] = useState<TabId>("budget");
+  // Food and shopping share one tab; this picks which list it shows.
+  const [eatKind, setEatKind] = useState<"food" | "shopping">("food");
   const [aboutOpen, setAboutOpen] = useState(false);
 
   const cat = CATEGORY_BY_SLUG[place.category as CategorySlug];
@@ -268,35 +273,57 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
           </section>
         )}
 
-        {/* ── Food ── */}
-        {tab === "food" && hasCoords && (
-          <NearbyList
-            places={near.food}
-            origin={{ lat, lng }}
-            kind="food"
-            loading={near.loading}
-            error={near.error}
-            emptyLabel="No places to eat mapped within 5 km of here yet."
-          />
+        {/* ── Food & Shopping ── */}
+        {tab === "eat" && hasCoords && (
+          <div>
+            <div className="mb-3 grid grid-cols-2 gap-1 rounded-2xl bg-slate-100 p-1" role="tablist" aria-label="Food or shopping">
+              {([
+                { id: "food", label: "Food", icon: Utensils, count: near.food.length },
+                { id: "shopping", label: "Shopping", icon: ShoppingBag, count: near.shopping.length },
+              ] as const).map((k) => {
+                const Icon = k.icon;
+                const on = eatKind === k.id;
+                return (
+                  <button
+                    key={k.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={on}
+                    onClick={() => setEatKind(k.id)}
+                    className={`flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition active:scale-95 ${
+                      on ? "bg-white text-emerald-700 shadow-sm" : "text-slate-500"
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {k.label}
+                    {!near.loading && <span className="text-[10px] font-semibold text-slate-400">{k.count}</span>}
+                  </button>
+                );
+              })}
+            </div>
+            <NearbyList
+              places={eatKind === "food" ? near.food : near.shopping}
+              origin={{ lat, lng }}
+              kind={eatKind}
+              loading={near.loading}
+              error={near.error}
+              emptyLabel={
+                eatKind === "food"
+                  ? "No places to eat mapped within 5 km of here yet."
+                  : "No shops or markets mapped within 5 km of here yet."
+              }
+            />
+          </div>
         )}
 
-        {/* ── Shopping ── */}
-        {tab === "shopping" && hasCoords && (
-          <NearbyList
-            places={near.shopping}
-            origin={{ lat, lng }}
-            kind="shopping"
-            loading={near.loading}
-            error={near.error}
-            emptyLabel="No shops or markets mapped within 5 km of here yet."
-          />
-        )}
-
-        {(tab === "food" || tab === "shopping") && !hasCoords && (
+        {tab === "eat" && !hasCoords && (
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center text-sm text-slate-500">
             This place has no coordinates yet, so we can’t look around it.
           </div>
         )}
+
+        {/* ── Reviews ── */}
+        {tab === "reviews" && reviews}
 
         {/* ── Places nearby ── */}
         {tab === "nearby" && (
@@ -486,7 +513,10 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
               title={`Food near ${place.name}`}
               body="Restaurants, cafes and local eats mapped around this place."
               count={near.loading ? null : near.food.length}
-              onOpen={() => setTab("food")}
+              onOpen={() => {
+                setEatKind("food");
+                setTab("eat");
+              }}
             />
             <Teaser
               icon={<ShoppingBag className="h-4 w-4" />}
@@ -495,7 +525,10 @@ export function MobileDetail({ place, gallery, nearby, favored, seededPoi }: Pro
               title={`Shopping near ${place.name}`}
               body="Malls and local markets mapped around this place."
               count={near.loading ? null : near.shopping.length}
-              onOpen={() => setTab("shopping")}
+              onOpen={() => {
+                setEatKind("shopping");
+                setTab("eat");
+              }}
             />
           </div>
         )}

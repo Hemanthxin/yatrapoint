@@ -244,7 +244,16 @@ export function CartPlanner() {
                   {s.unlocated ? "–" : locatedStops.findIndex((l) => l.id === s.id) + 1}
                 </motion.span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-slate-900">{s.name}</p>
+                  {(() => {
+                    const href = cart.find((c) => c.id === s.id)?.href;
+                    return href ? (
+                      <Link href={href} className="block truncate text-sm font-bold text-slate-900 hover:text-emerald-700 hover:underline">
+                        {s.name}
+                      </Link>
+                    ) : (
+                      <p className="truncate text-sm font-bold text-slate-900">{s.name}</p>
+                    );
+                  })()}
                   <p className="flex items-center gap-1 truncate text-xs text-slate-500">
                     <MapPin className="h-3 w-3 shrink-0" /> {s.label}
                   </p>

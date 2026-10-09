@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -37,6 +38,7 @@ import { PlaceStatusBadgesCompact } from "@/components/app/PlaceStatusBadges";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
+import { planStopHref } from "@/lib/place-href";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
 
 // Fallback tile look (emoji + gradient) per Overpass category, shown until a
@@ -1090,6 +1092,7 @@ export function LivePlan({
                     )}
                     {bucket.map((s, idx) => {
                       const i = running++;
+                      const href = planStopHref(s.id, s.meta?.citySeedSlug);
                       return (
                 <Fragment key={s.id}>
                 <li>
@@ -1097,6 +1100,9 @@ export function LivePlan({
                     {/* Avatar node — sits on the connecting line, forming a journey path. */}
                     <div className="flex w-16 shrink-0 flex-col items-center">
                       <div className="relative h-16 w-16 overflow-hidden rounded-full ring-4 ring-white shadow-lg shadow-emerald-900/10">
+                        {href && (
+                          <Link href={href} aria-label={`Open ${s.name}`} className="absolute inset-0 z-10" />
+                        )}
                         <PlaceImage
                           name={s.name}
                           storedSrc={s.imageUrl}
@@ -1116,7 +1122,15 @@ export function LivePlan({
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
                           <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
-                          <h3 className="truncate font-extrabold tracking-tight text-slate-900">{s.name}</h3>
+                          <h3 className="truncate font-extrabold tracking-tight text-slate-900">
+                            {href ? (
+                              <Link href={href} className="hover:text-emerald-700 hover:underline">
+                                {s.name}
+                              </Link>
+                            ) : (
+                              s.name
+                            )}
+                          </h3>
                           <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
                           <PlaceStatusBadgesCompact
                             rating={s.rating}
@@ -1154,6 +1168,14 @@ export function LivePlan({
                         >
                           Nearby Restaurants →
                         </a>
+                        {href && (
+                          <Link
+                            href={href}
+                            className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-600 px-3 py-1.5 font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+                          >
+                            View place →
+                          </Link>
+                        )}
                         <a
                           href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
                           target="_blank"

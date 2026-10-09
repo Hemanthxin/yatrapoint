@@ -901,3 +901,27 @@
     transition: none !important;
   }
 }
+
+/* Chapter titles and photos open the place's own page. */
+.ts-txt h3 a {
+  color: inherit;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+  transition: background-size 0.25s ease;
+}
+.ts-txt h3 a:hover,
+.ts-txt h3 a:focus-visible {
+  background-size: 100% 2px;
+}
+.ts-link {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.ts-link:hover {
+  transform: scale(1.03) rotate(-1deg);
+}
+.ts-chips .ts-open a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}

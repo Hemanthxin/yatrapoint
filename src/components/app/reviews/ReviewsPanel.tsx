@@ -95,7 +95,6 @@ export function ReviewsPanel({ placeId, placeName, initial, viewerId, isAdmin, c
 
   return (
     <section
-      id="reviews"
       aria-label={`Reviews of ${placeName}`}
       className={`rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 ${className ?? ""}`}
     >
@@ -108,7 +107,8 @@ export function ReviewsPanel({ placeId, placeName, initial, viewerId, isAdmin, c
         </div>
       </div>
 
-      {/* Summary */}
+      {/* Summary — only once there is something to summarise */}
+      {initial.count > 0 && (
       <div className="mt-4 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-8">
         <div className="text-center sm:px-4">
           <p className="text-4xl font-extrabold leading-none text-slate-900">
@@ -141,6 +141,7 @@ export function ReviewsPanel({ placeId, placeName, initial, viewerId, isAdmin, c
           })}
         </ul>
       </div>
+      )}
 
       {/* Write / edit */}
       {formOpen && (
