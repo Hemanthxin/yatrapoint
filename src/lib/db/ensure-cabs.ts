@@ -91,6 +91,11 @@ export function ensureCabTables(): Promise<void> {
       )`);
       await db.execute(sql`CREATE INDEX IF NOT EXISTS "cab_notifications_driver_idx" ON "cab_notifications" ("driver_id", "created_at")`);
 
+      // Password sign-in for drivers (bcrypt hash) with a lockout after repeated wrong passwords.
+      for (const col of ["password_hash text", "failed_logins integer DEFAULT 0 NOT NULL", "locked_until timestamp"]) {
+        await db.execute(sql.raw(`ALTER TABLE "cab_drivers" ADD COLUMN IF NOT EXISTS ${col}`));
+      }
+
       // Stage timestamps (for the traveller's progress view) and the traveller's rating.
       for (const col of ["accepted_at timestamp", "arrived_at timestamp", "started_at timestamp", "completed_at timestamp", "rating integer", "review varchar(400)"]) {
         await db.execute(sql.raw(`ALTER TABLE "cab_bookings" ADD COLUMN IF NOT EXISTS ${col}`));

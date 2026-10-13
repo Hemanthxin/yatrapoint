@@ -2,6 +2,7 @@
 // routes (/api/driver/*), the user-facing routes (/api/cars/*) and the admin
 // screen, so there is one definition of what a booking is and how it moves.
 import { createHash, randomBytes, randomInt } from "crypto";
+import bcrypt from "bcryptjs";
 import { sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { createId } from "@/lib/utils/id";
@@ -135,6 +136,77 @@ export async function findOrCreateDriver(phone: string, name?: string): Promise<
   return { driver: { id, phone, name: name.trim().slice(0, 120), licenceNo: null }, isNew: true };
 }
 
+// ── password sign-in ──────────────────────────────────────────────────────────
+const MAX_FAILED_LOGINS = 5;
+const LOCK_MINUTES = 10;
+// A hash to compare against when the number isn't registered, so a wrong number
+// takes as long to reject as a wrong password (no account enumeration by timing).
+const DUMMY_HASH = bcrypt.hashSync("not-a-real-password", 10);
+
+export async function signUpDriver(phone: string, name: string, password: string): Promise<{ ok: true; driver: Driver } | { ok: false; error: string }> {
+  const [exists] = await q<{ id: string }>(sql`SELECT id FROM cab_drivers WHERE phone = ${phone}`);
+  if (exists) return { ok: false, error: "An account with this mobile number already exists. Please sign in." };
+  const id = createId();
+  const cleanName = name.trim().slice(0, 120);
+  const passwordHash = await bcrypt.hash(password, 10);
+  await q(sql`INSERT INTO cab_drivers (id, phone, name, password_hash) VALUES (${id}, ${phone}, ${cleanName}, ${passwordHash})`);
+  return { ok: true, driver: { id, phone, name: cleanName, licenceNo: null } };
+}
+
+export async function signInDriver(phone: string, password: string): Promise<{ ok: true; driver: Driver } | { ok: false; error: string }> {
+  const wrong = { ok: false as const, error: "Wrong mobile number or password." };
+  const [row] = await q<Driver & { passwordHash: string | null; failedLogins: number; locked: boolean }>(sql`
+    SELECT id, phone, name, licence_no, password_hash, failed_logins,
+           (locked_until IS NOT NULL AND locked_until > (now() AT TIME ZONE 'UTC')) AS locked
+    FROM cab_drivers WHERE phone = ${phone}`);
+
+  if (!row) {
+    await bcrypt.compare(password, DUMMY_HASH);
+    return wrong;
+  }
+  if (row.locked) return { ok: false, error: `Too many wrong attempts. Try again in ${LOCK_MINUTES} minutes, or ask Saafera support to reset your password.` };
+  if (!row.passwordHash) return { ok: false, error: "This account has no password yet. Please contact Saafera support to set one." };
+
+  if (!(await bcrypt.compare(password, row.passwordHash))) {
+    await q(sql`UPDATE cab_drivers SET failed_logins = failed_logins + 1,
+      locked_until = CASE WHEN failed_logins + 1 >= ${MAX_FAILED_LOGINS} THEN ((now() + make_interval(mins => ${LOCK_MINUTES})) AT TIME ZONE 'UTC') ELSE locked_until END
+      WHERE id = ${row.id}`);
+    return wrong;
+  }
+  if (row.failedLogins > 0) await q(sql`UPDATE cab_drivers SET failed_logins = 0, locked_until = NULL WHERE id = ${row.id}`);
+  return { ok: true, driver: { id: row.id, phone: row.phone, name: row.name, licenceNo: row.licenceNo } };
+}
+
+/** A readable one-time password for an admin reset: no look-alike characters (0/O, 1/l/I). */
+function temporaryPassword(): string {
+  const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for (let i = 0; i < 10; i++) out += chars[randomInt(0, chars.length)];
+  return out;
+}
+
+/** Admin reset: sets a new temporary password, clears any lockout and signs the driver out everywhere. */
+export async function resetDriverPassword(driverId: string): Promise<{ ok: true; password: string } | { ok: false; error: string }> {
+  const [d] = await q<{ id: string }>(sql`SELECT id FROM cab_drivers WHERE id = ${driverId}`);
+  if (!d) return { ok: false, error: "Driver not found." };
+  const password = temporaryPassword();
+  const passwordHash = await bcrypt.hash(password, 10);
+  await q(sql`UPDATE cab_drivers SET password_hash = ${passwordHash}, failed_logins = 0, locked_until = NULL WHERE id = ${driverId}`);
+  await q(sql`DELETE FROM cab_driver_sessions WHERE driver_id = ${driverId}`);
+  return { ok: true, password };
+}
+
+/** The driver changes their own password. Other devices stay signed in only if `keepToken` is given. */
+export async function changeDriverPassword(driverId: string, current: string, next: string, keepToken: string | null): Promise<{ ok: true } | { ok: false; error: string }> {
+  const [row] = await q<{ passwordHash: string | null }>(sql`SELECT password_hash FROM cab_drivers WHERE id = ${driverId}`);
+  if (!row?.passwordHash || !(await bcrypt.compare(current, row.passwordHash))) return { ok: false, error: "Your current password is not right." };
+  const passwordHash = await bcrypt.hash(next, 10);
+  await q(sql`UPDATE cab_drivers SET password_hash = ${passwordHash}, failed_logins = 0, locked_until = NULL WHERE id = ${driverId}`);
+  // sign out every other device
+  await q(sql`DELETE FROM cab_driver_sessions WHERE driver_id = ${driverId} AND token_hash <> ${keepToken ? hash(keepToken) : ""}`);
+  return { ok: true };
+}
+
 export async function issueDriverToken(driverId: string): Promise<string> {
   const token = randomBytes(32).toString("base64url");
   const expires = new Date(Date.now() + SESSION_DAYS * 86400000);
@@ -236,6 +308,16 @@ export async function listVehiclesForAdmin() {
     SELECT v.*, d.name AS driver_name, d.phone AS driver_phone, d.licence_no
     FROM cab_vehicles v JOIN cab_drivers d ON d.id = v.driver_id
     ORDER BY CASE v.status WHEN 'pending' THEN 0 WHEN 'approved' THEN 1 ELSE 2 END, v.created_at DESC`);
+}
+
+/** Every registered driver — including ones who haven't added a vehicle yet — for password resets. */
+export async function listDriversForAdmin() {
+  return q<{ id: string; name: string; phone: string; createdAt: string; hasPassword: boolean; locked: boolean; vehicle: string | null; vehicleStatus: string | null }>(sql`
+    SELECT d.id, d.name, d.phone, d.created_at, (d.password_hash IS NOT NULL) AS has_password,
+           (d.locked_until IS NOT NULL AND d.locked_until > (now() AT TIME ZONE 'UTC')) AS locked,
+           v.make_model AS vehicle, v.status AS vehicle_status
+    FROM cab_drivers d LEFT JOIN cab_vehicles v ON v.driver_id = d.id
+    ORDER BY d.created_at DESC`);
 }
 
 export async function reviewVehicle(vehicleId: string, approve: boolean, reason?: string): Promise<void> {

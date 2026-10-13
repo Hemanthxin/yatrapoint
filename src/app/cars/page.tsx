@@ -11,7 +11,7 @@ import { CarsBrowser } from "./CarsBrowser";
 export const dynamic = "force-dynamic";
 
 // Where drivers register their vehicle. Override with NEXT_PUBLIC_CAPTAIN_URL if the app moves.
-const CAPTAIN_URL = process.env.NEXT_PUBLIC_CAPTAIN_URL ?? "https://saafera-captain.vercel.app";
+const CAPTAIN_URL = process.env.NEXT_PUBLIC_CAPTAIN_URL ?? "https://captain.saafera.com";
 
 export default async function CarsPage() {
   const session = await auth();
