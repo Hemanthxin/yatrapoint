@@ -4,7 +4,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { blendLook, makeLiveLook, sunDirection } from "./presets";
 import { ROAD_LEN, WATER_Y, buildTerrain, fbm, groundHeight, lerp, nearestRoad, noise2, roadAt, smoothstep } from "./terrain";
 import { bubbleIcon, cloudTexture, furBump, glowTexture, runeTexture, signTexture, starTexture } from "./textures";
-import { buildBear, buildFox, buildOwl, type Character } from "./characters";
+import { buildBear, buildFox, buildButterfly, type Character } from "./characters";
 
 export type Quality = "high" | "medium" | "low";
 
@@ -78,7 +78,7 @@ export class World {
   clouds: THREE.Sprite[] = [];
   bear = buildBear();
   fox = buildFox();
-  owl = buildOwl();
+  butterfly = buildButterfly();
   castGroup = new THREE.Group();
   focus = new THREE.Vector3();
 
@@ -98,7 +98,7 @@ export class World {
   private moteBase!: Float32Array;
   private sparks!: THREE.Points;
   private smoke: THREE.Sprite[] = [];
-  private yaw: Record<string, number> = { bear: Math.PI, fox: Math.PI, owl: Math.PI };
+  private yaw: Record<string, number> = { bear: Math.PI, fox: Math.PI, butterfly: Math.PI };
   private phase = { bear: 0, fox: 0 };
   private lastS = 0;
   private walkEase = 0;
@@ -223,7 +223,7 @@ export class World {
     this.buildBubbles();
 
     // ── the cast ──
-    for (const c of [this.bear, this.fox, this.owl]) {
+    for (const c of [this.bear, this.fox, this.butterfly]) {
       this.castGroup.add(c.group);
     }
     sc.add(this.castGroup);
@@ -822,7 +822,7 @@ export class World {
     // the cast walks AWAY from camera along the road (−z), so the road direction is their facing; the camera chooses what to see
     place(this.bear, "bear", pose.s, 0.55, 0, 0);
     place(this.fox, "fox", pose.s - 0.4, -0.95, 0, 1);
-    place(this.owl, "owl", pose.s + 0.9, 0.05, 2.6 + Math.sin(time * 2) * 0.1, 2);
+    place(this.butterfly, "butterfly", pose.s + 0.9, 0.05, 2.6 + Math.sin(time * 2) * 0.1, 2);
     // chat: whoever speaks hops a little
     for (let i = 0; i < 3; i++) {
       const talk = pose.talking === i;
@@ -831,7 +831,7 @@ export class World {
     const ctx = { dt, time, step, walk: w, pointer: this.pointer, glow: this.look.glow, talking: false };
     this.bear.update({ ...ctx, talking: pose.talking === 0 });
     this.fox.update({ ...ctx, talking: pose.talking === 1 });
-    this.owl.update({ ...ctx, talking: pose.talking === 2 });
+    this.butterfly.update({ ...ctx, talking: pose.talking === 2 });
     const mid = this.bear.group.position;
     this.focus.lerp(mid, 1 - Math.pow(0.0001, dt));
   }

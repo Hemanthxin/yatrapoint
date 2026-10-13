@@ -345,72 +345,113 @@ export function buildFox(): Character {
   };
 }
 
-/* ───────────────────────────── OWL (Pip) ───────────────────────────── */
-export function buildOwl(): Character {
+/* ───────────────────────────── BUTTERFLY (Pip) ───────────────────────────── */
+export function buildButterfly(): Character {
   const root = new THREE.Group();
   const body = new THREE.Group();
   root.add(body);
-  const brown = fur("#8d6a45", "#e6c79a");
-  const dark = fur("#65472b", "#c9a074");
-  const cream = fur("#f2dfba", "#fff6e2", 0.9);
-  const orange = new THREE.MeshStandardMaterial({ color: "#f19a35", roughness: 0.5 });
+  const gold = fur("#fcc419", "#fff0b0", 0.7);
+  const amber = fur("#f6a800", "#ffe08a", 0.7);
+  const stripe = new THREE.MeshStandardMaterial({ color: "#f9831f", roughness: 0.55 });
+  const pink = new THREE.MeshStandardMaterial({ color: "#ef7d9a", roughness: 0.5 });
+  const wingMat = (color: string) =>
+    new THREE.MeshStandardMaterial({ color, roughness: 0.45, emissive: new THREE.Color(color), emissiveIntensity: 0.18, side: THREE.DoubleSide });
+  const purple = wingMat("#6a2d9a");
+  const orange = wingMat("#f9831f");
+  const hot = wingMat("#ef4f94");
+  const sun = wingMat("#fcc419");
+  const blue = wingMat("#2f8fe0");
+  const green = wingMat("#7ccf2b");
+  const violet = wingMat("#b04ad0");
+  const dot = new THREE.MeshBasicMaterial({ color: "#ffffff" });
 
-  ell(body, brown, 0.4, 0.46, 0.34, 0, 0, 0);
-  ell(body, cream, 0.27, 0.34, 0.14, 0, -0.06, 0.24);
-  for (let r = 0; r < 3; r++) for (let k = -1; k <= 1; k++) ell(body, dark, 0.045, 0.028, 0.03, k * 0.09 + (r % 2) * 0.045, -0.12 + r * -0.1, 0.35).castShadow = false;
-  const head = new THREE.Group();
-  head.position.set(0, 0.42, 0.06);
-  body.add(head);
-  ell(head, brown, 0.38, 0.3, 0.3);
-  for (const s of [-1, 1]) {
-    ell(head, cream, 0.17, 0.17, 0.08, s * 0.14, 0.02, 0.26);
-    const e = new THREE.Group();
-    e.position.set(s * 0.14, 0.02, 0.31);
-    ell(e, new THREE.MeshStandardMaterial({ color: "#fffdf4", roughness: 0.3 }), 0.1, 0.1, 0.05);
-    ell(e, eyeMat(), 0.065, 0.07, 0.05, 0, 0, 0.03);
-    ell(e, white(), 0.02, 0.02, 0.02, 0.02, 0.03, 0.07).castShadow = false;
-    head.add(e);
-    const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 14), dark);
-    tuft.position.set(s * 0.22, 0.28, 0);
-    tuft.rotation.z = -s * 0.4;
-    head.add(tuft);
+  // striped abdomen, a round thorax and a coin on the tummy
+  ell(body, gold, 0.15, 0.33, 0.14, 0, -0.14, 0);
+  for (const y of [-0.02, -0.12, -0.22, -0.31]) {
+    const r = 0.15 * Math.sqrt(Math.max(0.05, 1 - ((y + 0.14) / 0.33) ** 2));
+    ell(body, stripe, r + 0.008, 0.026, r * 0.94 + 0.008, 0, y, 0).castShadow = false;
   }
-  const beak = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.12, 14), orange);
-  beak.rotation.x = Math.PI / 2;
-  beak.position.set(0, -0.03, 0.36);
-  head.add(beak);
-  // wings: flat paddles on shoulder pivots (flap continuously — the owl hovers)
-  const wingL = new THREE.Group();
-  wingL.position.set(-0.34, 0.1, 0);
-  const wl = ell(wingL, dark, 0.34, 0.06, 0.24, -0.3, 0, 0);
-  wl.castShadow = true;
-  body.add(wingL);
-  const wingR = new THREE.Group();
-  wingR.position.set(0.34, 0.1, 0);
-  ell(wingR, dark, 0.34, 0.06, 0.24, 0.3, 0, 0);
-  body.add(wingR);
-  // coin pouch + feet
-  const pouch = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 12), leather());
-  pouch.scale.set(1, 0.9, 0.8);
-  pouch.position.set(0.18, -0.28, 0.2);
-  body.add(pouch);
-  const coin = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.015, 20), new THREE.MeshStandardMaterial({ color: "#f1cf6a", metalness: 0.9, roughness: 0.25 }));
-  coin.position.set(0.18, -0.2, 0.27);
+  ell(body, gold, 0.15, 0.15, 0.14, 0, 0.17, 0);
+  const coin = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.015, 20), new THREE.MeshStandardMaterial({ color: "#f1cf6a", emissive: new THREE.Color("#c99a2a"), emissiveIntensity: 0.5, metalness: 0.3, roughness: 0.4 }));
+  coin.position.set(0, -0.14, 0.145);
   coin.rotation.x = Math.PI / 2;
   body.add(coin);
+
+  // head — round and cheerful
+  const head = new THREE.Group();
+  head.position.set(0, 0.46, 0.04);
+  body.add(head);
+  ell(head, gold, 0.27, 0.26, 0.25);
   for (const s of [-1, 1]) {
-    const foot = new THREE.Mesh(new THREE.CapsuleGeometry(0.025, 0.07, 4, 8), orange);
-    foot.position.set(s * 0.1, -0.5, 0.06);
-    body.add(foot);
+    const e = new THREE.Group();
+    e.position.set(s * 0.1, 0.04, 0.2);
+    ell(e, new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.3 }), 0.085, 0.1, 0.05);
+    ell(e, new THREE.MeshStandardMaterial({ color: "#2a62c9", roughness: 0.25 }), 0.057, 0.067, 0.04, 0, -0.005, 0.03);
+    ell(e, eyeMat(), 0.034, 0.04, 0.035, 0, -0.005, 0.055);
+    ell(e, white(), 0.015, 0.015, 0.012, 0.018, 0.022, 0.085).castShadow = false;
+    head.add(e);
+    ell(head, new THREE.MeshStandardMaterial({ color: "#ff9d92", roughness: 0.7, transparent: true, opacity: 0.5 }), 0.06, 0.036, 0.03, s * 0.19, -0.07, 0.17).castShadow = false;
+    // antenna: a thin stalk with a ball on the end, leaning outwards
+    const ant = new THREE.Group();
+    ant.position.set(s * 0.09, 0.22, 0);
+    ant.rotation.z = -s * 0.4;
+    const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.012, 0.3, 8), new THREE.MeshStandardMaterial({ color: "#5a3a1a", roughness: 0.6 }));
+    stalk.position.y = 0.15;
+    ant.add(stalk);
+    ell(ant, new THREE.MeshStandardMaterial({ color: "#5a3a1a", roughness: 0.5 }), 0.035, 0.035, 0.035, 0, 0.31, 0);
+    head.add(ant);
   }
+  ell(head, pink, 0.036, 0.028, 0.03, 0, -0.06, 0.235);
+  const smile = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.011, 8, 24, Math.PI), new THREE.MeshStandardMaterial({ color: "#a52a44", roughness: 0.5 }));
+  smile.position.set(0, -0.075, 0.225);
+  smile.rotation.z = Math.PI;
+  head.add(smile);
+
+  // little arms, thrown up
+  for (const s of [-1, 1]) {
+    const arm = new THREE.Group();
+    arm.position.set(s * 0.13, 0.14, 0.07);
+    arm.rotation.z = -s * 1.0;
+    capsule(arm, amber, 0.035, 0.1, 0, -0.1, 0);
+    ell(arm, gold, 0.05, 0.05, 0.05, 0, -0.2, 0);
+    body.add(arm);
+  }
+
+  // wings: each side is an upper + a lower lobe, hinged at the shoulder so they
+  // can flap. Layers sit a hair apart in z so they don't z-fight.
+  const wing = (s: number) => {
+    const hinge = new THREE.Group();
+    hinge.position.set(s * 0.1, 0.14, -0.02);
+    const lobe = (cx: number, cy: number, tilt: number, rx: number, ry: number, layers: Array<[THREE.Material, number, number, number, number]>, dots: number[]) => {
+      const g = new THREE.Group();
+      g.position.set(s * cx, cy, 0);
+      g.rotation.z = tilt * s;
+      ell(g, purple, rx, ry, 0.025, 0, 0, 0);
+      layers.forEach(([mat, lx, ly, lrx, lry], i) => ell(g, mat, lrx, lry, 0.025, s * lx, ly, 0.012 + i * 0.008).castShadow = false);
+      for (const t of dots) {
+        const d = ell(g, dot, 0.026, 0.026, 0.02, s * Math.cos(t) * rx * 0.87, Math.sin(t) * ry * 0.87, 0.04);
+        d.castShadow = false;
+      }
+      hinge.add(g);
+    };
+    // upper lobe — orange / pink / yellow petals
+    lobe(0.4, 0.22, 0.5, 0.46, 0.34, [[orange, 0.04, 0.02, 0.36, 0.24], [hot, 0.02, -0.07, 0.3, 0.1], [sun, -0.12, 0.08, 0.2, 0.14]], [-0.9, -0.4, 0.1, 0.6, 1.1, 1.6, 2.1]);
+    // lower lobe — blue / green / violet petals
+    lobe(0.3, -0.2, -0.45, 0.36, 0.28, [[blue, 0.03, 0.04, 0.27, 0.17], [green, -0.02, -0.04, 0.2, 0.1], [violet, -0.12, 0, 0.12, 0.13]], [-2.0, -1.5, -1.0, -0.5, 0, 0.5]);
+    body.add(hinge);
+    return hinge;
+  };
+  const wingL = wing(-1);
+  const wingR = wing(1);
 
   const hy = new THREE.Vector2();
   return {
     group: root,
     update(c) {
-      const flap = Math.sin(c.time * 17) * (0.55 + c.walk * 0.25);
-      wingL.rotation.z = flap + 0.3;
-      wingR.rotation.z = -flap - 0.3;
+      // wings open and close around the body (the butterfly hovers)
+      const a = 0.4 + Math.sin(c.time * 11) * 0.5 * (1 + c.walk * 0.3);
+      wingL.rotation.y = a;
+      wingR.rotation.y = -a;
       body.position.y = Math.sin(c.time * 2.3) * 0.06;
       body.rotation.x = 0.1 + c.walk * 0.1;
       hy.lerp(c.pointer, 1 - Math.pow(0.003, c.dt));
