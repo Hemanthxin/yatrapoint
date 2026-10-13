@@ -8,7 +8,7 @@ import type { UpcomingTrip } from "@/lib/queries/trip-plans";
 import type { NearPlace } from "@/app/api/nearby-places/route";
 import { KIND_EMOJI, kindOf } from "@/app/budget-planner/quest/story-text";
 import { Cloud } from "@/components/story/scenes";
-import { Fox, Owl } from "@/components/app/journey/characters";
+import { Fox, Butterfly } from "@/components/app/journey/characters";
 
 type Phase = "dawn" | "morning" | "afternoon" | "golden" | "night";
 interface Weather {
@@ -88,7 +88,7 @@ function WeatherCard({ weather, phase }: { weather: Weather | null; phase: Phase
         )}
         <span className="tc-pip" aria-hidden>
           <span>
-            <Owl />
+            <Butterfly />
           </span>
         </span>
         <p className="tc-bubble">{weather ? adviceFor(weather) : "Pip is peeking out of the window…"}</p>

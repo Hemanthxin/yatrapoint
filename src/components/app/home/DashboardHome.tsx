@@ -10,7 +10,7 @@ import { formatINR } from "@/lib/format";
 import type { DashboardStats, UpcomingTrip } from "@/lib/queries/trip-plans";
 import { MountainScape, DAWN_LAYERS, MOONLIT_LAYERS } from "@/components/storybook/MountainScape";
 import { Bear, Cloud } from "@/components/story/scenes";
-import { Fox, Owl } from "@/components/app/journey/characters";
+import { Fox, Butterfly } from "@/components/app/journey/characters";
 import { Basecamp } from "@/components/app/journey/stations";
 import { useLiveWeather } from "@/components/app/dashboard3d/WeatherModule";
 import { useNearbyPlaces } from "@/components/app/dashboard3d/NearbyModule";
@@ -231,7 +231,7 @@ export function DashboardHome({ firstName, stats, upcoming, festival }: Props) {
           </div>
           <div className={`wh-c wh-pip ${say.who === 2 ? "talk" : ""}`} aria-hidden>
             <div className="wh-hover">
-              <Owl />
+              <Butterfly />
             </div>
           </div>
           <div className={`wh-say who-${say.who}`} key={`${say.who}-${say.text}`} role="status" aria-live="polite">

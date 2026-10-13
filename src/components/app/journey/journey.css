@@ -289,18 +289,18 @@ html:root[data-theme="dark"] .jr-link {
 }
 @keyframes ow-flap-l {
   from {
-    transform: rotate(-26deg);
+    transform: scaleX(1);
   }
   to {
-    transform: rotate(12deg);
+    transform: scaleX(0.38);
   }
 }
 @keyframes ow-flap-r {
   from {
-    transform: rotate(26deg);
+    transform: scaleX(1);
   }
   to {
-    transform: rotate(-12deg);
+    transform: scaleX(0.38);
   }
 }
 @keyframes jr-blink {

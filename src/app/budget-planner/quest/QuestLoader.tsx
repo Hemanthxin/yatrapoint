@@ -5,7 +5,7 @@ import "@/components/app/journey/journey.css";
 import { useEffect, useMemo, useState } from "react";
 import { makeRidge, ridgeFill } from "@/components/storybook/paint";
 import { Bear } from "@/components/story/scenes";
-import { Fox, Owl } from "@/components/app/journey/characters";
+import { Fox, Butterfly } from "@/components/app/journey/characters";
 import { formatINR } from "@/lib/format";
 
 /** A ridge that tiles forever: the ridge, then its mirror image, so both ends meet at the same height. */
@@ -79,7 +79,7 @@ export function QuestLoader({ budget, people, days, stops }: { budget: number; p
           </div>
           <div className="ql-c ql-pip">
             <div className="jr-hover">
-              <Owl />
+              <Butterfly />
             </div>
           </div>
         </div>

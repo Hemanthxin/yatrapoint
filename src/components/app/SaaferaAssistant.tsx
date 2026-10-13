@@ -4,7 +4,7 @@ import "./assistant.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { X, Send, RotateCcw } from "lucide-react";
 import { useLocation } from "./LocationContext";
-import { Owl } from "./journey/characters";
+import { Butterfly } from "./journey/characters";
 import { MountainScape, type ScapeLayer } from "@/components/storybook/MountainScape";
 
 interface ChatMessage {
@@ -198,7 +198,7 @@ export function SaaferaAssistant() {
 
   return (
     <>
-      {/* Launcher — Pip the owl in a gold-ringed badge. Wings beat on hover, the
+      {/* Launcher — Pip the butterfly in a gold-ringed badge. Wings beat on hover, the
           pupils follow your cursor, and a speech bubble floats out now and then.
           Rendered only while CLOSED: the docked panel has its own close button,
           and a launcher on top of the open panel would sit over its Send button. */}
@@ -218,7 +218,7 @@ export function SaaferaAssistant() {
           >
             <span aria-hidden className="sa-fab-ring" />
             <span className="sa-owl sa-hover" aria-hidden>
-              <Owl />
+              <Butterfly />
             </span>
             <span aria-hidden className="sa-dot" />
           </button>
@@ -237,7 +237,7 @@ export function SaaferaAssistant() {
             <div className="sa-head-row">
               <span className={`sa-owl sa-pip ${sending ? "is-busy" : ""}`} aria-hidden>
                 <span className="sa-hover">
-                  <Owl />
+                  <Butterfly />
                 </span>
               </span>
               <div className="sa-title">
@@ -272,7 +272,7 @@ export function SaaferaAssistant() {
               <div className="sa-hero" aria-hidden>
                 <span className="sa-owl sa-hero-pip">
                   <span className="sa-hover">
-                    <Owl />
+                    <Butterfly />
                   </span>
                 </span>
                 <i className="sa-spark sa-s1">✦</i>
@@ -369,7 +369,7 @@ export function SaaferaAssistant() {
 function Avatar({ busy }: { busy?: boolean }) {
   return (
     <span className={`sa-av sa-owl ${busy ? "is-busy" : ""}`} aria-hidden>
-      <Owl />
+      <Butterfly />
     </span>
   );
 }

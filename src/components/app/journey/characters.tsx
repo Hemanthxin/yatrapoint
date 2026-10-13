@@ -1,6 +1,6 @@
 // The companions. (Teddy the bear lives in components/story/scenes.tsx and is
 // reused as-is.) Every part that moves has a class the journey drives or CSS
-// animates — fx-* for Juno, ow-* for Pip.
+// animates — fx-* for Juno, ow-* for Pip the butterfly.
 
 /** Juno the fox — draws the maps. Faces right. */
 export function Fox() {
@@ -70,54 +70,93 @@ export function Fox() {
   );
 }
 
-/** Pip the owl — keeps the coins. Hovers; wings beat continuously. */
-export function Owl() {
+/**
+ * Pip the butterfly — keeps the coins. Hovers; wings beat continuously.
+ * The wing/eye hooks keep their original `ow-*` class names because the CSS
+ * (journey.css, assistant.css) and the assistant's pointer-follow code key on
+ * them: .ow-wing-l/.ow-wing-r flap, .ow-eyes blinks, .ow-look follows the cursor.
+ */
+function ButterflyWing() {
+  // Drawn for the left side; the right wing is this same shape mirrored.
   return (
-    <svg viewBox="0 0 140 150" className="jr-char-svg" aria-hidden>
-      <g filter="url(#sb-rough)" stroke="#4a3220" strokeWidth="2" strokeLinejoin="round">
-        {/* wings (behind) */}
-        <g className="ow-wing ow-wing-l" style={{ transformOrigin: "40px 84px" }}>
-          <path d="M42 66C10 70 -2 100 10 126C26 122 44 108 50 92Z" fill="#6f5233" />
-          <path d="M18 112l8 -10M28 106l8 -10" stroke="#9a7a52" strokeWidth="2.4" fill="none" />
+    <>
+      {/* upper wing */}
+      <path d="M74 72C58 24 14 14 10 46C8 74 40 92 74 90Z" fill="#6a2d9a" stroke="#4b1d70" />
+      <path d="M71 76C57 40 26 30 23 50C23 68 46 82 71 84Z" fill="#f9831f" stroke="none" />
+      <path d="M70 80C54 62 34 62 31 70C33 80 52 86 70 87Z" fill="#ef4f94" stroke="none" />
+      <path d="M69 70C61 46 48 42 47 54C49 63 59 74 69 78Z" fill="#fcc419" stroke="none" />
+      {[[14, 40], [12, 52], [16, 64], [26, 76], [40, 84]].map(([x, y]) => (
+        <circle key={`u${x}${y}`} cx={x} cy={y} r="2.3" fill="#fff" stroke="none" />
+      ))}
+      {/* lower wing */}
+      <path d="M74 92C50 90 22 100 24 124C28 144 62 140 76 112Z" fill="#6a2d9a" stroke="#4b1d70" />
+      <path d="M71 98C51 96 35 104 35 114C41 124 61 120 73 108Z" fill="#2f8fe0" stroke="none" />
+      <path d="M71 106C55 106 45 114 47 122C55 128 67 122 73 114Z" fill="#7ccf2b" stroke="none" />
+      <path d="M73 113C63 117 57 126 63 130C71 128 75 120 75 113Z" fill="#b04ad0" stroke="none" />
+      {[[28, 106], [30, 118], [38, 130], [52, 135]].map(([x, y]) => (
+        <circle key={`l${x}${y}`} cx={x} cy={y} r="2.1" fill="#fff" stroke="none" />
+      ))}
+    </>
+  );
+}
+
+export function Butterfly() {
+  return (
+    <svg viewBox="0 0 160 150" className="jr-char-svg" aria-hidden>
+      <g filter="url(#sb-rough)" stroke="#8a4b00" strokeWidth="1.2" strokeLinejoin="round">
+        {/* wings (behind) — flap by squeezing toward the body */}
+        <g className="ow-wing ow-wing-l" style={{ transformOrigin: "80px 84px" }}>
+          <ButterflyWing />
         </g>
-        <g className="ow-wing ow-wing-r" style={{ transformOrigin: "100px 84px" }}>
-          <path d="M98 66C130 70 142 100 130 126C114 122 96 108 90 92Z" fill="#6f5233" />
-          <path d="M122 112l-8 -10M112 106l-8 -10" stroke="#9a7a52" strokeWidth="2.4" fill="none" />
-        </g>
-        {/* body */}
-        <ellipse cx="70" cy="86" rx="37" ry="43" fill="#9a7650" />
-        <ellipse cx="70" cy="100" rx="24" ry="30" fill="#ead3a8" stroke="none" />
-        {[0, 1, 2].map((r) =>
-          [0, 1, 2].map((c) => (
-            <path key={`${r}${c}`} d={`M${54 + c * 16 - (r % 2) * 8} ${88 + r * 12}q8 8 16 0`} fill="none" stroke="#b8985f" strokeWidth="2" />
-          )),
-        )}
-        {/* ear tufts */}
-        <path d="M40 54L36 28L58 46Z" fill="#7a5a3a" />
-        <path d="M100 54L104 28L82 46Z" fill="#7a5a3a" />
-        {/* face */}
-        <circle cx="54" cy="64" r="19" fill="#fff3d6" />
-        <circle cx="86" cy="64" r="19" fill="#fff3d6" />
-        <g className="ow-eyes" style={{ transformOrigin: "70px 64px" }}>
-          {/* .ow-look can be nudged from outside so the owl's gaze follows the pointer */}
-          <g className="ow-look">
-            <circle cx="56" cy="65" r="9" fill="#2a170d" stroke="none" />
-            <circle cx="84" cy="65" r="9" fill="#2a170d" stroke="none" />
-            <circle cx="59" cy="62" r="2.6" fill="#fff" stroke="none" />
-            <circle cx="87" cy="62" r="2.6" fill="#fff" stroke="none" />
+        <g className="ow-wing ow-wing-r" style={{ transformOrigin: "80px 84px" }}>
+          <g transform="translate(160 0) scale(-1 1)">
+            <ButterflyWing />
           </g>
         </g>
-        <path d="M70 72L63 82L70 90L77 82Z" fill="#f09a3a" />
-        {/* coin pouch */}
+        {/* striped abdomen */}
+        <ellipse cx="80" cy="110" rx="12" ry="27" fill="#fcc419" />
+        {[96, 108, 120, 131].map((y, i) => (
+          <path key={y} d={`M${69 + i * 0.6} ${y}q${11 - i * 0.6} 6 ${22 - i * 1.2} 0`} fill="none" stroke="#f9831f" strokeWidth="4.5" strokeLinecap="round" />
+        ))}
+        {/* arms thrown up, tiny hands */}
+        <path d="M70 90Q58 88 52 76" fill="none" stroke="#f6a800" strokeWidth="5" strokeLinecap="round" />
+        <path d="M90 90Q102 88 108 76" fill="none" stroke="#f6a800" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="51" cy="74" r="4.6" fill="#fcc419" />
+        <circle cx="109" cy="74" r="4.6" fill="#fcc419" />
+        {/* coin pouch on the tummy */}
         <g>
-          <path d="M70 118c-8 0 -14 4 -14 11h28c0 -7 -6 -11 -14 -11Z" fill="#8a5a2c" />
-          <circle cx="70" cy="126" r="9.5" fill="#f1cf6a" stroke="#8a6a1c" />
-          <text x="70" y="130.5" textAnchor="middle" fontSize="12" fontWeight="700" fill="#7a5a10" stroke="none">
+          <circle cx="80" cy="112" r="8.5" fill="#f1cf6a" stroke="#8a6a1c" />
+          <text x="80" y="116" textAnchor="middle" fontSize="11" fontWeight="700" fill="#7a5a10" stroke="none">
             ₹
           </text>
         </g>
-        {/* feet */}
-        <path d="M54 128l-4 12m4 -12l0 12m4 -12l4 12M86 128l-4 12m4 -12l0 12m4 -12l4 12" stroke="#f09a3a" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* antennae */}
+        <path d="M70 38Q66 20 74 11" fill="none" stroke="#5a3a1a" strokeWidth="3" strokeLinecap="round" />
+        <path d="M90 38Q96 20 90 12" fill="none" stroke="#5a3a1a" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="74" cy="10" r="4" fill="#5a3a1a" stroke="none" />
+        <circle cx="90" cy="11" r="4" fill="#5a3a1a" stroke="none" />
+        {/* round head */}
+        <circle cx="80" cy="60" r="27" fill="#fcc419" />
+        <ellipse cx="72" cy="46" rx="9" ry="4.5" fill="#fff" opacity="0.28" stroke="none" />
+        <g className="ow-eyes" style={{ transformOrigin: "80px 58px" }}>
+          {/* .ow-look can be nudged from outside so the butterfly's gaze follows the pointer */}
+          <g className="ow-look">
+            <ellipse cx="68" cy="58" rx="8" ry="9.5" fill="#fff" stroke="#8a4b00" strokeWidth="0.8" />
+            <ellipse cx="92" cy="58" rx="8" ry="9.5" fill="#fff" stroke="#8a4b00" strokeWidth="0.8" />
+            <circle cx="69" cy="59" r="5.6" fill="#2a62c9" stroke="none" />
+            <circle cx="91" cy="59" r="5.6" fill="#2a62c9" stroke="none" />
+            <circle cx="69" cy="59" r="3" fill="#14213d" stroke="none" />
+            <circle cx="91" cy="59" r="3" fill="#14213d" stroke="none" />
+            <circle cx="71" cy="56" r="1.9" fill="#fff" stroke="none" />
+            <circle cx="93" cy="56" r="1.9" fill="#fff" stroke="none" />
+          </g>
+        </g>
+        <path d="M60 46q6 -4 12 -1M88 45q6 -3 12 1" fill="none" strokeWidth="1.6" strokeLinecap="round" />
+        <ellipse cx="80" cy="67" rx="3.4" ry="2.6" fill="#ef7d9a" stroke="none" />
+        <path d="M70 71Q80 84 90 71Z" fill="#c2334d" strokeWidth="1" />
+        <path d="M75 77Q80 81 85 77Q80 74 75 77Z" fill="#ff8aa8" stroke="none" />
+        <ellipse cx="59" cy="70" rx="5" ry="3" fill="#f08a7a" opacity="0.5" stroke="none" />
+        <ellipse cx="101" cy="70" rx="5" ry="3" fill="#f08a7a" opacity="0.5" stroke="none" />
       </g>
     </svg>
   );

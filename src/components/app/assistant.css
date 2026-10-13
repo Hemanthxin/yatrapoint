@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   SAAFERA ASSISTANT — "Pip the owl". Works on phones and desktop; colours come
+   SAAFERA ASSISTANT — "Pip the butterfly". Works on phones and desktop; colours come
    only from tokens that exist on every screen size (--surface, --text …) so the
    light and dark themes both stay readable.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ───────── the owl: bobbing, blinking, wing-beats ───────── */
+/* ───────── the butterfly: bobbing, blinking, wing-beats ───────── */
 .sa-owl {
   display: block;
   line-height: 0;
@@ -67,18 +67,18 @@
 }
 @keyframes sa-flap-l {
   from {
-    transform: rotate(-24deg);
+    transform: scaleX(1);
   }
   to {
-    transform: rotate(12deg);
+    transform: scaleX(0.38);
   }
 }
 @keyframes sa-flap-r {
   from {
-    transform: rotate(24deg);
+    transform: scaleX(1);
   }
   to {
-    transform: rotate(-12deg);
+    transform: scaleX(0.38);
   }
 }
 

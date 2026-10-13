@@ -5,7 +5,7 @@ import "@/components/app/journey/journey.css"; // shared blink / wing-beat / hov
 import { useEffect, useRef, useState } from "react";
 import { MountainScape, type ScapeLayer } from "@/components/storybook/MountainScape";
 import { Bear } from "@/components/story/scenes";
-import { Fox, Owl } from "@/components/app/journey/characters";
+import { Fox, Butterfly } from "@/components/app/journey/characters";
 
 export const CHAPTERS = [
   { title: "The Map Room", where: "Where does the road begin?" },
@@ -49,7 +49,7 @@ export function QuestGuide({ step, who, text }: { step: number; who: 0 | 1 | 2; 
         </div>
         <div className={`qg-c qg-pip ${who === 2 ? "is-talking" : ""}`}>
           <div className="jr-hover">
-            <Owl />
+            <Butterfly />
           </div>
         </div>
       </div>

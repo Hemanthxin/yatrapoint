@@ -10,7 +10,7 @@ import { ArrowRight, Binoculars, Briefcase, CalendarClock, Mountain, Users, Wall
 import { formatINR } from "@/lib/format";
 import type { DashboardStats } from "@/lib/queries/trip-plans";
 import { Bear, Bird, Cloud, RoadStrip, WideRidges, roadY } from "@/components/story/scenes";
-import { Fox, Owl } from "./characters";
+import { Fox, Butterfly } from "./characters";
 import { Basecamp, CoinBridge, FestivalVillage, LanternForest, Summit } from "./stations";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -485,7 +485,7 @@ export function JourneyStory({ firstName, stats, festival }: Props) {
             </div>
             <div className="jr-char jr-pip" aria-hidden>
               <div className="jr-hover">
-                <Owl />
+                <Butterfly />
               </div>
               {say?.who === 2 && (
                 <div className="jr-say" key={say.text}>
