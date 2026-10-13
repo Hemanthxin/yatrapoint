@@ -14,6 +14,7 @@ import {
   Settings,
   LogOut,
   ArrowRight,
+  CarFront,
   type LucideIcon,
 } from "lucide-react";
 
@@ -31,6 +32,7 @@ const NAV: NavItem[] = [
   { href: "/budget-planner", label: "Trip Planner", icon: Wallet },
   { href: "/group-trip", label: "Group Trip Planner", icon: Users },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
+  { href: "/cars", label: "Book a Car", icon: CarFront },
   { href: "/community", label: "Community", icon: Users },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
   { href: "/profile", label: "Your Travel Places", icon: Bookmark },

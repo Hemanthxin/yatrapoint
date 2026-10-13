@@ -41,3 +41,46 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });
+
+// ── Push notifications (car bookings) ───────────────────────────────────────
+// Only shows a notification and tells any open Saafera tab to refresh; it never
+// caches or touches page/API requests (see the note at the top of this file).
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    data = { title: "Saafera", body: event.data ? event.data.text() : "" };
+  }
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(data.title || "Saafera", {
+        body: data.body || "",
+        tag: data.tag || undefined,
+        icon: "/icons/icon-192.png",
+        badge: "/icons/icon-192.png",
+        data: { url: data.url || "/cars/bookings" },
+        vibrate: [200, 100, 200],
+      }),
+      self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+        clients.forEach((c) => c.postMessage({ type: "saafera-push" }));
+      }),
+    ])
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || "/cars/bookings";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      for (const c of clients) {
+        if ("focus" in c) {
+          c.navigate(url).catch(() => {});
+          return c.focus();
+        }
+      }
+      return self.clients.openWindow(url);
+    })
+  );
+});

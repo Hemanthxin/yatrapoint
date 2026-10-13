@@ -14,6 +14,7 @@ import {
   ImageIcon,
   CalendarClock,
   Star,
+  CarFront,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,6 +34,7 @@ const NAV: NavItem[] = [
   { href: "/admin/places/new", label: "Add Place", icon: PlusCircle, match: "/admin/places/new" },
   { href: "/admin/images", label: "Place Photos", icon: ImageIcon, match: "/admin/images" },
   { href: "/admin/place-sync", label: "Ratings & Hours", icon: Star, match: "/admin/place-sync" },
+  { href: "/admin/drivers", label: "Cab Drivers", icon: CarFront, match: "/admin/drivers" },
   { href: "/admin/festivals", label: "Festival Photos", icon: CalendarClock, match: "/admin/festivals" },
   { href: "/dashboard", label: "Public Site", icon: Globe },
 ];

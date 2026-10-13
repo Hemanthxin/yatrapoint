@@ -19,6 +19,7 @@ const PROTECTED = [
   "/community",
   "/festivals",
   "/profile",
+  "/cars",
   "/admin/dashboard",
 ];
 

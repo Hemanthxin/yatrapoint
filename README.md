@@ -53,6 +53,8 @@ See [.env.example](.env.example). The required ones to start:
 | `AUTH_URL` | dev | Base URL (`http://localhost:3000`) |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | for Google | OAuth client (Web) |
 | `OTP_PROVIDER` | yes | `mock` (default) or `msg91` |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` | for car-booking push alerts | Web Push keys — generate once with `npx web-push generate-vapid-keys`; subject is `mailto:you@domain`. Without them alerts fall back to polling |
+| `SAAFERA_URL` | driver app only | (set on the Saafera Captain app) the live Saafera origin it talks to |
 
 ### OTP in dev (mock provider)
 
