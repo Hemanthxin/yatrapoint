@@ -20,6 +20,8 @@ export const REQUEST_TTL_MIN = 30;
 const EARLY_MIN = 90;
 // Two accepted bookings whose pickups are closer than this overlap.
 const OVERLAP_HOURS = 3;
+// A single booking longer than this (straight-line km) is almost certainly a mistyped place.
+const MAX_TRIP_KM = 1200;
 const SESSION_DAYS = 60;
 
 // ── row helpers ───────────────────────────────────────────────────────────────
@@ -360,35 +362,131 @@ const haversineKm = (a: { lat: number; lng: number }, b: { lat: number; lng: num
   return 12742 * Math.asin(Math.sqrt(x));
 };
 
-/** Looks a place name up on OpenStreetMap: Nominatim first (fast), Photon as a fallback. */
-async function geocode(text: string): Promise<{ lat: number; lng: number } | null> {
-  const attempts: Array<() => Promise<{ lat: number; lng: number } | null>> = [
-    async () => {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q=${encodeURIComponent(text)}`, {
-        headers: { "User-Agent": "Saafera-Cabs/1.0 (booking distance lookup)" },
-        signal: AbortSignal.timeout(8000),
-      });
-      if (!res.ok) return null;
-      const d = (await res.json()) as Array<{ lat: string; lon: string }>;
-      return d[0] ? { lat: Number(d[0].lat), lng: Number(d[0].lon) } : null;
-    },
-    async () => {
-      const res = await fetch(`https://photon.komoot.io/api/?limit=1&lang=en&q=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(10000) });
-      if (!res.ok) return null;
-      const d = (await res.json()) as { features?: Array<{ geometry?: { coordinates?: [number, number] } }> };
-      const c = d.features?.[0]?.geometry?.coordinates;
-      return c ? { lat: c[1], lng: c[0] } : null;
-    },
-  ];
-  for (const attempt of attempts) {
-    try {
-      const hit = await attempt();
-      if (hit && Number.isFinite(hit.lat) && Number.isFinite(hit.lng)) return hit;
-    } catch {
-      /* try the next service */
-    }
+type Point = { lat: number; lng: number };
+/** A found place with a readable name, so the traveller can check we understood them. */
+export type Place = Point & { label: string };
+/** `settlement` is true when it is a city/town/district itself rather than a landmark inside one. */
+type Found = Place & { settlement: boolean };
+
+// Roughly India's bounding box. Lookups outside it are ignored, so "majestic" can never
+// resolve to a place in another country and produce a thousands-of-km fare.
+const INDIA = { minLat: 6, maxLat: 36.5, minLng: 68, maxLng: 98 };
+const inIndia = (p: Point) => Number.isFinite(p.lat) && Number.isFinite(p.lng) && p.lat >= INDIA.minLat && p.lat <= INDIA.maxLat && p.lng >= INDIA.minLng && p.lng <= INDIA.maxLng;
+
+const SETTLEMENT_TYPES = new Set(["city", "town", "municipality", "village", "state", "state_district", "district", "county", "island"]);
+const isSettlement = (key?: string, value?: string) => (key === "place" && SETTLEMENT_TYPES.has(value ?? "")) || (key === "boundary" && value === "administrative");
+
+/** "Majestic, KMS Street, Lock Nagar, Ward 1, Bengaluru, Karnataka, 560009, India" → the first few parts. */
+const shortLabel = (s: string) =>
+  s
+    .split(",")
+    .map((x) => x.trim())
+    .filter((x) => x && !/^\d{6}$/.test(x) && x !== "India")
+    .slice(0, 4)
+    .join(", ");
+
+async function viaNominatim(text: string): Promise<Found | null> {
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=in&q=${encodeURIComponent(text)}`, {
+    headers: { "User-Agent": "Saafera-Cabs/1.0 (booking distance lookup)" },
+    signal: AbortSignal.timeout(6000),
+  });
+  if (!res.ok) return null;
+  const d = (await res.json()) as Array<{ lat: string; lon: string; class?: string; type?: string; display_name?: string }>;
+  return d[0] ? { lat: Number(d[0].lat), lng: Number(d[0].lon), label: shortLabel(d[0].display_name ?? text), settlement: isSettlement(d[0].class, d[0].type) } : null;
+}
+
+async function viaPhoton(text: string): Promise<Found | null> {
+  // bbox = lon_min,lat_min,lon_max,lat_max — keeps Photon inside India
+  const bbox = `${INDIA.minLng},${INDIA.minLat},${INDIA.maxLng},${INDIA.maxLat}`;
+  const res = await fetch(`https://photon.komoot.io/api/?limit=1&lang=en&bbox=${bbox}&q=${encodeURIComponent(text)}`, { signal: AbortSignal.timeout(6000) });
+  if (!res.ok) return null;
+  type Props = { name?: string; street?: string; district?: string; city?: string; state?: string; osm_key?: string; osm_value?: string };
+  const d = (await res.json()) as { features?: Array<{ geometry?: { coordinates?: [number, number] }; properties?: Props }> };
+  const f = d.features?.[0];
+  const c = f?.geometry?.coordinates;
+  if (!c) return null;
+  const p = f?.properties ?? {};
+  const label = [p.name, p.street, p.district, p.city, p.state].filter(Boolean).join(", ") || text;
+  return { lat: c[1], lng: c[0], label: shortLabel(label), settlement: isSettlement(p.osm_key, p.osm_value) };
+}
+
+/** First good answer wins. Both services are asked at once (a slow or blocked one can't hold things
+ *  up — on a serverless host that wait is what turns into a timeout), India only. */
+async function lookup(text: string): Promise<Found | null> {
+  return new Promise((resolve) => {
+    let pending = 2;
+    const settle = (p: Found | null) => {
+      if (p && inIndia(p)) return resolve(p);
+      if (--pending === 0) resolve(null);
+    };
+    viaNominatim(text).then(settle, () => settle(null));
+    viaPhoton(text).then(settle, () => settle(null));
+  });
+}
+
+/** Finds a place. A bare name such as "majestic" could be anywhere, so it is also tried inside the car's city
+ *  ("majestic, Bengaluru").
+ *  - Pickup: always read inside the car's city — a pickup is where the car already operates.
+ *  - Drop: if what was typed is itself a city or town ("Mysuru", "Kochi") that wins, since long trips go to other
+ *    cities; otherwise it is taken to be a landmark in the car's city.
+ *  Names can still be ambiguous, which is why the traveller is shown what was found before confirming. */
+async function geocode(text: string, cityHint: string | null, role: "pickup" | "drop"): Promise<Place | null> {
+  const bare = !text.includes(",") && !!cityHint && !text.toLowerCase().includes(cityHint.toLowerCase());
+  if (!bare) return lookup(text);
+  const [plain, hinted] = await Promise.all([lookup(text), lookup(`${text}, ${cityHint}`)]);
+  if (role === "drop" && plain?.settlement) return plain;
+  return hinted ?? plain;
+}
+
+type BookableVehicle = Vehicle & { driverName: string };
+
+async function loadBookableVehicle(vehicleId: string): Promise<{ ok: true; v: BookableVehicle } | { ok: false; error: string }> {
+  const [v] = await q<BookableVehicle>(sql`
+    SELECT v.*, d.name AS driver_name FROM cab_vehicles v JOIN cab_drivers d ON d.id = v.driver_id WHERE v.id = ${vehicleId}`);
+  if (!v || v.status !== "approved") return { ok: false, error: "That vehicle is not available." };
+  if (!v.available) return { ok: false, error: "This driver is not taking bookings right now. Pick another vehicle." };
+  return { ok: true, v };
+}
+
+export interface TripQuote {
+  pickup: Place;
+  drop: Place;
+  distanceKm: number;
+  fare: number;
+}
+
+/** Works out where the trip goes and what it costs. `given` places (already confirmed by the traveller) skip the lookup. */
+async function resolveTrip(
+  v: BookableVehicle,
+  pickupText: string,
+  dropText: string,
+  given?: { pickup?: Place | null; drop?: Place | null },
+): Promise<({ ok: true } & TripQuote) | { ok: false; error: string }> {
+  if (pickupText.trim().toLowerCase() === dropText.trim().toLowerCase()) {
+    return { ok: false, error: "Pickup and drop are the same place. Enter where you're going." };
   }
-  return null;
+  const usable = (p?: Place | null) => (p && inIndia(p) ? p : null);
+  const [pickup, drop] = await Promise.all([
+    usable(given?.pickup) ?? geocode(pickupText, v.city, "pickup"),
+    usable(given?.drop) ?? geocode(dropText, v.city, "drop"),
+  ]);
+  // A fare needs a distance, so a place that can't be found stops things here
+  // rather than creating a ₹0 request the driver would be asked to accept.
+  if (!pickup) return { ok: false, error: `We couldn't find the pickup "${pickupText}". Try a landmark with the city, e.g. "Majestic, ${v.city}".` };
+  if (!drop) return { ok: false, error: `We couldn't find the drop "${dropText}". Try a landmark with the city, e.g. "Mysuru Palace, Mysuru".` };
+  const straight = haversineKm(pickup, drop);
+  if (straight < 0.2) return { ok: false, error: "Pickup and drop resolve to the same spot. Be more specific about where you're going." };
+  if (straight > MAX_TRIP_KM) return { ok: false, error: `That's about ${Math.round(straight * 1.3)} km — too far for a single booking. Check the pickup and drop (include the city).` };
+  const distanceKm = Math.max(1, +(straight * 1.3).toFixed(1));
+  const fare = Math.max(1, Math.round(v.baseFare + distanceKm * v.ratePerKm));
+  return { ok: true, pickup, drop, distanceKm, fare };
+}
+
+/** The "check price" step: nothing is created, the traveller just sees what we understood. */
+export async function quoteCabTrip(vehicleId: string, pickupText: string, dropText: string): Promise<({ ok: true } & TripQuote) | { ok: false; error: string }> {
+  const loaded = await loadBookableVehicle(vehicleId);
+  if (!loaded.ok) return loaded;
+  return resolveTrip(loaded.v, pickupText, dropText);
 }
 
 export interface BookingInput {
@@ -398,34 +496,40 @@ export interface BookingInput {
   vehicleId: string;
   pickupText: string;
   dropText: string;
+  /** places the traveller confirmed in the quote step (optional; looked up again if missing) */
+  pickupPlace?: Place | null;
+  dropPlace?: Place | null;
   pickupAt: Date;
   passengers: number;
   note?: string;
 }
 
+/** What the driver reads: what the traveller typed, plus the place we matched when that adds information. */
+const describePlace = (typed: string, p: Place) => {
+  const t = typed.trim();
+  return (t.includes(",") || !p.label ? t : `${t} — ${p.label}`).slice(0, 240);
+};
+
 export async function createCabBooking(input: BookingInput): Promise<{ ok: true; booking: Booking } | { ok: false; error: string }> {
-  const [v] = await q<Vehicle & { driverName: string }>(sql`
-    SELECT v.*, d.name AS driver_name FROM cab_vehicles v JOIN cab_drivers d ON d.id = v.driver_id WHERE v.id = ${input.vehicleId}`);
-  if (!v || v.status !== "approved") return { ok: false, error: "That vehicle is not available." };
-  if (!v.available) return { ok: false, error: "This driver is not taking bookings right now. Pick another vehicle." };
+  const loaded = await loadBookableVehicle(input.vehicleId);
+  if (!loaded.ok) return loaded;
+  const v = loaded.v;
   if (input.passengers > v.seats) return { ok: false, error: `This vehicle seats ${v.seats}.` };
   if (input.pickupAt.getTime() < Date.now() - 5 * 60000) return { ok: false, error: "Pickup time is in the past." };
 
-  const [pickup, drop] = await Promise.all([geocode(input.pickupText), geocode(input.dropText)]);
-  // A fare needs a distance, so a place that can't be found stops the booking here
-  // rather than creating a ₹0 request the driver would be asked to accept.
-  if (!pickup) return { ok: false, error: "We couldn't find the pickup location. Try a more specific name, e.g. a landmark and the city." };
-  if (!drop) return { ok: false, error: "We couldn't find the drop location. Try a more specific name, e.g. a landmark and the city." };
-  const distanceKm = Math.max(1, +(haversineKm(pickup, drop) * 1.3).toFixed(1));
-  const fare = Math.max(1, Math.round(v.baseFare + distanceKm * v.ratePerKm));
+  const trip = await resolveTrip(v, input.pickupText, input.dropText, { pickup: input.pickupPlace, drop: input.dropPlace });
+  if (!trip.ok) return trip;
+  const { pickup, drop, distanceKm, fare } = trip;
+  const pickupText = describePlace(input.pickupText, pickup);
+  const dropText = describePlace(input.dropText, drop);
   const id = createId();
   const otp = String(randomInt(1000, 10000));
 
   await q(sql`INSERT INTO cab_bookings
     (id, vehicle_id, driver_id, user_id, user_name, user_phone, pickup_text, pickup_lat, pickup_lng, drop_text, drop_lat, drop_lng,
      pickup_at, passengers, distance_km, fare, note, otp)
-    VALUES (${id}, ${v.id}, ${v.driverId}, ${input.userId}, ${input.userName}, ${input.userPhone}, ${input.pickupText},
-            ${pickup?.lat ?? null}, ${pickup?.lng ?? null}, ${input.dropText}, ${drop?.lat ?? null}, ${drop?.lng ?? null},
+    VALUES (${id}, ${v.id}, ${v.driverId}, ${input.userId}, ${input.userName}, ${input.userPhone}, ${pickupText},
+            ${pickup.lat}, ${pickup.lng}, ${dropText}, ${drop.lat}, ${drop.lng},
             (${input.pickupAt.toISOString()}::timestamptz AT TIME ZONE 'UTC'), ${input.passengers}, ${distanceKm}, ${fare}, ${input.note?.slice(0, 300) ?? null}, ${otp})`);
 
   await notifyDriver(
@@ -433,7 +537,7 @@ export async function createCabBooking(input: BookingInput): Promise<{ ok: true;
     id,
     "booking_new",
     "New booking request",
-    `${input.userName ?? "A traveller"} wants ${v.makeModel} from ${input.pickupText} to ${input.dropText}. ₹${fare}.`,
+    `${input.userName ?? "A traveller"} wants ${v.makeModel} from ${pickupText} to ${dropText}. ₹${fare}.`,
   );
 
   const [booking] = await q<Booking>(sql`SELECT * FROM cab_bookings WHERE id = ${id}`);

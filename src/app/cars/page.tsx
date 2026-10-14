@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { AppShell } from "@/components/app/AppShell";
 import { BackButton } from "@/components/app/BackButton";
 import { Reveal } from "@/components/app/Reveal";
+import { CAR_BOOKING_ENABLED } from "@/lib/cab/flags";
 import { listBookableVehicles } from "@/lib/cab/core";
 import { CarsBrowser } from "./CarsBrowser";
 
@@ -16,6 +17,7 @@ const CAPTAIN_URL = process.env.NEXT_PUBLIC_CAPTAIN_URL ?? "https://captain.saaf
 export default async function CarsPage() {
   const session = await auth();
   if (!session?.user) redirect("/");
+  if (!CAR_BOOKING_ENABLED) redirect("/dashboard");
   const u = session.user;
 
   const vehicles = await listBookableVehicles();

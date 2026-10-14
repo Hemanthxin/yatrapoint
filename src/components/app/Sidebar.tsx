@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { signOutAction } from "@/lib/actions/auth";
+import { CAR_BOOKING_ENABLED } from "@/lib/cab/flags";
 
 interface NavItem {
   href: string;
@@ -32,7 +33,7 @@ const NAV: NavItem[] = [
   { href: "/budget-planner", label: "Trip Planner", icon: Wallet },
   { href: "/group-trip", label: "Group Trip Planner", icon: Users },
   { href: "/explore-bangalore", label: "Near By Places", icon: MapPin },
-  { href: "/cars", label: "Book a Car", icon: CarFront },
+  ...(CAR_BOOKING_ENABLED ? [{ href: "/cars", label: "Book a Car", icon: CarFront }] : []),
   { href: "/community", label: "Community", icon: Users },
   { href: "/festivals", label: "Festivals & Events", icon: CalendarDays },
   { href: "/profile", label: "Your Travel Places", icon: Bookmark },
