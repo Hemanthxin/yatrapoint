@@ -244,6 +244,25 @@ export async function leaveGroupTrip(groupTripId: string): Promise<ActionResult>
   }
 }
 
+// Only the creator can delete a trip; members, suggestions and votes go with it (FK cascade).
+export async function deleteGroupTrip(groupTripId: string): Promise<ActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Please sign in." };
+
+  try {
+    const deleted = await db
+      .delete(groupTrips)
+      .where(and(eq(groupTrips.id, groupTripId), eq(groupTrips.creatorId, session.user.id)))
+      .returning({ id: groupTrips.id });
+    if (deleted.length === 0) return { ok: false, error: "Only the person who created this trip can delete it." };
+    revalidatePath("/group-trip");
+    return { ok: true };
+  } catch (err) {
+    console.error("[deleteGroupTrip] failed:", err);
+    return { ok: false, error: "Could not delete the trip." };
+  }
+}
+
 async function requireMembership(
   groupTripId: string
 ): Promise<{ ok: true; userId: string; role: "admin" | "member" } | { ok: false; error: string }> {

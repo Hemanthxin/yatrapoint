@@ -23,6 +23,7 @@ export function PlaceImage({
   className = "",
   emojiClassName = "text-3xl",
   preferWiki = false,
+  alwaysPhoto = false,
 }: {
   name: string;
   storedSrc?: string | null;
@@ -33,6 +34,9 @@ export function PlaceImage({
   className?: string;
   emojiClassName?: string;
   preferWiki?: boolean;
+  // With `preferWiki`: if no name-matched photo is found, show the neutral
+  // fallback photo instead of leaving the gradient tile.
+  alwaysPhoto?: boolean;
 }) {
   // A stored image wins; otherwise show the gradient tile instantly (null src)
   // rather than fetching a slow external photo per card.
@@ -60,18 +64,25 @@ export function PlaceImage({
     let alive = true;
     resolvePlaceImage(name, hint)
       .then((url) => {
-        if (alive && url) {
+        if (!alive) return;
+        if (url) {
           setSrc(url);
           setStage(0);
+        } else if (alwaysPhoto) {
+          setSrc(fallbackImageUrl(name));
+          setStage(1);
         }
       })
       .catch(() => {
-        /* keep the deterministic photo */
+        if (alive && alwaysPhoto) {
+          setSrc(fallbackImageUrl(name));
+          setStage(1);
+        }
       });
     return () => {
       alive = false;
     };
-  }, [name, hint, storedSrc, preferWiki]);
+  }, [name, hint, storedSrc, preferWiki, alwaysPhoto]);
 
   function onError() {
     if (stage === 0) {

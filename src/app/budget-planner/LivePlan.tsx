@@ -2,8 +2,9 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { addToCart } from "@/lib/cart";
 import { useRouter } from "next/navigation";
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Clock,
   Loader2,
@@ -26,19 +27,15 @@ import {
   Star,
   Bookmark,
   BookmarkCheck,
-  ChevronDown,
   AlertTriangle,
 } from "lucide-react";
 
 import { useLocation } from "@/components/app/LocationContext";
 import { SaaferaLoader } from "@/components/app/SaaferaLoader";
 import { PlaceImage } from "@/components/app/PlaceImage";
-import { StopImageGrid } from "./StopImageGrid";
-import { PlaceStatusBadgesCompact } from "@/components/app/PlaceStatusBadges";
 import { formatINR } from "@/lib/format";
 import { formatKm, formatMinutes, haversineKm } from "@/lib/geo";
 import { placeMapUrl } from "@/lib/maps";
-import { planStopHref } from "@/lib/place-href";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
 
 // Fallback tile look (emoji + gradient) per Overpass category, shown until a
@@ -524,11 +521,162 @@ export function LivePlan({
       // De-dup by id; newest first, keep the most recent 30.
       const next = [entry, ...(Array.isArray(list) ? list : []).filter((t) => (t as { id?: string })?.id !== entry.id)].slice(0, 30);
       localStorage.setItem(SAVED_TRIPS_KEY, JSON.stringify(next));
+      addToCart({
+        id: entry.id,
+        name: entry.name,
+        subtitle: entry.stops[0]?.name,
+        href: "/profile",
+        kind: "trip",
+        emoji: "🧳",
+      });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch {
       // ignore (quota / disabled storage)
     }
+  }
+
+  // Per-chapter controls in the story view: maps, replace and remove all
+  // re-use the same handlers the old stop list had.
+  function stopActions(i: number) {
+    const s = plan?.stops[i];
+    if (!s) return null;
+    return (
+      <>
+        <a
+          href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-200 active:scale-95"
+        >
+          Nearby Restaurants →
+        </a>
+        <a
+          href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-[32px] items-center rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-200 active:scale-95"
+        >
+          Open in Maps →
+        </a>
+        <button
+          type="button"
+          onClick={() => {
+            setSwapError(null);
+            setSwapIndex(swapIndex === i ? null : i);
+          }}
+          className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-800 transition hover:bg-amber-200 active:scale-95"
+        >
+          <Repeat className="h-3 w-3" /> Visited? Replace
+        </button>
+        <button
+          type="button"
+          onClick={() => removeStop(i)}
+          disabled={removingIndex !== null || rerouting}
+          aria-label={`Remove ${s.name} from this plan`}
+          className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-800 transition hover:bg-rose-200 active:scale-95 disabled:opacity-60"
+        >
+          {removingIndex === i ? (
+            <><Loader2 className="h-3 w-3 animate-spin" /> Removing…</>
+          ) : (
+            <><Trash2 className="h-3 w-3" /> Remove</>
+          )}
+        </button>
+      </>
+    );
+  }
+
+  function swapPanel(i: number) {
+    const s = plan?.stops[i];
+    if (!s || swapIndex !== i) return null;
+    const alts = alternativesFor(s);
+    return (
+      <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+        <div className="mb-2 flex items-start justify-between gap-2">
+          <p className="text-xs font-semibold text-amber-900">
+            Already visited <span className="font-bold">{s.name}</span>? Pick another place to put here:
+          </p>
+          <button type="button" onClick={() => setSwapIndex(null)} className="shrink-0 text-amber-700 hover:text-amber-900" aria-label="Close">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        {swapError && <p className="mb-2 text-xs text-rose-600">{swapError}</p>}
+        {alts.length === 0 ? (
+          <p className="text-xs text-slate-500">No alternative places available nearby.</p>
+        ) : (
+          <div className="max-h-56 space-y-1.5 overflow-auto">
+            {alts.slice(0, 12).map((alt) => (
+              <button
+                key={alt.id}
+                type="button"
+                disabled={rerouting}
+                onClick={() => replaceStop(i, alt)}
+                className="flex w-full items-center gap-2.5 rounded-lg border border-amber-200 bg-white px-2.5 py-2 text-left transition hover:border-amber-400 disabled:opacity-60"
+              >
+                <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                  <PlaceImage
+                    name={alt.name}
+                    storedSrc={alt.imageUrl}
+                    category={alt.category}
+                    emoji={CATEGORY_EMOJI[alt.category] ?? "📍"}
+                    gradient={CATEGORY_TILE_GRADIENT[alt.category] ?? "from-emerald-400 to-teal-600"}
+                    className="absolute inset-0 h-full w-full"
+                    emojiClassName="text-sm"
+                  />
+                </div>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-xs font-semibold text-slate-900">{alt.name}</span>
+                  <span className="block truncate text-[10px] uppercase tracking-wide text-slate-400">{alt.category}</span>
+                </span>
+                <span className="shrink-0 text-xs text-slate-500">{formatKm(haversineKm(s, { lat: alt.lat, lng: alt.lng }))}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {rerouting && (
+          <p className="mt-2 flex items-center gap-1.5 text-xs text-amber-800">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Updating your route…
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Night stay — a real hotel to overnight at before the next day.
+  function nightStay(d: number, stay: NonNullable<NonNullable<typeof plan>["staySuggestion"]>) {
+    return (
+      <div className="flex flex-wrap items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 text-white shadow-md shadow-violet-500/30">
+          <BedDouble className="h-5 w-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-violet-700">Night {d + 1} · stay over</p>
+          <p className="truncate text-sm font-extrabold text-slate-900">{stay.name}</p>
+          <p className="flex items-center gap-1 truncate text-xs text-slate-500">
+            <MapPin className="h-3 w-3" /> {stay.area ?? stay.city}
+            {stay.rating ? (
+              <span className="ml-1 inline-flex items-center gap-0.5 text-amber-600">
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> {stay.rating}
+              </span>
+            ) : null}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-bold text-slate-900">
+            {formatINR(stay.pricePerNight)}
+            <span className="text-xs font-medium text-slate-500">/night</span>
+          </p>
+          <a
+            href={stay.bookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-emerald-600 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
+          >
+            <BedDouble className="h-3.5 w-3.5" /> Book
+          </a>
+        </div>
+      </div>
+    );
   }
 
   const isFoodCat = (cat: string) => cat === "restaurant" || cat === "cafe" || cat === "fast_food";
@@ -888,6 +1036,14 @@ export function LivePlan({
             days={days}
             hours={hours}
             originLabel={originOverride?.label}
+            dayOf={dayBuckets.flatMap((bucket, d) => bucket.map(() => d))}
+            renderActions={(i) => stopActions(i)}
+            renderPanel={(i) => swapPanel(i)}
+            afterDay={(d) =>
+              plan.staySuggestion && dayBuckets.slice(d + 1).some((b) => b.length > 0)
+                ? nightStay(d, plan.staySuggestion)
+                : null
+            }
           />
 
           {/* Primary CTA — navigate the whole trip in Google Maps */}
@@ -1039,304 +1195,17 @@ export function LivePlan({
             </section>
           )}
 
-          <section className="space-y-5">
-            <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
-              Day plan{days > 1 ? ` · split across ${days} days` : ""}
-            </h2>
-            {/* Every stop removed (BUG-08) — say so, and point back at the two
-                ways to get places into the plan again. */}
-            {plan.stops.length === 0 && (
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600">
-                <p className="font-semibold text-slate-900">No places left in this plan.</p>
-                <p className="mt-1">
-                  You removed every stop. Hit <span className="font-semibold">Regenerate</span> above for a
-                  fresh set, or change your choices and generate again.
-                </p>
-              </div>
-            )}
-            {(() => {
-              let running = 0; // global stop counter across days
-              return dayBuckets.map((bucket, d) => {
-                if (bucket.length === 0) return null;
-                const dayMinutes = bucket.reduce(
-                  (m, s) => m + s.arrivalMinutesFromPrev + s.idealMinutes,
-                  0
-                );
-                const dayCost = bucket.reduce((c, s) => c + s.stopCost + s.travelCost, 0);
-                return (
-                <div key={d}>
-                  {days > 1 && (
-                    <div className="mb-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-md shadow-emerald-500/30">
-                        Day {d + 1}
-                      </span>
-                      <span className="text-xs font-medium text-slate-500">
-                        {bucket.length} {bucket.length === 1 ? "stop" : "stops"} · {formatMinutes(dayMinutes)} · {formatINR(dayCost)}
-                      </span>
-                    </div>
-                  )}
-                  <ol className="space-y-0">
-                    {d === 0 && bucket.length > 0 && (
-                      <li className="flex items-center gap-4 pb-1">
-                        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-slate-100 ring-4 ring-white">
-                          <LocateFixed className="h-6 w-6 text-slate-500" />
-                        </div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Your location</p>
-                      </li>
-                    )}
-                    {d === 0 && bucket.length > 0 && (
-                      <Connector
-                        distanceKm={bucket[0].arrivalKmFromPrev}
-                        minutes={bucket[0].arrivalMinutesFromPrev}
-                      />
-                    )}
-                    {bucket.map((s, idx) => {
-                      const i = running++;
-                      const href = planStopHref(s.id, s.meta?.citySeedSlug);
-                      return (
-                <Fragment key={s.id}>
-                <li>
-                  <div className="flex items-start gap-4">
-                    {/* Avatar node — sits on the connecting line, forming a journey path. */}
-                    <div className="flex w-16 shrink-0 flex-col items-center">
-                      <div className="relative h-16 w-16 overflow-hidden rounded-full ring-4 ring-white shadow-lg shadow-emerald-900/10">
-                        {href && (
-                          <Link href={href} aria-label={`Open ${s.name}`} className="absolute inset-0 z-10" />
-                        )}
-                        <PlaceImage
-                          name={s.name}
-                          storedSrc={s.imageUrl}
-                          category={s.category}
-                          emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
-                          gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
-                          className="absolute inset-0 h-full w-full"
-                          emojiClassName="text-2xl"
-                        />
-                      </div>
-                      <span className="-mt-3 grid h-6 w-6 place-items-center rounded-full bg-emerald-600 text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 ring-2 ring-white">
-                        {i + 1}
-                      </span>
-                    </div>
-
-                    <div className="card-hover min-w-0 flex-1 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Stop {i + 1}</p>
-                          <h3 className="truncate font-extrabold tracking-tight text-slate-900">
-                            {href ? (
-                              <Link href={href} className="hover:text-emerald-700 hover:underline">
-                                {s.name}
-                              </Link>
-                            ) : (
-                              s.name
-                            )}
-                          </h3>
-                          <p className="text-[11px] uppercase tracking-wide text-slate-400">{s.category}</p>
-                          <PlaceStatusBadgesCompact
-                            rating={s.rating}
-                            ratingCount={s.ratingCount}
-                            weeklyHoursJson={s.weeklyHours}
-                            businessStatus={s.businessStatus}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div className="text-right text-xs text-slate-600">
-                          <p className="font-bold text-emerald-700">
-                            {formatKm(haversineKm(coords, { lat: s.lat, lng: s.lng }))} from you
-                          </p>
-                          <p className="font-semibold text-slate-900">Stay {formatMinutes(s.idealMinutes)}</p>
-                        </div>
-                      </div>
-                      <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                        {s.entryFee > 0 ? (
-                          <Chip>
-                            Entry {s.entryFeeKnown ? "" : "≈"}{formatINR(s.entryFee)} / person
-                            {s.entryFeeKnown ? "" : " (est.)"}
-                          </Chip>
-                        ) : (
-                          <Chip>Free entry</Chip>
-                        )}
-                        {s.stopCost > 0 && <Chip>Stop cost {formatINR(s.stopCost)}</Chip>}
-                        {s.travelCost > 0 && <Chip>Fuel {formatINR(s.travelCost)}</Chip>}
-                        {/* "Nearby Restaurants" — opens a live map of places to eat
-                            right around this stop. Shown for every stop. */}
-                        <a
-                          href={`https://www.google.com/maps/search/restaurants/@${s.lat},${s.lng},15z`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-800 transition hover:bg-emerald-200 active:scale-95"
-                        >
-                          Nearby Restaurants →
-                        </a>
-                        {href && (
-                          <Link
-                            href={href}
-                            className="inline-flex min-h-[32px] items-center rounded-full bg-emerald-600 px-3 py-1.5 font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
-                          >
-                            View place →
-                          </Link>
-                        )}
-                        <a
-                          href={placeMapUrl({ name: s.name, latitude: s.lat, longitude: s.lng })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex min-h-[32px] items-center rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-200 active:scale-95"
-                        >
-                          Open in Maps →
-                        </a>
-                        {/* Already been here? Swap this place for another. */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSwapError(null);
-                            setSwapIndex(swapIndex === i ? null : i);
-                          }}
-                          className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-800 transition hover:bg-amber-200 active:scale-95"
-                        >
-                          <Repeat className="h-3 w-3" /> Visited? Replace
-                        </button>
-                        {/* Don't want this place at all? Take it out of the plan
-                            entirely — the route, time and budget all re-compute
-                            without it (BUG-08). */}
-                        <button
-                          type="button"
-                          onClick={() => removeStop(i)}
-                          disabled={removingIndex !== null || rerouting}
-                          aria-label={`Remove ${s.name} from this plan`}
-                          className="inline-flex min-h-[32px] items-center gap-1 rounded-full bg-rose-100 px-3 py-1.5 font-semibold text-rose-800 transition hover:bg-rose-200 active:scale-95 disabled:opacity-60"
-                        >
-                          {removingIndex === i ? (
-                            <><Loader2 className="h-3 w-3 animate-spin" /> Removing…</>
-                          ) : (
-                            <><Trash2 className="h-3 w-3" /> Remove</>
-                          )}
-                        </button>
-                      </div>
-
-                      <StopImageGrid
-                        name={s.name}
-                        category={s.category}
-                        images={s.images ?? []}
-                        fallbackImageUrl={s.imageUrl}
-                        locationHint={originOverride?.label}
-                        emoji={CATEGORY_EMOJI[s.category] ?? "📍"}
-                        gradient={CATEGORY_TILE_GRADIENT[s.category] ?? "from-emerald-400 to-teal-600"}
-                      />
-
-                      {swapIndex === i && (
-                    <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
-                      <div className="mb-2 flex items-start justify-between gap-2">
-                        <p className="text-xs font-semibold text-amber-900">
-                          Already visited <span className="font-bold">{s.name}</span>? Pick another place to put here:
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => setSwapIndex(null)}
-                          className="shrink-0 text-amber-700 hover:text-amber-900"
-                          aria-label="Close"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                      {swapError && <p className="mb-2 text-xs text-rose-600">{swapError}</p>}
-                      {(() => {
-                        const alts = alternativesFor(s);
-                        if (alts.length === 0)
-                          return <p className="text-xs text-slate-500">No alternative places available nearby.</p>;
-                        return (
-                          <div className="max-h-56 space-y-1.5 overflow-auto">
-                            {alts.slice(0, 12).map((alt) => (
-                              <button
-                                key={alt.id}
-                                type="button"
-                                disabled={rerouting}
-                                onClick={() => replaceStop(i, alt)}
-                                className="flex w-full items-center gap-2.5 rounded-lg border border-amber-200 bg-white px-2.5 py-2 text-left transition hover:border-amber-400 disabled:opacity-60"
-                              >
-                                <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-slate-100">
-                                  <PlaceImage
-                                    name={alt.name}
-                                    storedSrc={alt.imageUrl}
-                                    category={alt.category}
-                                    emoji={CATEGORY_EMOJI[alt.category] ?? "📍"}
-                                    gradient={CATEGORY_TILE_GRADIENT[alt.category] ?? "from-emerald-400 to-teal-600"}
-                                    className="absolute inset-0 h-full w-full"
-                                    emojiClassName="text-sm"
-                                  />
-                                </div>
-                                <span className="min-w-0 flex-1">
-                                  <span className="block truncate text-xs font-semibold text-slate-900">{alt.name}</span>
-                                  <span className="block truncate text-[10px] uppercase tracking-wide text-slate-400">
-                                    {alt.category}
-                                  </span>
-                                </span>
-                                <span className="shrink-0 text-xs text-slate-500">
-                                  {formatKm(haversineKm(s, { lat: alt.lat, lng: alt.lng }))}
-                                </span>
-                              </button>
-                            ))}
-                          </div>
-                        );
-                      })()}
-                      {rerouting && (
-                        <p className="mt-2 flex items-center gap-1.5 text-xs text-amber-800">
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> Updating your route…
-                        </p>
-                      )}
-                    </div>
-                  )}
-                    </div>
-                  </div>
-                </li>
-                {idx < bucket.length - 1 && (
-                  <Connector
-                    distanceKm={bucket[idx + 1].arrivalKmFromPrev}
-                    minutes={bucket[idx + 1].arrivalMinutesFromPrev}
-                  />
-                )}
-                </Fragment>
-                      );
-                    })}
-                  </ol>
-
-                  {/* Night stay — a real hotel to overnight at before the next day */}
-                  {plan.staySuggestion && dayBuckets.slice(d + 1).some((b) => b.length > 0) && (
-                    <div className="card-hover mt-3 flex flex-wrap items-center gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 text-white shadow-md shadow-violet-500/30">
-                        <BedDouble className="h-5 w-5" />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-bold uppercase tracking-wide text-violet-700">
-                          Night {d + 1} · stay over
-                        </p>
-                        <p className="truncate text-sm font-extrabold text-slate-900">{plan.staySuggestion.name}</p>
-                        <p className="flex items-center gap-1 truncate text-xs text-slate-500">
-                          <MapPin className="h-3 w-3" /> {plan.staySuggestion.area ?? plan.staySuggestion.city}
-                          {plan.staySuggestion.rating ? (
-                            <span className="ml-1 inline-flex items-center gap-0.5 text-amber-600">
-                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> {plan.staySuggestion.rating}
-                            </span>
-                          ) : null}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-slate-900">{formatINR(plan.staySuggestion.pricePerNight)}<span className="text-xs font-medium text-slate-500">/night</span></p>
-                        <a
-                          href={plan.staySuggestion.bookUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-1 inline-flex min-h-[32px] items-center gap-1 rounded-full bg-emerald-600 px-3.5 py-1 text-xs font-bold text-white shadow-md shadow-emerald-500/30 transition hover:scale-[1.03] active:scale-95"
-                        >
-                          <BedDouble className="h-3.5 w-3.5" /> Book
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                );
-              });
-            })()}
-          </section>
+          {/* Every stop removed (BUG-08) — say so, and point back at the two
+              ways to get places into the plan again. */}
+          {plan.stops.length === 0 && (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600">
+              <p className="font-semibold text-slate-900">No places left in this plan.</p>
+              <p className="mt-1">
+                You removed every stop. Hit <span className="font-semibold">Regenerate</span> above for a
+                fresh set, or change your choices and generate again.
+              </p>
+            </div>
+          )}
         </>
       )}
     </Reveal>
@@ -1353,26 +1222,6 @@ function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: strin
       <p className="mt-1 text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{value}</p>
       {sub && <p className="text-[11px] text-slate-500">{sub}</p>}
     </div>
-  );
-}
-
-function Chip({ children }: { children: React.ReactNode }) {
-  return <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{children}</span>;
-}
-
-// The travel "edge" between two stops in the journey path — sits centred
-// under the avatar column so the whole day reads as one connected route
-// rather than a stack of unrelated cards.
-function Connector({ distanceKm, minutes }: { distanceKm: number; minutes: number }) {
-  return (
-    <li className="flex flex-col items-center py-1.5" aria-hidden>
-      <div className="h-5 w-0.5 bg-gradient-to-b from-emerald-300 to-emerald-200" />
-      <span className="my-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700 shadow-sm">
-        <Car className="h-3 w-3" /> {formatKm(distanceKm)} · {formatMinutes(minutes)}
-      </span>
-      <ChevronDown className="h-4 w-4 animate-bounce text-emerald-300" />
-      <div className="h-5 w-0.5 bg-gradient-to-b from-emerald-200 to-transparent" />
-    </li>
   );
 }
 

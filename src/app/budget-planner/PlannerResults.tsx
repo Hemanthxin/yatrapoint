@@ -7,6 +7,7 @@ import type { Destination } from "@/lib/db/schema";
 import { DestinationCard } from "@/components/app/DestinationCard";
 import { formatINR } from "@/lib/format";
 import { saveTripPlan } from "@/lib/actions/trip-plans";
+import { addToCart } from "@/lib/cart";
 import { Reveal } from "@/components/app/Reveal";
 
 interface PlannerResultsProps {
@@ -53,6 +54,15 @@ export function PlannerResults({ matches, favIds, summary }: PlannerResultsProps
         setError(res.error ?? "Could not save the trip");
         return;
       }
+      const first = matches.find((m) => picked.has(m.id));
+      addToCart({
+        id: `plan-${planName.trim() || "trip"}-${summary.totalBudget}-${summary.days}`,
+        name: planName.trim() || "Untitled trip",
+        subtitle: first ? [first.name, first.state].filter(Boolean).join(", ") : undefined,
+        href: "/profile",
+        kind: "trip",
+        emoji: "🧳",
+      });
       setSaved(true);
       router.refresh();
     });

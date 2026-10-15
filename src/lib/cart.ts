@@ -64,6 +64,13 @@ export function removeFromCart(id: string) {
   write(read().filter((i) => i.id !== id));
 }
 
+// Add without toggling — a no-op if the item is already in the cart.
+export function addToCart(item: CartItem) {
+  const items = read();
+  if (items.some((x) => x.id === item.id)) return;
+  write([item, ...items]);
+}
+
 export function clearCart() {
   write([]);
 }

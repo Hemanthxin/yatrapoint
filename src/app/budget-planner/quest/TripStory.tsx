@@ -1,9 +1,10 @@
 "use client";
 
 import "./quest.css";
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { PlaceImage } from "@/components/app/PlaceImage";
 import { planStopHref } from "@/lib/place-href";
 import { formatINR } from "@/lib/format";
 import { DAY_NAMES, KIND_EMOJI, KIND_LABEL, assignDays, fmtKm, fmtMinutes, kindOf, teddyLine, type StoryStop } from "./story-text";
@@ -33,6 +34,10 @@ export function TripStory({
   days,
   hours,
   originLabel,
+  dayOf: dayOverride,
+  renderActions,
+  renderPanel,
+  afterDay,
 }: {
   stops: StoryStop[];
   totals: Totals;
@@ -41,9 +46,17 @@ export function TripStory({
   days: number;
   hours: number;
   originLabel?: string;
+  /** Day index per stop; defaults to a time-based split. */
+  dayOf?: number[];
+  /** Per-stop controls (replace / remove / maps) shown under each chapter. */
+  renderActions?: (index: number) => ReactNode;
+  /** Expanded panel for a stop (e.g. the replace picker). */
+  renderPanel?: (index: number) => ReactNode;
+  /** Rendered after the last stop of a day when another day follows (e.g. the night's stay). */
+  afterDay?: (day: number) => ReactNode;
 }) {
   if (stops.length === 0) return null;
-  const dayOf = assignDays(stops, Math.max(1, days), hours);
+  const dayOf = dayOverride && dayOverride.length === stops.length ? dayOverride : assignDays(stops, Math.max(1, days), hours);
   const used = budget > 0 ? Math.min(100, Math.round((totals.cost / budget) * 100)) : 100;
   const over = totals.cost > budget;
 
@@ -95,12 +108,18 @@ export function TripStory({
                   {(() => {
                     const pic = (
                       <>
-                        {s.imageUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={s.imageUrl} alt="" loading="lazy" />
-                        ) : (
-                          <span aria-hidden>{KIND_EMOJI[kind]}</span>
-                        )}
+                        <PlaceImage
+                          name={s.name}
+                          storedSrc={s.imageUrl}
+                          hint={originLabel}
+                          category={s.category}
+                          emoji={KIND_EMOJI[kind]}
+                          gradient="from-sky-200 to-amber-100"
+                          className="absolute inset-0 h-full w-full"
+                          emojiClassName="text-4xl"
+                          preferWiki
+                          alwaysPhoto
+                        />
                         <em aria-hidden>{KIND_EMOJI[kind]}</em>
                       </>
                     );
@@ -135,9 +154,14 @@ export function TripStory({
                         </li>
                       )}
                     </ul>
+                    {renderActions && <div className="ts-actions">{renderActions(i)}</div>}
+                    {renderPanel?.(i)}
                   </div>
                 </article>
               </motion.li>
+              {afterDay && (i === stops.length - 1 || dayOf[i + 1] !== dayOf[i]) && i < stops.length - 1 && (
+                <li className="ts-stay">{afterDay(dayOf[i])}</li>
+              )}
             </Fragment>
           );
         })}

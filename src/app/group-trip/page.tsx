@@ -7,6 +7,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { EmptyState } from "@/components/app/EmptyState";
 import { NoDataIllustration } from "@/components/illustrations";
 import { PageHero } from "@/components/app/PageHero";
+import { DeleteTripButton } from "@/components/app/group-trip/DeleteTripButton";
 import { listMyGroupTrips } from "@/lib/queries/group-trips";
 import { formatINR } from "@/lib/format";
 
@@ -49,7 +50,8 @@ export default async function GroupTripListPage() {
       ) : (
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {trips.map((t) => (
-            <Link key={t.id} href={`/group-trip/${t.joinCode}`} className="card card-hover flex flex-col gap-3 p-4">
+            <div key={t.id} className="card card-hover flex flex-col gap-3 p-4">
+              <Link href={`/group-trip/${t.joinCode}`} className="flex flex-col gap-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="text-sm font-extrabold tracking-tight text-slate-900">{t.name}</p>
@@ -77,7 +79,13 @@ export default async function GroupTripListPage() {
               <span className="mt-1 flex items-center gap-1 text-xs font-bold text-emerald-700">
                 Open trip <ChevronRight className="h-3.5 w-3.5" />
               </span>
-            </Link>
+              </Link>
+              {t.creatorId === u.id && (
+                <div className="flex justify-end border-t border-slate-100 pt-3">
+                  <DeleteTripButton tripId={t.id} joinCode={t.joinCode} name={t.name} />
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}

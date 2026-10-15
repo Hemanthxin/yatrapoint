@@ -8,6 +8,7 @@ import { NumberField } from "@/components/app/NumberField";
 import { useLocation } from "@/components/app/LocationContext";
 import { VEHICLES, type VehicleKind } from "@/lib/budget";
 import { createGroupTrip, listDistrictsForState } from "@/lib/actions/group-trips";
+import { addToCart } from "@/lib/cart";
 
 const VEHICLE_KINDS = Object.keys(VEHICLES) as VehicleKind[];
 
@@ -110,6 +111,14 @@ export function NewGroupTripForm({ states }: { states: string[] }) {
         setError(res.error || "Could not create the trip.");
         return;
       }
+      addToCart({
+        id: `group-${res.joinCode}`,
+        name: name.trim(),
+        subtitle: [destinationDistrict, destinationState].filter(Boolean).join(", "),
+        href: `/group-trip/${res.joinCode}`,
+        kind: "group-trip",
+        emoji: "👥",
+      });
       router.push(`/group-trip/${res.joinCode}/invite`);
     } catch {
       setError("Network error — check your connection and try again.");
