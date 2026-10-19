@@ -1,11 +1,14 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "com.saafera.app",
       "sha256_cert_fingerprints": [
-        "8C:5A:EF:E1:4A:2F:74:A8:9B:BC:B3:53:4F:2B:31:DE:44:1B:AE:78:84:04:81:6E:33:19:35:7E:69:70:69:0A"
+        "8C:5A:EF:E1:4A:2F:74:A8:9B:BC:B3:53:4F:2B:31:DE:44:1B:AE:78:84:04:81:6E:33:19:35:7E:69:70:69:0A",
+        "41:65:77:A7:3D:23:85:57:32:A8:BD:FC:D4:7D:1D:47:73:BB:EF:8A:3E:19:E2:33:E5:E4:AF:4B:A1:28:5E:B2"
       ]
     }
   }
