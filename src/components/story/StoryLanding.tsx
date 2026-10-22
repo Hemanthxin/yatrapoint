@@ -57,6 +57,16 @@ const SIGNS = [
   { t: "Fellow Wanderers", d: "Group trips, shared maps and a campfire's worth of company." },
 ];
 
+// The interlude's cards — every number comes from the real catalogue, never a made-up figure.
+function buildFanCards(data: StoryData) {
+  return [
+    { emoji: "🗺️", big: `${Math.floor(data.places / 100) * 100}+`, label: "places curated", title: "The Budget Map", before: "Tell us your coins and your days — we'll ", mark: "draw the route", after: "." },
+    { emoji: "🌄", big: String(data.states.length || "—"), label: "states covered", title: "One-Day Escapes", before: "Mornings that end in waterfalls, ", mark: "home before the lamps", after: " are lit." },
+    { emoji: "🏮", big: String(data.festivalCount), label: "festivals tracked", title: "Festival Lanterns", before: "Know which village glows tonight, and ", mark: "plan to be there", after: "." },
+    { emoji: "🔥", big: "Together", label: "group trips", title: "Fellow Wanderers", before: "Shared maps, votes on places and ", mark: "a campfire's worth of company", after: "." },
+  ];
+}
+
 const CHAPTERS = [
   { id: "hero", n: "I", t: "The Waking Mountains", sky: ["#6fb9f2", "#ffc7a4", "#ffe8b4"] },
   { id: "prologue", n: "II", t: "The Prologue", sky: ["#fff5d6", "#ffe8b0", "#ffd98a"] },
@@ -551,6 +561,49 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       if (inner) turn.fromTo(inner, { rotation: 0, svgOrigin: "0 0" }, { rotation: 300, ease: "none", duration: 1, svgOrigin: "0 0" }, 0);
       gsap.from("#wheel .st-heading .st-c", { yPercent: 118, duration: 1, stagger: 0.03, ease: "power3.out", scrollTrigger: { trigger: "#wheel", start: "top 60%" } });
 
+      /* ── interlude: cards fan out of a stack, flip, get highlighted, then a curtain covers them ── */
+      {
+        const fanEls = q(".fan-card") as HTMLElement[];
+        const stage = one(".fan-stage") as HTMLElement | undefined;
+        const marks = q(".fan-mark") as HTMLElement[];
+        const curtain = one(".fan-curtain") as HTMLElement | undefined;
+        if (stage && fanEls.length && curtain) {
+          // offset that pulls each card to the middle of the stage, measured from layout (unaffected by transforms)
+          const pull = (c: HTMLElement) => ({
+            x: stage.clientWidth / 2 - (c.offsetLeft + c.offsetWidth / 2),
+            y: stage.clientHeight / 2 - (c.offsetTop + c.offsetHeight / 2),
+          });
+          if (calm) {
+            // no pin, no motion: show the finished spread, flipped
+            gsap.set(".fan-back", { rotationY: 0 });
+            gsap.set(".fan-front", { rotationY: 180 });
+            gsap.set(curtain, { display: "none" });
+          } else {
+            gsap.set(".fan-back", { rotationY: -180 });
+            gsap.set(marks, { "--mk": 0 });
+            const tl = gsap.timeline({
+              defaults: { ease: "power2.inOut" },
+              scrollTrigger: { trigger: "#fan", start: "top top", end: "+=320%", pin: true, scrub: 0.6, invalidateOnRefresh: true },
+            });
+            // 1. a tilted stack settles into a row
+            tl.fromTo(
+              fanEls,
+              { x: (_i: number, c: Element) => pull(c as HTMLElement).x, y: (i: number, c: Element) => pull(c as HTMLElement).y + i * 6, rotation: (i: number) => (i - (fanEls.length - 1) / 2) * 7, scale: 0.92 },
+              { x: 0, y: 0, rotation: 0, scale: 1, duration: 1, stagger: 0.08 },
+              0,
+            );
+            // 2. each card flips from its stat to its promise
+            tl.to(".fan-front", { rotationY: 180, duration: 0.9, stagger: 0.12 }, 1.2);
+            tl.to(".fan-back", { rotationY: 0, duration: 0.9, stagger: 0.12 }, 1.2);
+            // 3. key phrases get the highlighter
+            tl.to(marks, { "--mk": 1, duration: 0.6, stagger: 0.15, ease: "power1.out" }, 2.3);
+            // 4. a rounded curtain rises over the cards, into the epilogue
+            tl.fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: 1.1, ease: "power2.in" }, 3.4);
+          }
+          gsap.from("#fan .st-heading .st-c", { yPercent: 118, duration: 1, stagger: 0.03, ease: "power3.out", scrollTrigger: { trigger: "#fan", start: "top 60%" } });
+        }
+      }
+
       /* ── finale ── */
       gsap.from("#finale .fn-reveal", { y: 60, opacity: 0, duration: 1.3, stagger: 0.16, ease: "power3.out", scrollTrigger: { trigger: "#finale", start: "top 55%" } });
       gsap.from("#finale .fn-title .st-c", { yPercent: 118, rotate: 6, duration: 1.1, stagger: 0.03, ease: "power3.out", scrollTrigger: { trigger: "#finale", start: "top 50%" } });
@@ -587,7 +640,11 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       if (cine) {
         const secs = CHAPTERS.map((c) => document.getElementById(c.id) as HTMLElement);
         const tops: number[] = [];
+        let fanTop = Infinity;
         const measure = () => {
+          const fan = document.getElementById("fan");
+          const fanHost = fan ? (fan.parentElement?.classList.contains("pin-spacer") ? fan.parentElement : fan) : null;
+          fanTop = fanHost ? fanHost.getBoundingClientRect().top + window.scrollY : Infinity;
           secs.forEach((el, i) => {
             const host = el.parentElement?.classList.contains("pin-spacer") ? el.parentElement : el;
             tops[i] = host.getBoundingClientRect().top + window.scrollY;
@@ -599,7 +656,9 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
           const y = window.scrollY;
           let i = 0;
           while (i < secs.length - 1 && y >= tops[i + 1]) i++;
-          const local = clamp((y - tops[i]) / Math.max(1, tops[i + 1] - tops[i]));
+          // the wheel chapter's range stops where the interlude starts; the camera holds on the wheel's last frame until the epilogue
+          const end = secs[i]?.id === "wheel" ? Math.min(tops[i + 1], fanTop) : tops[i + 1];
+          const local = clamp((y - tops[i]) / Math.max(1, end - tops[i]));
           const u = i + local;
           const c = ctl.current;
           if (!c) return;
@@ -634,6 +693,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
   }, [dims, span, cine, support, setRealmStable, setMonthStable]);
 
   /* ─────────────────────────────── render ─────────────────────────────── */
+  const fanCards = buildFanCards(data);
   const stat = [
     { v: Math.floor(data.places / 100) * 100, plus: 1, l: "Places curated" },
     { v: data.states.length, plus: 0, l: "States covered" },
@@ -1051,6 +1111,40 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
         <div className="wh-outer" style={{ ["--D" as string]: `${Math.round(Math.min(w * 1.08, h * 1.7))}px` }}>
           <FestivalWheel emojiByMonth={emojiByMonth} />
         </div>
+      </section>
+
+      {/* ═══ INTERLUDE · CARD FAN (scroll-driven) — not a numbered chapter, so the 3-D camera's chapter map is untouched ═══ */}
+      <section id="fan" className="st-fan" aria-label="What Saafera gives you">
+        <div className="fan-head">
+          <p className="sb-eyebrow">Before you set off</p>
+          <h2 className="st-heading">
+            <Chars text="Four things in your satchel" />
+          </h2>
+        </div>
+        <div className="fan-stage">
+          {fanCards.map((c) => (
+            <article className="fan-card" key={c.title}>
+              <div className="fan-face fan-front">
+                <span className="fan-emoji" aria-hidden>
+                  {c.emoji}
+                </span>
+                <b className="fan-big">{c.big}</b>
+                <span className="fan-label">{c.label}</span>
+              </div>
+              <div className="fan-face fan-back">
+                <h3>{c.title}</h3>
+                <p>
+                  {c.before}
+                  <mark className="fan-mark">
+                    <span>{c.mark}</span>
+                  </mark>
+                  {c.after}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="fan-curtain" aria-hidden />
       </section>
 
       {/* ═══ VIII · FINALE ═══ */}
