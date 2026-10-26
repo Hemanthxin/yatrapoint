@@ -42,11 +42,14 @@ export function ConsentGate() {
 
   return (
     <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-900/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="consent-title">
-      <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-        <h2 id="consent-title" className="text-xl font-extrabold tracking-tight text-slate-900">
+      <div
+        className="w-full max-w-md rounded-3xl p-6 shadow-2xl"
+        style={{ backgroundColor: "var(--app-bg, #fff)", color: "var(--text-soft, #475569)", border: "1px solid var(--border, #e2e8f0)" }}
+      >
+        <h2 id="consent-title" className="text-xl font-extrabold tracking-tight" style={{ color: "var(--text, #0f172a)" }}>
           Before you continue
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--muted, #64748b)" }}>
           Please review how Saafera uses your details and agree to continue. You can withdraw your consent any time in Settings.
         </p>
 

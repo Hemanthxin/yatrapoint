@@ -48,22 +48,33 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       aria-modal="true"
       aria-label={title}
     >
+      {/* Colours come from the theme variables (solid --app-bg, not the translucent
+          --surface some themes use) so the panel, its header and its text always
+          agree — the old bg-white header stayed white in dark mode while the
+          title turned light. */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl"
+        className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl shadow-2xl sm:max-w-2xl sm:rounded-3xl"
+        style={{ backgroundColor: "var(--app-bg, #fff)", color: "var(--text-soft, #475569)", border: "1px solid var(--border, #e2e8f0)" }}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/95 px-5 py-4 backdrop-blur">
-          <h2 className="text-lg font-extrabold tracking-tight text-slate-900">{title}</h2>
+        <div
+          className="sticky top-0 z-10 flex items-center justify-between px-5 py-4"
+          style={{ backgroundColor: "var(--app-bg, #fff)", borderBottom: "1px solid var(--border, #f1f5f9)" }}
+        >
+          <h2 className="text-lg font-extrabold tracking-tight" style={{ color: "var(--text, #0f172a)" }}>
+            {title}
+          </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="grid h-9 w-9 place-items-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+            className="grid h-9 w-9 place-items-center rounded-full transition hover:opacity-70"
+            style={{ color: "var(--muted, #94a3b8)" }}
           >
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="space-y-6 px-5 py-5 text-sm leading-relaxed text-slate-600">{children}</div>
+        <div className="space-y-6 px-5 py-5 text-sm leading-relaxed">{children}</div>
       </div>
     </div>,
     document.body
