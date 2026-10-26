@@ -68,24 +68,36 @@ export function PrivacyPolicyContent() {
           items={[
             "You can view and update your profile details at any time in Settings.",
             "You can remove favourites, delete trips, and delete community posts you created.",
-            "You can revoke location permission in your browser or device settings.",
+            "You can turn location off in Settings → Privacy & consent, or revoke the permission in your browser or device settings.",
             "You can permanently delete your account and all associated data at any time from Settings → Danger Zone.",
+          ]}
+        />
+      </InfoSection>
+
+      <InfoSection title="Your consent">
+        <InfoList
+          items={[
+            "We use your personal data only with your consent, which you give by ticking the Privacy Policy box when you sign up or when we ask you to review it.",
+            "We keep a record of when you agreed and which version of this policy you agreed to.",
+            "You can withdraw your consent for location at any time in Settings → Privacy & consent. Withdrawing your agreement to this policy altogether means we can no longer provide the service, so you would delete your account from Settings → Danger Zone.",
+            "Withdrawing consent does not affect what we did with your data before you withdrew it.",
           ]}
         />
       </InfoSection>
 
       <InfoSection title="Children">
         <p>
-          Saafera is intended for general audiences and is not directed at children under
-          13. We do not knowingly collect personal information from children.
+          Saafera is intended for people aged 18 and over. It is not meant for anyone under 18,
+          and we do not knowingly collect personal data from children. If you believe a child
+          has given us their details, please email us and we will delete them.
         </p>
       </InfoSection>
 
       <InfoSection title="Changes to this policy">
         <p>
-          We may update this policy from time to time. Material changes will be reflected
-          by the &quot;Last updated&quot; date above. Continued use of the app after an update means
-          you accept the revised policy.
+          We may update this policy from time to time. The &quot;Last updated&quot; date above shows
+          the current version. When we make a material change, we will ask you to review and
+          agree to the new version before you continue using the app.
         </p>
       </InfoSection>
 

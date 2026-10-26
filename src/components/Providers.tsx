@@ -6,6 +6,7 @@ import { LocationProvider } from "./app/LocationContext";
 import { ThemeProvider } from "./ThemeProvider";
 import { NavProgress } from "./app/NavProgress";
 import { ServiceWorkerRegister } from "./app/ServiceWorkerRegister";
+import { LocationConsentGuard } from "./app/LocationConsentGuard";
 import { InstallAppPrompt } from "./app/InstallAppPrompt";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -17,6 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <Suspense fallback={null}>
             <NavProgress />
           </Suspense>
+          <LocationConsentGuard />
           <ServiceWorkerRegister />
           <InstallAppPrompt />
           {children}

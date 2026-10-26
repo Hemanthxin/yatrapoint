@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
+import { recordConsents } from "@/lib/consent";
 import { signupSchema, normalisePhone, type SignupInput } from "@/lib/validators";
 
 export interface AuthActionResult {
@@ -38,11 +39,19 @@ export async function signupAction(input: SignupInput): Promise<AuthActionResult
     }
 
     const passwordHash = await bcrypt.hash(parsed.data.password, 10);
-    await db.insert(users).values({
-      name: parsed.data.name.trim(),
-      phone,
-      passwordHash,
-    });
+    const [created] = await db
+      .insert(users)
+      .values({
+        name: parsed.data.name.trim(),
+        phone,
+        passwordHash,
+      })
+      .returning({ id: users.id });
+    // Keep a record of exactly what the person agreed to, and when.
+    await recordConsents(created.id, [
+      { kind: "privacy", granted: true },
+      { kind: "terms", granted: true },
+    ]);
     return { ok: true };
   } catch {
     return { ok: false, error: "Could not create your account. Try a different number." };

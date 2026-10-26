@@ -10,17 +10,20 @@ export function InfoPage({
   title,
   subtitle,
   updated,
+  backFallback = "/settings",
   children,
 }: {
   icon: LucideIcon;
   title: string;
   subtitle: string;
   updated?: string;
+  // Where Back goes when there is no history (signed-out visitors land on "/").
+  backFallback?: string;
   children: React.ReactNode;
 }) {
   return (
     <Reveal className="mx-auto max-w-3xl space-y-5">
-      <BackButton fallback="/settings" />
+      <BackButton fallback={backFallback} />
       <header className="flex items-center gap-3">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30">
           <Icon className="h-6 w-6" />

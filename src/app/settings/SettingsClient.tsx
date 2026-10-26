@@ -25,6 +25,7 @@ import {
 import { updateProfile } from "@/lib/actions/profile";
 import { signOutAction, deleteAccountAction } from "@/lib/actions/auth";
 import { Reveal } from "@/components/app/Reveal";
+import { PrivacyControls } from "@/components/app/PrivacyControls";
 
 interface Initial {
   name: string;
@@ -179,6 +180,8 @@ export function SettingsClient({ initial }: { initial: Initial }) {
         </div>
       </section>
 
+      <PrivacyControls />
+
       {/* About & Support */}
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-slate-500">
@@ -229,7 +232,7 @@ export function SettingsClient({ initial }: { initial: Initial }) {
 
       {/* Danger Zone — GitHub-style account deletion, gated behind typing a
           confirmation phrase so it can't be triggered by a stray click. */}
-      <section className="rounded-3xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm sm:p-6">
+      <section id="danger-zone" className="rounded-3xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm sm:p-6">
         <h2 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-rose-600">
           <AlertTriangle className="h-4 w-4" /> Danger Zone
         </h2>

@@ -43,6 +43,9 @@ export const signupSchema = z
     phone: phoneSchema,
     password: passwordSchema,
     confirmPassword: z.string(),
+    // Separate, explicit agreements (DPDP: consent must be specific and unbundled).
+    acceptedPrivacy: z.literal(true, { errorMap: () => ({ message: "Please accept the Privacy Policy." }) }),
+    acceptedTerms: z.literal(true, { errorMap: () => ({ message: "Please accept the Terms of Service." }) }),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match",

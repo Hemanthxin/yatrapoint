@@ -66,7 +66,10 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [agreed, setAgreed] = useState(false);
+  // Two separate agreements — consent has to be specific, not bundled.
+  const [privacyOk, setPrivacyOk] = useState(false);
+  const [termsOk, setTermsOk] = useState(false);
+  const agreed = privacyOk && termsOk;
   const [legalModal, setLegalModal] = useState<"privacy" | "terms" | null>(null);
 
   const [gisLoaded, setGisLoaded] = useState(false);
@@ -95,17 +98,18 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
 
     if (mode === "signup") {
       if (!agreed) {
-        setError("Please accept the Privacy Policy and Terms of Service to continue.");
+        setError("Please accept both the Privacy Policy and the Terms of Service to continue.");
         return;
       }
-      const parsed = signupSchema.safeParse({ name, phone, password, confirmPassword });
+      const consent = { acceptedPrivacy: true as const, acceptedTerms: true as const };
+      const parsed = signupSchema.safeParse({ name, phone, password, confirmPassword, ...consent });
       if (!parsed.success) {
         setError(parsed.error.issues[0]?.message ?? "Check your details.");
         return;
       }
       setSubmitting(true);
       try {
-        const res = await signupAction({ name, phone, password, confirmPassword });
+        const res = await signupAction({ name, phone, password, confirmPassword, ...consent });
         if (!res.ok) {
           setError(res.error ?? "Could not sign you up.");
           return;
@@ -337,33 +341,46 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
             </AnimatePresence>
 
             {mode === "signup" && (
-              <label className="flex items-start gap-2.5 text-xs text-slate-500">
-                <input
-                  type="checkbox"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                />
-                <span>
-                  I agree to the{" "}
-                  <button
-                    type="button"
-                    onClick={() => setLegalModal("privacy")}
-                    className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
-                  >
-                    Privacy Policy
-                  </button>{" "}
-                  and{" "}
-                  <button
-                    type="button"
-                    onClick={() => setLegalModal("terms")}
-                    className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
-                  >
-                    Terms of Service
-                  </button>
-                  .
-                </span>
-              </label>
+              <div className="space-y-2">
+                <label className="flex items-start gap-2.5 text-xs text-slate-500">
+                  <input
+                    type="checkbox"
+                    checked={privacyOk}
+                    onChange={(e) => setPrivacyOk(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span>
+                    I have read the{" "}
+                    <button
+                      type="button"
+                      onClick={() => setLegalModal("privacy")}
+                      className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                    >
+                      Privacy Policy
+                    </button>{" "}
+                    and agree to Saafera using my details as described in it.
+                  </span>
+                </label>
+                <label className="flex items-start gap-2.5 text-xs text-slate-500">
+                  <input
+                    type="checkbox"
+                    checked={termsOk}
+                    onChange={(e) => setTermsOk(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span>
+                    I agree to the{" "}
+                    <button
+                      type="button"
+                      onClick={() => setLegalModal("terms")}
+                      className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                    >
+                      Terms of Service
+                    </button>
+                    .
+                  </span>
+                </label>
+              </div>
             )}
 
             {error && (
@@ -398,7 +415,16 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
                 onLoad={() => setGisLoaded(true)}
                 onError={() => setGoogleError("Couldn't load Google sign-in — use your phone number instead.")}
               />
-              <div ref={googleBtnRef} className="flex w-full justify-center" aria-label="Continue with Google" />
+              {/* While signing up, Google stays locked until both agreements are ticked. */}
+              <div
+                ref={googleBtnRef}
+                className={`flex w-full justify-center transition ${mode === "signup" && !agreed ? "pointer-events-none opacity-40" : ""}`}
+                aria-label="Continue with Google"
+                aria-disabled={mode === "signup" && !agreed}
+              />
+              {mode === "signup" && !agreed && (
+                <p className="mt-2 text-center text-xs text-slate-400">Tick both boxes above to continue with Google.</p>
+              )}
               {!gisLoaded && !googleError && <p className="mt-2 text-center text-xs text-slate-400">Loading Google…</p>}
               {googleError && <p className="mt-2 text-center text-xs text-rose-500">{googleError}</p>}
             </>

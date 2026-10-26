@@ -8,6 +8,7 @@ import { Topbar } from "./Topbar";
 import { MobileNav } from "./MobileNav";
 import { Marquee } from "./Marquee";
 import { ToastHost } from "./ToastHost";
+import { ConsentGate } from "./ConsentGate";
 import { Reveal } from "./Reveal";
 import { SaaferaAssistant } from "./SaaferaAssistant";
 import { PaintedBackdrop } from "@/components/storybook/MountainScape";
@@ -158,6 +159,7 @@ export function AppShell({ userLabel, userImage, location, immersive = false, sp
 
       {/* App-wide transient popups (e.g. "Trip added to cart"). */}
       <ToastHost />
+      <ConsentGate />
 
       {/* Globally accessible AI chat — trip advice + app help. */}
       <SaaferaAssistant />
