@@ -197,6 +197,13 @@ export class CinemaEngine implements CinemaController {
     this.running = false;
     cancelAnimationFrame(this.raf);
   }
+  /** Advance the world by exactly dt seconds and render ONE frame — deterministic, for offline rendering (the trailer). */
+  stepFrame(dt: number, snap = false) {
+    this.t += dt;
+    this.evaluate(dt, snap);
+    this.composer.render(dt);
+  }
+
   /** Render exactly one frame (reduced-motion / debug). */
   renderOnce() {
     this.evaluate(0.016, true);
@@ -242,7 +249,7 @@ export class CinemaEngine implements CinemaController {
     this.world.camBack.copy(fwd).multiplyScalar(-1).setY(0).normalize();
     this.world.setLook(this.smoothTime, camAz);
     this.world.setPointer(this.smoothPointer.x, this.smoothPointer.y);
-    this.csNow = snap ? sh.cs : this.csNow + (sh.cs - this.csNow) * (1 - Math.pow(0.04, dt));
+    this.csNow = snap ? sh.cs : this.csNow + (sh.cs - this.csNow) * (1 - Math.pow(0.004, dt));
     this.world.setCast({ s: this.csNow, walk: 0, talking: this.talking }, dt, this.t);
     this.world.update(dt, this.t);
 
