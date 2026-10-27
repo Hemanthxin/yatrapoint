@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { terrainMaterial } from "./materials";
 
 /* ───────────────────────── deterministic value noise ───────────────────────── */
 function hash2(ix: number, iy: number): number {
@@ -173,14 +174,13 @@ export function buildTerrain(): TerrainBuild {
   }
   geo.computeVertexNormals();
   const nrm = geo.attributes.normal as THREE.BufferAttribute;
+  // Colour is only a gentle tint over the real ground photographs (see materials.ts); the blend weights say which photograph.
+  const aMat = new Float32Array(pos.count * 4);
   const c = new THREE.Color();
-  const grassLo = new THREE.Color("#3c9a47");
-  const grassHi = new THREE.Color("#8fd05c");
-  const dry = new THREE.Color("#b6c85e");
-  const rock = new THREE.Color("#8d8279");
-  const snow = new THREE.Color("#f3f0ea");
-  const dirt = new THREE.Color("#c99f62");
-  const sand = new THREE.Color("#d9c78d");
+  const grassLo = new THREE.Color("#9fd070");
+  const grassHi = new THREE.Color("#d9ec8c");
+  const dry = new THREE.Color("#e6c887");
+  const sandTint = new THREE.Color("#f5e2b4");
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
     const z = pos.getZ(i);
@@ -188,19 +188,23 @@ export function buildTerrain(): TerrainBuild {
     const n = fbm(x * 0.05, z * 0.05, 3);
     const slope = 1 - nrm.getY(i);
     c.copy(grassLo).lerp(grassHi, smoothstep(0.25, 0.75, n));
-    c.lerp(dry, smoothstep(0.55, 0.9, fbm(x * 0.02 + 20, z * 0.02, 2)) * 0.5);
-    // beaches around the lake, rock on steep ground, snow up high
-    c.lerp(sand, (1 - smoothstep(WATER_Y + 0.2, WATER_Y + 2.2, y)) * 0.9);
-    c.lerp(rock, smoothstep(0.1, 0.32, slope) * 0.9 + smoothstep(55, 95, y) * 0.6);
-    c.lerp(snow, smoothstep(105, 135, y + (n - 0.5) * 20));
+    c.lerp(dry, smoothstep(0.55, 0.9, fbm(x * 0.02 + 20, z * 0.02, 2)) * 0.3);
+    const sand = 1 - smoothstep(WATER_Y + 0.2, WATER_Y + 2.2, y);
+    const rock = Math.min(1, smoothstep(0.12, 0.34, slope) + smoothstep(58, 98, y) * 0.65);
+    const snow = smoothstep(105, 135, y + (n - 0.5) * 20);
     const { d } = nearestRoad(x, z);
-    c.lerp(dirt, (1 - smoothstep(1.9, 3.4, d)) * 0.95);
+    const dirt = Math.max(1 - smoothstep(1.7, 3.2, d), sand * 0.85);
+    c.lerp(sandTint, sand * 0.7);
+    aMat[i * 4] = rock;
+    aMat[i * 4 + 1] = dirt;
+    aMat[i * 4 + 2] = snow;
     colors[i * 3] = c.r;
     colors[i * 3 + 1] = c.g;
     colors[i * 3 + 2] = c.b;
   }
   geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0 });
+  geo.setAttribute("aMat", new THREE.BufferAttribute(aMat, 4));
+  const mat = terrainMaterial();
   const mesh = new THREE.Mesh(geo, mat);
   mesh.receiveShadow = true;
   return { mesh, size };

@@ -24,7 +24,7 @@ export interface CinemaController {
 }
 
 const GRADE = {
-  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, vig: { value: 0.35 }, grain: { value: 0.045 }, warm: { value: 0.1 }, aber: { value: 0.0007 }, shafts: { value: 0 }, sunUV: { value: new THREE.Vector2(0.5, 0.5) }, res: { value: new THREE.Vector2(1, 1) }, flash: { value: 0 } },
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, vig: { value: 0.22 }, grain: { value: 0.022 }, warm: { value: 0.05 }, aber: { value: 0.0002 }, shafts: { value: 0 }, sunUV: { value: new THREE.Vector2(0.5, 0.5) }, res: { value: new THREE.Vector2(1, 1) }, flash: { value: 0 } },
   vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
   fragmentShader: `
     uniform sampler2D tDiffuse; uniform float time, vig, grain, warm, aber, shafts, flash; uniform vec2 sunUV, res; varying vec2 vUv;
@@ -44,7 +44,7 @@ const GRADE = {
       col = mix(col, col * vec3(0.9, 0.96, 1.1), 1.0 - smoothstep(0.0, 0.34, l));
       col = (col - 0.5) * 1.06 + 0.5;
       float g = dot(col, vec3(0.299, 0.587, 0.114));
-      col = mix(vec3(g), col, 1.22);
+      col = mix(vec3(g), col, 1.04);
       col += (h(uv * res + fract(time) * 91.0) - 0.5) * grain;
       col = mix(col, vec3(1.0, 0.97, 0.86), flash);
       gl_FragColor = vec4(max(col, 0.0), 1.0);
@@ -197,6 +197,13 @@ export class CinemaEngine implements CinemaController {
     this.running = false;
     cancelAnimationFrame(this.raf);
   }
+  /** Advance the world by exactly dt seconds and render ONE frame — deterministic, for offline rendering (the trailer). */
+  stepFrame(dt: number, snap = false) {
+    this.t += dt;
+    this.evaluate(dt, snap);
+    this.composer.render(dt);
+  }
+
   /** Render exactly one frame (reduced-motion / debug). */
   renderOnce() {
     this.evaluate(0.016, true);
@@ -242,7 +249,7 @@ export class CinemaEngine implements CinemaController {
     this.world.camBack.copy(fwd).multiplyScalar(-1).setY(0).normalize();
     this.world.setLook(this.smoothTime, camAz);
     this.world.setPointer(this.smoothPointer.x, this.smoothPointer.y);
-    this.csNow = snap ? sh.cs : this.csNow + (sh.cs - this.csNow) * (1 - Math.pow(0.04, dt));
+    this.csNow = snap ? sh.cs : this.csNow + (sh.cs - this.csNow) * (1 - Math.pow(0.004, dt));
     this.world.setCast({ s: this.csNow, walk: 0, talking: this.talking }, dt, this.t);
     this.world.update(dt, this.t);
 
@@ -266,8 +273,8 @@ export class CinemaEngine implements CinemaController {
     gu.shafts.value = this.shaftsOn && inFront ? Math.max(0, 1 - L.glow * 0.8) * 0.6 : 0;
     gu.time.value = this.t;
     gu.flash.value = this.flash;
-    gu.vig.value = 0.32 + L.glow * 0.1;
-    gu.warm.value = 0.1 - L.glow * 0.05;
+    gu.vig.value = 0.2 + L.glow * 0.1;
+    gu.warm.value = 0.05 - L.glow * 0.03;
   }
 
   /** Step quality down if the machine can't hold ~30 fps; never back up (no flip-flopping). */

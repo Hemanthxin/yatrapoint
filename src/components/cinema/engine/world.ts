@@ -4,7 +4,10 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { blendLook, makeLiveLook, sunDirection } from "./presets";
 import { ROAD_LEN, WATER_Y, buildTerrain, fbm, groundHeight, lerp, nearestRoad, noise2, roadAt, smoothstep } from "./terrain";
 import { bubbleIcon, cloudTexture, furBump, glowTexture, runeTexture, signTexture, starTexture } from "./textures";
-import { buildBear, buildFox, buildButterfly, type Character } from "./characters";
+import type { Character } from "./characters";
+import { buildBear, buildFox, buildButterfly } from "./animals";
+import { rockMaterial, triMaterial, TEX } from "./materials";
+import { barkMaterial, buildBroadleaf, buildConifer, buildGrassTuft, buildWildflower, foliageMaterial, makeFloraTextures } from "./flora";
 
 export type Quality = "high" | "medium" | "low";
 
@@ -220,7 +223,6 @@ export class World {
     this.buildGate();
     this.buildCamp();
     this.buildAtmosphere();
-    this.buildBubbles();
 
     // ── the cast ──
     for (const c of [this.bear, this.fox, this.butterfly]) {
@@ -234,47 +236,18 @@ export class World {
   /* ───────────────────────── foliage, rocks, flowers ───────────────────────── */
   private buildFlora() {
     const sc = this.scene;
-    // pines
-    const pineParts: THREE.BufferGeometry[] = [];
-    const trunk = tinted(new THREE.CylinderGeometry(0.16, 0.24, 1.1, 8), () => new THREE.Color("#5b3b22"));
-    trunk.translate(0, 0.55, 0);
-    pineParts.push(trunk);
-    const tiers: [number, number, number][] = [[1.45, 1.9, 0.9], [1.15, 1.7, 2.0], [0.82, 1.5, 3.05], [0.5, 1.2, 4.0]];
-    for (const [r, h, y] of tiers) {
-      const c = new THREE.ConeGeometry(r, h, 9, 1);
-      c.translate(0, y + h / 2 - 0.2, 0);
-      pineParts.push(tinted(c, (yy) => new THREE.Color("#2a7a45").lerp(new THREE.Color("#58b05a"), smoothstep(0, 5.5, yy))));
-    }
-    const pineGeo = mergeGeometries(pineParts)!;
-    // broadleaf
-    const oakParts: THREE.BufferGeometry[] = [];
-    const t2 = tinted(new THREE.CylinderGeometry(0.2, 0.3, 2.2, 8), () => new THREE.Color("#6b4528"));
-    t2.translate(0, 1.1, 0);
-    oakParts.push(t2);
-    const blobs: [number, number, number, number][] = [[0, 3.4, 0, 1.9], [-1.1, 2.9, 0.4, 1.35], [1.2, 3.0, -0.3, 1.4], [0.2, 4.4, 0.2, 1.3], [-0.4, 3.1, -1.1, 1.3]];
-    for (const [x, y, z, r] of blobs) {
-      const b0 = new THREE.IcosahedronGeometry(r, 4);
-      b0.deleteAttribute("normal");
-      b0.deleteAttribute("uv");
-      const b = mergeVertices(b0, 1e-4); // shared vertices → smooth normals instead of faceted ones
-      const p = b.attributes.position;
-      for (let i = 0; i < p.count; i++) {
-        const k = 1 + (noise2(p.getX(i) * 1.6 + x, p.getZ(i) * 1.6 + z) - 0.5) * 0.2;
-        p.setXYZ(i, p.getX(i) * k + x, p.getY(i) * k + y, p.getZ(i) * k + z);
-      }
-      b.computeVertexNormals();
-      oakParts.push(tinted(b, (yy) => new THREE.Color("#3f9a4a").lerp(new THREE.Color("#9ad55e"), smoothstep(1.6, 6, yy))));
-    }
-    const oakGeo = mergeGeometries(oakParts)!;
+    const tex = makeFloraTextures(rnd);
+    const bark = barkMaterial();
+    const broadMat = foliageMaterial(tex.leaf);
+    const pineMat = foliageMaterial(tex.pine);
+    addWind(broadMat, 0.008);
+    addWind(pineMat, 0.006);
 
-    const pineMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 });
-    const oakMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85 });
-    addWind(pineMat, 0.012);
-    addWind(oakMat, 0.01);
-    const pines: THREE.Matrix4[] = [];
-    const oaks: THREE.Matrix4[] = [];
-    const pinesC: THREE.Color[] = [];
-    const oaksC: THREE.Color[] = [];
+    // a handful of distinct trees of each kind, so no two neighbours look cloned
+    type Variant = { parts: ReturnType<typeof buildBroadleaf>; mats: THREE.Matrix4[]; cols: THREE.Color[] };
+    const broads: Variant[] = [0, 1, 2, 3].map(() => ({ parts: buildBroadleaf(rnd), mats: [], cols: [] }));
+    const pines: Variant[] = [0, 1, 2].map(() => ({ parts: buildConifer(rnd), mats: [], cols: [] }));
+
     const m = new THREE.Matrix4();
     const q = new THREE.Quaternion();
     const up = new THREE.Vector3(0, 1, 0);
@@ -283,48 +256,57 @@ export class World {
         const px = x + (rnd() - 0.5) * 9;
         const pz = z + (rnd() - 0.5) * 9;
         const { d } = nearestRoad(px, pz);
-        if (d < 13) continue;
+        if (d < 19) continue;
         const y = groundHeight(px, pz);
         if (y < WATER_Y + 1.2 || y > 85) continue;
         const dens = fbm(px * 0.012 + 3, pz * 0.012, 3);
-        const near = 1 - smoothstep(14, 120, d) * 0.55;
+        const near = 1 - smoothstep(19, 120, d) * 0.55;
         if (rnd() > (dens - 0.28) * 1.5 * near) continue;
-        const sc2 = (0.7 + rnd() * 1.1) * (y > 55 ? 0.8 : 1) * (d < 14 ? 1.0 : 1.2);
+        const k = (0.6 + rnd() * 0.75) * (y > 55 ? 0.8 : 1);
         q.setFromAxisAngle(up, rnd() * 6.28);
-        m.compose(new THREE.Vector3(px, y - 0.1, pz), q, new THREE.Vector3(sc2, sc2 * (0.9 + rnd() * 0.3), sc2));
-        const col = new THREE.Color().setHSL(0.3 + rnd() * 0.05, 0.25 + rnd() * 0.2, 0.62 + rnd() * 0.38);
-        if (y > 38 || noise2(px * 0.04, pz * 0.04) > 0.6) {
-          pines.push(m.clone());
-          pinesC.push(col);
-        } else {
-          oaks.push(m.clone());
-          oaksC.push(col);
-        }
+        m.compose(new THREE.Vector3(px, y - 0.15, pz), q, new THREE.Vector3(k, k * (0.92 + rnd() * 0.2), k));
+        const col = new THREE.Color().setRGB(0.82 + rnd() * 0.3, 0.86 + rnd() * 0.26, 0.72 + rnd() * 0.3);
+        const conifer = y > 38 || noise2(px * 0.04, pz * 0.04) > 0.6;
+        const list = conifer ? pines : broads;
+        const v = list[Math.floor(rnd() * list.length)];
+        v.mats.push(m.clone());
+        v.cols.push(col);
       }
     }
-    const mk = (geo: THREE.BufferGeometry, mat: THREE.Material, mats: THREE.Matrix4[], cols: THREE.Color[]) => {
-      const im = new THREE.InstancedMesh(geo, mat, mats.length);
-      mats.forEach((mm, i) => {
+    const mk = (geo: THREE.BufferGeometry, mat: THREE.Material, v: Variant) => {
+      if (!v.mats.length) return;
+      const im = new THREE.InstancedMesh(geo, mat, v.mats.length);
+      v.mats.forEach((mm, i) => {
         im.setMatrixAt(i, mm);
-        im.setColorAt(i, cols[i]);
+        im.setColorAt(i, v.cols[i]);
       });
       im.frustumCulled = false;
       sc.add(im);
-      return im;
     };
-    mk(pineGeo, pineMat, pines, pinesC);
-    mk(oakGeo, oakMat, oaks, oaksC);
+    for (const v of broads) {
+      mk(v.parts.trunk, bark, v);
+      mk(v.parts.crown, broadMat, v);
+    }
+    for (const v of pines) {
+      mk(v.parts.trunk, bark, v);
+      mk(v.parts.crown, pineMat, v);
+    }
 
-    // rocks
-    const rockBase = new THREE.IcosahedronGeometry(1, 3);
+    // boulders: displaced stone with real rock texture projected from three sides
+    const rockBase = new THREE.IcosahedronGeometry(1, 4);
     rockBase.deleteAttribute("normal");
     rockBase.deleteAttribute("uv");
     const rockGeo = mergeVertices(rockBase, 1e-4);
     {
       const p = rockGeo.attributes.position;
       for (let i = 0; i < p.count; i++) {
-        const k = 1 + (noise2(p.getX(i) * 1.7, p.getZ(i) * 1.7 + p.getY(i)) - 0.5) * 0.45;
-        p.setXYZ(i, p.getX(i) * k, p.getY(i) * k * 0.7, p.getZ(i) * k);
+        const x = p.getX(i);
+        const y = p.getY(i);
+        const z = p.getZ(i);
+        const big = fbm(x * 0.9 + 3, z * 0.9 + y * 0.7, 3);
+        const fine = noise2(x * 4.2, z * 4.2 + y * 3.1);
+        const k = 0.72 + big * 0.55 + (fine - 0.5) * 0.12;
+        p.setXYZ(i, x * k, Math.max(y * k * 0.62, -0.25), z * k);
       }
       rockGeo.computeVertexNormals();
     }
@@ -335,64 +317,60 @@ export class World {
       const { d } = nearestRoad(px, pz);
       const y = groundHeight(px, pz);
       if (d < 4.2 || y < WATER_Y + 0.4) continue;
-      const s = 0.4 + rnd() * rnd() * 3;
+      const s0 = 0.4 + rnd() * rnd() * 3;
       q.setFromAxisAngle(up, rnd() * 6.28);
-      rocks.push(new THREE.Matrix4().compose(new THREE.Vector3(px, y + s * 0.15, pz), q, new THREE.Vector3(s * 1.3, s, s)));
+      rocks.push(new THREE.Matrix4().compose(new THREE.Vector3(px, y + s0 * 0.1, pz), q, new THREE.Vector3(s0 * (1.1 + rnd() * 0.5), s0 * (0.8 + rnd() * 0.5), s0 * (0.9 + rnd() * 0.4))));
     }
-    const rockMesh = new THREE.InstancedMesh(rockGeo, new THREE.MeshStandardMaterial({ color: "#8f8880", roughness: 0.95, bumpMap: furBump(), bumpScale: 2 }), rocks.length);
+    const rockMesh = new THREE.InstancedMesh(rockGeo, rockMaterial(), rocks.length);
     rocks.forEach((mm, i) => rockMesh.setMatrixAt(i, mm));
     rockMesh.frustumCulled = false;
     sc.add(rockMesh);
 
-    // grass tufts + flowers hugging the road
-    const blade = (a: number) => {
-      const g = new THREE.ConeGeometry(0.028, 0.34, 4, 1);
-      g.translate(0, 0.17, 0);
-      g.rotateZ(a);
-      return g;
-    };
-    const tuftGeo = tinted(mergeGeometries([blade(0.0), blade(0.35), blade(-0.35), blade(0.18).rotateY(1.4)])!, (y) => new THREE.Color("#3f9d47").lerp(new THREE.Color("#b6e36a"), smoothstep(0, 0.6, y)));
-    const tuftMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, side: THREE.DoubleSide });
-    addWind(tuftMat, 0.3);
-    const TUFTS = this.quality === "low" ? 4500 : 11000;
+    // grass along the road
+    const tuftGeo = buildGrassTuft(rnd);
+    const tuftMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, side: THREE.DoubleSide });
+    addWind(tuftMat, 0.22);
+    const TUFTS = this.quality === "low" ? 5000 : 16000;
     const tuft = new THREE.InstancedMesh(tuftGeo, tuftMat, TUFTS);
     let ti = 0;
     for (let tries = 0; tries < TUFTS * 3 && ti < TUFTS; tries++) {
-      const s = rnd() * ROAD_LEN;
-      const p = roadAt(s);
+      const s0 = rnd() * ROAD_LEN;
+      const p = roadAt(s0);
       const side = (rnd() < 0.5 ? -1 : 1) * (2.3 + Math.pow(rnd(), 1.6) * 16);
       const px = p.pos.x + -p.dir.z * side;
       const pz = p.pos.z + p.dir.x * side;
       const y = groundHeight(px, pz);
       if (y < WATER_Y + 0.3) continue;
-      const sc2 = 0.7 + rnd() * 1.0;
+      const k = 0.65 + rnd() * 0.7;
       q.setFromAxisAngle(up, rnd() * 6.28);
-      tuft.setMatrixAt(ti, m.compose(new THREE.Vector3(px, y - 0.02, pz), q, new THREE.Vector3(sc2, sc2 * (0.8 + rnd() * 0.7), sc2)));
-      tuft.setColorAt(ti, new THREE.Color().setHSL(0.27 + rnd() * 0.06, 0.4, 0.8 + rnd() * 0.3));
+      tuft.setMatrixAt(ti, m.compose(new THREE.Vector3(px, y - 0.02, pz), q, new THREE.Vector3(k, k * (0.8 + rnd() * 0.6), k)));
+      tuft.setColorAt(ti, new THREE.Color().setRGB(0.75 + rnd() * 0.5, 0.82 + rnd() * 0.4, 0.62 + rnd() * 0.4));
       ti++;
     }
     tuft.count = ti;
     tuft.frustumCulled = false;
     sc.add(tuft);
 
-    const FL = this.quality === "low" ? 500 : 1500;
-    const stemGeo = tinted(new THREE.CylinderGeometry(0.012, 0.016, 0.34, 5).translate(0, 0.17, 0), () => new THREE.Color("#3f8f3f"));
-    const stems = new THREE.InstancedMesh(stemGeo, new THREE.MeshStandardMaterial({ vertexColors: true }), FL);
-    const heads = new THREE.InstancedMesh(new THREE.SphereGeometry(0.075, 10, 8), new THREE.MeshStandardMaterial({ roughness: 0.6, emissive: new THREE.Color("#222") }), FL);
-    const palette = ["#fff6e0", "#ffd24a", "#ff7f7f", "#ff9ccf", "#c58cf5", "#ffffff"].map((c) => new THREE.Color(c));
+    // wildflowers: small, few colours, scattered
+    const FL = this.quality === "low" ? 450 : 1300;
+    const fl = buildWildflower(rnd);
+    const stems = new THREE.InstancedMesh(fl.stem, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 }), FL);
+    const heads = new THREE.InstancedMesh(fl.head, new THREE.MeshStandardMaterial({ map: tex.flower, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.7 }), FL);
+    const palette = ["#ffffff", "#f6e24b", "#e9a6c8", "#b9a0e6", "#ffffff", "#f3c344"].map((c) => new THREE.Color(c));
     let fi = 0;
     for (let tries = 0; tries < FL * 3 && fi < FL; tries++) {
-      const s = rnd() * ROAD_LEN;
-      const p = roadAt(s);
+      const s0 = rnd() * ROAD_LEN;
+      const p = roadAt(s0);
       const side = (rnd() < 0.5 ? -1 : 1) * (2.2 + Math.pow(rnd(), 1.5) * 9);
       const px = p.pos.x + -p.dir.z * side;
       const pz = p.pos.z + p.dir.x * side;
       const y = groundHeight(px, pz);
       if (y < WATER_Y + 0.3) continue;
-      const k = 0.9 + rnd() * 1.1;
-      const mm = new THREE.Matrix4().compose(new THREE.Vector3(px, y, pz), new THREE.Quaternion(), new THREE.Vector3(k, k, k));
+      const k = 0.85 + rnd() * 0.9;
+      q.setFromAxisAngle(up, rnd() * 6.28);
+      const mm = new THREE.Matrix4().compose(new THREE.Vector3(px, y, pz), q, new THREE.Vector3(k, k, k));
       stems.setMatrixAt(fi, mm);
-      heads.setMatrixAt(fi, new THREE.Matrix4().compose(new THREE.Vector3(px, y + 0.34 * k, pz), new THREE.Quaternion(), new THREE.Vector3(k, k * 0.7, k)));
+      heads.setMatrixAt(fi, mm);
       heads.setColorAt(fi, palette[Math.floor(rnd() * palette.length)]);
       fi++;
     }
@@ -403,8 +381,8 @@ export class World {
 
   /* ───────────────────────── stone steps climbing the first hill ───────────────────────── */
   private buildSteps() {
-    const stone = new THREE.MeshStandardMaterial({ color: "#a9a091", roughness: 0.92, bumpMap: furBump(), bumpScale: 1.5 });
-    const stoneB = new THREE.MeshStandardMaterial({ color: "#968d7e", roughness: 0.94, bumpMap: furBump(), bumpScale: 1.5 });
+    const stone = rockMaterial("#e6dccb");
+    const stoneB = rockMaterial("#cfc5b4");
     const stepGeo = new RoundedBoxGeometry(3.3, 0.5, 1.5, 3, 0.07);
     for (let s = 0.8, i = 0; s < 31; s += 1.5, i++) {
       const p = roadAt(s);
@@ -424,8 +402,8 @@ export class World {
     const a = roadAt(GATE_S);
     root.position.copy(a.pos);
     root.rotation.y = Math.atan2(a.dir.x, a.dir.z);
-    const stone = new THREE.MeshStandardMaterial({ color: "#b3ab99", roughness: 0.92, bumpMap: furBump(), bumpScale: 2.2 });
-    const dark = new THREE.MeshStandardMaterial({ color: "#8f8878", roughness: 0.95, bumpMap: furBump(), bumpScale: 2.2 });
+    const stone = rockMaterial("#d9d0bf");
+    const dark = rockMaterial("#a9a08f");
     const R = 3.4;
     const r = 2.35;
     const H = 3.0;
@@ -533,9 +511,9 @@ export class World {
     const house = new THREE.Group();
     house.position.copy(side(-9.5, -3));
     house.rotation.y = Math.PI / 2 + 0.25;
-    const plaster = new THREE.MeshStandardMaterial({ color: "#f2e3c4", roughness: 0.92 });
-    const wood = new THREE.MeshStandardMaterial({ color: "#7b5230", roughness: 0.75, bumpMap: furBump(), bumpScale: 1 });
-    const roofMat = new THREE.MeshStandardMaterial({ color: "#a8472f", roughness: 0.8 });
+    const plaster = triMaterial(TEX.plaster, { tint: "#f1e2c2", gray: true, gain: 2.1, scale: 0.9, roughness: 0.95 });
+    const wood = triMaterial(TEX.planks, { tint: "#8a5a35", gray: true, gain: 2.4, scale: 0.7, roughness: 0.8 });
+    const roofMat = triMaterial(TEX.roof, { tint: "#ffffff", gain: 1.5, scale: 0.55, roughness: 0.85 });
     const body = new THREE.Mesh(new RoundedBoxGeometry(5.6, 3.2, 4.4, 4, 0.1), plaster);
     body.position.y = 1.6;
     body.castShadow = body.receiveShadow = true;
@@ -551,7 +529,7 @@ export class World {
     ridge.rotation.z = Math.PI / 2;
     ridge.position.y = 4.78;
     house.add(ridge);
-    const chim = new THREE.Mesh(new RoundedBoxGeometry(0.7, 1.9, 0.7, 2, 0.05), new THREE.MeshStandardMaterial({ color: "#8b6a58", roughness: 0.95 }));
+    const chim = new THREE.Mesh(new RoundedBoxGeometry(0.7, 1.9, 0.7, 2, 0.05), rockMaterial("#c9a58f"));
     chim.position.set(1.7, 4.7, -0.6);
     house.add(chim);
     const door = new THREE.Mesh(new RoundedBoxGeometry(1.05, 2.0, 0.14, 3, 0.04), wood);
@@ -578,7 +556,7 @@ export class World {
 
     // campfire (right of the road)
     const fp = side(4.2, 2.6);
-    const stones = new THREE.MeshStandardMaterial({ color: "#7d776f", roughness: 0.95, bumpMap: furBump(), bumpScale: 2 });
+    const stones = rockMaterial("#b9b2a8");
     for (let i = 0; i < 10; i++) {
       const st = new THREE.Mesh(new THREE.IcosahedronGeometry(0.2 + rnd() * 0.08, 1), stones);
       const an = (i / 10) * Math.PI * 2;
@@ -624,7 +602,7 @@ export class World {
     }
 
     // tent
-    const tent = new THREE.Mesh(new THREE.ConeGeometry(2.3, 2.5, 4, 1, true), new THREE.MeshStandardMaterial({ color: "#d9533a", roughness: 0.82, side: THREE.DoubleSide }));
+    const tent = new THREE.Mesh(new THREE.ConeGeometry(2.3, 2.5, 4, 1, true), Object.assign(triMaterial(TEX.linen, { tint: "#c4452d", gray: true, gain: 2.6, scale: 1.4, roughness: 0.9 }), { side: THREE.DoubleSide }));
     tent.position.set(6.8, 1.25, -4.2);
     tent.rotation.y = Math.PI / 4 + 0.3;
     tent.castShadow = true;
@@ -703,7 +681,7 @@ export class World {
       sc.add(sp);
     }
     // drifting pollen / fireflies around the cast
-    const N = this.quality === "low" ? 120 : 320;
+    const N = this.quality === "low" ? 60 : 140;
     this.moteBase = new Float32Array(N * 4);
     const pos = new Float32Array(N * 3);
     for (let i = 0; i < N; i++) {
@@ -714,18 +692,9 @@ export class World {
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    this.motes = new THREE.Points(g, new THREE.PointsMaterial({ map: glowTexture(), color: "#fff2c4", size: 0.26, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true }));
+    this.motes = new THREE.Points(g, new THREE.PointsMaterial({ map: glowTexture(), color: "#fff2c4", size: 0.09, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true }));
     this.motes.frustumCulled = false;
     sc.add(this.motes);
-    // sparkle stars
-    const stex = starTexture();
-    for (let i = 0; i < 26; i++) {
-      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: stex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, fog: false }));
-      const base = new THREE.Vector3((rnd() - 0.5) * 16, 1.5 + rnd() * 7, (rnd() - 0.5) * 16);
-      this.stars.push({ s, base, ph: rnd() * 6.28 });
-      s.scale.setScalar(0.28 + rnd() * 0.4);
-      sc.add(s);
-    }
   }
 
   private buildBubbles() {

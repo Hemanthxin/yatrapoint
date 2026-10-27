@@ -1,0 +1,11 @@
+Third-party assets used by the Saafera landing scene
+
+Ground, rock and bark textures - Poly Haven (polyhaven.com), CC0 1.0
+  leafy_grass, brown_mud_dry, aerial_rocks_02, cliff_side, bark_brown_02
+
+Fox model and animations - "Fox" from the Khronos glTF Sample Assets
+  Model: PixelMannen (CC0 1.0). Rigging and animation: @tomkranis (CC BY 4.0)
+  https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/Fox
+
+Black bear model - "Black bear" by Poly by Google, via Poly Pizza (CC BY 3.0)
+  https://poly.pizza/m/56ym_pyVnel
