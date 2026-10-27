@@ -57,6 +57,29 @@ const SIGNS = [
   { t: "Fellow Wanderers", d: "Group trips, shared maps and a campfire's worth of company." },
 ];
 
+// Manifesto: words fill in as you scroll; *starred* words are the highlighted ones.
+const MANIFESTO = "We plan trips the way friends do. Tell us your *budget* and your days, and Saafera draws the *route*, picks the places and keeps the rest for *chai*. Real distances, real timings, and the festivals worth planning around.";
+const MANIFESTO_WORDS = MANIFESTO.split(" ").map((w) => ({ t: w.replace(/\*/g, ""), hot: w.startsWith("*") }));
+const MF_DIM = "rgba(246, 234, 208, 0.22)";
+const MF_INK = "#f6ead0";
+const MF_HOT = "#ffb347";
+const MANIFESTO_PILLS = [
+  { t: "Budget first", style: { top: "6%", left: "70%", rotate: 5 } },
+  { t: "Friends welcome", style: { top: "46%", left: "4%", rotate: -6 } },
+  { t: "Made for India", style: { top: "84%", left: "62%", rotate: 4 } },
+];
+
+// The route that draws itself: one stop per thing Saafera does.
+const ROUTE_STOPS = [
+  { f: 0.1, emoji: "🗺️", sign: 0 },
+  { f: 0.32, emoji: "🌄", sign: 1 },
+  { f: 0.54, emoji: "🧭", sign: 2 },
+  { f: 0.76, emoji: "🏮", sign: 3 },
+  { f: 0.96, emoji: "🔥", sign: 4 },
+];
+const ROUTE_PATH = "M40 530 C 230 540, 290 330, 130 280 C -10 235, 80 70, 270 120 C 470 172, 420 430, 640 410 C 850 392, 760 150, 940 80";
+const RIBBON_TEXT = "PLAN IT TOGETHER • EXPLORE MORE • FULFILL SOUL • BUDGET FIRST • ";
+
 // The interlude's cards — every number comes from the real catalogue, never a made-up figure.
 function buildFanCards(data: StoryData) {
   return [
@@ -561,6 +584,77 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       if (inner) turn.fromTo(inner, { rotation: 0, svgOrigin: "0 0" }, { rotation: 300, ease: "none", duration: 1, svgOrigin: "0 0" }, 0);
       gsap.from("#wheel .st-heading .st-c", { yPercent: 118, duration: 1, stagger: 0.03, ease: "power3.out", scrollTrigger: { trigger: "#wheel", start: "top 60%" } });
 
+      /* ── interlude: the curved ribbon, the word-by-word manifesto and the self-drawing route ── */
+      {
+        // ribbon: the text rides the arc, endlessly
+        const rbText = one(".rb-text textPath");
+        if (rbText && !calm) {
+          gsap.fromTo(rbText, { attr: { startOffset: "0%" } }, { attr: { startOffset: "-50%" }, duration: 28, ease: "none", repeat: -1 });
+        }
+
+        // manifesto: pinned; each word fills in, the starred ones in the accent colour; sticker pills pop in
+        const words = q(".mf-w") as HTMLElement[];
+        const pills = q(".mf-pill") as HTMLElement[];
+        if (words.length) {
+          if (calm) {
+            gsap.set(words, { color: MF_INK });
+            gsap.set(q(".mf-hot"), { color: MF_HOT });
+          } else {
+            const mf = gsap.timeline({
+              defaults: { ease: "none" },
+              scrollTrigger: { trigger: "#manifesto", start: "top top", end: "+=" + Math.round(words.length * 7) + "%", pin: true, scrub: 0.5 },
+            });
+            mf.fromTo(words, { color: MF_DIM }, { color: MF_INK, stagger: 0.12, duration: 0.3 }, 0);
+            const total = words.length * 0.12 + 0.3;
+            words.forEach((w, i) => {
+              if (w.classList.contains("mf-hot")) mf.to(w, { color: MF_HOT, duration: 0.3 }, i * 0.12 + 0.2);
+            });
+            pills.forEach((p, i) => {
+              mf.fromTo(p, { scale: 0, opacity: 0, rotate: 0 }, { scale: 1, opacity: 1, rotate: Number(p.dataset.rot), duration: 0.5, ease: "back.out(2)" }, (total * (i + 1)) / (pills.length + 1));
+            });
+          }
+        }
+
+        // route: the line draws as you scroll and the stops light up when it reaches them
+        const line = one(".rt-line") as SVGPathElement | undefined;
+        const dot = one(".rt-head-dot") as SVGCircleElement | undefined;
+        const stage = one(".rt-stage") as HTMLElement | undefined;
+        if (line && dot && stage) {
+          const len = line.getTotalLength();
+          const stops = q(".rt-stop") as HTMLElement[];
+          // place each stop on the line, as a % of the drawing so it scales with it
+          stops.forEach((el) => {
+            const pt = line.getPointAtLength(len * Number(el.dataset.f));
+            el.style.left = (pt.x / 1000) * 100 + "%";
+            el.style.top = (pt.y / 600) * 100 + "%";
+          });
+          gsap.set(line, { strokeDasharray: len, strokeDashoffset: calm ? 0 : len });
+          const paint = (p: number) => {
+            const pt = line.getPointAtLength(len * p);
+            gsap.set(dot, { attr: { cx: pt.x, cy: pt.y } });
+            stops.forEach((el) => el.classList.toggle("on", p >= Number(el.dataset.f) - 0.015));
+          };
+          if (calm) {
+            stops.forEach((el) => el.classList.add("on"));
+            gsap.set(dot, { display: "none" });
+          } else {
+            paint(0);
+            ScrollTrigger.create({
+              trigger: "#route",
+              start: "top top",
+              end: "+=300%",
+              pin: true,
+              scrub: 0.6,
+              onUpdate: (self) => {
+                gsap.set(line, { strokeDashoffset: len * (1 - self.progress) });
+                paint(self.progress);
+              },
+            });
+          }
+          gsap.from("#route .st-heading .st-c", { yPercent: 118, duration: 1, stagger: 0.03, ease: "power3.out", scrollTrigger: { trigger: "#route", start: "top 60%" } });
+        }
+      }
+
       /* ── interlude: cards fan out of a stack, flip, get highlighted, then a curtain covers them ── */
       {
         const fanEls = q(".fan-card") as HTMLElement[];
@@ -642,9 +736,13 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
         const tops: number[] = [];
         let fanTop = Infinity;
         const measure = () => {
-          const fan = document.getElementById("fan");
-          const fanHost = fan ? (fan.parentElement?.classList.contains("pin-spacer") ? fan.parentElement : fan) : null;
-          fanTop = fanHost ? fanHost.getBoundingClientRect().top + window.scrollY : Infinity;
+          fanTop = Infinity;
+          for (const id of ["ribbon", "manifesto", "route", "fan"]) {
+            const el = document.getElementById(id);
+            if (!el) continue;
+            const host = el.parentElement?.classList.contains("pin-spacer") ? el.parentElement : el;
+            fanTop = Math.min(fanTop, host.getBoundingClientRect().top + window.scrollY);
+          }
           secs.forEach((el, i) => {
             const host = el.parentElement?.classList.contains("pin-spacer") ? el.parentElement : el;
             tops[i] = host.getBoundingClientRect().top + window.scrollY;
@@ -1110,6 +1208,63 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
         <div className="wh-pointer" aria-hidden />
         <div className="wh-outer" style={{ ["--D" as string]: `${Math.round(Math.min(w * 1.08, h * 1.7))}px` }}>
           <FestivalWheel emojiByMonth={emojiByMonth} />
+        </div>
+      </section>
+
+      {/* ═══ INTERLUDE · CURVED RIBBON — a marquee that rides an arc ═══ */}
+      <section id="ribbon" className="st-ribbon-band" aria-hidden>
+        <svg viewBox="0 0 1440 260" preserveAspectRatio="none" className="rb-svg">
+          <path id="rb-arc" d="M-120 210 Q 720 -60 1560 210" fill="none" stroke="var(--rb-band, #f0a24a)" strokeWidth="96" strokeLinecap="butt" />
+          <text className="rb-text" dy="14">
+            <textPath href="#rb-arc" startOffset="0%">
+              {RIBBON_TEXT.repeat(8)}
+            </textPath>
+          </text>
+        </svg>
+      </section>
+
+      {/* ═══ INTERLUDE · MANIFESTO — words fill in as you scroll ═══ */}
+      <section id="manifesto" className="st-mf" aria-label="Why Saafera">
+        <p className="sb-eyebrow mf-eyebrow">A bit about Saafera</p>
+        <p className="mf-text">
+          {MANIFESTO_WORDS.map((w, i) => (
+            <span key={i} className={`mf-w${w.hot ? " mf-hot" : ""}`}>
+              {w.t}{" "}
+            </span>
+          ))}
+        </p>
+        {MANIFESTO_PILLS.map((p) => (
+          <span key={p.t} className="mf-pill" data-rot={p.style.rotate} style={{ top: p.style.top, left: p.style.left, ["--rot" as string]: p.style.rotate + "deg" }}>
+            {p.t}
+          </span>
+        ))}
+      </section>
+
+      {/* ═══ INTERLUDE · ROUTE — a line draws itself and the stops appear along it ═══ */}
+      <section id="route" className="st-rt" aria-label="What Saafera does">
+        <div className="rt-head">
+          <p className="sb-eyebrow">The road ahead</p>
+          <h2 className="st-heading">
+            <Chars text="Five stops on your way" />
+          </h2>
+        </div>
+        <div className="rt-stage">
+          <svg viewBox="0 0 1000 600" className="rt-svg" aria-hidden>
+            <path d={ROUTE_PATH} className="rt-track" />
+            <path d={ROUTE_PATH} className="rt-line" />
+            <circle className="rt-head-dot" r="15" cx="40" cy="530" />
+          </svg>
+          {ROUTE_STOPS.map((st, i) => (
+            <div key={i} className={`rt-stop rt-${i % 2 ? "dn" : "up"}`} data-f={st.f}>
+              <span className="rt-pin" aria-hidden>
+                {st.emoji}
+              </span>
+              <div className="rt-card">
+                <b>{SIGNS[st.sign].t}</b>
+                <span>{SIGNS[st.sign].d}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

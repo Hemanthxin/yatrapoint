@@ -1515,3 +1515,207 @@
     font-size: 0.85rem;
   }
 }
+
+/* ───────────────────────── INTERLUDES · RIBBON, MANIFESTO, ROUTE ───────────────────────── */
+/* curved marquee: text rides an arc */
+.st-ribbon-band {
+  position: relative;
+  height: clamp(9rem, 22vw, 15rem);
+  overflow: hidden;
+  --rb-band: #f0a24a;
+}
+.rb-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.rb-text {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 58px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  fill: #2a1a08;
+}
+
+/* manifesto: words fill in as you scroll */
+.st-mf {
+  --mf-dim: rgba(246, 234, 208, 0.22);
+  --mf-ink: #f6ead0;
+  --mf-hot: #ffb347;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: 5rem 1.2rem 2rem;
+  overflow: hidden;
+}
+.mf-eyebrow {
+  text-align: center;
+}
+.mf-text {
+  width: min(64rem, 92vw);
+  text-align: center;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 800;
+  line-height: 1.12;
+  font-size: clamp(1.7rem, 4.6vw, 3.6rem);
+  color: var(--mf-ink);
+}
+.mf-w {
+  color: var(--mf-ink);
+}
+.mf-pill {
+  position: absolute;
+  padding: 0.5rem 1.1rem;
+  font-size: clamp(0.8rem, 1.4vw, 1rem);
+  font-weight: 800;
+  color: #fff4dc;
+  background: #14193f;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px rgba(255, 213, 140, 0.55), 0 10px 22px -10px rgba(0, 0, 0, 0.7);
+  transform: rotate(var(--rot, 0deg));
+  white-space: nowrap;
+}
+
+/* route: a line that draws itself, with a stop per feature */
+.st-rt {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 5rem 1rem 1.5rem;
+  overflow: hidden;
+  color: #f6ead0;
+}
+.rt-head {
+  text-align: center;
+}
+.rt-stage {
+  position: relative;
+  width: min(62rem, 94vw);
+  aspect-ratio: 1000 / 600;
+  max-height: 64vh;
+}
+.rt-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.rt-track,
+.rt-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.rt-track {
+  stroke: rgba(246, 234, 208, 0.12);
+  stroke-width: 14;
+  stroke-dasharray: 2 24;
+}
+.rt-line {
+  stroke: #ffb347;
+  stroke-width: 14;
+}
+.rt-head-dot {
+  fill: #fff4dc;
+  stroke: #ffb347;
+  stroke-width: 6;
+}
+.rt-stop {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.rt-pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  background: #14193f;
+  box-shadow: 0 0 0 3px #ffb347;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.rt-card {
+  position: absolute;
+  left: 0;
+  width: min(15rem, 38vw);
+  padding: 0.6rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+  color: #3b2a14;
+  background: #fff3d6;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 2px rgba(255, 179, 71, 0.8), 0 14px 24px -14px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transform: translateY(8px) rotate(var(--r, -3deg));
+  transition: opacity 0.35s ease 0.12s, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s;
+}
+.rt-card b {
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+.rt-card span {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.rt-up .rt-card {
+  bottom: 2rem;
+  --r: -3deg;
+  transform-origin: 0 100%;
+}
+.rt-dn .rt-card {
+  top: 2rem;
+  --r: 3deg;
+  transform-origin: 0 0;
+}
+.rt-stop.on .rt-pin {
+  transform: translate(-50%, -50%) scale(1);
+}
+.rt-stop.on .rt-card {
+  opacity: 1;
+  transform: translateY(0) rotate(var(--r, -3deg));
+}
+.story--cine .st-mf,
+.story--cine .st-rt,
+.story--cine .st-ribbon-band {
+  background: transparent;
+}
+@media (max-width: 820px) {
+  .rt-card span {
+    display: none;
+  }
+  .rt-card {
+    width: auto;
+    max-width: 44vw;
+  }
+  .rb-text {
+    font-size: 64px;
+  }
+  .mf-pill {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.8rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-pin,
+  .rt-card {
+    transition: none;
+  }
+}
