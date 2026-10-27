@@ -11,9 +11,10 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
+  ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 
-import "./login.css";
 import { signupAction } from "@/lib/actions/account";
 import { loginSchema, signupSchema } from "@/lib/validators";
 import { Modal } from "@/components/app/Modal";
@@ -179,7 +180,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
         theme: "outline",
         size: "large",
         text: "continue_with",
-        shape: "rectangular",
+        shape: "pill",
         width: googleBtnRef.current.offsetWidth || 320,
         logo_alignment: "left",
       });
@@ -189,22 +190,66 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
   }, [gisLoaded, googleClientId, router, mode]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }} className="relative w-full">
-      <div className="lh-auth">
-        <div className="lh-auth-head">
-          <h2>{mode === "login" ? "Log in" : "Create your account"}</h2>
-          <p>{mode === "login" ? "Pick up your trip plans where you left off." : "Plan a trip around your budget in a few minutes."}</p>
+    <motion.div
+      initial={{ opacity: 0, y: 28, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="relative w-full max-w-md"
+    >
+      {/* Glow aura */}
+      <div
+        aria-hidden
+        className="absolute -inset-1 rounded-[2rem] bg-gradient-to-br from-amber-300/45 via-orange-200/20 to-transparent blur-2xl"
+      />
+
+      <div className="sb-auth relative overflow-hidden rounded-[1.85rem] border border-white/60 bg-white/90 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
+        {/* Gradient banner */}
+        <div className="sb-auth-banner relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 px-7 pb-8 pt-7 text-white">
+          <span aria-hidden className="sheen-overlay animate-sheen" />
+          <div className="relative">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" /> Your journey starts here
+            </span>
+            <h2 className="mt-3 text-2xl font-extrabold tracking-tight">
+              {mode === "login" ? "Welcome back 👋" : "Create your account"}
+            </h2>
+            <p className="mt-1 text-sm text-white/85">
+              {mode === "login" ? "Log in to plan your next trip." : "Join and start planning in seconds."}
+            </p>
+          </div>
         </div>
 
-        <div className="lh-auth-body">
+        <div className="p-6 sm:p-7">
           {/* Segmented mode toggle — spring-physics sliding pill via layoutId,
               instead of a CSS transition. */}
-          <div className="lh-tabs" role="tablist" aria-label="Log in or sign up">
-            <button type="button" role="tab" aria-selected={mode === "login"} onClick={() => switchMode("login")} className={mode === "login" ? "is-on" : ""}>
-              Log in
+          <div className="relative mb-5 grid grid-cols-2 rounded-2xl bg-slate-100 p-1 text-sm font-bold">
+            <button
+              type="button"
+              onClick={() => switchMode("login")}
+              className={`relative z-10 rounded-xl py-2 transition ${mode === "login" ? "text-emerald-700" : "text-slate-500"}`}
+            >
+              {mode === "login" && (
+                <motion.span
+                  layoutId="auth-toggle-pill"
+                  className="absolute inset-0 rounded-xl bg-white shadow-sm"
+                  transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                />
+              )}
+              <span className="relative">Log in</span>
             </button>
-            <button type="button" role="tab" aria-selected={mode === "signup"} onClick={() => switchMode("signup")} className={mode === "signup" ? "is-on" : ""}>
-              Sign up
+            <button
+              type="button"
+              onClick={() => switchMode("signup")}
+              className={`relative z-10 rounded-xl py-2 transition ${mode === "signup" ? "text-emerald-700" : "text-slate-500"}`}
+            >
+              {mode === "signup" && (
+                <motion.span
+                  layoutId="auth-toggle-pill"
+                  className="absolute inset-0 rounded-xl bg-white shadow-sm"
+                  transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                />
+              )}
+              <span className="relative">Sign up</span>
             </button>
           </div>
 
@@ -224,7 +269,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
                   exit={{ opacity: 0, height: 0, y: -8 }}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <Field label="Full name" icon={<User className="h-4 w-4" />}>
+                  <Field icon={<User className="h-4 w-4" />}>
                     <input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -238,7 +283,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
             </AnimatePresence>
 
             <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
-              <Field label="Mobile number" icon={<span className="text-sm font-semibold text-slate-400">+91</span>} pad="left-3.5">
+              <Field icon={<span className="text-sm font-semibold text-slate-400">+91</span>} pad="left-3.5">
                 <input
                   type="tel"
                   inputMode="numeric"
@@ -252,7 +297,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
             </motion.div>
 
             <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
-              <Field label="Password" icon={<Lock className="h-4 w-4" />}>
+              <Field icon={<Lock className="h-4 w-4" />}>
                 <input
                   type={showPw ? "text" : "password"}
                   value={password}
@@ -281,7 +326,7 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
                   exit={{ opacity: 0, height: 0, y: -8 }}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <Field label="Confirm password" icon={<Lock className="h-4 w-4" />}>
+                  <Field icon={<Lock className="h-4 w-4" />}>
                     <input
                       type={showPw ? "text" : "password"}
                       value={confirmPassword}
@@ -344,9 +389,16 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
               </p>
             )}
 
-            <button type="submit" disabled={submitting || (mode === "signup" && !agreed)} className="lh-submit">
-              <span>{submitting ? "Please wait…" : mode === "login" ? "Log in" : "Create account"}</span>
-              {!submitting && <ArrowRight className="h-4 w-4" aria-hidden />}
+            <button
+              type="submit"
+              disabled={submitting || (mode === "signup" && !agreed)}
+              className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/40 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {!submitting && <span aria-hidden className="sheen-overlay animate-sheen" />}
+              <span className="relative">
+                {submitting ? "Please wait…" : mode === "login" ? "Log in" : "Create account"}
+              </span>
+              {!submitting && <ArrowRight className="relative h-4 w-4 transition group-hover:translate-x-0.5" />}
             </button>
           </motion.form>
 
@@ -378,7 +430,9 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
             </>
           )}
 
-
+          <p className="mt-5 flex items-center justify-center gap-1.5 text-center text-[11px] text-slate-400">
+            <ShieldCheck className="h-3.5 w-3.5" /> Secured — we never share your details.
+          </p>
         </div>
       </div>
 
@@ -393,23 +447,18 @@ export function AuthCard({ googleClientId }: { googleClientId?: string }) {
 }
 
 function Field({
-  label,
   icon,
   children,
   pad = "left-3.5",
 }: {
-  label: string;
   icon: React.ReactNode;
   children: React.ReactNode;
   pad?: string;
 }) {
   return (
-    <label className="lh-fieldwrap">
-      <span className="lh-label">{label}</span>
-      <div className="lh-field">
-        <span className={`pointer-events-none absolute ${pad} text-slate-400`}>{icon}</span>
-        {children}
-      </div>
-    </label>
+    <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white transition focus-within:border-emerald-400 focus-within:shadow-[0_0_0_4px_rgba(16,185,129,0.15)]">
+      <span className={`pointer-events-none absolute ${pad} text-slate-400`}>{icon}</span>
+      {children}
+    </div>
   );
 }

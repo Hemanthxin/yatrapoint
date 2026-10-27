@@ -6,6 +6,7 @@ import Script from "next/script";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AnimatedWords } from "@/components/app/AnimatedWords";
 import {
   Lock,
   Eye,
@@ -15,6 +16,7 @@ import {
   User,
   Smartphone,
   Check,
+  Plane,
 } from "lucide-react";
 
 import { signupAction } from "@/lib/actions/account";
@@ -226,10 +228,36 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
 
       {/* Heading on the cream canvas — clean, no overlap with the photo. */}
       <div className="px-6 pt-4">
-        <h1 className="text-[1.9rem] font-bold leading-[1.12] tracking-tight text-slate-900">Plan the trip that fits your budget.</h1>
-        <p className="mt-2.5 max-w-[20rem] text-sm leading-relaxed text-slate-500">
-          Itineraries, real distances and festival dates for places across India.
-        </p>
+        <motion.span
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.35 }}
+          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700"
+        >
+          <Plane className="h-3.5 w-3.5 -rotate-[18deg]" /> Your journey starts here
+        </motion.span>
+        <h1 className="mt-3 text-[2rem] font-extrabold leading-[1.12] tracking-tight text-slate-900">
+          <AnimatedWords text="Explore More." delay={0.45} stagger={0.06} />
+          <br />
+          <span className="text-[#e14434]">
+            <AnimatedWords text="Fulfill Soul." delay={0.65} stagger={0.06} />
+          </span>
+        </h1>
+        <motion.span
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.4, delay: 0.9 }}
+          style={{ transformOrigin: "left" }}
+          className="mt-3 block h-1 w-9 rounded-full bg-emerald-600"
+        />
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 1.0 }}
+          className="mt-2.5 max-w-[17rem] text-sm font-medium leading-relaxed text-slate-500"
+        >
+          Smart itineraries, real budgets and unforgettable experiences.
+        </motion.p>
       </div>
 
       {/* Bottom-sheet form card — slides up from below, like it's being
@@ -241,10 +269,10 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
         className="relative mt-7 rounded-t-[2.25rem] bg-white px-6 pb-12 pt-7 shadow-[0_-12px_40px_-12px_rgba(0,0,0,0.15)]"
       >
         <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-          {mode === "login" ? "Log in" : "Create your account"}
+          {mode === "login" ? "Welcome back! 👋" : "Create account ✨"}
         </h2>
         <p className="mt-1 text-sm text-slate-500">
-          {mode === "login" ? "Pick up your trip plans where you left off." : "Plan a trip around your budget in a few minutes."}
+          {mode === "login" ? "Log in to continue your adventure" : "Join and start planning in seconds"}
         </p>
 
         {/* Segmented toggle — spring-physics sliding pill via layoutId */}

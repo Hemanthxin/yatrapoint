@@ -302,7 +302,8 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
           scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
         });
       });
-      gsap.to(".lh-copy", { y: -90, opacity: 0.0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "70% top", scrub: true } });
+      if (!cine) gsap.to(".st-sun", { y: vh * 0.55, scale: 1.25, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } });
+      gsap.to(".st-hero-copy", { y: -90, opacity: 0.0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "70% top", scrub: true } });
 
       // pointer parallax (x only — scroll owns y)
       const movers = layers.map((l, i) => gsap.quickTo(l, "x", { duration: 1.1, ease: "power3.out" }));
@@ -327,11 +328,17 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       const lenis = window.__sbLenis;
       const wake = () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        tl.from(".st-nav", { opacity: 0, duration: 0.8 }, 0.1)
-          .from(".lh-img", { scale: 1.06, duration: 2.6, ease: "power2.out" }, 0)
-          .from(".lh-copy > *", { opacity: 0, y: 14, duration: 0.8, stagger: 0.12 }, 0.3)
-          .from("#login", { opacity: 0, y: 16, duration: 0.8 }, 0.5)
-          .from(".st-chapter, .st-ribbon", { opacity: 0, duration: 1 }, 1);
+        tl.from(".st-nav", { y: -40, opacity: 0, duration: 1 }, 0.2)
+          .from(layers.map((l) => l.firstElementChild), { y: (i) => 160 + i * 50, opacity: 0, duration: 1.8, stagger: 0.12, ease: "power2.out" }, 0)
+          .from(".st-sun span", { y: 140, opacity: 0, duration: 2.2, ease: "power2.out" }, 0.2)
+          .from("#hero .st-hero-eyebrow", { opacity: 0, y: 14, duration: 1 }, 0.9)
+          .from("#hero .st-title .st-c", { yPercent: 118, rotate: 9, duration: 1.2, stagger: 0.07 }, 0.9)
+          .from("#hero .st-underline path", { strokeDashoffset: 600, duration: 1.4, ease: "power2.inOut" }, 1.7)
+          .from("#hero .st-tag", { opacity: 0, y: 18, duration: 1 }, 1.5)
+          .from("#hero .st-lede", { opacity: 0, y: 18, duration: 1 }, 1.7)
+          .from("#hero .st-cta", { opacity: 0, y: 18, duration: 1 }, 1.9)
+          .from("#login", { opacity: 0, x: 60, rotate: 2, duration: 1.4 }, 1.3)
+          .from(".st-chapter, .st-ribbon", { opacity: 0, duration: 1 }, 2);
       };
       if (calm) {
         // no cover, no entrance, no ambient loops — the scroll-driven scenes still work, driven by the reader
@@ -349,10 +356,14 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
           ScrollTrigger.refresh();
         };
         const tl = gsap.timeline({ onComplete: done });
-        tl.from(".st-intro-seal", { scale: 0.96, opacity: 0, duration: 0.7, ease: "power2.out" })
-          .from(".st-intro-line", { yPercent: 110, opacity: 0, duration: 0.6, ease: "power3.out" }, 0.2)
-          .to(".st-intro", { opacity: 0, duration: 0.7, ease: "power1.inOut" }, 1.5)
-          .add(wake, 1.3);
+        tl.from(".st-intro-seal", { scale: 0.5, opacity: 0, rotate: -40, duration: 1.1, ease: "back.out(1.6)" })
+          .from(".st-intro-line", { yPercent: 110, opacity: 0, duration: 0.9, stagger: 0.14, ease: "power3.out" }, 0.4)
+          .to(".st-intro-seal", { rotate: 360, duration: 1.4, ease: "power2.inOut" }, 1.2)
+          .to(".st-intro-content", { opacity: 0, scale: 1.12, duration: 0.7, ease: "power2.in" }, 2.1)
+          .to(".st-intro-l", { rotationY: -108, duration: 1.7, ease: "power3.inOut" }, 2.5)
+          .to(".st-intro-r", { rotationY: 108, duration: 1.7, ease: "power3.inOut" }, 2.5)
+          .to(".st-intro-shade", { opacity: 0, duration: 1.4 }, 2.6)
+          .add(wake, 2.7);
         // fail-safe: never trap the visitor behind the cover
         window.setTimeout(() => {
           if (!introDone.current) {
@@ -856,7 +867,7 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
             <Image src="/saafera-logo.jpg" alt="Saafera" width={420} height={420} priority className="h-full w-full object-cover" />
           </div>
           <div className="st-intro-mask">
-            <p className="st-intro-line st-intro-sub">Explore More. Fulfill Soul.</p>
+            <p className="st-intro-line st-intro-sub">a storybook map of India</p>
           </div>
         </div>
       </div>
@@ -909,20 +920,51 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
       </div>
 
       {/* ═══ I · HERO ═══ */}
-      <section id="hero" className="st-hero lh-hero">
-        <div className="lh-photo">
-          <Image src="/66242.jpg" alt="A waterfall above a quiet lake in the hills at sunset, with a temple on the shore and a houseboat on the water" fill priority sizes="(min-width: 1024px) 62vw, 100vw" className="lh-img" />
-          <div className="lh-scrim" aria-hidden />
-          <div className="lh-copy">
-            <h1 className="lh-title">Plan the trip that fits your budget.</h1>
-            <p className="lh-sub">Itineraries, real distances and festival dates for places across India.</p>
-            <button type="button" className="lh-more" onClick={() => goTo("#prologue")}>
-              See how it works
-            </button>
+      <section id="hero" className="st-hero">
+        <div className="st-hero-art" aria-hidden>
+          <div className="st-sun">
+            <span />
           </div>
+          <div className="st-cloud" style={{ left: "6%", top: "15%" }}>
+            <Cloud w={360} seed={2} />
+          </div>
+          <div className="st-cloud" style={{ left: "46%", top: "9%", opacity: 0.85 }}>
+            <Cloud w={300} seed={5} />
+          </div>
+          <div className="st-cloud" style={{ left: "70%", top: "24%", opacity: 0.8 }}>
+            <Cloud w={420} seed={8} />
+          </div>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="st-bird-wrap" style={{ top: `${14 + i * 7}%` }}>
+              <Bird s={1 - i * 0.18} />
+            </div>
+          ))}
+          {!cine && <MountainScape layers={DAWN_LAYERS} idPrefix="hero" seed={4} />}
         </div>
-        <div id="login" className="st-login lh-panel">
-          {auth}
+
+        <div className="st-hero-grid">
+          <div className="st-hero-copy">
+            <p className="st-hero-eyebrow sb-eyebrow">Chapter I · The Waking Mountains</p>
+            <h1 className="st-title">
+              <Chars text="Saafera" />
+            </h1>
+            <svg className="st-underline" viewBox="0 0 520 26" aria-hidden>
+              <path d="M6 16C90 4 180 24 260 13S430 6 514 14" fill="none" stroke="#d98a3d" strokeWidth="7" strokeLinecap="round" strokeDasharray="600" />
+            </svg>
+            <p className="st-tag">Explore More. Fulfill Soul.</p>
+            <p className="st-lede">
+              From temple bells in the mist to waterfalls that hide whole villages — a hand-drawn map of India, made to fit the coins in your pocket.
+            </p>
+            <div className="st-cta">
+              <button type="button" className="btn-primary px-6 py-3 text-base" onClick={() => goTo("#prologue")}>
+                Begin the tale
+              </button>
+              <span className="st-scroll-hint">turn the page ↓</span>
+            </div>
+          </div>
+          <div id="login" className="st-login">
+            {auth}
+          </div>
         </div>
       </section>
 
