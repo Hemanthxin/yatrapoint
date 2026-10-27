@@ -1349,7 +1349,6 @@ export function StoryLanding({ data, auth }: { data: StoryData; auth: ReactNode 
             <Link href="/faq">FAQ</Link>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
-            <a href="/cinema/CREDITS.txt" target="_blank" rel="noopener noreferrer">Credits</a>
           </nav>
           <span>© Saafera — Explore More. Fulfill Soul.</span>
         </footer>

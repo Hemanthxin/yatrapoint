@@ -27,15 +27,15 @@ export interface Look {
 
 export const LOOKS: Look[] = [
   // 0 · dawn
-  { sunElev: 7, sunAz: -14, sunColor: "#ffb88a", sunInt: 2.4, hemiSky: "#b4c4e8", hemiGround: "#7d8a5c", hemiInt: 0.85, rimColor: "#ffc7a8", rimInt: 1.0, fog: "#e6c6b2", fogDensity: 0.003, skyTop: "#5d7fc0", skyMid: "#e6b9a8", skyHorizon: "#f6d8ba", stars: 0.1, exposure: 1.0, bloom: 0.28, cloud: "#f3d4c6", cloudOpacity: 0.85, glow: 0.2, water: "#4f7aa8" },
+  { sunElev: 7, sunAz: -14, sunColor: "#ff9d6e", sunInt: 2.6, hemiSky: "#a9b9ff", hemiGround: "#8a8a60", hemiInt: 0.85, rimColor: "#ffb59a", rimInt: 1.2, fog: "#f4c3a8", fogDensity: 0.0042, skyTop: "#5b78c8", skyMid: "#f0a99b", skyHorizon: "#ffd9ab", stars: 0.1, exposure: 1.0, bloom: 0.5, cloud: "#ffd6c4", cloudOpacity: 0.85, glow: 0.2, water: "#4a78b8" },
   // 1 · day
-  { sunElev: 40, sunAz: -22, sunColor: "#fff4e2", sunInt: 3.2, hemiSky: "#b9d4f2", hemiGround: "#7c9453", hemiInt: 1.1, rimColor: "#dcecfa", rimInt: 0.8, fog: "#d5e4ef", fogDensity: 0.0022, skyTop: "#3f84d6", skyMid: "#86bcea", skyHorizon: "#d8e8f4", stars: 0, exposure: 1.0, bloom: 0.18, cloud: "#ffffff", cloudOpacity: 0.95, glow: 0, water: "#3d84b8" },
-  // 2 · late afternoon
-  { sunElev: 16, sunAz: -34, sunColor: "#ffcc8a", sunInt: 3.0, hemiSky: "#b8cdec", hemiGround: "#7d9350", hemiInt: 0.9, rimColor: "#ffd6a6", rimInt: 1.0, fog: "#dcc9ae", fogDensity: 0.0026, skyTop: "#3f7ccc", skyMid: "#9db9d8", skyHorizon: "#e6c9a2", stars: 0, exposure: 0.9, bloom: 0.2, cloud: "#ffe8d0", cloudOpacity: 0.85, glow: 0.3, water: "#4a82b4" },
+  { sunElev: 40, sunAz: -22, sunColor: "#fff0d4", sunInt: 3.4, hemiSky: "#a8cdff", hemiGround: "#7fa24e", hemiInt: 1.15, rimColor: "#d6ecff", rimInt: 0.9, fog: "#cfe5f5", fogDensity: 0.0032, skyTop: "#3d8fe0", skyMid: "#8cc7f5", skyHorizon: "#dcefff", stars: 0, exposure: 1.0, bloom: 0.32, cloud: "#ffffff", cloudOpacity: 0.95, glow: 0, water: "#3d8cc4" },
+  // 2 · golden hour — the look of the reference
+  { sunElev: 11, sunAz: -34, sunColor: "#ffb567", sunInt: 3.6, hemiSky: "#a9c8ff", hemiGround: "#7d9a46", hemiInt: 0.95, rimColor: "#ffc98a", rimInt: 1.6, fog: "#f7cba0", fogDensity: 0.0042, skyTop: "#5a8fd8", skyMid: "#b1cbea", skyHorizon: "#ffd6a2", stars: 0, exposure: 1.02, bloom: 0.55, cloud: "#ffe0bf", cloudOpacity: 0.9, glow: 0.35, water: "#4f86be" },
   // 3 · dusk
-  { sunElev: 2.5, sunAz: 26, sunColor: "#ff9474", sunInt: 1.6, hemiSky: "#7f78c0", hemiGround: "#4d4c6e", hemiInt: 0.6, rimColor: "#ffa890", rimInt: 1.0, fog: "#b88494", fogDensity: 0.0036, skyTop: "#2f3a80", skyMid: "#a86a8c", skyHorizon: "#f2a27c", stars: 0.35, exposure: 0.98, bloom: 0.34, cloud: "#f09aa6", cloudOpacity: 0.8, glow: 0.8, water: "#4a4a96" },
+  { sunElev: 2.5, sunAz: 26, sunColor: "#ff7b5c", sunInt: 1.6, hemiSky: "#7a70c8", hemiGround: "#4d4c6e", hemiInt: 0.6, rimColor: "#ff9d86", rimInt: 1.1, fog: "#c97c90", fogDensity: 0.0046, skyTop: "#2b2d7a", skyMid: "#b45c8c", skyHorizon: "#ff9d70", stars: 0.35, exposure: 0.98, bloom: 0.55, cloud: "#ff9aa6", cloudOpacity: 0.8, glow: 0.8, water: "#4a4a96" },
   // 4 · night (moonlight)
-  { sunElev: 40, sunAz: 22, sunColor: "#b9ccff", sunInt: 0.65, hemiSky: "#4d5aae", hemiGround: "#1b2240", hemiInt: 0.5, rimColor: "#7e92ff", rimInt: 0.8, fog: "#1a2150", fogDensity: 0.0048, skyTop: "#060a28", skyMid: "#141b55", skyHorizon: "#2c3280", stars: 1, exposure: 0.95, bloom: 0.4, cloud: "#6a72b8", cloudOpacity: 0.4, glow: 1, water: "#1c2a6a" },
+  { sunElev: 40, sunAz: 22, sunColor: "#b9ccff", sunInt: 0.65, hemiSky: "#4d5aae", hemiGround: "#1b2240", hemiInt: 0.5, rimColor: "#7e92ff", rimInt: 0.8, fog: "#1a2150", fogDensity: 0.0048, skyTop: "#060a28", skyMid: "#141b55", skyHorizon: "#2c3280", stars: 1, exposure: 0.95, bloom: 0.5, cloud: "#6a72b8", cloudOpacity: 0.4, glow: 1, water: "#1c2a6a" },
 ];
 
 const KEYS_NUM = ["sunElev", "sunAz", "sunInt", "hemiInt", "rimInt", "fogDensity", "stars", "exposure", "bloom", "cloudOpacity", "glow"] as const;
