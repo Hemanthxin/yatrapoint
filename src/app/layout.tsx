@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Caveat, Fraunces, Alegreya_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import "./storybook.css";
 import { Providers } from "@/components/Providers";
@@ -7,25 +7,66 @@ import { SEO_KEYWORDS } from "@/lib/seo";
 import { PaintDefs } from "@/components/storybook/PaintDefs";
 import { StorybookEffects } from "@/components/storybook/StorybookEffects";
 
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const script = Caveat({ subsets: ["latin"], variable: "--font-script" });
+// The four typefaces are self-hosted (src/app/fonts, latin subset, from Google Fonts, SIL OFL).
+// Fetching them from Google at build time broke deploys when Google changed what it returned.
+const sans = localFont({
+  src: [
+    { path: "./fonts/inter-normal-100.woff2", weight: "100", style: "normal" },
+    { path: "./fonts/inter-normal-200.woff2", weight: "200", style: "normal" },
+    { path: "./fonts/inter-normal-300.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/inter-normal-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/inter-normal-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/inter-normal-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/inter-normal-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/inter-normal-800.woff2", weight: "800", style: "normal" },
+    { path: "./fonts/inter-normal-900.woff2", weight: "900", style: "normal" },
+  ],
+  variable: "--font-sans",
+  display: "swap",
+});
+const script = localFont({
+  src: [
+    { path: "./fonts/caveat-normal-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/caveat-normal-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/caveat-normal-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/caveat-normal-700.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-script",
+  display: "swap",
+});
 // Editorial display serif for desktop section headlines (magazine/WordPress
 // feel) — mobile keeps the sans headings untouched, this is opt-in via
 // `font-serif` only in desktop-only markup.
-const serif = Fraunces({
-  subsets: ["latin"],
+const serif = localFont({
+  src: [
+    { path: "./fonts/fraunces-italic-400.woff2", weight: "400", style: "italic" },
+    { path: "./fonts/fraunces-italic-500.woff2", weight: "500", style: "italic" },
+    { path: "./fonts/fraunces-italic-600.woff2", weight: "600", style: "italic" },
+    { path: "./fonts/fraunces-italic-700.woff2", weight: "700", style: "italic" },
+    { path: "./fonts/fraunces-normal-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/fraunces-normal-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/fraunces-normal-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/fraunces-normal-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-serif",
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 // Hand-lettered storybook sans for the painted desktop theme (storybook.css
 // points --font-sans at this on screens ≥1024px; phones keep Inter).
-const ui = Alegreya_Sans({
-  subsets: ["latin"],
+const ui = localFont({
+  src: [
+    { path: "./fonts/alegreya-italic-400.woff2", weight: "400", style: "italic" },
+    { path: "./fonts/alegreya-italic-500.woff2", weight: "500", style: "italic" },
+    { path: "./fonts/alegreya-italic-700.woff2", weight: "700", style: "italic" },
+    { path: "./fonts/alegreya-italic-800.woff2", weight: "800", style: "italic" },
+    { path: "./fonts/alegreya-normal-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/alegreya-normal-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/alegreya-normal-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/alegreya-normal-800.woff2", weight: "800", style: "normal" },
+  ],
   variable: "--font-ui",
-  style: ["normal", "italic"],
-  weight: ["400", "500", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
