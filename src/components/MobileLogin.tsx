@@ -19,6 +19,7 @@ import {
   Plane,
 } from "lucide-react";
 
+import { nativePlugin, useIsNativeApp } from "@/lib/native";
 import { signupAction } from "@/lib/actions/account";
 import { loginSchema, signupSchema } from "@/lib/validators";
 import { Modal } from "@/components/app/Modal";
@@ -60,7 +61,12 @@ const sanitizePhone = (v: string) => v.replace(/\D/g, "").slice(0, 10);
 // The Saafera mobile login — matches the brand mockup: cream hero with the
 // wordmark and "Your Journey, Our Priority", over a white bottom-sheet form.
 // Google-only social sign-in, with Remember me + Forgot password.
-export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
+export function MobileLogin({ googleClientId: googleClientIdProp }: { googleClientId?: string }) {
+  // Google refuses its web sign-in page inside an embedded browser, so the Android app uses Android's own
+  // Google account picker instead (SocialLogin plugin) and hands the same ID token to the same server check.
+  const isNativeApp = useIsNativeApp();
+  const googleClientId = isNativeApp ? undefined : googleClientIdProp; // browser button (Google Identity Services)
+  const [nativeGoogleBusy, setNativeGoogleBusy] = useState(false);
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
@@ -91,6 +97,44 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
     }, 7000);
     return () => clearTimeout(timer);
   }, [googleClientId, gisLoaded]);
+
+  async function onNativeGoogle() {
+    if (!googleClientIdProp) return;
+    setGoogleError(null);
+    const plugin = nativePlugin<{
+      initialize: (o: unknown) => Promise<void>;
+      login: (o: unknown) => Promise<{ result?: { idToken?: string | null } }>;
+    }>("SocialLogin");
+    if (!plugin) {
+      setGoogleError("Google sign-in isn't available — use your phone number instead.");
+      return;
+    }
+    setNativeGoogleBusy(true);
+    try {
+      await plugin.initialize({ google: { webClientId: googleClientIdProp } });
+      const res = await plugin.login({ provider: "google", options: { scopes: ["email", "profile"] } });
+      const credential = res?.result?.idToken;
+      if (!credential) {
+        setGoogleError("Google didn't return a credential.");
+        return;
+      }
+      const result = await signIn("google-id-token", { credential, redirect: false });
+      if (!result || result.error) {
+        setGoogleError("Google sign-in failed.");
+        return;
+      }
+      router.push("/dashboard");
+      router.refresh();
+    } catch (e) {
+      const msg = String((e as { message?: string })?.message ?? e).toLowerCase();
+      // Closing the account picker is not an error worth shouting about.
+      if (!msg.includes("cancel") && !msg.includes("dismiss")) {
+        setGoogleError("Google sign-in failed — check your Google account on this phone, or use your phone number.");
+      }
+    } finally {
+      setNativeGoogleBusy(false);
+    }
+  }
 
   function switchMode(m: Mode) {
     setMode(m);
@@ -480,6 +524,34 @@ export function MobileLogin({ googleClientId }: { googleClientId?: string }) {
               <p className="mt-2 text-center text-xs text-slate-400">Tick both boxes above to continue with Google.</p>
             )}
             {!gisLoaded && !googleError && <p className="mt-2 text-center text-xs text-slate-400">Loading Google…</p>}
+            {googleError && <p className="mt-2 text-center text-xs text-rose-500">{googleError}</p>}
+          </>
+        )}
+
+        {isNativeApp && googleClientIdProp && (
+          <>
+            <div className="my-4 flex items-center gap-3 text-xs font-semibold text-slate-400">
+              <div className="h-px flex-1 bg-slate-200" />
+              or continue with
+              <div className="h-px flex-1 bg-slate-200" />
+            </div>
+            <button
+              type="button"
+              onClick={onNativeGoogle}
+              disabled={nativeGoogleBusy || (mode === "signup" && !agreed)}
+              className="flex w-full items-center justify-center gap-3 rounded-full border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-700 transition active:scale-[0.98] disabled:opacity-40"
+            >
+              <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>
+                <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z" />
+                <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.1 5.3-4.5 7l7.2 5.6c4.2-3.9 7-9.6 7-17.1z" />
+                <path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 010-9.4l-7.9-6.1a24 24 0 000 21.6l7.9-6.1z" />
+                <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2 1.4-4.6 2.3-8.7 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z" />
+              </svg>
+              {nativeGoogleBusy ? "Opening Google…" : "Continue with Google"}
+            </button>
+            {mode === "signup" && !agreed && (
+              <p className="mt-2 text-center text-xs text-slate-400">Tick both boxes above to continue with Google.</p>
+            )}
             {googleError && <p className="mt-2 text-center text-xs text-rose-500">{googleError}</p>}
           </>
         )}

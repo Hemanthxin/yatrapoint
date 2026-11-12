@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Saafera – offline</title>
+    <style>
+      :root {
+        --bg: #faf6ec;
+        --card: #ffffff;
+        --ink: #10201a;
+        --muted: #5a6a63;
+        --line: #d9dfd2;
+        --brand: #1d6a43;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: calc(env(safe-area-inset-top, 0px) + 20px) 16px 32px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.45;
+      }
+      main { max-width: 34rem; margin: 0 auto; }
+      h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.01em; }
+      .lead { margin: 0.4rem 0 1rem; color: var(--muted); font-size: 0.95rem; }
+      button {
+        font: inherit; font-weight: 600; color: #fff; background: var(--brand);
+        border: 0; border-radius: 10px; padding: 0.7rem 1.1rem; min-height: 44px;
+      }
+      button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      h2 { margin: 1.8rem 0 0.6rem; font-size: 1.05rem; }
+      .card {
+        background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+        padding: 0.9rem 1rem; margin-bottom: 0.7rem;
+      }
+      .card h3 { margin: 0; font-size: 1rem; }
+      .meta { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+      ol { margin: 0.6rem 0 0; padding-left: 1.2rem; font-size: 0.9rem; }
+      .empty { color: var(--muted); font-size: 0.9rem; }
+      .when { color: var(--muted); font-size: 0.78rem; margin-top: 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>You're offline</h1>
+      <p class="lead">Saafera needs internet to plan new trips. Your saved trips are still here to read.</p>
+      <button id="retry" type="button">Try again</button>
+
+      <h2>Saved trips</h2>
+      <div id="trips" class="empty">Loading…</div>
+
+      <h2>Trip cart</h2>
+      <div id="cart" class="empty">Loading…</div>
+
+      <p id="when" class="when"></p>
+    </main>
+
+    <script>
+      var SITE = "https://saafera.com";
+      // the app hands over the saved-trip copy through a small read-only interface (MainActivity.java)
+      var N = window.SaaferaNative;
+
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function inr(n) {
+        try { return "₹" + Math.round(Number(n)).toLocaleString("en-IN"); } catch (e) { return "₹" + n; }
+      }
+      function read(key) {
+        try {
+          var raw = N && N.get(key);
+          return Promise.resolve(raw ? JSON.parse(raw) : null);
+        } catch (e) {
+          return Promise.resolve(null);
+        }
+      }
+
+      function renderTrips(list) {
+        var el = document.getElementById("trips");
+        if (!list || !list.length) {
+          el.className = "empty";
+          el.textContent = "No saved trips yet. Save a trip while you're online and it will show up here.";
+          return;
+        }
+        el.className = "";
+        el.innerHTML = list.map(function (t) {
+          var bits = [];
+          if (t.days) bits.push(t.days + (t.days === 1 ? " day" : " days"));
+          if (t.people) bits.push(t.people + (t.people === 1 ? " person" : " people"));
+          if (t.totals && typeof t.totals.cost === "number") bits.push(inr(t.totals.cost));
+          var stops = (t.stops || []).map(function (s) { return "<li>" + esc(s.name) + "</li>"; }).join("");
+          return '<div class="card"><h3>' + esc(t.name) + "</h3>" +
+            (bits.length ? '<p class="meta">' + esc(bits.join(" · ")) + "</p>" : "") +
+            (stops ? "<ol>" + stops + "</ol>" : "") + "</div>";
+        }).join("");
+      }
+
+      function renderCart(list) {
+        var el = document.getElementById("cart");
+        if (!list || !list.length) {
+          el.className = "empty";
+          el.textContent = "Your trip cart is empty.";
+          return;
+        }
+        el.className = "";
+        el.innerHTML = list.map(function (c) {
+          return '<div class="card"><h3>' + esc(c.name) + "</h3>" +
+            (c.subtitle ? '<p class="meta">' + esc(c.subtitle) + "</p>" : "") + "</div>";
+        }).join("");
+      }
+
+      Promise.all([read("saafera.savedTrips"), read("saafera.tripCart"), read("saafera.syncedAt")]).then(function (r) {
+        renderTrips(r[0]);
+        renderCart(r[1]);
+        if (r[2]) {
+          try { document.getElementById("when").textContent = "Last synced " + new Date(r[2]).toLocaleString("en-IN"); } catch (e) {}
+        }
+      });
+
+      function retry() { window.location.href = SITE; }
+      document.getElementById("retry").addEventListener("click", retry);
+      // as soon as the phone is back online, go back to the app
+      window.addEventListener("online", retry);
+    </script>
+  </body>
+</html>

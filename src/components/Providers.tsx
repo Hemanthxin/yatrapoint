@@ -7,6 +7,7 @@ import { ThemeProvider } from "./ThemeProvider";
 import { NavProgress } from "./app/NavProgress";
 import { ServiceWorkerRegister } from "./app/ServiceWorkerRegister";
 import { LocationConsentGuard } from "./app/LocationConsentGuard";
+import { NativeBridge } from "./app/NativeBridge";
 import { InstallAppPrompt } from "./app/InstallAppPrompt";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -19,6 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <NavProgress />
           </Suspense>
           <LocationConsentGuard />
+          <NativeBridge />
           <ServiceWorkerRegister />
           <InstallAppPrompt />
           {children}

@@ -16,3 +16,4 @@ manifest-checksum.txt
 
 # npm deps — reinstalled via `npm install` (patch-package reapplies the patch).
 node_modules/
+*.jks

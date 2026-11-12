@@ -1,0 +1,33 @@
+{
+  "appId": "com.saafera.app",
+  "appName": "Saafera",
+  "webDir": "www",
+  "backgroundColor": "#faf6ec",
+  "server": {
+    "url": "https://saafera.com",
+    "cleartext": false,
+    "androidScheme": "https",
+    "errorPath": "offline.html",
+    "allowNavigation": [
+      "saafera.com",
+      "*.saafera.com"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#faf6ec"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "launchAutoHide": true,
+      "backgroundColor": "#faf6ec",
+      "androidScaleType": "CENTER_INSIDE",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#faf6ec"
+    }
+  }
+}
