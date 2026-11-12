@@ -5,6 +5,17 @@ import { InfoList, InfoSection } from "@/components/app/InfoPage";
 export function PrivacyPolicyContent() {
   return (
     <>
+      <InfoSection title="Who we are">
+        <p>
+          Saafera is a travel-planning app and website for India, operated by its developer team.
+          For support, privacy questions or requests about your data, contact us at{" "}
+          <a href="mailto:156cse@gmail.com" className="font-semibold text-emerald-700 hover:underline">
+            156cse@gmail.com
+          </a>
+          . Website: <a href="https://saafera.com" className="font-semibold text-emerald-700 hover:underline">saafera.com</a>.
+        </p>
+      </InfoSection>
+
       <InfoSection title="Overview">
         <p>
           This Privacy Policy explains what information Saafera (&quot;we&quot;, &quot;us&quot;) collects
@@ -102,13 +113,18 @@ export function PrivacyPolicyContent() {
       </InfoSection>
 
       <InfoSection title="Contact us">
-        <p>
-          Questions about privacy? Email{" "}
-          <a href="mailto:privacy@saafera.app" className="font-semibold text-emerald-700 hover:underline">
-            privacy@saafera.app
+        <InfoList
+          items={[
+            <>
+              Support and privacy questions: {" "}
+              <a href="mailto:156cse@gmail.com" className="font-semibold text-emerald-700 hover:underline">
+            156cse@gmail.com
           </a>
-          .
-        </p>
+            </>,
+            "To access, correct or delete your data, or to withdraw consent, email us from the address linked to your account, or use Settings in the app.",
+            "We aim to reply within 7 days.",
+          ]}
+        />
       </InfoSection>
     </>
   );
